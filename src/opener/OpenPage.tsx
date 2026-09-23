@@ -1,21 +1,32 @@
-// Loads a set (with progress), checks it can fill a pack, and deals packs to the opener.
+// Deals packs from randomly chosen sets. There is no manual set choice: every pack, including
+// "Open another pack", draws a new set. The next set is drawn and downloaded while you reveal
+// the current pack, so the next wrapper is usually ready at once.
 // Also enforces the optional daily pack limit ("pack of the day").
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { SetData } from "../api/types";
-import { client, markUnopenable } from "../app/client";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { SetData, SetSummary } from "../api/types";
+import { client, getUnopenable, markUnopenable } from "../app/client";
 import { href } from "../app/router";
 import { useSettings } from "../app/settings";
 import { formatCountdown, localDay, nextReset, packsLeft, packsOpenedOn } from "../collection/daily";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { openPack, whyNotOpenable } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
+import { drawableSets, pickRandomSet } from "../engine/randomSet";
 import { createRng } from "../engine/rng";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
 
-type Load = { state: "loading"; done: number; total: number } | { state: "error"; message: string } | { state: "ready"; data: SetData };
+type Stage =
+  | { state: "starting" }
+  | { state: "loading"; set: SetSummary; done: number; total: number }
+  | { state: "error"; message: string }
+  | { state: "ready"; data: SetData; dealNo: number };
 type PackStamp = Pick<PullRecord, "packId" | "openedAt">;
+type Draw = { set: SetSummary; data?: Promise<SetData>; ready?: boolean };
+
+/** Draws that fail (set can't fill a pack) are retried with another set this many times. */
+const MAX_REDRAWS = 6;
 
 /** Re-renders every second while `on`, so countdowns tick and day rollovers are noticed. */
 function useNow(on: boolean): Date {
@@ -28,107 +39,139 @@ function useNow(on: boolean): Date {
   return now;
 }
 
-export function OpenPage({ setId }: { setId: string }) {
-  const { dailyLimit } = useSettings();
-  const [load, setLoad] = useState<Load>({ state: "loading", done: 0, total: 0 });
-  const [packNo, setPackNo] = useState(0);
-  /** Card ids already in the collection, kept current as packs are saved. */
-  const owned = useRef<Set<string>>(new Set());
+export function OpenPage() {
+  const { dailyLimit, eras } = useSettings();
+  const [stage, setStage] = useState<Stage>({ state: "starting" });
   /** When each saved pack was opened, for the daily limit. */
-  const [stamps, setStamps] = useState<PackStamp[]>([]);
+  const [stamps, setStamps] = useState<PackStamp[]>();
   /** Whether the pack on screen has been torn (and so already counted). */
   const [torn, setTorn] = useState(false);
 
-  useEffect(() => {
-    let live = true;
-    setLoad({ state: "loading", done: 0, total: 0 });
-    const collectionLoad = getPulls().then(
-      (pulls) => {
-        owned.current = new Set(pulls.filter((p) => p.setId === setId).map((p) => p.cardId));
-        if (live) setStamps(pulls.map(({ packId, openedAt }) => ({ packId, openedAt })));
-      },
-      (err) => console.warn("Couldn't read the collection", err),
-    );
-    client
-      .getSetCards(setId, (done, total) => live && setLoad({ state: "loading", done, total }))
-      .then(async (data) => (await collectionLoad, data))
-      .then(
-        (data) => {
-          if (!live) return;
+  /** Card ids already collected, per set, kept current as packs are saved. */
+  const owned = useRef(new Map<string, Set<string>>());
+  const summaries = useRef<SetSummary[] | undefined>(undefined);
+  const unopenable = useRef<Record<string, string>>({});
+  /** The next pack's set, drawn and downloading in the background. */
+  const upcoming = useRef<Draw | undefined>(undefined);
+  /** Increments per dealt pack; keys the opener and seeds the pack. */
+  const dealCount = useRef(0);
+  const live = useRef(true);
+  const erasKey = eras.join(",");
+
+  /** Draws a set that isn't known to be unopenable. */
+  const draw = useCallback((avoid?: string): SetSummary | undefined => {
+    const pool = drawableSets(summaries.current ?? [], { unopenable: unopenable.current, eras: erasKey ? erasKey.split(",") : [] });
+    return pickRandomSet(pool, Math.random, avoid);
+  }, [erasKey]);
+  const drawNext = useCallback((avoid?: string) => {
+    const set = draw(avoid);
+    return set && { set };
+  }, [draw]);
+
+  /** Loads a drawn set and puts a pack from it on screen, redrawing if it can't fill a pack. */
+  const deal = useCallback(
+    async (first: Draw | undefined) => {
+      let next = first;
+      for (let attempt = 0; attempt <= MAX_REDRAWS && next; attempt++) {
+        const { set } = next;
+        // A prefetched, already-downloaded set skips the loading screen.
+        if (!next.ready) setStage({ state: "loading", set, done: 0, total: 0 });
+        try {
+          const data = await (next.data ?? client.getSetCards(set.id, (done, total) => live.current && setStage({ state: "loading", set, done, total })));
+          if (!live.current) return;
           const profile = profileFor(data.set);
           const reason = profile ? whyNotOpenable(data, profile) : "No pack profile for this series";
-          if (reason) {
-            void markUnopenable(setId, reason);
-            setLoad({ state: "error", message: `${data.set.name} can't be opened: ${reason}.` });
-          } else setLoad({ state: "ready", data });
-        },
-        (err) => live && setLoad({ state: "error", message: `Couldn't load this set. ${String(err)}` }),
-      );
-    return () => {
-      live = false;
-    };
-  }, [setId]);
+          if (!reason) {
+            setStage({ state: "ready", data, dealNo: ++dealCount.current });
+            return;
+          }
+          unopenable.current[set.id] = reason;
+          void markUnopenable(set.id, reason);
+          next = drawNext(set.id);
+        } catch (err) {
+          if (live.current) setStage({ state: "error", message: `Couldn't load ${set.name}. ${String(err)}` });
+          return;
+        }
+      }
+      if (live.current) setStage({ state: "error", message: "No set could be opened. Check the era filter in Settings." });
+    },
+    [drawNext],
+  );
 
+  // Start: load what the draw needs, then deal the first pack.
+  useEffect(() => {
+    live.current = true;
+    (async () => {
+      const [sets, unopen, pulls] = await Promise.all([
+        client.listSetSummaries(),
+        getUnopenable(),
+        getPulls().catch((err) => (console.warn("Couldn't read the collection", err), [] as PullRecord[])),
+      ]);
+      if (!live.current) return;
+      summaries.current = sets;
+      unopenable.current = { ...unopen };
+      for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
+      setStamps(pulls.map(({ packId, openedAt }) => ({ packId, openedAt })));
+      const first = draw();
+      if (!first) setStage({ state: "error", message: "No set could be opened. Check the era filter in Settings." });
+      else void deal({ set: first });
+    })().catch((err) => live.current && setStage({ state: "error", message: `Couldn't load the set list. ${String(err)}` }));
+    return () => {
+      live.current = false;
+    };
+  }, [draw, deal]);
+
+  const data = stage.state === "ready" ? stage.data : undefined;
+  const dealNo = stage.state === "ready" ? stage.dealNo : 0;
   const pack = useMemo(() => {
-    if (load.state !== "ready") return undefined;
-    const profile = profileFor(load.data.set)!;
-    const pulls = openPack(load.data, profile, createRng(`${setId}:${Date.now()}:${packNo}`));
+    if (!data) return undefined;
+    const profile = profileFor(data.set)!;
+    const pulls = openPack(data, profile, createRng(`${data.set.id}:${Date.now()}:${dealNo}`));
     // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
-    const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !owned.current.has(id)));
+    const have = owned.current.get(data.set.id);
+    const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have?.has(id)));
     return { pulls, newIds };
-  }, [load, packNo, setId]);
-  const pulls = pack?.pulls;
+  }, [data, dealNo]);
 
   const limited = dailyLimit > 0;
   const now = useNow(limited);
-  const left = packsLeft(dailyLimit, packsOpenedOn(stamps, localDay(now)));
+  const left = packsLeft(dailyLimit, packsOpenedOn(stamps ?? [], localDay(now)));
   const outOfPacks = limited && left === 0;
 
   const save = () => {
-    if (!pulls) return;
-    for (const p of pulls) owned.current.add(p.card.id);
+    if (!pack || !data) return;
+    const setId = data.set.id;
+    const have = owned.current.get(setId) ?? owned.current.set(setId, new Set()).get(setId)!;
+    for (const p of pack.pulls) have.add(p.card.id);
     const openedAt = new Date();
     setTorn(true);
-    setStamps((s) => [...s, { packId: `pending-${packNo}`, openedAt: openedAt.toISOString() }]);
-    savePack(setId, pulls, openedAt).catch((err) => console.warn("Couldn't save this pack", err));
+    setStamps((s) => [...(s ?? []), { packId: `pending-${dealNo}`, openedAt: openedAt.toISOString() }]);
+    savePack(setId, pack.pulls, openedAt).catch((err) => console.warn("Couldn't save this pack", err));
+    // Draw and start downloading the next pack's set while this one is revealed.
+    const nextSet = draw();
+    if (nextSet) {
+      const up: Draw = { set: nextSet, data: client.getSetCards(nextSet.id) };
+      up.data!.then(() => void (up.ready = true), () => undefined); // errors surface when dealt
+      upcoming.current = up;
+    }
   };
 
   const next = () => {
     setTorn(false);
-    setPackNo((n) => n + 1);
+    const up = upcoming.current ?? drawNext();
+    upcoming.current = undefined;
+    void deal(up);
   };
 
-  const back = () => (location.hash = href.picker());
-
-  if (load.state !== "ready" || !pulls) {
-    const pct = load.state === "loading" && load.total ? Math.round((load.done / load.total) * 100) : 0;
-    return (
-      <div className="opener">
-        <button type="button" className="back" onClick={back}>
-          ← Sets
-        </button>
-        {load.state === "loading" ? (
-          <div className="loading" role="status">
-            <p className="hint">{load.total ? `Loading cards… ${load.done} of ${load.total}` : "Loading set…"}</p>
-            <div className="progress" aria-hidden="true">
-              <div style={{ width: `${pct}%` }} />
-            </div>
-          </div>
-        ) : (
-          <p className="hint">{load.state === "error" ? load.message : ""}</p>
-        )}
-      </div>
-    );
-  }
-
+  const home = () => (location.hash = href.picker());
   const countdown = formatCountdown(nextReset(now).getTime() - now.getTime());
 
   // Out of packs, and not in the middle of revealing one: wait for tomorrow.
-  if (outOfPacks && !torn) {
+  if (stamps && outOfPacks && !torn) {
     return (
       <div className="opener">
-        <button type="button" className="back" onClick={back}>
-          ← Sets
+        <button type="button" className="back" onClick={home}>
+          ← Home
         </button>
         <div className="out-of-packs" role="status">
           <h1>That's today's {dailyLimit === 1 ? "pack" : `${dailyLimit} packs`}</h1>
@@ -136,8 +179,8 @@ export function OpenPage({ setId }: { setId: string }) {
             Next pack in <strong>{countdown}</strong>
           </p>
           <div className="controls">
-            <a className="button" href={href.binder(setId)}>
-              View binder
+            <a className="button" href={href.collection()}>
+              Your collection
             </a>
             <a className="button" href={href.settings()}>
               Change daily limit
@@ -148,16 +191,45 @@ export function OpenPage({ setId }: { setId: string }) {
     );
   }
 
+  if (!pack || !data) {
+    const loading = stage.state === "loading" ? stage : undefined;
+    const pct = loading?.total ? Math.round((loading.done / loading.total) * 100) : 0;
+    return (
+      <div className="opener">
+        <button type="button" className="back" onClick={home}>
+          ← Home
+        </button>
+        {stage.state === "error" ? (
+          <div className="loading">
+            <p className="hint">{stage.message}</p>
+            <div className="controls">
+              <button type="button" onClick={() => void deal(drawNext())}>
+                Try again
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="loading" role="status">
+            <p className="hint">{loading ? (loading.total ? `Loading cards… ${loading.done} of ${loading.total}` : "Finding your pack…") : "Finding your pack…"}</p>
+            <div className="progress" aria-hidden="true">
+              <div style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <PackOpener
-      key={packNo}
-      set={load.data.set}
-      pulls={pulls}
-      newIds={pack!.newIds}
+      key={dealNo}
+      set={data.set}
+      pulls={pack.pulls}
+      newIds={pack.newIds}
       onOpened={save}
       onAgain={next}
-      onBack={back}
-      binderHref={href.binder(setId)}
+      onBack={home}
+      binderHref={href.binder(data.set.id)}
       limitNote={limited ? (left > 0 ? `${left} of ${dailyLimit} ${dailyLimit === 1 ? "pack" : "packs"} left today` : `Next pack in ${countdown}`) : undefined}
       canOpenAgain={!outOfPacks}
     />

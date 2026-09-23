@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { parseBackup, planMerge, toBackup } from "../collection/backup";
 import { localDay, packsOpenedOn } from "../collection/daily";
 import { addPulls, clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
+import { ERAS } from "../engine/randomSet";
 import "../collection/collection.css";
 import { href } from "./router";
 import { updateSettings, useSettings } from "./settings";
@@ -40,6 +41,15 @@ export function SettingsPage() {
   }, []);
 
   const packs = new Set(pulls?.map((p) => p.packId)).size;
+
+  // An empty list means every era, so all boxes show ticked; at least one always stays ticked.
+  const eraOn = (id: string) => !settings.eras.length || settings.eras.includes(id);
+  const toggleEra = (id: string, on: boolean) => {
+    const current = ERAS.map((e) => e.id).filter(eraOn);
+    const next = on ? [...current, id] : current.filter((e) => e !== id);
+    if (!next.length) return;
+    updateSettings({ eras: next.length === ERAS.length ? [] : next });
+  };
   const today = pulls ? packsOpenedOn(pulls, localDay(new Date())) : 0;
 
   const exportCollection = () => {
@@ -114,6 +124,19 @@ export function SettingsPage() {
         <p className="muted">
           {plural(today, "pack")} opened today.
         </p>
+      </section>
+
+      <section>
+        <h2>Sets packs come from</h2>
+        <p className="muted">Every pack is drawn from a random set. Narrow the draw to the eras you like; at least one stays on.</p>
+        <fieldset className="eras">
+          <legend className="sr-only">Eras</legend>
+          {ERAS.map((e) => (
+            <label key={e.id}>
+              <input type="checkbox" checked={eraOn(e.id)} disabled={eraOn(e.id) && ERAS.filter((x) => eraOn(x.id)).length === 1} onChange={(ev) => toggleEra(e.id, ev.target.checked)} /> {e.name}
+            </label>
+          ))}
+        </fieldset>
       </section>
 
       <section>

@@ -123,3 +123,5 @@
 .settings button:disabled { opacity: .5; cursor: default; }
 .settings .ok { color: var(--ink); font-weight: 600; }
 .settings .error { font-weight: 600; }
+.settings .eras { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

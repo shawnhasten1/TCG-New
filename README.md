@@ -6,7 +6,7 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (#/collection, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run dev                          # app at http://localhost:5173 (#/open, #/collection, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
 npm test                             # engine unit tests (offline)
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
 npm run open -- sv03.5 [seed]        # open one pack from a real set
@@ -36,6 +36,7 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
   - **Backup**: export the collection to JSON, and import it by merging (skips packs you already have) or replacing. Bad files get a readable error.
   - **Settings** live at `#/settings`, and preferences are kept in localStorage.
   - **Deployment**: GitHub Pages workflow and Netlify config (see below), a favicon, and a meta description.
+- **Phase 9, random sets: done.** Every pack comes from a randomly drawn set (`src/engine/randomSet.ts`); there's no manual set choice. The home page's "Open a pack" goes to `#/open`, and the set list opens binders. The next set downloads while you reveal, and Settings can limit the draw by era.
 
 ## Deploying
 

@@ -150,8 +150,8 @@ export function BinderPage({ setId }: { setId: string }) {
             )}
           </dl>
         </div>
-        <a className="button primary" href={href.open(setId)}>
-          Open packs
+        <a className="button primary" href={href.open()}>
+          Open a random pack
         </a>
       </header>
 

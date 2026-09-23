@@ -1,4 +1,4 @@
-// Phase 3: browse sets grouped by series, with logos and release dates.
+// Home: open a pack (always from a random set), and browse sets by series to view their binders.
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
@@ -7,6 +7,8 @@ import { href } from "../app/router";
 import { tallyBySet, type SetTally } from "../collection/progress";
 import { getPulls, onCollectionChange } from "../collection/store";
 import { hiddenReason } from "../engine/openable";
+import { useSettings } from "../app/settings";
+import { ERAS, drawableSets } from "../engine/randomSet";
 import "./picker.css";
 
 interface Group {
@@ -61,12 +63,15 @@ export function SetPicker() {
   }, [sets, unopenable, query, showHidden]);
 
   const shown = groups.reduce((n, g) => n + g.sets.length, 0);
+  const { eras } = useSettings();
+  const drawable = sets ? drawableSets(sets, { unopenable, eras }).length : 0;
+  const eraNote = eras.length ? ERAS.filter((e) => eras.includes(e.id)).map((e) => e.name).join(", ") : "every era";
 
   return (
     <main className="picker">
       <header>
         <div className="title-row">
-          <h1>Pick a set</h1>
+          <h1>Pack Opener</h1>
           <nav className="header-links">
             <a className="collection-link" href={href.collection()}>
               Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
@@ -76,11 +81,22 @@ export function SetPicker() {
             </a>
           </nav>
         </div>
-        <p className="lede">Open booster packs from any Pokémon TCG expansion, using the real card list.</p>
+        <p className="lede">Open booster packs from a random Pokémon TCG expansion, using the real card list.</p>
+        <div className="open-hero">
+          <a className="open-button" href={href.open()}>
+            Open a pack
+          </a>
+          <p className="muted">
+            {sets ? `Drawn at random from ${drawable} sets (${eraNote}).` : "Loading sets…"}{" "}
+            <a href={href.settings()}>Change eras</a>
+          </p>
+        </div>
+        <h2 className="browse-title">Browse sets</h2>
+        <p className="muted">Pick a set to see its binder: every card, what you own and what's missing.</p>
         <div className="filters">
           <input type="search" placeholder="Search sets" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
           <label>
-            <input type="checkbox" checked={showHidden} onChange={(e) => setShowHidden(e.target.checked)} /> Show sets that can't be opened
+            <input type="checkbox" checked={showHidden} onChange={(e) => setShowHidden(e.target.checked)} /> Show sets packs never come from
           </label>
         </div>
       </header>
@@ -102,7 +118,7 @@ export function SetPicker() {
                     <SetTileBody set={s} note={s.hidden} />
                   </div>
                 ) : (
-                  <a className="set-tile" href={href.open(s.id)}>
+                  <a className="set-tile" href={href.binder(s.id)}>
                     <SetTileBody set={s} tally={tallies.get(s.id)} />
                   </a>
                 )}

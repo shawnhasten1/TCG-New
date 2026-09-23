@@ -1,12 +1,13 @@
-// Tiny hash router: #/ (set picker), #/open/<setId>, #/collection, #/binder/<setId>,
+// Tiny hash router: #/ (home + set browser), #/open (a pack from a random set), #/collection, #/binder/<setId>,
 // #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open"; setId: string } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" };
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
-  if (page === "open" && id) return { page: "open", setId: id };
+  // Packs always come from a random set; old #/open/<setId> links still land on a random pack.
+  if (page === "open") return { page: "open" };
   if (page === "debug") return { page: "debug", setId: id || undefined };
   if (page === "foil") return { page: "foil" };
   if (page === "collection") return { page: "collection" };
@@ -17,7 +18,7 @@ export function parseRoute(hash: string): Route {
 
 export const href = {
   picker: () => "#/",
-  open: (setId: string) => `#/open/${encodeURIComponent(setId)}`,
+  open: () => "#/open",
   debug: (setId: string) => `#/debug/${encodeURIComponent(setId)}`,
   foil: () => "#/foil",
   collection: () => "#/collection",
@@ -25,10 +26,16 @@ export const href = {
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
 };
 
+/** Old #/open/<setId> links: tidy the address, since the set is always random. */
+function tidyOpenLink() {
+  if (location.hash.startsWith("#/open/")) history.replaceState(null, "", "#/open");
+}
+
 export function useRoute(): Route {
-  const [route, setRoute] = useState(() => parseRoute(location.hash));
+  const [route, setRoute] = useState(() => (tidyOpenLink(), parseRoute(location.hash)));
   useEffect(() => {
     const onHash = () => {
+      tidyOpenLink();
       setRoute(parseRoute(location.hash));
       window.scrollTo(0, 0);
     };

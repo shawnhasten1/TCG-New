@@ -9,9 +9,11 @@ export interface Settings {
   volume: number;
   /** Packs per day; 0 means unlimited. */
   dailyLimit: number;
+  /** Eras packs are drawn from (pack profile ids); empty means every era. */
+  eras: string[];
 }
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 0 };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 0, eras: [] };
 const KEY = "tcg-pack-opener:settings";
 const events = new EventTarget();
 

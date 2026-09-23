@@ -229,7 +229,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
   const tier = current ? pullTier(current) : 0;
   const isLast = idx === pulls.length - 1;
   let hint = "";
-  if (phase === "sealed") hint = "Drag across the top of the pack to tear it open.";
+  if (phase === "sealed") hint = `${set.name}. Drag across the top of the pack to tear it open.`;
   else if (phase === "opening" && waitingForImages) hint = "Loading cards…";
   else if (phase === "reveal") {
     const lead = `Card ${idx + 1} of ${pulls.length}.`;
@@ -247,7 +247,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
   return (
     <div className="opener">
       <button type="button" className="back" onClick={onBack}>
-        ← Sets
+        ← Home
       </button>
       <SoundToggle />
 

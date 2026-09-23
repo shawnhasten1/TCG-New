@@ -11,7 +11,7 @@ export function App() {
   const route = useRoute();
   switch (route.page) {
     case "open":
-      return <OpenPage key={route.setId} setId={route.setId} />;
+      return <OpenPage />;
     case "settings":
       return <SettingsPage />;
     case "collection":

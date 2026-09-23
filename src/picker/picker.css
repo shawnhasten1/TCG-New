@@ -49,3 +49,16 @@
   font-size: .8rem; font-weight: 700; background: var(--btn-on); color: var(--btn-on-ink);
 }
 .picker .header-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.picker .open-hero { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin: 8px 0 12px; }
+.picker .open-button {
+  font: italic 800 1.4rem/1 "Alegreya", Georgia, serif; text-decoration: none;
+  padding: 18px 30px; border-radius: 999px; background: var(--btn-on); color: var(--btn-on-ink);
+  box-shadow: 0 10px 24px -12px #000a; transition: transform .15s;
+}
+.picker .open-button:hover { transform: translateY(-2px); }
+.picker .open-button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.picker .open-hero p { margin: 0; }
+.picker .open-hero a:not(.open-button) { color: var(--focus); }
+.picker .browse-title { margin-top: 32px; }
+.picker > header > .muted { margin: 0 0 14px; }
+@media (prefers-reduced-motion: reduce) { .picker .open-button { transition: none; } .picker .open-button:hover { transform: none; } }
