@@ -1,21 +1,20 @@
 // Phase 1/2 debug page: a set's rarity buckets, a REST-filter check, and test pack opens.
 
 import { useEffect, useMemo, useState } from "react";
-import { idbCache } from "../api/cache";
-import { cardImage, createClient, probeRestFilter } from "../api/tcgdex";
+import { cardImage, probeRestFilter } from "../api/tcgdex";
 import type { SetBrief, SetData } from "../api/types";
+import { client } from "../app/client";
+import { href } from "../app/router";
 import { preparePack, openPack } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { createRng } from "../engine/rng";
 import type { PulledCard } from "../engine/types";
 
-const client = createClient(idbCache());
-
 type Probe = Awaited<ReturnType<typeof probeRestFilter>>;
 
-export function DebugPage() {
+export function DebugPage({ initialSetId }: { initialSetId?: string }) {
   const [sets, setSets] = useState<SetBrief[]>([]);
-  const [setId, setSetId] = useState(() => new URLSearchParams(location.search).get("set") ?? "sv03.5");
+  const [setId, setSetId] = useState(initialSetId ?? "sv03.5");
   const [data, setData] = useState<SetData>();
   const [progress, setProgress] = useState<[number, number]>();
   const [error, setError] = useState<string>();
@@ -34,7 +33,7 @@ export function DebugPage() {
     setPack(undefined);
     setError(undefined);
     setProgress(undefined);
-    history.replaceState(null, "", `?set=${encodeURIComponent(setId)}`);
+    history.replaceState(null, "", href.debug(setId));
     client
       .getSetCards(setId, (done, total) => live && setProgress([done, total]))
       .then((d) => live && setData(d), (e) => live && setError(String(e)));
@@ -60,6 +59,7 @@ export function DebugPage() {
     <main className="debug">
       <header>
         <h1>Data layer debug</h1>
+        <a href={href.picker()}>← Sets</a>
         <label>
           Set{" "}
           <select value={setId} onChange={(e) => setSetId(e.target.value)}>

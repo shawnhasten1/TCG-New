@@ -17,6 +17,17 @@ export interface SetBrief {
   cardCount: { total: number; official: number };
 }
 
+/** A set as listed in the picker (from one GraphQL query). */
+export interface SetSummary {
+  id: string;
+  name: string;
+  logo?: string | null;
+  symbol?: string | null;
+  releaseDate: string;
+  serie: { id: string; name: string };
+  cardCount: { total: number; official: number };
+}
+
 export interface CardBrief {
   id: string;
   localId: string;

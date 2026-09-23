@@ -22,6 +22,10 @@ export interface PreparedPack {
   unusedRarities: string[];
   /** Slots whose table matched nothing in this set. Non-empty means the set can't be opened. */
   emptySlots: string[];
+  /** Cards per pack, from the profile. */
+  packSize: number;
+  /** Cards with an image, i.e. the ones that can be pulled. */
+  imagedCards: number;
 }
 
 const hasImage = (c: Card) => !!c.image;
@@ -67,13 +71,22 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
   const unusedRarities = [...new Set(cards.map((c) => c.rarity))].filter((r) => !reachable.has(r));
   const emptySlots = slots.filter((s) => s.slot.count > 0 && !Object.keys(s.table).length).map((s) => s.slot.label);
 
-  const result = { profile, slots, pools, variantDataMissing, unusedRarities, emptySlots };
+  const packSize = profile.slots.reduce((n, s) => n + s.count, 0);
+  const result = { profile, slots, pools, variantDataMissing, unusedRarities, emptySlots, packSize, imagedCards: cards.length };
   byProfile.set(profile, result);
   return result;
 }
 
+/** Why a set can't be opened with a profile, or undefined if it can. */
+export function whyNotOpenable(data: SetData, profile: PackProfile): string | undefined {
+  const prep = preparePack(data, profile);
+  if (prep.imagedCards < prep.packSize) return `Only ${prep.imagedCards} cards have images, not enough to fill a pack`;
+  if (prep.emptySlots.length) return `No cards for the ${prep.emptySlots.join(", ")} slot`;
+  return undefined;
+}
+
 export function canOpen(data: SetData, profile: PackProfile): boolean {
-  return preparePack(data, profile).emptySlots.length === 0;
+  return whyNotOpenable(data, profile) === undefined;
 }
 
 function rollFinish(card: Card, slot: SlotProfile, outcome: string, rng: Rng, variantDataMissing: boolean): Finish {

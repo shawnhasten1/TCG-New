@@ -18,6 +18,7 @@ import type {
   SetBrief,
   SetData,
   SetDetail,
+  SetSummary,
 } from "./types";
 
 const REST = "https://api.tcgdex.net/v2/en";
@@ -29,6 +30,8 @@ export type Progress = (done: number, total: number) => void;
 
 export interface TcgdexClient {
   listSets(): Promise<SetBrief[]>;
+  /** Every set with serie and release date, in one GraphQL request. Cached per day. */
+  listSetSummaries(): Promise<SetSummary[]>;
   getSerie(id: string): Promise<SerieDetail>;
   getSet(id: string): Promise<SetDetail>;
   getSetCards(id: string, onProgress?: Progress): Promise<SetData>;
@@ -77,18 +80,22 @@ interface GqlCard extends Card {
   set: { id: string };
 }
 
+async function graphql<T>(query: string): Promise<T> {
+  const res = await getJson<{ data?: T; errors?: unknown[] }>(GRAPHQL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+  if (!res.data) throw new Error("GraphQL error: " + JSON.stringify(res.errors).slice(0, 300));
+  return res.data;
+}
+
 async function fetchCardsGraphql(setId: string, onProgress?: Progress, expected = 0): Promise<Card[]> {
   const cards: Card[] = [];
   for (let page = 1; ; page++) {
     const query = `{ cards(filters:{ id: ${JSON.stringify(setId + "-")} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
       id localId name image rarity set { id } variants { normal reverse holo firstEdition } } }`;
-    const res = await getJson<{ data?: { cards: (GqlCard | null)[] }; errors?: unknown[] }>(GRAPHQL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
-    });
-    const pageCards = res.data?.cards ?? [];
-    if (!res.data && res.errors) throw new Error("GraphQL error: " + JSON.stringify(res.errors).slice(0, 300));
+    const pageCards = (await graphql<{ cards: (GqlCard | null)[] }>(query)).cards ?? [];
     for (const c of pageCards) {
       if (c && c.set?.id === setId) {
         const { set: _set, ...card } = c;
@@ -138,6 +145,14 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
 
   const client: TcgdexClient = {
     listSets: () => cached("sets", () => getJson<SetBrief[]>(`${REST}/sets`)),
+
+    listSetSummaries: () =>
+      cached(`set-summaries:${new Date().toISOString().slice(0, 10)}`, async () => {
+        const { sets } = await graphql<{ sets: SetSummary[] }>(
+          "{ sets { id name logo symbol releaseDate serie { id name } cardCount { total official } } }",
+        );
+        return sets.filter(Boolean);
+      }),
 
     getSerie: (id) => cached(`serie:${id}`, () => getJson<SerieDetail>(`${REST}/series/${encodeURIComponent(id)}`)),
 

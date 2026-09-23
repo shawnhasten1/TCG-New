@@ -1,0 +1,39 @@
+.picker {
+  max-width: 1120px; margin: 0 auto; padding: 32px 16px 48px;
+  color: var(--ink); font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+}
+.picker h1 { font: italic 800 clamp(2rem, 6vw, 3rem)/1 "Alegreya", Georgia, serif; margin: 0 0 8px; }
+.picker .lede { margin: 0 0 20px; color: var(--muted); font-size: 1.1rem; }
+.picker .filters { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.picker input[type="search"] {
+  font: inherit; font-size: 1rem; width: min(360px, 100%);
+  padding: 10px 16px; border-radius: 999px; color: var(--ink); background: var(--btn);
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.picker label { color: var(--muted); display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.picker input:focus-visible, .picker a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.picker h2 {
+  font: 800 1.35rem/1.2 "Alegreya", Georgia, serif; margin: 36px 0 12px;
+  display: flex; align-items: baseline; gap: 10px;
+}
+.picker h2 span { font: 500 .95rem "Alegreya Sans", sans-serif; color: var(--muted); }
+.picker .sets { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); }
+.picker .set-tile {
+  display: flex; flex-direction: column; gap: 10px; height: 100%;
+  padding: 14px; border-radius: 14px; text-decoration: none; color: inherit;
+  background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.picker a.set-tile:hover { transform: translateY(-2px); border-color: var(--focus); box-shadow: 0 10px 24px -14px #0008; }
+.picker .set-tile.hidden { opacity: .55; cursor: default; }
+.picker .logo { height: 72px; display: grid; place-items: center; }
+.picker .logo img { max-width: 100%; max-height: 72px; object-fit: contain; filter: drop-shadow(0 2px 4px #0003); }
+.picker .logo-text { font: italic 800 1.3rem/1.1 "Alegreya", Georgia, serif; text-align: center; }
+.picker .meta { display: flex; flex-direction: column; gap: 2px; }
+.picker .meta span { color: var(--muted); font-size: .92rem; }
+.picker .meta em { color: var(--muted); font-size: .85rem; }
+.picker .error { color: #c0392b; }
+.picker .muted { color: var(--muted); }
+.picker footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
+.picker footer a { color: inherit; }
+@media (prefers-reduced-motion: reduce) { .picker .set-tile { transition: none; } .picker a.set-tile:hover { transform: none; } }
