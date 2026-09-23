@@ -36,6 +36,8 @@ export class Tilt {
   private raf = 0;
   /** Idle sway: runs from `from` to `until` (ms, performance.now) unless the pointer takes over. */
   private sway: { from: number; until: number } | null = null;
+  /** Phone motion (lean) waits until then (ms, performance.now), so a pointer or finger stays in charge while it's moving. */
+  private heldUntil = 0;
 
   constructor(private reduced: boolean) {}
 
@@ -96,7 +98,19 @@ export class Tilt {
     const ny = Math.min(Math.max((y - r.top) / r.height, 0), 1);
     this.sway = null;
     this.spring = FOLLOW;
+    this.heldUntil = performance.now() + 1200;
     this.point(nx, ny, 1);
+  }
+
+  /** Aims from phone tilt: 0–1 across and down the element, 0.5 being level. Ignored while a pointer has the card. */
+  lean(nx: number, ny: number) {
+    if (!this.el || performance.now() < this.heldUntil) return;
+    const clamp = (v: number) => Math.min(Math.max(v, 0), 1);
+    const [x, y] = [clamp(nx), clamp(ny)];
+    this.sway = null;
+    this.spring = FOLLOW;
+    // The glare brightens as the phone tips further, rather than sitting at full strength when level.
+    this.point(x, y, 0.4 + 0.6 * Math.min(1, Math.hypot(x - 0.5, y - 0.5) * 2));
   }
 
   /** Sways the active element in a slow circle, as if someone were turning it in the light.

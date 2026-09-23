@@ -11,9 +11,11 @@ export interface Settings {
   dailyLimit: number;
   /** Eras packs are drawn from (pack profile ids); empty means every era. */
   eras: string[];
+  /** Tilt cards by tilting the phone. */
+  motion: boolean;
 }
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [] };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true };
 const KEY = "tcg-pack-opener:settings";
 /** Bumped when a default changes in a way stored settings should pick up. */
 const VERSION = 2;

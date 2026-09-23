@@ -112,6 +112,14 @@ export function SettingsPage() {
       </section>
 
       <section>
+        <h2>Motion</h2>
+        <label className="row">
+          <input type="checkbox" checked={settings.motion} onChange={(e) => updateSettings({ motion: e.target.checked })} /> Tilt cards by tilting your phone
+        </label>
+        <p className="muted">On iPhone, Safari asks for motion access the first time you tap a card or pack.</p>
+      </section>
+
+      <section>
         <h2>Pack of the day</h2>
         <p className="muted">How many packs you can open at once, across all sets. Once they run out, a pack recharges every {RECHARGE_MS / 60_000} minutes, up to the limit. Everything refills at midnight.</p>
         <div role="radiogroup" aria-label="Daily pack limit" className="segmented">

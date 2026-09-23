@@ -11,6 +11,8 @@ import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
 import { FoilCard } from "../foil/FoilCard";
 import { layoutFor } from "../foil/layouts";
+import { useSettings } from "../app/settings";
+import { followMotion, recenterMotion } from "./motion";
 import { OpenerNav } from "./OpenerNav";
 import { Tilt } from "./tilt";
 import "./opener.css";
@@ -46,6 +48,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
   const layout = layoutFor(set.serie.id);
+  const { motion } = useSettings();
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLParagraphElement>(null);
@@ -80,6 +83,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
     tilt.start();
     return () => tilt.stop();
   }, [tilt]);
+
+  useEffect(() => (motion ? followMotion(tilt) : undefined), [tilt, motion]);
 
   const setTear = (p: number) => {
     tear.current.progress = Math.min(Math.max(p, 0), 1);
@@ -124,6 +129,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
     if (phase !== "reveal") return;
     const card = cardRefs.current[idx];
     tilt.setActive(card, 16);
+    recenterMotion();
     if (focusOnReveal.current) card?.focus({ preventScroll: true });
     const burst = burstRef.current!;
     const tier = pullTier(pulls[idx]);

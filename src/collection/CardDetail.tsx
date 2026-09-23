@@ -8,6 +8,8 @@ import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
 import type { FrameLayout } from "../foil/layouts";
 import { href } from "../app/router";
+import { useSettings } from "../app/settings";
+import { followMotion, recenterMotion } from "../opener/motion";
 import { Tilt } from "../opener/tilt";
 import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
@@ -49,6 +51,8 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
   const press = useRef<{ x: number; y: number; moved: boolean } | null>(null);
   const sheetPull = useRef<{ y: number; dy: number } | null>(null);
   const coarse = useMemo(() => matchMedia("(pointer: coarse)").matches, []);
+  const { motion } = useSettings();
+  useEffect(() => (motion ? followMotion(tilt) : undefined), [tilt, motion]);
 
   useEffect(() => {
     const d = dialogRef.current!;
@@ -77,6 +81,7 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
     }
     fit();
     setSpun(true);
+    recenterMotion();
     tilt.showcase(Infinity, reduced ? 0 : 1100);
     const onResize = () => fit();
     addEventListener("resize", onResize);
