@@ -86,7 +86,35 @@
 }
 .card-detail::backdrop { background: #0009; }
 .card-detail .detail-body { display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; }
-.card-detail .detail-card { width: min(320px, 100%); aspect-ratio: 600 / 825; perspective: 900px; margin-inline: auto; }
+.card-detail .detail-card { width: min(320px, 100%); aspect-ratio: 600 / 825; margin-inline: auto; }
+
+/* Showcase: .showcase flies to the middle and grows, .spin turns once to show the back, .tcg-card tilts. */
+.card-detail { transition: background-color .35s, box-shadow .35s; }
+.card-detail::backdrop { transition: background-color .35s; }
+.card-detail.zoomed { overflow: visible; background-color: transparent; box-shadow: none; }
+.card-detail.zoomed::backdrop { background: #000d; }
+.card-detail .detail-info { transition: opacity .3s; }
+.card-detail.zoomed .detail-info { opacity: 0; pointer-events: none; }
+.card-detail .showcase {
+  position: relative; z-index: 1; width: 100%; height: 100%;
+  perspective: 900px; cursor: zoom-in; border-radius: 4.5% / 3.3%;
+  transform: translate(var(--zx, 0px), var(--zy, 0px)) scale(var(--zs, 1));
+  transition: transform .8s cubic-bezier(.3, 1.35, .5, 1);
+}
+.card-detail.zoomed .showcase { cursor: zoom-out; }
+.card-detail .showcase:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.card-detail .spin {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1.3s cubic-bezier(.5, .05, .3, 1);
+}
+.card-detail .spin.spun { transform: rotateY(360deg); }
+.card-detail .spin .tcg-card { backface-visibility: hidden; }
+.card-detail .spin .tcg-back { position: absolute; inset: 0; transform: rotateY(180deg); backface-visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .card-detail .showcase { transition-duration: .01s; }
+  .card-detail .spin { transition: none; }
+}
 .card-detail .tcg-card.unowned { filter: grayscale(.85); opacity: .6; }
 .card-detail .detail-info { flex: 1; min-width: min(280px, 100%); display: flex; flex-direction: column; }
 .card-detail h2 { font: 800 1.6rem/1.1 "Alegreya", Georgia, serif; margin: 0 0 4px; }

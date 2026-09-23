@@ -126,6 +126,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
     if (focusOnReveal.current) card?.focus({ preventScroll: true });
     const burst = burstRef.current!;
     const tier = pullTier(pulls[idx]);
+    // Big pulls turn themselves in the light for a moment, until the pointer takes over.
+    if (tier >= 2) tilt.showcase(3200, 450);
     if (idx > 0) sfx.flip();
     const chime = tier > 0 ? setTimeout(() => sfx.hit(tier), 120) : undefined;
     burst.classList.remove("go");

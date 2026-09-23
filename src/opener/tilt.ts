@@ -21,6 +21,8 @@ interface Spring {
 const FOLLOW: Spring = { stiffness: 0.066, damping: 0.25 };
 /** Loose and wobbly when it settles back. */
 const SETTLE: Spring = { stiffness: 0.012, damping: 0.07 };
+/** Smooth and lazy, for the idle sway. */
+const SWAY: Spring = { stiffness: 0.02, damping: 0.5 };
 /** Critically damped, for reduced motion: no overshoot. */
 const CALM: Spring = { stiffness: 0.06, damping: 2 * Math.sqrt(0.06) };
 
@@ -32,6 +34,8 @@ export class Tilt {
   private el: HTMLElement | null = null;
   private maxTilt = 8;
   private raf = 0;
+  /** Idle sway: runs from `from` to `until` (ms, performance.now) unless the pointer takes over. */
+  private sway: { from: number; until: number } | null = null;
 
   constructor(private reduced: boolean) {}
 
@@ -41,6 +45,14 @@ export class Tilt {
       // Frame-rate independent, in 60fps frames; capped so a background tab doesn't explode it.
       const dt = Math.min((now - last) / (1000 / 60), 3);
       last = now;
+      if (this.sway && now >= this.sway.from) {
+        if (now > this.sway.until) this.rest();
+        else {
+          const r = ((now - this.sway.from) / 1000) * 1.4;
+          this.point(0.5 + Math.sin(r) * 0.42, 0.5 + Math.cos(r) * 0.42, 0.9);
+          this.spring = SWAY;
+        }
+      }
       const { cur, vel, target, el } = this;
       const { stiffness, damping } = this.reduced ? CALM : this.spring;
       for (const k of KEYS) {
@@ -82,9 +94,22 @@ export class Tilt {
     const r = this.el.getBoundingClientRect();
     const nx = Math.min(Math.max((x - r.left) / r.width, 0), 1);
     const ny = Math.min(Math.max((y - r.top) / r.height, 0), 1);
-    const m = this.reduced ? this.maxTilt * 0.4 : this.maxTilt;
+    this.sway = null;
     this.spring = FOLLOW;
-    Object.assign(this.target, { px: nx * 100, py: ny * 100, ry: (nx - 0.5) * 2 * m, rx: (0.5 - ny) * 2 * m, o: 1 });
+    this.point(nx, ny, 1);
+  }
+
+  /** Sways the active element in a slow circle, as if someone were turning it in the light.
+   *  Stops at the first aim() or rest(). Does nothing with reduced motion. */
+  showcase(ms = Infinity, delay = 0) {
+    if (this.reduced || !this.el) return;
+    const from = performance.now() + delay;
+    this.sway = { from, until: from + ms };
+  }
+
+  private point(nx: number, ny: number, o: number) {
+    const m = this.reduced ? this.maxTilt * 0.4 : this.maxTilt;
+    Object.assign(this.target, { px: nx * 100, py: ny * 100, ry: (nx - 0.5) * 2 * m, rx: (0.5 - ny) * 2 * m, o });
   }
 
   /** Moves the aim point by a percentage of the element, for arrow keys. */
@@ -97,6 +122,7 @@ export class Tilt {
   }
 
   rest() {
+    this.sway = null;
     this.spring = SETTLE;
     Object.assign(this.target, REST);
   }

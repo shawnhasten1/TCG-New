@@ -1,6 +1,6 @@
 // A card up close: tiltable foil in each owned finish, copies, first pull, and market prices.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { CardPricing } from "../api/tcgdex";
 import type { Card } from "../api/types";
 import { client } from "../app/client";
@@ -41,6 +41,10 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
   const finishes = owned ? ownedFinishes : printings(card);
   const [finish, setFinish] = useState<Finish>(finishes[0]);
   const [pricing, setPricing] = useState<CardPricing | null | "loading" | "error">("loading");
+  const slotRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState<{ x: number; y: number; s: number } | null>(null);
+  const [spun, setSpun] = useState(false);
+  const idle = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const d = dialogRef.current!;
@@ -51,6 +55,42 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
     // re-run. Unmounting removes the element, which closes it anyway.
     return () => tilt.stop();
   }, [tilt]);
+
+  /* ---------- Showcase: the card flies to the middle of the screen, grows, spins once, and sways ---------- */
+  const fit = () => {
+    // Measured after the dialog drops its scrolling (.zoomed), so the offset is from where the slot now sits.
+    const r = slotRef.current!.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    const s = Math.max(1, Math.min((vw * 0.9) / r.width, (vh * 0.9) / r.height, 2.2));
+    setZoom({ x: vw / 2 - (r.left + r.width / 2), y: vh / 2 - (r.top + r.height / 2), s });
+  };
+  const [zoomed, setZoomed] = useState(false);
+  useLayoutEffect(() => {
+    if (!zoomed) {
+      setZoom(null);
+      return;
+    }
+    fit();
+    setSpun(true);
+    tilt.showcase(Infinity, reduced ? 0 : 1100);
+    const onResize = () => fit();
+    addEventListener("resize", onResize);
+    return () => {
+      removeEventListener("resize", onResize);
+      clearTimeout(idle.current);
+      tilt.rest();
+    };
+  }, [zoomed, tilt, reduced]);
+
+  /** Tilts toward the pointer; while zoomed, anywhere on screen counts, and the sway resumes when it goes still. */
+  const onPointerMove = (e: PointerEvent) => {
+    if (!zoomed && !slotRef.current?.contains(e.target as Node)) return;
+    tilt.aim(e.clientX, e.clientY);
+    if (!zoomed) return;
+    clearTimeout(idle.current);
+    idle.current = setTimeout(() => tilt.showcase(), 2500);
+  };
 
   useEffect(() => {
     let live = true;
@@ -68,14 +108,45 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
   return (
     <dialog
       ref={dialogRef}
-      className="card-detail"
       aria-label={card.name}
+      className={`card-detail${zoomed ? " zoomed" : ""}`}
       onClose={onClose}
-      onClick={(e) => e.target === dialogRef.current && dialogRef.current.close()}
+      onCancel={(e) => {
+        // Escape backs out of the showcase before it closes the dialog.
+        if (!zoomed) return;
+        e.preventDefault();
+        setZoomed(false);
+      }}
+      onClick={(e) => {
+        if (zoomed) setZoomed(false);
+        else if (e.target === dialogRef.current) dialogRef.current.close();
+      }}
+      onPointerMove={onPointerMove}
     >
       <div className="detail-body">
-        <div className="detail-card" onPointerMove={(e) => tilt.aim(e.clientX, e.clientY)} onPointerLeave={() => tilt.rest()}>
-          <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} finish={finish} layout={layout} className={owned ? "" : "unowned"} />
+        <div className="detail-card" ref={slotRef} onPointerLeave={() => !zoomed && tilt.rest()}>
+          <div
+            className="showcase"
+            role="button"
+            tabIndex={0}
+            aria-pressed={zoomed}
+            aria-label={zoomed ? "Put the card back" : "Show the card up close"}
+            style={zoom ? ({ "--zx": `${zoom.x}px`, "--zy": `${zoom.y}px`, "--zs": zoom.s } as CSSProperties) : undefined}
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoomed(!zoomed);
+            }}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" && e.key !== " ") return;
+              e.preventDefault();
+              setZoomed(!zoomed);
+            }}
+          >
+            <div className={`spin${spun ? " spun" : ""}`}>
+              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} finish={finish} layout={layout} className={owned ? "" : "unowned"} />
+              <div className="tcg-back" aria-hidden="true" />
+            </div>
+          </div>
         </div>
         <div className="detail-info">
           <h2>{card.name}</h2>
