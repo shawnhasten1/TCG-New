@@ -1,0 +1,873 @@
+{
+ "generated": "2026-09-23",
+ "sets": {
+  "ecard3": {
+   "tier": "legendary",
+   "score": 1,
+   "usd": 37.27,
+   "eur": 7,
+   "sampled": 15
+  },
+  "ecard2": {
+   "tier": "legendary",
+   "score": 0.992,
+   "usd": 8.99,
+   "eur": 2.74,
+   "sampled": 15
+  },
+  "ecard1": {
+   "tier": "legendary",
+   "score": 0.984,
+   "usd": 4.09,
+   "eur": 1.81,
+   "sampled": 15
+  },
+  "ex7": {
+   "tier": "legendary",
+   "score": 0.971,
+   "usd": 3.19,
+   "eur": 1.36,
+   "sampled": 15
+  },
+  "neo4": {
+   "tier": "legendary",
+   "score": 0.955,
+   "usd": 1.84,
+   "eur": 1.21,
+   "sampled": 15
+  },
+  "ex6": {
+   "tier": "legendary",
+   "score": 0.942,
+   "usd": 1.91,
+   "eur": 0.77,
+   "sampled": 15
+  },
+  "gym2": {
+   "tier": "rare",
+   "score": 0.927,
+   "usd": 1.33,
+   "eur": null,
+   "sampled": 15
+  },
+  "gym1": {
+   "tier": "rare",
+   "score": 0.919,
+   "usd": 1.29,
+   "eur": null,
+   "sampled": 15
+  },
+  "ex4": {
+   "tier": "rare",
+   "score": 0.906,
+   "usd": 1.05,
+   "eur": 1.13,
+   "sampled": 15
+  },
+  "lc": {
+   "tier": "rare",
+   "score": 0.902,
+   "usd": 1.07,
+   "eur": 0.94,
+   "sampled": 15
+  },
+  "base5": {
+   "tier": "rare",
+   "score": 0.894,
+   "usd": 0.9,
+   "eur": 1.12,
+   "sampled": 15
+  },
+  "ex11": {
+   "tier": "rare",
+   "score": 0.893,
+   "usd": 1.43,
+   "eur": 0.58,
+   "sampled": 15
+  },
+  "ex8": {
+   "tier": "rare",
+   "score": 0.889,
+   "usd": 1.49,
+   "eur": 0.5,
+   "sampled": 15
+  },
+  "base1": {
+   "tier": "rare",
+   "score": 0.882,
+   "usd": 0.82,
+   "eur": 1.23,
+   "sampled": 15
+  },
+  "ex3": {
+   "tier": "rare",
+   "score": 0.881,
+   "usd": 1.17,
+   "eur": 0.64,
+   "sampled": 15
+  },
+  "neo1": {
+   "tier": "rare",
+   "score": 0.869,
+   "usd": 0.89,
+   "eur": 0.7,
+   "sampled": 15
+  },
+  "bw11": {
+   "tier": "rare",
+   "score": 0.858,
+   "usd": 0.61,
+   "eur": 1.79,
+   "sampled": 15
+  },
+  "neo2": {
+   "tier": "rare",
+   "score": 0.857,
+   "usd": 0.82,
+   "eur": 0.72,
+   "sampled": 15
+  },
+  "neo3": {
+   "tier": "rare",
+   "score": 0.857,
+   "usd": 0.88,
+   "eur": 0.68,
+   "sampled": 15
+  },
+  "ex10": {
+   "tier": "rare",
+   "score": 0.852,
+   "usd": 0.91,
+   "eur": 0.53,
+   "sampled": 15
+  },
+  "ex2": {
+   "tier": "rare",
+   "score": 0.852,
+   "usd": 1.22,
+   "eur": 0.46,
+   "sampled": 15
+  },
+  "ex12": {
+   "tier": "rare",
+   "score": 0.84,
+   "usd": 1.22,
+   "eur": 0.41,
+   "sampled": 15
+  },
+  "ex1": {
+   "tier": "rare",
+   "score": 0.832,
+   "usd": 1.1,
+   "eur": 0.42,
+   "sampled": 15
+  },
+  "base4": {
+   "tier": "rare",
+   "score": 0.828,
+   "usd": 0.79,
+   "eur": 0.64,
+   "sampled": 15
+  },
+  "ex15": {
+   "tier": "rare",
+   "score": 0.824,
+   "usd": 0.82,
+   "eur": 0.48,
+   "sampled": 15
+  },
+  "base2": {
+   "tier": "uncommon",
+   "score": 0.816,
+   "usd": 0.57,
+   "eur": 0.77,
+   "sampled": 15
+  },
+  "ex14": {
+   "tier": "uncommon",
+   "score": 0.807,
+   "usd": 0.86,
+   "eur": 0.42,
+   "sampled": 15
+  },
+  "ex9": {
+   "tier": "uncommon",
+   "score": 0.799,
+   "usd": 0.78,
+   "eur": 0.47,
+   "sampled": 15
+  },
+  "base3": {
+   "tier": "uncommon",
+   "score": 0.796,
+   "usd": 0.51,
+   "eur": 0.7,
+   "sampled": 15
+  },
+  "ex16": {
+   "tier": "uncommon",
+   "score": 0.771,
+   "usd": 0.65,
+   "eur": 0.44,
+   "sampled": 15
+  },
+  "hgss1": {
+   "tier": "uncommon",
+   "score": 0.769,
+   "usd": 1.79,
+   "eur": 0.19,
+   "sampled": 15
+  },
+  "col1": {
+   "tier": "uncommon",
+   "score": 0.746,
+   "usd": 0.47,
+   "eur": 0.47,
+   "sampled": 15
+  },
+  "pl3": {
+   "tier": "uncommon",
+   "score": 0.746,
+   "usd": 0.75,
+   "eur": 0.26,
+   "sampled": 15
+  },
+  "pl2": {
+   "tier": "uncommon",
+   "score": 0.737,
+   "usd": 0.71,
+   "eur": 0.26,
+   "sampled": 15
+  },
+  "bw5": {
+   "tier": "uncommon",
+   "score": 0.726,
+   "usd": 0.5,
+   "eur": 0.31,
+   "sampled": 15
+  },
+  "dp3": {
+   "tier": "uncommon",
+   "score": 0.725,
+   "usd": 0.52,
+   "eur": 0.27,
+   "sampled": 15
+  },
+  "pl1": {
+   "tier": "uncommon",
+   "score": 0.717,
+   "usd": 0.66,
+   "eur": 0.24,
+   "sampled": 15
+  },
+  "ex5": {
+   "tier": "uncommon",
+   "score": 0.705,
+   "usd": 0.47,
+   "eur": 0.31,
+   "sampled": 15
+  },
+  "dp6": {
+   "tier": "uncommon",
+   "score": 0.701,
+   "usd": 0.6,
+   "eur": 0.24,
+   "sampled": 15
+  },
+  "dp2": {
+   "tier": "uncommon",
+   "score": 0.7,
+   "usd": 0.78,
+   "eur": 0.21,
+   "sampled": 15
+  },
+  "ex13": {
+   "tier": "uncommon",
+   "score": 0.689,
+   "usd": 0.4,
+   "eur": 0.39,
+   "sampled": 15
+  },
+  "bw7": {
+   "tier": "uncommon",
+   "score": 0.664,
+   "usd": 0.43,
+   "eur": 0.25,
+   "sampled": 15
+  },
+  "pl4": {
+   "tier": "uncommon",
+   "score": 0.664,
+   "usd": 0.44,
+   "eur": 0.25,
+   "sampled": 15
+  },
+  "dp7": {
+   "tier": "uncommon",
+   "score": 0.66,
+   "usd": 0.49,
+   "eur": 0.22,
+   "sampled": 15
+  },
+  "dp4": {
+   "tier": "uncommon",
+   "score": 0.656,
+   "usd": 0.45,
+   "eur": 0.24,
+   "sampled": 15
+  },
+  "hgss2": {
+   "tier": "uncommon",
+   "score": 0.652,
+   "usd": 0.45,
+   "eur": 0.23,
+   "sampled": 15
+  },
+  "g1": {
+   "tier": "uncommon",
+   "score": 0.64,
+   "usd": 0.31,
+   "eur": 0.26,
+   "sampled": 15
+  },
+  "hgss3": {
+   "tier": "uncommon",
+   "score": 0.627,
+   "usd": 0.42,
+   "eur": 0.21,
+   "sampled": 15
+  },
+  "dp5": {
+   "tier": "uncommon",
+   "score": 0.618,
+   "usd": 0.5,
+   "eur": 0.17,
+   "sampled": 15
+  },
+  "sm7.5": {
+   "tier": "uncommon",
+   "score": 0.611,
+   "usd": 0.29,
+   "eur": 0.25,
+   "sampled": 15
+  },
+  "bw6": {
+   "tier": "uncommon",
+   "score": 0.611,
+   "usd": 0.33,
+   "eur": 0.23,
+   "sampled": 15
+  },
+  "hgss4": {
+   "tier": "uncommon",
+   "score": 0.598,
+   "usd": 0.35,
+   "eur": 0.21,
+   "sampled": 15
+  },
+  "dp1": {
+   "tier": "uncommon",
+   "score": 0.594,
+   "usd": 0.38,
+   "eur": 0.19,
+   "sampled": 15
+  },
+  "bw3": {
+   "tier": "uncommon",
+   "score": 0.586,
+   "usd": 0.34,
+   "eur": 0.19,
+   "sampled": 15
+  },
+  "bw8": {
+   "tier": "uncommon",
+   "score": 0.578,
+   "usd": 0.35,
+   "eur": 0.17,
+   "sampled": 15
+  },
+  "bw10": {
+   "tier": "uncommon",
+   "score": 0.558,
+   "usd": 0.29,
+   "eur": 0.19,
+   "sampled": 15
+  },
+  "bw4": {
+   "tier": "uncommon",
+   "score": 0.557,
+   "usd": 0.31,
+   "eur": 0.18,
+   "sampled": 15
+  },
+  "bw2": {
+   "tier": "uncommon",
+   "score": 0.549,
+   "usd": 0.35,
+   "eur": 0.16,
+   "sampled": 15
+  },
+  "bw1": {
+   "tier": "uncommon",
+   "score": 0.528,
+   "usd": 0.32,
+   "eur": 0.15,
+   "sampled": 15
+  },
+  "bw9": {
+   "tier": "uncommon",
+   "score": 0.52,
+   "usd": 0.3,
+   "eur": 0.16,
+   "sampled": 15
+  },
+  "sm8": {
+   "tier": "uncommon",
+   "score": 0.512,
+   "usd": 0.3,
+   "eur": 0.13,
+   "sampled": 15
+  },
+  "xy2": {
+   "tier": "uncommon",
+   "score": 0.5,
+   "usd": 0.27,
+   "eur": 0.16,
+   "sampled": 15
+  },
+  "xy1": {
+   "tier": "common",
+   "score": 0.488,
+   "usd": 0.27,
+   "eur": 0.13,
+   "sampled": 15
+  },
+  "xy3": {
+   "tier": "common",
+   "score": 0.468,
+   "usd": 0.24,
+   "eur": 0.16,
+   "sampled": 15
+  },
+  "sm7": {
+   "tier": "common",
+   "score": 0.467,
+   "usd": 0.26,
+   "eur": 0.12,
+   "sampled": 15
+  },
+  "xy5": {
+   "tier": "common",
+   "score": 0.467,
+   "usd": 0.27,
+   "eur": 0.12,
+   "sampled": 15
+  },
+  "xy7": {
+   "tier": "common",
+   "score": 0.464,
+   "usd": 0.22,
+   "eur": 0.17,
+   "sampled": 15
+  },
+  "xy10": {
+   "tier": "common",
+   "score": 0.447,
+   "usd": 0.25,
+   "eur": 0.12,
+   "sampled": 15
+  },
+  "sm12": {
+   "tier": "common",
+   "score": 0.447,
+   "usd": 0.26,
+   "eur": 0.1,
+   "sampled": 15
+  },
+  "sm115": {
+   "tier": "common",
+   "score": 0.446,
+   "usd": 0.28,
+   "eur": 0.09,
+   "sampled": 15
+  },
+  "xy4": {
+   "tier": "common",
+   "score": 0.443,
+   "usd": 0.21,
+   "eur": 0.16,
+   "sampled": 15
+  },
+  "xy8": {
+   "tier": "common",
+   "score": 0.439,
+   "usd": 0.24,
+   "eur": 0.12,
+   "sampled": 15
+  },
+  "sm10": {
+   "tier": "common",
+   "score": 0.43,
+   "usd": 0.25,
+   "eur": 0.1,
+   "sampled": 15
+  },
+  "xy6": {
+   "tier": "common",
+   "score": 0.422,
+   "usd": 0.24,
+   "eur": 0.11,
+   "sampled": 15
+  },
+  "sm11": {
+   "tier": "common",
+   "score": 0.418,
+   "usd": 0.25,
+   "eur": 0.09,
+   "sampled": 15
+  },
+  "sm9": {
+   "tier": "common",
+   "score": 0.414,
+   "usd": 0.23,
+   "eur": 0.11,
+   "sampled": 15
+  },
+  "sm6": {
+   "tier": "common",
+   "score": 0.402,
+   "usd": 0.24,
+   "eur": 0.1,
+   "sampled": 15
+  },
+  "sm3.5": {
+   "tier": "common",
+   "score": 0.401,
+   "usd": 0.25,
+   "eur": 0.09,
+   "sampled": 15
+  },
+  "xy9": {
+   "tier": "common",
+   "score": 0.377,
+   "usd": 0.21,
+   "eur": 0.1,
+   "sampled": 15
+  },
+  "sm4": {
+   "tier": "common",
+   "score": 0.356,
+   "usd": 0.22,
+   "eur": 0.07,
+   "sampled": 15
+  },
+  "xy12": {
+   "tier": "common",
+   "score": 0.344,
+   "usd": 0.2,
+   "eur": 0.09,
+   "sampled": 15
+  },
+  "sm3": {
+   "tier": "common",
+   "score": 0.34,
+   "usd": 0.23,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "xy11": {
+   "tier": "common",
+   "score": 0.336,
+   "usd": 0.2,
+   "eur": 0.08,
+   "sampled": 15
+  },
+  "sm5": {
+   "tier": "common",
+   "score": 0.324,
+   "usd": 0.17,
+   "eur": 0.09,
+   "sampled": 15
+  },
+  "sm2": {
+   "tier": "common",
+   "score": 0.315,
+   "usd": 0.2,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh3.5": {
+   "tier": "common",
+   "score": 0.311,
+   "usd": 0.18,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh1": {
+   "tier": "common",
+   "score": 0.295,
+   "usd": 0.17,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh10.5": {
+   "tier": "common",
+   "score": 0.295,
+   "usd": 0.18,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "sm1": {
+   "tier": "common",
+   "score": 0.291,
+   "usd": 0.18,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh8": {
+   "tier": "common",
+   "score": 0.262,
+   "usd": 0.16,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "sv03.5": {
+   "tier": "common",
+   "score": 0.259,
+   "usd": 0.14,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh5": {
+   "tier": "common",
+   "score": 0.25,
+   "usd": 0.16,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "swsh7": {
+   "tier": "common",
+   "score": 0.242,
+   "usd": 0.14,
+   "eur": 0.06,
+   "sampled": 15
+  },
+  "swsh6": {
+   "tier": "common",
+   "score": 0.242,
+   "usd": 0.15,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "swsh2": {
+   "tier": "common",
+   "score": 0.229,
+   "usd": 0.16,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "swsh11": {
+   "tier": "common",
+   "score": 0.229,
+   "usd": 0.17,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "sv03": {
+   "tier": "common",
+   "score": 0.217,
+   "usd": 0.15,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "sv10": {
+   "tier": "common",
+   "score": 0.18,
+   "usd": 0.16,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh4.5": {
+   "tier": "common",
+   "score": 0.16,
+   "usd": 0.11,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "sv01": {
+   "tier": "common",
+   "score": 0.156,
+   "usd": 0.12,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "sv09": {
+   "tier": "common",
+   "score": 0.151,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh12.5": {
+   "tier": "common",
+   "score": 0.148,
+   "usd": 0.12,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "sv04.5": {
+   "tier": "common",
+   "score": 0.136,
+   "usd": 0.1,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "sv07": {
+   "tier": "common",
+   "score": 0.135,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh9": {
+   "tier": "common",
+   "score": 0.131,
+   "usd": 0.12,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "me01": {
+   "tier": "common",
+   "score": 0.131,
+   "usd": 0.13,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "me02.5": {
+   "tier": "common",
+   "score": 0.127,
+   "usd": 0.12,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv06": {
+   "tier": "common",
+   "score": 0.122,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh4": {
+   "tier": "common",
+   "score": 0.12,
+   "usd": 0.06,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "sv05": {
+   "tier": "common",
+   "score": 0.114,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh3": {
+   "tier": "common",
+   "score": 0.112,
+   "usd": 0.06,
+   "eur": 0.05,
+   "sampled": 15
+  },
+  "me02": {
+   "tier": "common",
+   "score": 0.107,
+   "usd": 0.11,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh12": {
+   "tier": "common",
+   "score": 0.103,
+   "usd": 0.09,
+   "eur": 0.04,
+   "sampled": 15
+  },
+  "me03": {
+   "tier": "common",
+   "score": 0.103,
+   "usd": 0.1,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "me04": {
+   "tier": "common",
+   "score": 0.099,
+   "usd": 0.09,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv06.5": {
+   "tier": "common",
+   "score": 0.098,
+   "usd": 0.13,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv02": {
+   "tier": "common",
+   "score": 0.098,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv10.5b": {
+   "tier": "common",
+   "score": 0.094,
+   "usd": 0.11,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "swsh10": {
+   "tier": "common",
+   "score": 0.089,
+   "usd": 0.14,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "me05": {
+   "tier": "common",
+   "score": 0.087,
+   "usd": 0.07,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv04": {
+   "tier": "common",
+   "score": 0.082,
+   "usd": 0.13,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv08.5": {
+   "tier": "common",
+   "score": 0.058,
+   "usd": 0.09,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv08": {
+   "tier": "common",
+   "score": 0.041,
+   "usd": 0.06,
+   "eur": 0.03,
+   "sampled": 15
+  },
+  "sv10.5w": {
+   "tier": "common",
+   "score": 0.024,
+   "usd": 0.09,
+   "eur": 0.02,
+   "sampled": 15
+  }
+ }
+}

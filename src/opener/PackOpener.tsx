@@ -5,7 +5,11 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { cardImage } from "../api/tcgdex";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
-import { pullTier, rarityKind } from "../engine/tiers";
+import { setTier, tierInfo, type SetTier } from "../engine/setRarity";
+
+/** The sealed pack wears a set-rarity tag in the same colours as the card rarity tag. */
+const PACK_TAG_KIND: Record<SetTier, RarityKind> = { common: "common", uncommon: "uncommon", rare: "rare", legendary: "chase" };
+import { pullTier, rarityKind, type RarityKind } from "../engine/tiers";
 import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
@@ -274,7 +278,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const tier = current ? pullTier(current) : 0;
   const isLast = idx === pulls.length - 1;
   let hint = "";
-  if (phase === "sealed") hint = `${set.name}. Drag across the top of the pack to tear it open.`;
+  const packTier = setTier(set.id);
+  if (phase === "sealed") hint = `${packTier === "common" ? "" : `A ${tierInfo(packTier).name.toLowerCase()}! `}${set.name}. Drag across the top of the pack to tear it open.`;
   else if (phase === "opening" && waitingForImages) hint = "Loading cards…";
   else if (phase === "reveal") {
     const lead = `Card ${idx + 1} of ${pulls.length}.`;
@@ -369,6 +374,12 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
               <polyline ref={guideRef} className="guide" fill="none" vectorEffect="non-scaling-stroke" strokeWidth="1.5" pathLength={100} />
               <polyline ref={ripRef} className="rip" fill="none" vectorEffect="non-scaling-stroke" strokeWidth="2.5" pathLength={1} strokeDashoffset={1} />
             </svg>
+
+            {phase === "sealed" && (
+              <span className="rarity-tag" data-kind={PACK_TAG_KIND[packTier]} aria-hidden="true">
+                {tierInfo(packTier).name}
+              </span>
+            )}
           </div>
         </div>
       )}

@@ -13,6 +13,7 @@
     "simulate": "tsx scripts/simulate.ts",
     "open": "tsx scripts/open.ts",
     "pokedex": "tsx scripts/pokedex.ts",
+    "set-rarity": "tsx scripts/setRarity.ts",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {

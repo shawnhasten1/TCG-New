@@ -9,6 +9,7 @@ import { getPulls, onCollectionChange } from "../collection/store";
 import { hiddenReason } from "../engine/openable";
 import { useSettings } from "../app/settings";
 import { ERAS, drawableSets } from "../engine/randomSet";
+import { setTier, tierInfo } from "../engine/setRarity";
 import "./picker.css";
 
 interface Group {
@@ -150,6 +151,11 @@ function SetTileBody({ set, note, tally }: { set: SetSummary; note?: string; tal
           {formatDate(set.releaseDate)} · {set.cardCount.official} cards
         </span>
         {note && <em>{note}</em>}
+        {!note && setTier(set.id) !== "common" && (
+          <span className="tier-chip" data-set-tier={setTier(set.id)}>
+            {tierInfo(setTier(set.id)).name}
+          </span>
+        )}
         {tally && (
           <span className="owned-chip">
             {tally.mainOwned} / {set.cardCount.official} collected

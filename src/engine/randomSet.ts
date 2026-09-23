@@ -4,6 +4,7 @@ import type { SetSummary } from "../api/types";
 import { hiddenReason } from "./openable";
 import { profileFor } from "./profiles";
 import type { Rng } from "./rng";
+import { drawWeights, setTier, type SetTier } from "./setRarity";
 
 /** Eras the draw can be limited to, keyed by pack profile id. */
 export const ERAS = [
@@ -33,8 +34,17 @@ export function drawableSets(sets: SetSummary[], opts: DrawOptions = {}): SetSum
   });
 }
 
-/** Picks one set uniformly. `avoid` skips a set (e.g. one that just failed to load) when others exist. */
-export function pickRandomSet(sets: SetSummary[], rng: Rng, avoid?: string): SetSummary | undefined {
+/**
+ * Picks one set, weighted by its rarity tier (scarcer sets come up less often).
+ * `avoid` skips a set (e.g. one that just failed to load) when others exist.
+ */
+export function pickRandomSet(sets: SetSummary[], rng: Rng, avoid?: string, tierOf: (id: string) => SetTier = setTier): SetSummary | undefined {
   const pool = sets.length > 1 && avoid ? sets.filter((s) => s.id !== avoid) : sets;
-  return pool.length ? pool[Math.floor(rng() * pool.length)] : undefined;
+  const weights = drawWeights(pool.map((s) => s.id), tierOf);
+  let roll = rng();
+  for (let i = 0; i < pool.length; i++) {
+    roll -= weights[i];
+    if (roll < 0) return pool[i];
+  }
+  return pool[pool.length - 1];
 }

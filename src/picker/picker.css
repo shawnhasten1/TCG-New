@@ -48,6 +48,12 @@
   align-self: flex-start; margin-top: 4px; padding: 3px 9px; border-radius: 999px;
   font-size: .8rem; font-weight: 700; background: var(--btn-on); color: var(--btn-on-ink);
 }
+.picker .tier-chip {
+  align-self: flex-start; padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 800;
+  letter-spacing: .04em; text-transform: uppercase; color: #0f2530; background: #bfe9f5;
+}
+.picker .tier-chip[data-set-tier="rare"] { color: #fff; background: #6b3fd6; }
+.picker .tier-chip[data-set-tier="legendary"] { color: #2a1a00; background: linear-gradient(135deg, #fff1b8, #f3c34a); }
 .picker .header-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .picker .open-hero { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin: 8px 0 12px; }
 .picker .open-button {

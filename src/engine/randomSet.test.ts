@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { SetSummary } from "../api/types";
 import { drawableSets, eraOf, pickRandomSet } from "./randomSet";
 import { createRng } from "./rng";
+import type { SetTier } from "./setRarity";
 
 const set = (id: string, serie: string, name = id, official = 150): SetSummary => ({
   id,
@@ -40,16 +41,32 @@ describe("drawableSets", () => {
 });
 
 describe("pickRandomSet", () => {
-  it("covers every drawable set roughly evenly", () => {
+  it("covers every set in a tier roughly evenly", () => {
     const pool = drawableSets(sets);
     const rng = createRng("draw");
     const counts = new Map<string, number>();
     for (let i = 0; i < 5000; i++) {
-      const s = pickRandomSet(pool, rng)!;
+      const s = pickRandomSet(pool, rng, undefined, () => "common")!;
       counts.set(s.id, (counts.get(s.id) ?? 0) + 1);
     }
     expect([...counts.keys()].sort()).toEqual(pool.map((s) => s.id).sort());
     for (const n of counts.values()) expect(n).toBeGreaterThan(850); // 1000 expected each
+  });
+
+  it("draws each tier at its odds, however many sets share it", () => {
+    const tiers: Record<string, SetTier> = { base1: "legendary", dp1: "rare", swsh7: "uncommon", "sv03.5": "common", me01: "common" };
+    const rng = createRng("tiers");
+    const counts: Record<string, number> = {};
+    const n = 20000;
+    for (let i = 0; i < n; i++) {
+      const tier = tiers[pickRandomSet(drawableSets(sets), rng, undefined, (id) => tiers[id])!.id];
+      counts[tier] = (counts[tier] ?? 0) + 1;
+    }
+    expect(counts.common / n).toBeCloseTo(0.7, 1);
+    expect(counts.uncommon / n).toBeCloseTo(0.22, 1);
+    expect(counts.rare / n).toBeCloseTo(0.07, 1);
+    expect(counts.legendary / n).toBeGreaterThan(0.005);
+    expect(counts.legendary / n).toBeLessThan(0.02);
   });
 
   it("avoids a given set when there is another choice", () => {

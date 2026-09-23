@@ -219,7 +219,7 @@
 .opener .summary-grid .new-badge { top: -8px; right: -6px; animation: none; }
 @media (prefers-reduced-motion: reduce) { .opener .new-badge { animation: none; } }
 
-/* ---------- Rarity tag on the revealed card ---------- */
+/* ---------- Rarity tag on the revealed card (and set rarity tag on the sealed pack) ---------- */
 .opener .rarity-tag {
   --tag: #8a8595; --tag-ink: #fff;
   position: absolute; left: 50%; bottom: -14px; z-index: 10; pointer-events: none;
@@ -230,6 +230,7 @@
   box-shadow: 0 0 0 2px #fff6, 0 4px 12px -4px #0008;
   animation: newPop .35s cubic-bezier(.2,.9,.25,1.4) .1s both;
 }
+.opener .pack > .rarity-tag { bottom: -8px; } /* sits closer so it clears the hint below */
 .opener .rarity-tag[data-kind="uncommon"] { --tag: #2f8f5b; }
 .opener .rarity-tag[data-kind="rare"] { --tag: #2f6fd6; }
 .opener .rarity-tag[data-kind="ultra"] { --tag: #8a3fd1; }
