@@ -6,9 +6,11 @@
 import type { Tilt } from "./tilt";
 
 /** Degrees of phone tilt, either way from level, that take the card to its full tilt. */
-const RANGE = 20;
+const RANGE = 35;
 /** Until the phone moves this many degrees, it counts as still, so an idle sway keeps going. */
-const DEADZONE = 3;
+const DEADZONE = 5;
+/** Tilt within this many degrees of level is ignored, so a hand's small wobble doesn't move the card. */
+const STEADY = 2.5;
 /** How quickly level follows the hand, per event (about 60 a second): a held tilt settles back over about 5 seconds. */
 const DRIFT = 0.004;
 /** A bigger jump than this is the sensor flipping (e.g. past upright), not a tilt: start level again. */
@@ -57,8 +59,11 @@ function onOrientation(e: DeviceOrientationEvent) {
   if (!f.engaged && Math.hypot(dx, dy) < DEADZONE) return;
   f.engaged = true;
   // Tipping the right edge down leans the card right; tipping the top away leans it back.
-  f.tilt.lean(0.5 + dx / (2 * RANGE), 0.5 + dy / (2 * RANGE));
+  f.tilt.lean(0.5 + steady(dx) / (2 * RANGE), 0.5 + steady(dy) / (2 * RANGE));
 }
+
+/** Degrees past the steady band, so the card starts moving smoothly from level rather than jumping. */
+const steady = (d: number) => Math.sign(d) * Math.max(0, Math.abs(d) - STEADY);
 
 function listen() {
   removeEventListener("deviceorientation", onOrientation);
