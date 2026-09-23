@@ -2,6 +2,7 @@
 
 import type { Card, CardWithSet, SetSummary } from "../api/types";
 import { hiddenReason } from "../engine/openable";
+import { packFinishes, packFirstEdition } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { ERAS } from "../engine/randomSet";
 import { pullTier } from "../engine/tiers";
@@ -16,7 +17,7 @@ export function pokemonName(dexId: number, fallback?: string): string {
   return NAMES[dexId] ?? fallback ?? `Pokémon #${dexId}`;
 }
 
-const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 /** Pokémon whose name (accent-insensitive) or number matches, prefix matches first. */
 export function searchPokemon(query: string, limit = 12): { dexId: number; name: string }[] {
@@ -33,36 +34,18 @@ export function searchPokemon(query: string, limit = 12): { dexId: number; name:
 export type FinishKey = "normal" | "holo" | "reverse" | "firstEdition";
 export const FINISH_LABEL: Record<FinishKey, string> = { normal: "Normal", holo: "Holo", reverse: "Reverse", firstEdition: "1st Ed" };
 
-/** TCGdex has no holo/reverse flags for these series; the engine assigns finishes by rarity there. */
+/** TCGdex has no holo/reverse flags for these series, so the engine assigns finishes by rarity there. */
 const NO_VARIANT_DATA = new Set(["bw", "xy", "sm"]);
 
 /**
- * Finishes this printing can come out of a pack in. Based on TCGdex printing flags, limited to
- * what the pack profile can produce (no reverse slot in WOTC packs, 1st Edition only if enabled).
+ * Finishes this printing can come out of a pack in. Asks the pack engine (packFinishes), so the
+ * chips always match what opening packs can give, not just what TCGdex says was printed.
  */
 export function obtainableFinishes(card: Card, serieId: string, profile: PackProfile): FinishKey[] {
-  const hasReverseSlot = profile.slots.some((s) => "@reverse" in s.table);
-  const out: FinishKey[] = [];
-  const v = card.variants;
-  if (NO_VARIANT_DATA.has(serieId) && !v.holo && !v.reverse) {
-    // Mirrors the classic profile: C/U reverse too, plain Rares can be holo, bigger rarities are holo only.
-    if (/^(common|uncommon|rare)$/i.test(card.rarity)) out.push("normal");
-    if (/^rare$/i.test(card.rarity) || !/^(common|uncommon)$/i.test(card.rarity)) out.push("holo");
-    if (hasReverseSlot && /^(common|uncommon|rare)$/i.test(card.rarity)) out.push("reverse");
-  } else {
-    if (v.normal) out.push("normal");
-    if (v.holo) out.push("holo");
-    if (v.reverse && hasReverseSlot) out.push("reverse");
-    if (!out.length) out.push("normal");
-  }
-  if (v.firstEdition && (profile.firstEditionChance ?? 0) > 0) out.push("firstEdition");
-  return out;
-}
-
-/** Rarities any slot of the profile can produce. */
-function profileRarities(profile: PackProfile): Set<string> {
-  const out = new Set<string>();
-  for (const s of profile.slots) for (const k of Object.keys(s.table)) if (k !== "@reverse") out.add(k.split("#")[0]);
+  // Set-wide in the engine; every BW/XY/SM set on TCGdex lacks the flags, so the serie stands in for it.
+  const variantDataMissing = NO_VARIANT_DATA.has(serieId) && !card.variants.holo && !card.variants.reverse;
+  const out: FinishKey[] = packFinishes(card, profile, variantDataMissing);
+  if (out.length && packFirstEdition(card, profile)) out.push("firstEdition");
   return out;
 }
 
@@ -98,6 +81,7 @@ export function buildPrintings(cards: CardWithSet[], ctx: PrintingContext): Prin
   return cards.map((card) => {
     const set = ctx.sets.get(card.set.id);
     const profile = set && profileFor(set);
+    const obtainable = set && profile ? obtainableFinishes(card, set.serie.id, profile) : [];
     const reason = !set
       ? "Unknown set"
       : !profile || hiddenReason(set)
@@ -106,11 +90,10 @@ export function buildPrintings(cards: CardWithSet[], ctx: PrintingContext): Prin
           ? "Set can't fill a pack"
           : !card.image
             ? "No scan"
-            : !profileRarities(profile).has(card.rarity)
+            : !obtainable.length
               ? "Rarity not in packs"
               : undefined;
     const o = ctx.owned.get(card.id);
-    const obtainable = profile ? obtainableFinishes(card, set!.serie.id, profile) : [];
     const count = (k: FinishKey) => (k === "firstEdition" ? o?.firstEdition ?? 0 : o?.byFinish[k] ?? 0);
     // Show every obtainable finish, plus any finish you own that the data didn't predict.
     const keys = (["normal", "holo", "reverse", "firstEdition"] as FinishKey[]).filter((k) => obtainable.includes(k) || count(k) > 0);

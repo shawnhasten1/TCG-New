@@ -40,18 +40,21 @@ export function isFillerEnergy(c: Card): boolean {
   return c.category === "Energy" && c.energyType === "Normal" && !/rare/i.test(c.rarity);
 }
 
-function selectPool(selector: string, cards: Card[], profile: PackProfile, variantDataMissing: boolean): Card[] {
-  if (selector === REVERSE) {
-    const flagged = cards.filter((c) => c.variants.reverse);
-    if (flagged.length || !variantDataMissing) return flagged;
-    const fallback = new Set(profile.reverseFallback ?? []);
-    return cards.filter((c) => fallback.has(c.rarity));
-  }
+/**
+ * Whether a card belongs in a selector's pool. `variantDataMissing` is set-wide: no card in the
+ * set has holo or reverse flags (BW/XY/SM on TCGdex), so reverse slots fall back to rarities.
+ */
+function inPool(card: Card, selector: string, profile: PackProfile, variantDataMissing: boolean): boolean {
+  if (selector === REVERSE) return variantDataMissing ? (profile.reverseFallback ?? []).includes(card.rarity) : card.variants.reverse;
   const [rarity, qualifier] = selector.split("#");
-  const ofRarity = cards.filter((c) => c.rarity === rarity);
-  if (qualifier === "holo") return ofRarity.filter((c) => c.variants.holo && !c.variants.normal);
-  if (qualifier === "nonholo") return ofRarity.filter((c) => c.variants.normal);
-  return ofRarity;
+  if (card.rarity !== rarity) return false;
+  if (qualifier === "holo") return card.variants.holo && !card.variants.normal;
+  if (qualifier === "nonholo") return card.variants.normal;
+  return true;
+}
+
+function selectPool(selector: string, cards: Card[], profile: PackProfile, variantDataMissing: boolean): Card[] {
+  return cards.filter((c) => inPool(c, selector, profile, variantDataMissing));
 }
 
 const prepared = new WeakMap<SetData, WeakMap<PackProfile, PreparedPack>>();
@@ -101,20 +104,27 @@ export function canOpen(data: SetData, profile: PackProfile): boolean {
   return whyNotOpenable(data, profile) === undefined;
 }
 
-function rollFinish(card: Card, slot: SlotProfile, outcome: string, rng: Rng, variantDataMissing: boolean): Finish {
+/** Normal/holo odds for a card picked by a rarity selector, limited to the printings it has. */
+function finishWeights(card: Card, slot: SlotProfile, outcome: string, variantDataMissing: boolean): Record<"normal" | "holo", number> {
   const v = card.variants;
   const odds = slot.finishOverrides?.[outcome] ?? slot.finish ?? { normal: 1, holo: 0 };
-  const allowed = {
+  return {
     normal: variantDataMissing || v.normal ? odds.normal ?? 0 : 0,
     holo: variantDataMissing || v.holo ? odds.holo ?? 0 : 0,
   };
-  const picked = weightedPick(rng, allowed);
-  if (picked) return picked;
-  // The slot's preferred finishes aren't available for this card: use what it has.
+}
+
+/** When the slot's preferred finishes aren't available for this card: use what it has. */
+function fallbackFinish(card: Card): Finish {
+  const v = card.variants;
   if (v.normal && !v.holo) return "normal";
   if (v.holo) return "holo";
   if (v.reverse) return "reverse";
   return "normal";
+}
+
+function rollFinish(card: Card, slot: SlotProfile, outcome: string, rng: Rng, variantDataMissing: boolean): Finish {
+  return weightedPick(rng, finishWeights(card, slot, outcome, variantDataMissing)) ?? fallbackFinish(card);
 }
 
 /**
@@ -157,4 +167,35 @@ export function pullableCardIds(data: SetData, profile: PackProfile): Set<string
   const ids = new Set<string>();
   for (const s of prep.slots) for (const sel of Object.keys(s.table)) for (const c of prep.pools.get(sel)!) ids.add(c.id);
   return ids;
+}
+
+/**
+ * Every finish this card can come out of a pack in, using the same pools and finish rules as
+ * openPack. Printing flags alone aren't enough: a slot's odds can rule a printing out (the SV rare
+ * slot is always holo, common slots never give holo commons). Empty when packs can't give the card.
+ * Pass the set's `variantDataMissing` (see PreparedPack) when known.
+ */
+export function packFinishes(card: Card, profile: PackProfile, variantDataMissing: boolean): Finish[] {
+  if (!hasImage(card) || (!profile.includeBasicEnergy && isFillerEnergy(card))) return [];
+  const out = new Set<Finish>();
+  for (const slot of profile.slots) {
+    if (!(slot.count > 0)) continue;
+    for (const [selector, weight] of Object.entries(slot.table)) {
+      if (!(weight > 0) || !inPool(card, selector, profile, variantDataMissing)) continue;
+      if (selector === REVERSE) {
+        out.add("reverse");
+        continue;
+      }
+      const w = finishWeights(card, slot, selector, variantDataMissing);
+      if (w.normal > 0) out.add("normal");
+      if (w.holo > 0) out.add("holo");
+      if (!(w.normal > 0) && !(w.holo > 0)) out.add(fallbackFinish(card));
+    }
+  }
+  return (["normal", "holo", "reverse"] as Finish[]).filter((f) => out.has(f));
+}
+
+/** Whether packs can give this card as 1st Edition. */
+export function packFirstEdition(card: Card, profile: PackProfile): boolean {
+  return card.variants.firstEdition && (profile.firstEditionChance ?? 0) > 0;
 }

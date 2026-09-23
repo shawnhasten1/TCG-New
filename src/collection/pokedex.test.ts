@@ -49,6 +49,15 @@ describe("obtainableFinishes", () => {
     expect(obtainableFinishes(card("base1-58", "Common", { normal: true, firstEdition: true }), "base", { ...profile("wotc"), firstEditionChance: 0.5 })).toEqual(["normal", "firstEdition"]);
   });
 
+  it("drops printed finishes packs never give (matches the pack engine)", () => {
+    // Mega Evolution-style Rare printed normal and holo: the rare slot is always holo.
+    expect(obtainableFinishes(card("me01-10", "Rare", { normal: true, holo: true, reverse: true }), "me", profile("sv"))).toEqual(["holo", "reverse"]);
+    // Holo commons and uncommons exist in print, but common/uncommon slots give the normal version.
+    expect(obtainableFinishes(card("me01-1", "Common", { normal: true, holo: true, reverse: true }), "me", profile("sv"))).toEqual(["normal", "reverse"]);
+    // Sword & Shield "Holo Rare" with a normal printing: always holo.
+    expect(obtainableFinishes(card("swsh7-124", "Holo Rare", { normal: true, holo: true, reverse: true }), "swsh", profile("swsh"))).toEqual(["holo", "reverse"]);
+  });
+
   it("assumes the engine's finishes where TCGdex has no variant data (BW/XY/SM)", () => {
     const flat = { normal: true };
     expect(obtainableFinishes(card("sm1-1", "Common", flat), "sm", profile("classic"))).toEqual(["normal", "reverse"]);
