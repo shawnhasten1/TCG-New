@@ -2,6 +2,7 @@
 // "Open another pack", draws a new set. The next set is drawn and downloaded while you reveal
 // the current pack, so the next wrapper is usually ready at once.
 // Set rarity pity (see engine/setRarity.ts) counts from the saved packs, so it survives reloads and backups.
+// The pack on screen is remembered until it is torn, so reloading can't swap it for another.
 // Also enforces the daily pack limit ("pack of the day"), which recharges a pack at a time once it runs out.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -18,15 +19,17 @@ import { createRng } from "../engine/rng";
 import { guaranteeNote, pityFloor } from "../engine/setRarity";
 import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
+import { clearPendingPack, loadPendingPack, savePendingPack } from "./pendingPack";
 import "./opener.css";
 
 type Stage =
   | { state: "starting" }
   | { state: "loading"; set: SetSummary; done: number; total: number }
   | { state: "error"; message: string }
-  | { state: "ready"; data: SetData; dealNo: number };
+  | { state: "ready"; data: SetData; dealNo: number; seed: string };
 type PackStamp = Pick<PullRecord, "packId" | "openedAt">;
-type Draw = { set: SetSummary; data?: Promise<SetData>; ready?: boolean };
+/** `seed` is set when restoring a remembered pack; otherwise a new one is made when dealt. */
+type Draw = { set: SetSummary; seed?: string; data?: Promise<SetData>; ready?: boolean };
 
 /** Draws that fail (set can't fill a pack) are retried with another set this many times. */
 const MAX_REDRAWS = 6;
@@ -65,7 +68,7 @@ export function OpenPage() {
   const history = useRef<string[]>([]);
   /** The next pack's set, drawn and downloading in the background. */
   const upcoming = useRef<Draw | undefined>(undefined);
-  /** Increments per dealt pack; keys the opener and seeds the pack. */
+  /** Increments per dealt pack; keys the opener. */
   const dealCount = useRef(0);
   const live = useRef(true);
   const erasKey = eras.join(",");
@@ -86,6 +89,9 @@ export function OpenPage() {
       let next = first;
       for (let attempt = 0; attempt <= MAX_REDRAWS && next; attempt++) {
         const { set } = next;
+        // Remembered from the moment it is chosen, so reloading mid-download can't reroll it either.
+        const seed = next.seed ?? `${set.id}:${Date.now()}:${Math.random()}`;
+        savePendingPack({ setId: set.id, seed });
         // A prefetched, already-downloaded set skips the loading screen.
         if (!next.ready) setStage({ state: "loading", set, done: 0, total: 0 });
         try {
@@ -94,7 +100,7 @@ export function OpenPage() {
           const profile = profileFor(data.set);
           const reason = profile ? whyNotOpenable(data, profile) : "No pack profile for this series";
           if (!reason) {
-            setStage({ state: "ready", data, dealNo: ++dealCount.current });
+            setStage({ state: "ready", data, dealNo: ++dealCount.current, seed });
             return;
           }
           unopenable.current[set.id] = reason;
@@ -125,6 +131,13 @@ export function OpenPage() {
       for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
       history.current = packHistory(pulls);
       setStamps(pulls.map(({ packId, openedAt }) => ({ packId, openedAt })));
+      // A pack dealt but not torn before a reload comes back as it was.
+      const pending = loadPendingPack();
+      const pendingSet = pending && sets.find((s) => s.id === pending.setId);
+      if (pending && pendingSet) {
+        void deal({ set: pendingSet, seed: pending.seed });
+        return;
+      }
       const first = draw();
       if (!first) setStage({ state: "error", message: "No set could be opened. Check the era filter in Settings." });
       else void deal({ set: first });
@@ -136,15 +149,16 @@ export function OpenPage() {
 
   const data = stage.state === "ready" ? stage.data : undefined;
   const dealNo = stage.state === "ready" ? stage.dealNo : 0;
+  const seed = stage.state === "ready" ? stage.seed : "";
   const pack = useMemo(() => {
     if (!data) return undefined;
     const profile = profileFor(data.set)!;
-    const pulls = openPack(data, profile, createRng(`${data.set.id}:${Date.now()}:${dealNo}`));
+    const pulls = openPack(data, profile, createRng(seed));
     // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
     const have = owned.current.get(data.set.id);
     const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have?.has(id)));
     return { pulls, newIds };
-  }, [data, dealNo]);
+  }, [data, dealNo, seed]);
 
   const limited = dailyLimit > 0;
   const now = useNow(limited);
@@ -158,6 +172,7 @@ export function OpenPage() {
     const have = owned.current.get(setId) ?? owned.current.set(setId, new Set()).get(setId)!;
     for (const p of pack.pulls) have.add(p.card.id);
     history.current.push(setId);
+    clearPendingPack();
     const openedAt = new Date();
     setTorn(true);
     setStamps((s) => [...(s ?? []), { packId: `pending-${dealNo}`, openedAt: openedAt.toISOString() }]);
