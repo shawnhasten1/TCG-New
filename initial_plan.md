@@ -67,4 +67,37 @@ Phase 8: Polish. Sound effects, a "pack of the day" timer if you want pacing, ex
 
 Done. Sound effects are synthesized with Web Audio: tear, slide, flip, and a chime per hit tier, with mute and volume controls. Pack of the day is an optional daily limit across sets, counted from the collection and resetting at local midnight, with a countdown. Collection export and import work as JSON, merging by pack or replacing. There's a settings page. Deployment has a GitHub Pages workflow, a Netlify config and a favicon. The build was verified serving from a sub-path.
 
+Phase 9: Random sets. Let the app choose the set instead of the player picking every time.
+
+What "random" means (to confirm). Recommended default: a "Surprise me" button on the set picker. It rolls a random openable set and goes straight to its pack, and you can roll again from the sealed-pack screen. Option: a "Mystery packs" mode in Settings, where every pack, including "Open another pack", comes from a newly rolled set. That makes each pack a surprise until the wrapper appears. The manual picker stays either way.
+
+Which sets can be rolled. Only sets the picker already offers: they have a pack profile, aren't promo, energy or gallery sets, have 40 or more cards, and haven't been marked unopenable. If a rolled set fails the load-time check (whyNotOpenable), mark it unopenable and roll again quietly. An era filter (WOTC, Classic, Sword & Shield, Scarlet & Violet / Mega Evolution), set in Settings, limits the roll, for example to modern sets only. The roll is uniform across sets. Weighting by newer sets or sets you haven't opened is a later option. The daily pack limit applies as usual.
+
+Work. A pure pickRandomSet(summaries, filters, rng) with tests, covering eligibility, the era filter and never returning a hidden set. Add the button and the reroll to the picker and the opener. For mystery mode, OpenPage takes a set chosen per pack instead of a fixed one, so the wrapper and hint show which set you got. Small; about a day.
+
+Phase 10: Collection by Pokémon. Alongside the binder by set, add a view by Pokémon. It shows every card of one Pokémon across sets: each different artwork and rarity, and for each one, which finishes (normal, holo, reverse holo, 1st Edition) you own and which you're missing.
+
+What the data shows (checked 2026-09-23). Every Pokémon card has dexId, its National Pokédex number. It's a list, so tag-team cards such as "Pikachu & Zekrom GX" belong to both Pokémon. A GraphQL cards(filters:{dexId}) query returns every printing of a Pokémon, with rarity, image, variants and set, in one to three pages and under a second: 209 Pikachu across 104 sets, 124 Charizard across 55, 105 Eevee across 62. Those results include promos, trainer kits, McDonald's cards and Pokémon TCG Pocket cards (the Diamond and Star rarities), and about 15–20% of old or odd printings have no image. TCGdex has no species list, so the index needs its own list of names. REST name=like: search works for a search box.
+
+Data work.
+- Add dexId to the set card query (cache version 3). The Pokémon index can then group owned cards from set data that's already cached, with no change to saved pulls.
+- Add client.getPokemonCards(dexId): the GraphQL query above, cached per day.
+- Tag each printing with its set's series, and with whether it's openable here, using the same rules as the picker.
+- Bundle a pokedex.json of about 1,025 Pokédex numbers and English names. A one-off npm run pokedex script generates it from PokéAPI and commits it, so the app has no runtime dependency.
+- Regional forms (Alolan, Galarian…) share a Pokédex number, so they appear together as variations, labelled by card name.
+
+The Pokémon index (#/pokedex). A grid of the Pokémon you've pulled, shown by the art of your best card of each, with Pokédex number, name, and "4 of 38 cards". It can be sorted by Pokédex number, most cards owned or recently pulled. A search box jumps to any Pokémon, owned or not. The binder gets a "By set / By Pokémon" switch, and the collection page links here.
+
+The Pokémon page (#/pokemon/<dexId>).
+- A header with name, Pokédex number and completion: "You own 7 of 96 Pikachu cards from openable sets".
+- Printings grouped by era, then set, oldest first.
+- Each printing is a tile with the card image (faded if not owned), set name and number, and rarity. Below it is one chip per finish that printing actually has, based on its variants: owned chips show a count ("Reverse ×2"), missing ones are faded, and finishes the printing doesn't have don't appear.
+- Filters: owned / missing / all, finish (holo, reverse, 1st Edition), era, and "Include promos and other products". That last one is off by default; with it on, printings you can't pull in this app show as "not in packs", like the binder does.
+- Clicking a tile opens the existing card detail, with finish tabs, copies, first pull and prices.
+- Totals count unique printings and finish variants separately, so "96 cards, 180 card-and-finish combinations" can both be tracked.
+
+Out of scope for now: grouping identical artwork reprinted in different sets (possible later by illustrator plus name), a Trainer-card view by name, and wishlists.
+
+Work. Pure grouping and completion functions with tests: owned cards by Pokémon, the finish matrix per printing, and eligibility filters. Then the API addition, the Pokédex data script, the two pages, and links from the binder and collection. About two to three days. Phase 10 doesn't depend on Phase 9, so they can be built in either order.
+
 Phases 1 and 2 are the foundation, and they're quick. Once the engine can print real pulls from a real set, everything after that is presentation.
