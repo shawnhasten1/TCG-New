@@ -143,7 +143,7 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
             }}
           >
             <div className={`spin${spun ? " spun" : ""}`}>
-              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} finish={finish} layout={layout} className={owned ? "" : "unowned"} />
+              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} category={card.category} trainerType={card.trainerType} finish={finish} layout={layout} className={owned ? "" : "unowned"} />
               <div className="tcg-back" aria-hidden="true" />
             </div>
           </div>

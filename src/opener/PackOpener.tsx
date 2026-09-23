@@ -301,6 +301,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
                     ref={(el) => void (cardRefs.current[i] = el)}
                     image={pull.card.image}
                     rarity={pull.card.rarity}
+                    category={pull.card.category}
+                    trainerType={pull.card.trainerType}
                     finish={pull.finish}
                     layout={layout}
                     data-tier={pullTier(pull)}

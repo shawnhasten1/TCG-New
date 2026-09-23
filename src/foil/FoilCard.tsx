@@ -2,10 +2,11 @@
 // (see opener/tilt.ts); the layers below read them.
 
 import { useEffect, useState, type CSSProperties, type HTMLAttributes, type Ref } from "react";
+import type { CardCategory } from "../api/types";
 import type { Finish } from "../engine/types";
 import { artMask, reverseMask, type FrameLayout } from "./layouts";
 import { ensureSparkles } from "./sparkles";
-import { foilTint, foilTreatment, type Treatment } from "./treatment";
+import { foilStyle, foilTint, foilTreatment, type Style, type Treatment } from "./treatment";
 import "./foil.css";
 
 export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -14,8 +15,13 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   rarity: string;
   finish: Finish;
   layout: FrameLayout;
+  /** Tells gold secret rares (Items, Tools, Stadiums, Energy) from rainbow ones. */
+  category?: CardCategory;
+  trainerType?: string | null;
   /** Overrides the treatment derived from finish + rarity (foil lab). */
   treatment?: Treatment;
+  /** Overrides the style derived from finish + rarity; null turns it off (foil lab). */
+  foilStyle?: Style | null;
   quality?: "high" | "low";
   /** Draws the layout's art box, for tuning. */
   showArtBox?: boolean;
@@ -29,8 +35,10 @@ function maskVars(layout: FrameLayout): CSSProperties {
   return vars;
 }
 
-export function FoilCard({ image, rarity, finish, layout, treatment, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
+export function FoilCard({ image, rarity, finish, layout, category, trainerType, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
   const t = treatment ?? foilTreatment(finish, rarity);
+  const kind = { category, trainerType };
+  const look = styleOverride === undefined ? foilStyle(finish, rarity, kind) : (styleOverride ?? undefined);
   const [src, setSrc] = useState(image && `${image}/${quality}.webp`);
   useEffect(() => setSrc(image && `${image}/${quality}.webp`), [image, quality]);
   useEffect(ensureSparkles, []);
@@ -41,7 +49,8 @@ export function FoilCard({ image, rarity, finish, layout, treatment, quality = "
       ref={ref}
       className={`tcg-card${className ? " " + className : ""}`}
       data-treatment={t}
-      data-tint={foilTint(rarity)}
+      data-tint={foilTint(rarity, kind)}
+      data-style={t === "none" ? undefined : look}
       style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout) : undefined), ...style }}
     >
       <div className="face">

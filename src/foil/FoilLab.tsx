@@ -6,13 +6,23 @@ import type { Finish } from "../engine/types";
 import { Tilt } from "../opener/tilt";
 import { FoilCard } from "./FoilCard";
 import { layoutFor, layouts } from "./layouts";
-import { foilTreatment, type Treatment } from "./treatment";
+import type { CardCategory } from "../api/types";
+import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
 import "./foil-lab.css";
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
 
-/** Real full-art / ultra / hyper cards for the full-card treatments. */
-const FULL_CARD_SAMPLES = [
+interface Sample {
+  id: string;
+  image: string;
+  rarity: string;
+  serie: string;
+  category?: CardCategory;
+  trainerType?: string;
+}
+
+/** Real full-art / ultra / hyper cards for the full-card treatments, then one card per rarity style. */
+const FULL_CARD_SAMPLES: Sample[] = [
   { id: "sv03.5-151", image: img("sv/sv03.5/151"), rarity: "Double rare", serie: "sv" },
   { id: "sv03.5-181", image: img("sv/sv03.5/181"), rarity: "Illustration rare", serie: "sv" },
   { id: "sv03.5-199", image: img("sv/sv03.5/199"), rarity: "Special illustration rare", serie: "sv" },
@@ -21,8 +31,18 @@ const FULL_CARD_SAMPLES = [
   { id: "swsh7-117", image: img("swsh/swsh7/117"), rarity: "Holo Rare V", serie: "swsh" },
   { id: "swsh7-111", image: img("swsh/swsh7/111"), rarity: "Holo Rare VMAX", serie: "swsh" },
   { id: "swsh7-202", image: img("swsh/swsh7/202"), rarity: "Ultra Rare", serie: "swsh" },
-  { id: "swsh7-217", image: img("swsh/swsh7/217"), rarity: "Secret Rare", serie: "swsh" },
-  { id: "sm12-270", image: img("sm/sm12/270"), rarity: "Secret Rare", serie: "sm" },
+  { id: "swsh7-217", image: img("swsh/swsh7/217"), rarity: "Secret Rare", serie: "swsh", category: "Pokemon" },
+  { id: "sm12-270", image: img("sm/sm12/270"), rarity: "Secret Rare", serie: "sm", category: "Trainer", trainerType: "Item" },
+];
+
+const STYLE_SAMPLES: Sample[] = [
+  { id: "svp-001", image: img("sv/svp/001"), rarity: "Promo", serie: "sv", category: "Pokemon" },
+  { id: "swsh10.5-011", image: img("swsh/swsh10.5/011"), rarity: "Radiant Rare", serie: "swsh", category: "Pokemon" },
+  { id: "swsh4-9", image: img("swsh/swsh4/9"), rarity: "Amazing Rare", serie: "swsh", category: "Pokemon" },
+  { id: "sv04.5-095", image: img("sv/sv04.5/095"), rarity: "Shiny rare", serie: "sv", category: "Pokemon" },
+  { id: "sv04.5-216", image: img("sv/sv04.5/216"), rarity: "Shiny Ultra Rare", serie: "sv", category: "Pokemon" },
+  { id: "swsh9-018", image: img("swsh/swsh9/018"), rarity: "Holo Rare VSTAR", serie: "swsh", category: "Pokemon" },
+  { id: "sv06.5-058", image: img("sv/sv06.5/058"), rarity: "ACE SPEC Rare", serie: "sv", category: "Trainer", trainerType: "Item" },
 ];
 
 const ERA_COLUMNS: { label: string; finish: Finish; treatment: Treatment }[] = [
@@ -130,21 +150,12 @@ export function FoilLab() {
 
       <section>
         <h2>Full-card treatments</h2>
-        <div className="full-grid">
-          {FULL_CARD_SAMPLES.map((s) => (
-            <figure key={s.id}>
-              <div className="lab-card">
-                <FoilCard image={s.image} rarity={s.rarity} finish="holo" layout={layoutFor(s.serie)} showArtBox={showArtBox} />
-              </div>
-              <figcaption>
-                {s.rarity}
-                <small>
-                  {s.id} · {foilTreatment("holo", s.rarity)}
-                </small>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+        <div className="full-grid">{FULL_CARD_SAMPLES.map((s) => sampleFigure(s, showArtBox))}</div>
+      </section>
+
+      <section>
+        <h2>Rarity styles</h2>
+        <div className="full-grid">{STYLE_SAMPLES.map((s) => sampleFigure(s, showArtBox))}</div>
       </section>
     </main>
   );
@@ -166,5 +177,23 @@ function EraRow({ layoutId, showArtBox }: { layoutId: string; showArtBox: boolea
         </div>
       ))}
     </>
+  );
+}
+
+function sampleFigure(s: Sample, showArtBox: boolean) {
+  const kind = { category: s.category, trainerType: s.trainerType };
+  const label = [foilTreatment("holo", s.rarity), foilStyle("holo", s.rarity, kind), foilTint(s.rarity, kind) === "gold" && "gold"].filter(Boolean).join(" · ");
+  return (
+    <figure key={s.id}>
+      <div className="lab-card">
+        <FoilCard image={s.image} rarity={s.rarity} category={s.category} trainerType={s.trainerType} finish="holo" layout={layoutFor(s.serie)} showArtBox={showArtBox} />
+      </div>
+      <figcaption>
+        {s.rarity}
+        <small>
+          {s.id} · {label}
+        </small>
+      </figcaption>
+    </figure>
   );
 }

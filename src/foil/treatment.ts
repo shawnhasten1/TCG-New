@@ -1,9 +1,12 @@
 // Which foil treatment a pulled card gets, from its finish and rarity.
+// Treatment decides which layers exist and where the foil goes; style swaps in a rarity's own shine pattern.
 
+import type { Card } from "../api/types";
 import type { Finish } from "../engine/types";
 
 export type Treatment = "none" | "holo" | "reverse" | "fullart" | "etched";
 export type Tint = "rainbow" | "gold";
+export type Style = "cosmos" | "radiant" | "amazing" | "shiny" | "rainbow" | "v" | "vmax" | "acespec";
 
 /** Textured full-card foil: full-art ultra rares, secrets, hypers. */
 const ETCHED = /ultra|secret|hyper|gold|rainbow/i;
@@ -19,6 +22,29 @@ export function foilTreatment(finish: Finish, rarity: string): Treatment {
   return "holo";
 }
 
-export function foilTint(rarity: string): Tint {
-  return GOLD.test(rarity) ? "gold" : "rainbow";
+type Kind = Pick<Card, "category" | "trainerType">;
+
+/** Gold for hyper rares, and for secret rares that are Items, Tools, Stadiums or Energy: the SM/SWSH
+ *  gold cards. Secret Pokémon and Supporters are the rainbow ones. */
+export function foilTint(rarity: string, kind: Kind = {}): Tint {
+  if (GOLD.test(rarity)) return "gold";
+  if (/secret/i.test(rarity)) {
+    if (kind.category === "Energy") return "gold";
+    if (kind.category === "Trainer" && kind.trainerType && !/supporter/i.test(kind.trainerType)) return "gold";
+  }
+  return "rainbow";
+}
+
+/** The rarity's own foil pattern, if it has one. Only for holo pulls: reverse holos look the same across rarities. */
+export function foilStyle(finish: Finish, rarity: string, kind: Kind = {}): Style | undefined {
+  if (finish !== "holo") return undefined;
+  if (/radiant/i.test(rarity)) return "radiant";
+  if (/amazing/i.test(rarity)) return "amazing";
+  if (/shiny/i.test(rarity)) return "shiny";
+  if (/ace spec/i.test(rarity)) return "acespec";
+  if (/vmax|vstar/i.test(rarity)) return "vmax";
+  if (/\bv\b/i.test(rarity)) return "v";
+  if (/promo/i.test(rarity)) return "cosmos";
+  if (/secret/i.test(rarity) && foilTint(rarity, kind) === "rainbow") return "rainbow";
+  return undefined;
 }
