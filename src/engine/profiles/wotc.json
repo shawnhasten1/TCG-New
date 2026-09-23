@@ -1,0 +1,51 @@
+{
+  "id": "wotc",
+  "name": "Wizards of the Coast (Base–Neo)",
+  "series": [
+    "base",
+    "gym",
+    "neo"
+  ],
+  "notes": "11 cards: 7 Common, 3 Uncommon, 1 Rare. About 1 in 3 packs has a holo rare. Base-era holos share the 'Rare' string with non-holos, so they're split with #holo / #nonholo. Set firstEditionChance to 1 to open 1st Edition packs.",
+  "firstEditionChance": 0,
+  "slots": [
+    {
+      "label": "Common",
+      "count": 7,
+      "table": {
+        "Common": 1
+      }
+    },
+    {
+      "label": "Uncommon",
+      "count": 3,
+      "table": {
+        "Uncommon": 1
+      }
+    },
+    {
+      "label": "Rare",
+      "count": 1,
+      "table": {
+        "Rare#nonholo": 0.667,
+        "Rare#holo": 0.333,
+        "Holo Rare": 0.333,
+        "Rare Holo": 0.333
+      },
+      "finish": {
+        "normal": 1
+      },
+      "finishOverrides": {
+        "Rare#holo": {
+          "holo": 1
+        },
+        "Holo Rare": {
+          "holo": 1
+        },
+        "Rare Holo": {
+          "holo": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "id": "sv",
+  "name": "Scarlet & Violet / Mega Evolution",
+  "series": [
+    "sv",
+    "me"
+  ],
+  "notes": "10 playable cards: 4 Common, 3 Uncommon, 2 Reverse (the second can hit an Illustration Rare, SIR or ACE SPEC), 1 Rare (Rare → Double Rare → Ultra Rare → Hyper Rare). Odds are community estimates for a standard main set.",
+  "slots": [
+    {
+      "label": "Common",
+      "count": 4,
+      "table": {
+        "Common": 1
+      }
+    },
+    {
+      "label": "Uncommon",
+      "count": 3,
+      "table": {
+        "Uncommon": 1
+      }
+    },
+    {
+      "label": "Reverse",
+      "count": 1,
+      "table": {
+        "@reverse": 1
+      }
+    },
+    {
+      "label": "Reverse / Illustration",
+      "count": 1,
+      "table": {
+        "@reverse": 0.84,
+        "Illustration rare": 0.077,
+        "Special illustration rare": 0.031,
+        "ACE SPEC Rare": 0.05,
+        "Shiny rare": 0.08,
+        "Black White Rare": 0.01
+      },
+      "finishOverrides": {
+        "Illustration rare": {
+          "holo": 1
+        },
+        "Special illustration rare": {
+          "holo": 1
+        },
+        "ACE SPEC Rare": {
+          "holo": 1
+        },
+        "Shiny rare": {
+          "holo": 1
+        },
+        "Black White Rare": {
+          "holo": 1
+        }
+      }
+    },
+    {
+      "label": "Rare",
+      "count": 1,
+      "table": {
+        "Rare": 0.75,
+        "Double rare": 0.167,
+        "Ultra Rare": 0.067,
+        "Shiny Ultra Rare": 0.02,
+        "Hyper rare": 0.018,
+        "Mega Hyper Rare": 0.002
+      },
+      "finish": {
+        "holo": 1
+      }
+    }
+  ]
+}

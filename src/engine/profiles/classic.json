@@ -1,0 +1,91 @@
+{
+  "id": "classic",
+  "name": "Classic (e-Card–Sun & Moon)",
+  "series": [
+    "lc",
+    "ecard",
+    "ex",
+    "pop",
+    "dp",
+    "pl",
+    "hgss",
+    "col",
+    "bw",
+    "xy",
+    "sm"
+  ],
+  "notes": "10 cards: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare. TCGdex has no variant flags for BW/XY/SM, so the rare slot's finish odds make roughly 1 in 3 plain 'Rare' pulls holo there, and reverse holos fall back to Common/Uncommon/Rare.",
+  "reverseFallback": [
+    "Common",
+    "Uncommon",
+    "Rare"
+  ],
+  "slots": [
+    {
+      "label": "Common",
+      "count": 5,
+      "table": {
+        "Common": 1
+      }
+    },
+    {
+      "label": "Uncommon",
+      "count": 3,
+      "table": {
+        "Uncommon": 1
+      }
+    },
+    {
+      "label": "Reverse",
+      "count": 1,
+      "table": {
+        "@reverse": 1
+      }
+    },
+    {
+      "label": "Rare",
+      "count": 1,
+      "table": {
+        "Rare": 0.6,
+        "Holo Rare": 0.28,
+        "Rare Holo": 0.28,
+        "Rare Holo LV.X": 0.03,
+        "Rare PRIME": 0.04,
+        "LEGEND": 0.02,
+        "Ultra Rare": 0.09,
+        "Secret Rare": 0.02,
+        "Shiny rare": 0.02
+      },
+      "finish": {
+        "normal": 0.67,
+        "holo": 0.33
+      },
+      "finishOverrides": {
+        "Holo Rare": {
+          "holo": 1
+        },
+        "Rare Holo": {
+          "holo": 1
+        },
+        "Rare Holo LV.X": {
+          "holo": 1
+        },
+        "Rare PRIME": {
+          "holo": 1
+        },
+        "LEGEND": {
+          "holo": 1
+        },
+        "Ultra Rare": {
+          "holo": 1
+        },
+        "Secret Rare": {
+          "holo": 1
+        },
+        "Shiny rare": {
+          "holo": 1
+        }
+      }
+    }
+  ]
+}

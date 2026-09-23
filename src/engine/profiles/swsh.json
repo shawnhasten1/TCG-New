@@ -1,0 +1,93 @@
+{
+  "id": "swsh",
+  "name": "Sword & Shield",
+  "series": [
+    "swsh"
+  ],
+  "notes": "10 playable cards: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare that can upgrade to V, VMAX, VSTAR, full art or secret. Radiant Rares replace the reverse. Odds are community estimates, tune freely.",
+  "slots": [
+    {
+      "label": "Common",
+      "count": 5,
+      "table": {
+        "Common": 1
+      }
+    },
+    {
+      "label": "Uncommon",
+      "count": 3,
+      "table": {
+        "Uncommon": 1
+      }
+    },
+    {
+      "label": "Reverse",
+      "count": 1,
+      "table": {
+        "@reverse": 0.95,
+        "Radiant Rare": 0.05
+      },
+      "finishOverrides": {
+        "Radiant Rare": {
+          "holo": 1
+        }
+      }
+    },
+    {
+      "label": "Rare",
+      "count": 1,
+      "table": {
+        "Rare": 0.42,
+        "Holo Rare": 0.21,
+        "Holo Rare V": 0.16,
+        "Holo Rare VMAX": 0.07,
+        "Holo Rare VSTAR": 0.05,
+        "Amazing Rare": 0.04,
+        "Shiny rare": 0.05,
+        "Shiny rare V": 0.02,
+        "Shiny rare VMAX": 0.01,
+        "Classic Collection": 0.1,
+        "Ultra Rare": 0.055,
+        "Secret Rare": 0.03
+      },
+      "finish": {
+        "normal": 1
+      },
+      "finishOverrides": {
+        "Holo Rare": {
+          "holo": 1
+        },
+        "Holo Rare V": {
+          "holo": 1
+        },
+        "Holo Rare VMAX": {
+          "holo": 1
+        },
+        "Holo Rare VSTAR": {
+          "holo": 1
+        },
+        "Amazing Rare": {
+          "holo": 1
+        },
+        "Shiny rare": {
+          "holo": 1
+        },
+        "Shiny rare V": {
+          "holo": 1
+        },
+        "Shiny rare VMAX": {
+          "holo": 1
+        },
+        "Classic Collection": {
+          "holo": 1
+        },
+        "Ultra Rare": {
+          "holo": 1
+        },
+        "Secret Rare": {
+          "holo": 1
+        }
+      }
+    }
+  ]
+}
