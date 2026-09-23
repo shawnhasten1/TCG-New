@@ -6,7 +6,7 @@ import { cardImage } from "../api/tcgdex";
 import { updateSettings, useSettings } from "../app/settings";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
-import { pullTier } from "../engine/tiers";
+import { pullTier, rarityKind } from "../engine/tiers";
 import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
@@ -306,6 +306,11 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
                     aria-label={cardLabel(pull) + (newIds?.has(pull.card.id) ? " New to your collection." : "")}
                   />
                   {newIds?.has(pull.card.id) && phase === "reveal" && i === idx && <span className="new-badge">New</span>}
+                  {phase === "reveal" && i === idx && pull.card.rarity && pull.card.rarity !== "None" && (
+                    <span className="rarity-tag" data-kind={rarityKind(pull.card.rarity)} aria-hidden="true">
+                      {pull.card.rarity}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>

@@ -204,6 +204,27 @@
 .opener .summary-grid .new-badge { top: -8px; right: -6px; animation: none; }
 @media (prefers-reduced-motion: reduce) { .opener .new-badge { animation: none; } }
 
+/* ---------- Rarity tag on the revealed card ---------- */
+.opener .rarity-tag {
+  --tag: #8a8595; --tag-ink: #fff;
+  position: absolute; left: 50%; bottom: -14px; z-index: 10; pointer-events: none;
+  translate: -50% 0; white-space: nowrap;
+  font: 800 .78rem/1 "Alegreya Sans", sans-serif; letter-spacing: .05em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--tag); color: var(--tag-ink);
+  box-shadow: 0 0 0 2px #fff6, 0 4px 12px -4px #0008;
+  animation: newPop .35s cubic-bezier(.2,.9,.25,1.4) .1s both;
+}
+.opener .rarity-tag[data-kind="uncommon"] { --tag: #2f8f5b; }
+.opener .rarity-tag[data-kind="rare"] { --tag: #2f6fd6; }
+.opener .rarity-tag[data-kind="ultra"] { --tag: #8a3fd1; }
+.opener .rarity-tag[data-kind="chase"] {
+  --tag-ink: #4a3300;
+  background: linear-gradient(100deg, #ffe07a, #ffc53d 40%, #fff1b8 55%, #ffb72b);
+  box-shadow: 0 0 0 2px #fff8, 0 0 16px #ffd66baa, 0 4px 12px -4px #0008;
+}
+@media (prefers-reduced-motion: reduce) { .opener .rarity-tag { animation: none; } }
+
 /* ---------- Daily limit ---------- */
 .opener .limit-note { margin: -10px 0 0; color: var(--muted); font-size: .9rem; }
 .opener .out-of-packs { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
