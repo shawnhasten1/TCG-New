@@ -92,6 +92,16 @@ export async function savePack(setId: string, pulls: PulledCard[], openedAt = ne
   return packId;
 }
 
+/** Adds already-formed records in one transaction (collection import). */
+export async function addPulls(records: Omit<PullRecord, "id">[]): Promise<void> {
+  if (!records.length) return;
+  const tx = (await db()).transaction(STORE, "readwrite");
+  const store = tx.objectStore(STORE);
+  for (const r of records) store.add({ ...r });
+  await done(tx);
+  changed();
+}
+
 /** Every pull, or just one set's. */
 export async function getPulls(setId?: string): Promise<PullRecord[]> {
   const store = (await db()).transaction(STORE, "readonly").objectStore(STORE);

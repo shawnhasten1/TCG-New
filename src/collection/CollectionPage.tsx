@@ -46,6 +46,7 @@ export function CollectionPage() {
     <main className="collection">
       <nav className="crumbs">
         <a href={href.picker()}>← All sets</a>
+        <a href={href.settings()}>Settings &amp; backup</a>
       </nav>
       <h1>Your collection</h1>
       {!pulls || !sets ? (

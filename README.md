@@ -6,7 +6,7 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (collection: #/collection, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run dev                          # app at http://localhost:5173 (#/collection, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
 npm test                             # engine unit tests (offline)
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
 npm run open -- sv03.5 [seed]        # open one pack from a real set
@@ -30,6 +30,22 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
   Art boxes for 10 frame layouts (WOTC through SV/ME) were measured on real scans and live in `layouts.ts`. Masks are inline SVG, so they don't depend on remote-image CORS. The foil lab (`#/foil`) shows every era in normal, holo and reverse next to real full-art examples, with an art-box overlay, a light sweep, and strength sliders for tuning. Reduced motion shrinks tilt, skips the burst, and stops glitter chasing the pointer.
 - **Phase 6, pack realism: done.** Packs follow Pokémon's published order: commons, then uncommons, then foils, rare slot last. Scarlet & Violet is 4/3/3 with two reverse slots; older eras guarantee one reverse. Trainers were already in the pools. Plain basic energies are kept out (`isFillerEnergy` in `src/engine/openPack.ts`), and there is no separate energy card. Gold/hyper basic energies and special energies can still be pulled.
 - **Phase 7, collection: done.** `src/collection/`. Each pack is saved to IndexedDB (`tcg-collection` database) as it's torn: card, finish, 1st Edition, pack id, date. Cards new to the collection get a "New" badge in the reveal and summary. `#/binder/<set>` shows every card in number order, missing cards faded, with copies, finish chips, filters (owned / missing / duplicates), and main-set and with-secrets completion. Completion only counts cards packs can produce, so 100% is reachable. Clicking a card opens a tiltable foil view with copies per finish, first-pull date and market prices. `#/collection` lists opened sets by most recent, and the picker shows a per-set "collected" chip. Prices come from TCGdex's per-card REST pricing (GraphQL has none): TCGplayer USD by printing, falling back to Cardmarket EUR. They are cached per day and fetched three at a time, only on request in the binder.
+- **Phase 8, polish: done.**
+  - **Sound effects** (`src/app/sound.ts`) are synthesized with Web Audio, so there are no files to host or license: a foil tear, cards sliding out, a flick per card, and a chime that grows with the hit tier. There's a mute button in the opener, and volume is in settings.
+  - **Pack of the day** is an optional daily limit (1, 3, 5 or 10) across all sets, resetting at local midnight. It's counted from the collection itself, so there's no separate counter. When you run out you get a live countdown. A pack you're partway through revealing is never taken away.
+  - **Backup**: export the collection to JSON, and import it by merging (skips packs you already have) or replacing. Bad files get a readable error.
+  - **Settings** live at `#/settings`, and preferences are kept in localStorage.
+  - **Deployment**: GitHub Pages workflow and Netlify config (see below), a favicon, and a meta description.
+
+## Deploying
+
+The build is a static site with relative paths and hash routes, so it works from any sub-path with no server config.
+
+- **GitHub Pages**: push this repo to GitHub, then set Settings → Pages → Source to "GitHub Actions". `.github/workflows/deploy.yml` runs the tests, builds, and publishes `dist/` on every push to `main`/`master`.
+- **Netlify**: "Add new site → Import from Git" and pick the repo. `netlify.toml` sets the build command (`npm run build`) and publish directory (`dist`).
+- **Anywhere else**: `npm run build` and upload `dist/`.
+
+The collection is stored per browser and per site address, so moving from localhost to a deployed URL starts empty. Use Settings → Export / Import to carry it over.
 
 ## API findings (checked 2026-09-22)
 

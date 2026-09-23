@@ -19,6 +19,15 @@
   background: var(--btn); color: var(--ink);
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
+.opener .sound-toggle {
+  position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); right: 16px;
+  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif;
+  padding: 10px 16px; border-radius: 999px; cursor: pointer;
+  background: var(--btn); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.opener .sound-toggle[aria-pressed="false"] { color: var(--muted); }
+.opener .sound-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .opener .hint { margin: 0; min-height: 1.4em; color: var(--muted); font-size: 1rem; text-align: center; }
 .opener .controls { display: flex; gap: 8px; min-height: 42px; }
 .opener .controls button {
@@ -194,3 +203,9 @@
 .opener .summary-grid figure { position: relative; }
 .opener .summary-grid .new-badge { top: -8px; right: -6px; animation: none; }
 @media (prefers-reduced-motion: reduce) { .opener .new-badge { animation: none; } }
+
+/* ---------- Daily limit ---------- */
+.opener .limit-note { margin: -10px 0 0; color: var(--muted); font-size: .9rem; }
+.opener .out-of-packs { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.opener .out-of-packs h1 { font: italic 800 clamp(1.8rem, 6vw, 2.6rem)/1.1 "Alegreya", Georgia, serif; margin: 0; }
+.opener .out-of-packs strong { color: var(--ink); font-variant-numeric: tabular-nums; }

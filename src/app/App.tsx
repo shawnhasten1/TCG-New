@@ -5,12 +5,15 @@ import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
 import { SetPicker } from "../picker/SetPicker";
 import { useRoute } from "./router";
+import { SettingsPage } from "./SettingsPage";
 
 export function App() {
   const route = useRoute();
   switch (route.page) {
     case "open":
       return <OpenPage key={route.setId} setId={route.setId} />;
+    case "settings":
+      return <SettingsPage />;
     case "collection":
       return <CollectionPage />;
     case "binder":

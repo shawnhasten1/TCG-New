@@ -3,6 +3,8 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
+import { updateSettings, useSettings } from "../app/settings";
+import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
 import { pullTier } from "../engine/tiers";
 import type { PulledCard } from "../engine/types";
@@ -25,6 +27,10 @@ interface Props {
   onAgain(): void;
   onBack(): void;
   binderHref?: string;
+  /** Daily-limit status line, e.g. "2 of 3 packs left today". */
+  limitNote?: string;
+  /** False when the daily limit is used up. */
+  canOpenAgain?: boolean;
 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -36,7 +42,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, binderHref }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, binderHref, limitNote, canOpenAgain = true }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -84,6 +90,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
     if (phaseRef.current !== "sealed") return;
     go("opening");
     onOpened?.();
+    sfx.tear();
     tilt.rest();
     const pack = packRef.current!;
     const top = topRef.current!;
@@ -100,6 +107,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
     clearTimeout(note);
     setWaitingForImages(false);
     stack.style.transform = "translateY(-58%)"; // cards slide up out of the mouth
+    sfx.slide();
     await wait(750);
     bodyRef.current!.classList.add("leave"); // wrapper drops away
     pack.classList.add("out"); // cards move in front
@@ -118,12 +126,15 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
     if (focusOnReveal.current) card?.focus({ preventScroll: true });
     const burst = burstRef.current!;
     const tier = pullTier(pulls[idx]);
+    if (idx > 0) sfx.flip();
+    const chime = tier > 0 ? setTimeout(() => sfx.hit(tier), 120) : undefined;
     burst.classList.remove("go");
     if (tier > 0 && !reduced) {
       burst.dataset.tier = String(tier);
       void burst.offsetWidth; // restart the animation
       burst.classList.add("go");
     }
+    return () => clearTimeout(chime);
   }, [phase, idx, pulls, tilt, reduced]);
 
   const next = () => {
@@ -238,6 +249,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
       <button type="button" className="back" onClick={onBack}>
         ← Sets
       </button>
+      <SoundToggle />
 
       {phase === "summary" ? (
         <PackSummary pulls={pulls} newIds={newIds} />
@@ -315,13 +327,14 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
       <p className="hint" aria-live="polite">
         {hint}
       </p>
+      {limitNote && (phase === "sealed" || phase === "summary" || (phase === "reveal" && isLast)) && <p className="limit-note">{limitNote}</p>}
       <div className="controls">
         {phase === "sealed" && (
           <button type="button" onClick={tearWithButton}>
             Tear open
           </button>
         )}
-        {(phase === "summary" || (phase === "reveal" && isLast)) && (
+        {canOpenAgain && (phase === "summary" || (phase === "reveal" && isLast)) && (
           <button type="button" className="primary" onClick={onAgain} autoFocus={phase === "summary"}>
             Open another pack
           </button>
@@ -333,6 +346,15 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
         )}
       </div>
     </div>
+  );
+}
+
+function SoundToggle() {
+  const { sound } = useSettings();
+  return (
+    <button type="button" className="sound-toggle" aria-pressed={sound} onClick={() => updateSettings({ sound: !sound })}>
+      {sound ? "Sound on" : "Sound off"}
+    </button>
   );
 }
 

@@ -2,7 +2,7 @@
 // #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open"; setId: string } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string };
+export type Route = { page: "picker" } | { page: "open"; setId: string } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" };
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -10,6 +10,7 @@ export function parseRoute(hash: string): Route {
   if (page === "debug") return { page: "debug", setId: id || undefined };
   if (page === "foil") return { page: "foil" };
   if (page === "collection") return { page: "collection" };
+  if (page === "settings") return { page: "settings" };
   if (page === "binder" && id) return { page: "binder", setId: id };
   return { page: "picker" };
 }
@@ -20,6 +21,7 @@ export const href = {
   debug: (setId: string) => `#/debug/${encodeURIComponent(setId)}`,
   foil: () => "#/foil",
   collection: () => "#/collection",
+  settings: () => "#/settings",
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
 };
 

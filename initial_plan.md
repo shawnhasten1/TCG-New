@@ -65,4 +65,6 @@ tcgdex
 
 Phase 8: Polish. Sound effects, a "pack of the day" timer if you want pacing, export and import of the collection as JSON, and deployment.
 
+Done. Sound effects are synthesized with Web Audio: tear, slide, flip, and a chime per hit tier, with mute and volume controls. Pack of the day is an optional daily limit across sets, counted from the collection and resetting at local midnight, with a countdown. Collection export and import work as JSON, merging by pack or replacing. There's a settings page. Deployment has a GitHub Pages workflow, a Netlify config and a favicon. The build was verified serving from a sub-path.
+
 Phases 1 and 2 are the foundation, and they're quick. Once the engine can print real pulls from a real set, everything after that is presentation.

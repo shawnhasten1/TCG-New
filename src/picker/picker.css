@@ -48,3 +48,4 @@
   align-self: flex-start; margin-top: 4px; padding: 3px 9px; border-radius: 999px;
   font-size: .8rem; font-weight: 700; background: var(--btn-on); color: var(--btn-on-ink);
 }
+.picker .header-links { display: flex; flex-wrap: wrap; gap: 8px; }

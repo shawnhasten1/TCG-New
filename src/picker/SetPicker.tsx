@@ -67,9 +67,14 @@ export function SetPicker() {
       <header>
         <div className="title-row">
           <h1>Pick a set</h1>
-          <a className="collection-link" href={href.collection()}>
-            Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
-          </a>
+          <nav className="header-links">
+            <a className="collection-link" href={href.collection()}>
+              Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
+            </a>
+            <a className="collection-link" href={href.settings()}>
+              Settings
+            </a>
+          </nav>
         </div>
         <p className="lede">Open booster packs from any Pokémon TCG expansion, using the real card list.</p>
         <div className="filters">
