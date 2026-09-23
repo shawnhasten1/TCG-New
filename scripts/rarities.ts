@@ -17,6 +17,9 @@ for (const id of ids) {
   const rows = Object.entries(data.byRarity).map(([rarity, cards]) => ({
     rarity,
     count: cards.length,
+    pokemon: cards.filter((c) => c.category === "Pokemon").length,
+    trainer: cards.filter((c) => c.category === "Trainer").length,
+    energy: cards.filter((c) => c.category === "Energy").length,
     normal: cards.filter((c) => c.variants.normal).length,
     holo: cards.filter((c) => c.variants.holo).length,
     reverse: cards.filter((c) => c.variants.reverse).length,

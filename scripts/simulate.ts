@@ -27,6 +27,9 @@ const fmt = (s: { key: string; perPack: number; oneIn: number }) => ({
 console.log(`\n${data.set.name} (${id}) · profile ${profile.id} · ${report.packs} packs · seed "${seed}"`);
 if (report.variantDataMissing) console.log("⚠ No variant data in this set: finishes come from profile odds, not card flags.");
 if (report.unusedRarities.length) console.log(`⚠ Rarities no slot can produce: ${report.unusedRarities.join(", ")}`);
+if (report.excludedEnergy) console.log(`Basic energies kept out of the pack: ${report.excludedEnergy}`);
+console.log("\nCard types:");
+console.table(report.byCategory.map(fmt));
 console.log("\nAll slots:");
 console.table(report.byRarity.map(fmt));
 for (const [slot, stats] of Object.entries(report.bySlot)) {

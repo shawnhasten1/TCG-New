@@ -100,8 +100,9 @@ export function DebugPage({ initialSetId }: { initialSetId?: string }) {
             </dl>
           </section>
 
-          {prep && (prep.variantDataMissing || prep.unusedRarities.length > 0 || prep.emptySlots.length > 0) && (
+          {prep && (prep.variantDataMissing || prep.unusedRarities.length > 0 || prep.emptySlots.length > 0 || prep.excludedEnergy > 0) && (
             <ul className="warnings">
+              {prep.excludedEnergy > 0 && <li>{prep.excludedEnergy} basic energies are kept out of packs.</li>}
               {prep.variantDataMissing && <li>No variant data in this set. Finishes come from profile odds.</li>}
               {prep.unusedRarities.length > 0 && <li>Rarities no slot can produce: {prep.unusedRarities.join(", ")}</li>}
               {prep.emptySlots.length > 0 && <li>Can't fill slot(s): {prep.emptySlots.join(", ")}</li>}
@@ -120,6 +121,9 @@ export function DebugPage({ initialSetId }: { initialSetId?: string }) {
                 <tr>
                   <th>Rarity</th>
                   <th>Cards</th>
+                  <th>Pokémon</th>
+                  <th>Trainer</th>
+                  <th>Energy</th>
                   <th>Normal</th>
                   <th>Holo</th>
                   <th>Reverse</th>
@@ -134,6 +138,9 @@ export function DebugPage({ initialSetId }: { initialSetId?: string }) {
                     <tr key={rarity}>
                       <td>{rarity}</td>
                       <td>{cards.length}</td>
+                      <td>{cards.filter((c) => c.category === "Pokemon").length}</td>
+                      <td>{cards.filter((c) => c.category === "Trainer").length}</td>
+                      <td>{cards.filter((c) => c.category === "Energy").length}</td>
                       <td>{cards.filter((c) => c.variants.normal).length}</td>
                       <td>{cards.filter((c) => c.variants.holo).length}</td>
                       <td>{cards.filter((c) => c.variants.reverse).length}</td>

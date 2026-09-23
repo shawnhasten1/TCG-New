@@ -24,7 +24,7 @@ import type {
 const REST = "https://api.tcgdex.net/v2/en";
 const GRAPHQL = "https://api.tcgdex.net/v2/graphql";
 const GRAPHQL_PAGE = 100;
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2; // 2: cards gained category / energyType / trainerType
 
 export type Progress = (done: number, total: number) => void;
 
@@ -94,7 +94,7 @@ async function fetchCardsGraphql(setId: string, onProgress?: Progress, expected 
   const cards: Card[] = [];
   for (let page = 1; ; page++) {
     const query = `{ cards(filters:{ id: ${JSON.stringify(setId + "-")} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
-      id localId name image rarity set { id } variants { normal reverse holo firstEdition } } }`;
+      id localId name image rarity category energyType trainerType set { id } variants { normal reverse holo firstEdition } } }`;
     const pageCards = (await graphql<{ cards: (GqlCard | null)[] }>(query)).cards ?? [];
     for (const c of pageCards) {
       if (c && c.set?.id === setId) {
@@ -115,6 +115,9 @@ interface RestCard {
   image?: string;
   rarity?: string;
   variants?: Partial<Card["variants"]>;
+  category?: Card["category"];
+  energyType?: string;
+  trainerType?: string;
 }
 
 function fromRest(c: RestCard): Card {
@@ -124,6 +127,9 @@ function fromRest(c: RestCard): Card {
     name: c.name,
     image: c.image,
     rarity: c.rarity ?? "None",
+    category: c.category,
+    energyType: c.energyType ?? null,
+    trainerType: c.trainerType ?? null,
     variants: {
       normal: !!c.variants?.normal,
       reverse: !!c.variants?.reverse,

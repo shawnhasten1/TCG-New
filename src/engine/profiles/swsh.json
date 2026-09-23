@@ -4,7 +4,7 @@
   "series": [
     "swsh"
   ],
-  "notes": "10 playable cards: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare that can upgrade to V, VMAX, VSTAR, full art or secret. Radiant Rares replace the reverse. Odds are community estimates, tune freely.",
+  "notes": "10 cards in pack order: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare that can upgrade to V, VMAX, VSTAR, full art or secret. Sets before Scarlet & Violet only guarantee one reverse foil per pack (Pokémon support site). Radiant Rares replace the reverse. Odds are community estimates, tune freely. The basic energy card is left out.",
   "slots": [
     {
       "label": "Common",

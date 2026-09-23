@@ -5,7 +5,7 @@
     "sv",
     "me"
   ],
-  "notes": "10 playable cards: 4 Common, 3 Uncommon, 2 Reverse (the second can hit an Illustration Rare, SIR or ACE SPEC), 1 Rare (Rare → Double Rare → Ultra Rare → Hyper Rare). Odds are community estimates for a standard main set.",
+  "notes": "10 cards in pack order: 4 Common, 3 Uncommon, then 3 foils: two reverse slots (the second can hit an Illustration Rare, SIR or ACE SPEC) and the rare slot (Rare → Double Rare → Ultra Rare → Hyper Rare), so at least one foil is Rare or higher. Structure per Pokémon's support site; odds are community estimates for a standard main set. The basic energy card real packs include is left out.",
   "slots": [
     {
       "label": "Common",

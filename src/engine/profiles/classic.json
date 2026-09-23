@@ -14,7 +14,7 @@
     "xy",
     "sm"
   ],
-  "notes": "10 cards: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare. TCGdex has no variant flags for BW/XY/SM, so the rare slot's finish odds make roughly 1 in 3 plain 'Rare' pulls holo there, and reverse holos fall back to Common/Uncommon/Rare.",
+  "notes": "10 cards in pack order: 5 Common, 3 Uncommon, 1 Reverse, 1 Rare. Sets before Scarlet & Violet only guarantee one reverse foil per pack (Pokémon support site). TCGdex has no variant flags for BW/XY/SM, so the rare slot's finish odds make roughly 1 in 3 plain 'Rare' pulls holo there, and reverse holos fall back to Common/Uncommon/Rare. Basic energies are numbered set cards in these eras but are kept out of the Common slot.",
   "reverseFallback": [
     "Common",
     "Uncommon",

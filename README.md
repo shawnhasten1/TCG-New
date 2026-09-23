@@ -28,6 +28,7 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
   - **Ultra / secret / hyper rares**: stronger etched texture over the whole card, gold-tinted for hyper rares.
 
   Art boxes for 10 frame layouts (WOTC through SV/ME) were measured on real scans and live in `layouts.ts`. Masks are inline SVG, so they don't depend on remote-image CORS. The foil lab (`#/foil`) shows every era in normal, holo and reverse next to real full-art examples, with an art-box overlay, a light sweep, and strength sliders for tuning. Reduced motion shrinks tilt, skips the burst, and stops glitter chasing the pointer.
+- **Phase 6, pack realism: done.** Packs follow Pokémon's published order: commons, then uncommons, then foils, rare slot last. Scarlet & Violet is 4/3/3 with two reverse slots; older eras guarantee one reverse. Trainers were already in the pools. Plain basic energies are kept out (`isFillerEnergy` in `src/engine/openPack.ts`), and there is no separate energy card. Gold/hyper basic energies and special energies can still be pulled.
 
 ## API findings (checked 2026-09-22)
 

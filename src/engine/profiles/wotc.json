@@ -6,7 +6,7 @@
     "gym",
     "neo"
   ],
-  "notes": "11 cards: 7 Common, 3 Uncommon, 1 Rare. About 1 in 3 packs has a holo rare. Base-era holos share the 'Rare' string with non-holos, so they're split with #holo / #nonholo. Set firstEditionChance to 1 to open 1st Edition packs.",
+  "notes": "11 cards in pack order: 7 Common, 3 Uncommon, 1 Rare. About 1 in 3 packs has a holo rare. No reverse holos existed yet. Base-era holos share the 'Rare' string with non-holos, so they're split with #holo / #nonholo. Basic energies are numbered set cards here but are kept out of the Common slot. Set firstEditionChance to 1 to open 1st Edition packs.",
   "firstEditionChance": 0,
   "slots": [
     {

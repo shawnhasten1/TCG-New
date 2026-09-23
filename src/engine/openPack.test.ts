@@ -187,3 +187,65 @@ describe("profiles", () => {
     expect(id("misc")).toBeUndefined();
   });
 });
+
+describe("pack order", () => {
+  const kind = (slot: { table: Record<string, number> }) => {
+    const keys = Object.keys(slot.table);
+    if (keys.every((k) => k === "Common")) return "common";
+    if (keys.every((k) => k === "Uncommon")) return "uncommon";
+    return "foil";
+  };
+
+  it("every profile runs commons, then uncommons, then foil slots", () => {
+    for (const p of profiles) {
+      const kinds = p.slots.map(kind);
+      const firstUncommon = kinds.indexOf("uncommon");
+      const firstFoil = kinds.indexOf("foil");
+      expect(kinds.lastIndexOf("common")).toBeLessThan(firstUncommon);
+      expect(kinds.lastIndexOf("uncommon")).toBeLessThan(firstFoil);
+      expect(kinds.slice(firstFoil).every((k) => k === "foil")).toBe(true);
+    }
+  });
+
+  it("puts the rare slot last, with no commons or uncommons in it", () => {
+    for (const p of profiles) {
+      const last = p.slots.at(-1)!;
+      expect(last.label).toBe("Rare");
+      expect(Object.keys(last.table).some((k) => k === "Common" || k === "Uncommon")).toBe(false);
+    }
+  });
+
+  it("Scarlet & Violet packs are 4 commons, 3 uncommons, 3 foils", () => {
+    const counts = sv.slots.reduce<Record<string, number>>((m, s) => ((m[kind(s)] = (m[kind(s)] ?? 0) + s.count), m), {});
+    expect(counts).toEqual({ common: 4, uncommon: 3, foil: 3 });
+  });
+
+  it("older eras guarantee exactly one reverse slot", () => {
+    for (const id of ["classic", "swsh"]) {
+      const p = profiles.find((x) => x.id === id)!;
+      expect(p.slots.filter((s) => "@reverse" in s.table).reduce((n, s) => n + s.count, 0)).toBe(1);
+    }
+  });
+});
+
+describe("basic energy", () => {
+  const energy = (rarity: string, energyType = "Normal") => ({ ...card(rarity), category: "Energy" as const, energyType });
+
+  it("keeps plain basic energies out of every slot, but not special or gold energies", () => {
+    const basics = Array.from({ length: 30 }, () => energy("Common"));
+    const special = energy("Uncommon", "Special");
+    const gold = energy("Hyper rare");
+    const data = setData([...svSet().cards, ...basics, special, gold]);
+    const prep = preparePack(data, sv);
+    expect(prep.excludedEnergy).toBe(30);
+    const pooled = new Set([...prep.pools.values()].flat().map((c) => c.id));
+    expect(basics.some((c) => pooled.has(c.id))).toBe(false);
+    expect(pooled.has(special.id)).toBe(true);
+    expect(pooled.has(gold.id)).toBe(true);
+  });
+
+  it("can be switched back on per profile", () => {
+    const data = setData([...svSet().cards, ...Array.from({ length: 5 }, () => energy("Common"))]);
+    expect(preparePack(data, { ...sv, includeBasicEnergy: true }).excludedEnergy).toBe(0);
+  });
+});

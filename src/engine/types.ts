@@ -25,6 +25,10 @@ export interface SlotProfile {
   finishOverrides?: Record<string, FinishOdds>;
 }
 
+/**
+ * A pack profile. Slots are listed in pack order, which is also reveal order. Per Pokémon's
+ * support site, cards come out commons first, then uncommons, then the foils, rare slot last.
+ */
 export interface PackProfile {
   id: string;
   name: string;
@@ -38,6 +42,12 @@ export interface PackProfile {
    * (TCGdex is missing variant flags for some older sets).
    */
   reverseFallback?: string[];
+  /**
+   * Keep plain basic energies (category Energy, energyType Normal, not rare) in the pools.
+   * Off by default: real packs carry basic energy as an extra, non-playable card, and we
+   * leave that card out rather than let energies take common slots.
+   */
+  includeBasicEnergy?: boolean;
   /** Chance a whole pack is 1st Edition, for cards that have a 1st Edition printing. */
   firstEditionChance?: number;
   notes?: string;

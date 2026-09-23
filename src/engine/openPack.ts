@@ -24,11 +24,21 @@ export interface PreparedPack {
   emptySlots: string[];
   /** Cards per pack, from the profile. */
   packSize: number;
-  /** Cards with an image, i.e. the ones that can be pulled. */
+  /** Cards that can be pulled: imaged, and not excluded basic energy. */
   imagedCards: number;
+  /** Basic energies left out of the pools (see PackProfile.includeBasicEnergy). */
+  excludedEnergy: number;
 }
 
 const hasImage = (c: Card) => !!c.image;
+
+/**
+ * A plain basic energy: the filler card real packs carry outside the 10 playable cards.
+ * Gold / hyper-rare basic energies are chase cards, so anything with a "rare" rarity stays in.
+ */
+export function isFillerEnergy(c: Card): boolean {
+  return c.category === "Energy" && c.energyType === "Normal" && !/rare/i.test(c.rarity);
+}
 
 function selectPool(selector: string, cards: Card[], profile: PackProfile, variantDataMissing: boolean): Card[] {
   if (selector === REVERSE) {
@@ -53,7 +63,8 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
   const hit = byProfile.get(profile);
   if (hit) return hit;
 
-  const cards = data.cards.filter(hasImage);
+  const imaged = data.cards.filter(hasImage);
+  const cards = profile.includeBasicEnergy ? imaged : imaged.filter((c) => !isFillerEnergy(c));
   const variantDataMissing = !cards.some((c) => c.variants.holo || c.variants.reverse);
   const pools = new Map<string, Card[]>();
   const slots: PreparedSlot[] = profile.slots.map((slot) => {
@@ -72,7 +83,8 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
   const emptySlots = slots.filter((s) => s.slot.count > 0 && !Object.keys(s.table).length).map((s) => s.slot.label);
 
   const packSize = profile.slots.reduce((n, s) => n + s.count, 0);
-  const result = { profile, slots, pools, variantDataMissing, unusedRarities, emptySlots, packSize, imagedCards: cards.length };
+  const excludedEnergy = imaged.length - cards.length;
+  const result = { profile, slots, pools, variantDataMissing, unusedRarities, emptySlots, packSize, imagedCards: cards.length, excludedEnergy };
   byProfile.set(profile, result);
   return result;
 }

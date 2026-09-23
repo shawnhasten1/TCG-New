@@ -70,7 +70,9 @@ export interface Variants {
   firstEdition: boolean;
 }
 
-/** The card fields the pack engine needs: identity, image, rarity and finishes. */
+export type CardCategory = "Pokemon" | "Trainer" | "Energy";
+
+/** The card fields the pack engine needs: identity, image, rarity, finishes and card type. */
 export interface Card {
   id: string;
   localId: string;
@@ -78,6 +80,11 @@ export interface Card {
   image?: string;
   rarity: string;
   variants: Variants;
+  category?: CardCategory;
+  /** "Normal" for basic energy, "Special" otherwise. Energy cards only. */
+  energyType?: string | null;
+  /** "Supporter", "Item", "Stadium", "Tool"… Trainer cards only (not set for older sets). */
+  trainerType?: string | null;
 }
 
 /** Everything needed to open packs from one set. */
