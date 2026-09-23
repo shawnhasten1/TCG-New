@@ -15,7 +15,7 @@ import { openPack, whyNotOpenable } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { drawableSets, pickRandomSet } from "../engine/randomSet";
 import { createRng } from "../engine/rng";
-import { pityFloor } from "../engine/setRarity";
+import { guaranteeNote, pityFloor } from "../engine/setRarity";
 import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
@@ -239,6 +239,8 @@ export function OpenPage() {
       onOpened={save}
       onAgain={next}
       binderHref={href.binder(data.set.id)}
+      // Counts after the pack on screen, whose set is already known, so it reads the same once torn.
+      pityNote={guaranteeNote(torn ? history.current : [...history.current, data.set.id])}
       limitNote={limited ? (left === 0 ? `Next pack in ${countdown}` : `${left} of ${dailyLimit} ${dailyLimit === 1 ? "pack" : "packs"} left${nextAt ? ` · next in ${countdown}` : ""}`) : undefined}
       canOpenAgain={!outOfPacks}
     />

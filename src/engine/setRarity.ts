@@ -35,16 +35,28 @@ export function tierInfo(id: SetTier) {
 const rank = (t: SetTier) => TIERS.findIndex((x) => x.id === t);
 
 /**
- * The lowest tier the next pack must be, given the sets of past packs (oldest first),
- * or undefined when no guarantee is due.
+ * For each pity tier, how many more packs until one is guaranteed, given the sets of past packs
+ * (oldest first): 1 means the next pack.
  */
-export function pityFloor(history: string[], tierOf: (id: string) => SetTier = setTier): SetTier | undefined {
-  for (const { tier, every } of PITY) {
+export function packsUntilGuarantee(history: string[], tierOf: (id: string) => SetTier = setTier): { tier: SetTier; packs: number }[] {
+  return PITY.map(({ tier, every }) => {
     let since = 0;
     for (let i = history.length - 1; i >= 0 && rank(tierOf(history[i])) < rank(tier); i--) since++;
-    if (since >= every - 1) return tier;
-  }
-  return undefined;
+    // An era-limited pool can overrun a guarantee it couldn't meet; it's still due next pack.
+    return { tier, packs: Math.max(1, every - since) };
+  });
+}
+
+/** The lowest tier the next pack must be, or undefined when no guarantee is due. */
+export function pityFloor(history: string[], tierOf: (id: string) => SetTier = setTier): SetTier | undefined {
+  return packsUntilGuarantee(history, tierOf).find((g) => g.packs === 1)?.tier;
+}
+
+/** "Rare set guaranteed within 7 packs · Legendary within 83", counting after the given history. */
+export function guaranteeNote(history: string[], tierOf: (id: string) => SetTier = setTier): string {
+  const [first, ...rest] = [...packsUntilGuarantee(history, tierOf)].reverse(); // rare first
+  const within = (n: number) => (n === 1 ? "next pack" : `within ${n} packs`);
+  return [`${tierInfo(first.tier).name} guaranteed ${within(first.packs)}`, ...rest.map((g) => `${tierInfo(g.tier).name.replace(" set", "")} ${within(g.packs)}`)].join(" · ");
 }
 
 /**

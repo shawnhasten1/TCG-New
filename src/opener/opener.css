@@ -242,7 +242,7 @@
 @media (prefers-reduced-motion: reduce) { .opener .rarity-tag { animation: none; } }
 
 /* ---------- Daily limit ---------- */
-.opener .limit-note { margin: -8px 0 0; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; text-align: center; }
+.opener .limit-note { margin: -8px 0 0; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; text-align: center; text-wrap: balance; }
 .opener .out-of-packs { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 .opener .out-of-packs h1 { font: italic 800 clamp(1.8rem, 6vw, 2.6rem)/1.1 "Alegreya", Georgia, serif; margin: 0; }
 .opener .out-of-packs .recharge { margin: 4px 0 8px; font-size: 1.15rem; }

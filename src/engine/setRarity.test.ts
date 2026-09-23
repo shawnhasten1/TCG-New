@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import data from "./setRarity.json";
-import { TIERS, drawWeights, pityFloor, setTier, type SetTier } from "./setRarity";
+import { TIERS, drawWeights, guaranteeNote, pityFloor, setTier, type SetTier } from "./setRarity";
 
 describe("drawWeights", () => {
   const tiers: Record<string, SetTier> = { a: "common", b: "common", c: "rare", d: "legendary" };
@@ -55,6 +55,12 @@ describe("pity", () => {
     expect(pityFloor(rareEvery5, tierOf)).toBe("legendary");
     expect(pityFloor(run("c", 99), tierOf)).toBe("legendary");
     expect(pityFloor([...rareEvery5, "l"], tierOf)).toBeUndefined();
+  });
+
+  it("says how many packs until each guarantee", () => {
+    expect(guaranteeNote([], tierOf)).toBe("Rare set guaranteed within 10 packs · Legendary within 100 packs");
+    expect(guaranteeNote([...run("c", 30), "r", ...run("c", 3)], tierOf)).toBe("Rare set guaranteed within 7 packs · Legendary within 66 packs");
+    expect(guaranteeNote(run("c", 99), tierOf)).toBe("Rare set guaranteed next pack · Legendary next pack");
   });
 
   it("a rare floor rules out lower tiers but keeps the legendary chance", () => {

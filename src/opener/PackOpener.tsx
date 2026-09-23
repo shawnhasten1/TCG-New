@@ -34,6 +34,8 @@ interface Props {
   binderHref?: string;
   /** Daily-limit status line, e.g. "2 of 3 packs left today". */
   limitNote?: string;
+  /** How many packs until a guaranteed rare / legendary set. */
+  pityNote?: string;
   /** False when the daily limit is used up. */
   canOpenAgain?: boolean;
 }
@@ -47,7 +49,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, canOpenAgain = true }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -388,6 +390,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
         {hint}
       </p>
       {limitNote && (phase === "sealed" || phase === "summary" || (phase === "reveal" && isLast)) && <p className="limit-note">{limitNote}</p>}
+      {pityNote && (phase === "sealed" || phase === "summary") && <p className="limit-note">{pityNote}</p>}
       <div className="controls">
         {phase === "sealed" && (
           <button type="button" onClick={tearWithButton}>
