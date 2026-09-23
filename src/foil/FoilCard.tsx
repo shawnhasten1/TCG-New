@@ -1,0 +1,62 @@
+// A card scan with tilt-driven foil. Tilt writes --rx/--ry/--px/--py/--o onto the root element
+// (see opener/tilt.ts); the layers below read them.
+
+import { useEffect, useState, type CSSProperties, type HTMLAttributes, type Ref } from "react";
+import type { Finish } from "../engine/types";
+import { artMask, reverseMask, type FrameLayout } from "./layouts";
+import { ensureSparkles } from "./sparkles";
+import { foilTint, foilTreatment, type Treatment } from "./treatment";
+import "./foil.css";
+
+export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
+  /** TCGdex image base URL (no quality/extension). */
+  image?: string;
+  rarity: string;
+  finish: Finish;
+  layout: FrameLayout;
+  /** Overrides the treatment derived from finish + rarity (foil lab). */
+  treatment?: Treatment;
+  quality?: "high" | "low";
+  /** Draws the layout's art box, for tuning. */
+  showArtBox?: boolean;
+  ref?: Ref<HTMLDivElement>;
+}
+
+const masks = new Map<string, CSSProperties>();
+function maskVars(layout: FrameLayout): CSSProperties {
+  let vars = masks.get(layout.id);
+  if (!vars) masks.set(layout.id, (vars = { "--art-mask": artMask(layout), "--rev-mask": reverseMask(layout) } as CSSProperties));
+  return vars;
+}
+
+export function FoilCard({ image, rarity, finish, layout, treatment, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
+  const t = treatment ?? foilTreatment(finish, rarity);
+  const [src, setSrc] = useState(image && `${image}/${quality}.webp`);
+  useEffect(() => setSrc(image && `${image}/${quality}.webp`), [image, quality]);
+  useEffect(ensureSparkles, []);
+
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={`tcg-card${className ? " " + className : ""}`}
+      data-treatment={t}
+      data-tint={foilTint(rarity)}
+      style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout) : undefined), ...style }}
+    >
+      <div className="face">
+        {src && <img src={src} alt="" draggable={false} onError={() => quality === "high" && image && setSrc(`${image}/low.webp`)} />}
+        {t !== "none" && <div className="foil" />}
+        {t === "etched" && <div className="etch" />}
+        {(t === "fullart" || t === "etched") && <div className="glitter" />}
+        <div className="glare" />
+        {showArtBox && (
+          <svg className="art-box" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <rect x={layout.art.x} y={layout.art.y} width={layout.art.w} height={layout.art.h} />
+            <rect className="border" x={layout.border.x} y={layout.border.y} width={100 - 2 * layout.border.x} height={100 - 2 * layout.border.y} />
+          </svg>
+        )}
+      </div>
+    </div>
+  );
+}

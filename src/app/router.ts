@@ -1,12 +1,13 @@
-// Tiny hash router: #/ (set picker), #/open/<setId>, #/debug/<setId>.
+// Tiny hash router: #/ (set picker), #/open/<setId>, #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open"; setId: string } | { page: "debug"; setId?: string };
+export type Route = { page: "picker" } | { page: "open"; setId: string } | { page: "debug"; setId?: string } | { page: "foil" };
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   if (page === "open" && id) return { page: "open", setId: id };
   if (page === "debug") return { page: "debug", setId: id || undefined };
+  if (page === "foil") return { page: "foil" };
   return { page: "picker" };
 }
 
@@ -14,6 +15,7 @@ export const href = {
   picker: () => "#/",
   open: (setId: string) => `#/open/${encodeURIComponent(setId)}`,
   debug: (setId: string) => `#/debug/${encodeURIComponent(setId)}`,
+  foil: () => "#/foil",
 };
 
 export function useRoute(): Route {

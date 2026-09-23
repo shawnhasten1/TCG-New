@@ -28,7 +28,7 @@
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .opener .controls button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
-.opener button:focus-visible, .opener .card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.opener button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 
 /* ---------- Stage ---------- */
 .opener .wrap {
@@ -103,7 +103,7 @@
 /* ---------- Card stack (inside the pack, between body and top) ---------- */
 .opener .stack {
   position: absolute; left: 0; right: 0; margin-inline: auto; top: 15%;
-  width: var(--cw); aspect-ratio: 63 / 88;
+  width: var(--cw); aspect-ratio: 600 / 825; /* TCGdex scan ratio, so era masks line up */
   z-index: 1;
   transition: transform .75s cubic-bezier(.2,.9,.25,1);
 }
@@ -145,58 +145,11 @@
   100% { opacity: 0; transform: scale(calc(1.25 * var(--bs))) rotate(40deg); }
 }
 
-/* ---------- Cards ---------- */
-.opener .card {
-  --rx: 0deg; --ry: 0deg; --px: 50; --py: 50; --o: .25;
-  --mx: calc(var(--px) * 1%); --my: calc(var(--py) * 1%);
-  width: 100%; height: 100%;
-  transform: rotateX(var(--rx)) rotateY(var(--ry));
-  border-radius: 4.5% / 3.2%;
-  touch-action: none; cursor: pointer;
-  box-shadow: 0 2px 4px #0003, calc(var(--ry) * -.8) calc(12px + var(--rx) * .8) 36px -8px #0007;
-}
+/* ---------- Cards (foil rendering lives in src/foil/foil.css) ---------- */
+.opener .tcg-card { cursor: pointer; }
+.opener .tcg-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 /* Only the revealed card glows, so a chase card underneath doesn't spoil itself. */
-.opener .slot.top .card[data-tier="3"] { box-shadow: 0 0 28px 2px #ffd66b88, calc(var(--ry) * -.8) calc(12px + var(--rx) * .8) 36px -8px #0007; }
-.opener .face {
-  position: relative; width: 100%; height: 100%;
-  border-radius: inherit; overflow: hidden; isolation: isolate;
-  background: #d8d4cc;
-}
-.opener .face img { display: block; width: 100%; height: 100%; object-fit: cover; }
-
-/* ---------- Foil layers ----------
-   Phase 4 placeholder: foil covers the whole card. Phase 5 adds per-era masks
-   (art box for holo, inverse for reverse, full card for illustration rares). */
-.opener .foil {
-  position: absolute; inset: 0; pointer-events: none;
-  background-image:
-    repeating-linear-gradient(-45deg, #0e152e 0%, hsl(180 10% 60%) 3.8%, hsl(180 29% 66%) 4.5%, hsl(180 10% 60%) 5.2%, #0e152e 10%, #0e152e 12%),
-    repeating-linear-gradient(110deg, hsl(2 100% 73%) 0%, hsl(53 100% 69%) 7%, hsl(93 100% 69%) 14%, hsl(176 100% 76%) 21%, hsl(228 100% 74%) 28%, hsl(283 100% 73%) 35%, hsl(2 100% 73%) 42%);
-  background-size: 400% 400%, 300% 300%;
-  background-position: calc(var(--px) * 1%) calc(var(--py) * 1%), calc(var(--px) * -1.5%) calc(var(--py) * -1.5%);
-  background-blend-mode: overlay; mix-blend-mode: color-dodge;
-  filter: brightness(.55) contrast(1.6) saturate(1.3);
-  opacity: calc(var(--o) * .55);
-}
-.opener .card[data-finish="reverse"] .foil { opacity: calc(var(--o) * .35); }
-.opener .glitter {
-  position: absolute; inset: 0; pointer-events: none;
-  background-image: var(--sparkles), linear-gradient(125deg, #ff6bd6, #ffd36b, #6bffb8, #6bc8ff, #b46bff, #ff6bd6);
-  background-size: 180px 180px, 300% 300%;
-  background-position: calc(var(--px) * .4%) calc(var(--py) * .4%), calc(var(--px) * 1%) calc(var(--py) * 1%);
-  background-blend-mode: multiply; mix-blend-mode: color-dodge;
-  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 55%);
-          mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 55%);
-  opacity: calc(var(--o) * .5);
-}
-.opener .card[data-tier="0"] .glitter, .opener .card[data-tier="1"] .glitter { display: none; }
-.opener .card[data-tier="3"] .glitter { opacity: calc(var(--o) * 1.1); }
-.opener .glare {
-  position: absolute; inset: 0; z-index: 5; pointer-events: none;
-  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffd0 8%, #ffffff55 22%, #00000066 95%);
-  mix-blend-mode: overlay; opacity: calc(var(--o) * .6);
-}
-.opener .card:not([data-finish="normal"]) .glare { opacity: calc(var(--o) * .9); }
+.opener .slot.top .tcg-card[data-tier="3"] { box-shadow: 0 0 28px 2px #ffd66b88, calc(var(--ry) * -.8) calc(12px + var(--rx) * .8) 36px -8px #0007; }
 
 /* ---------- Pack summary ---------- */
 .opener .summary-grid {

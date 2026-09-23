@@ -6,7 +6,7 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (debug page: #/debug/sv03.5)
+npm run dev                          # app at http://localhost:5173 (debug: #/debug/sv03.5, foil lab: #/foil)
 npm test                             # engine unit tests (offline)
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
 npm run open -- sv03.5 [seed]        # open one pack from a real set
@@ -20,7 +20,14 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
 - **Phase 1, data layer: done.** `src/api/`: `listSets`, `getSet`, `getSetCards` (grouped by rarity), with IndexedDB caching in the browser and a debug page at `src/debug/`.
 - **Phase 2, pack engine: done.** `src/engine/`: `openPack(setData, profile, rng)`, a seeded RNG, era profiles in `src/engine/profiles/*.json`, and a simulator.
 - **Phase 3, set picker: done.** `src/picker/`: sets grouped by series with logos and release dates, loaded in one GraphQL request. Promos, energy sets, trainer galleries and sets under 40 cards are hidden (`src/engine/openable.ts`). A set that loads but can't fill a pack is remembered and hidden too.
-- **Phase 4, opening: done.** `src/opener/`: the tear, tilt, burst and glare from `Booster pack opening.html`, now with real scans. Each pack's high-quality images preload during the tear, cards reveal in slot order (rare last), the burst scales with the hit (`src/engine/tiers.ts`), and a summary grid follows the last card. Foil currently covers the whole card; per-era masks are Phase 5.
+- **Phase 4, opening: done.** `src/opener/`: the tear, tilt, burst and glare from `Booster pack opening.html`, now with real scans. Each pack's high-quality images preload during the tear, cards reveal in slot order (rare last), the burst scales with the hit (`src/engine/tiers.ts`), and a summary grid follows the last card.
+- **Phase 5, foil: done.** `src/foil/`: every card renders through `FoilCard`, which picks a treatment from finish and rarity (`treatment.ts`):
+  - **Holo rare**: foil inside the era's art box only.
+  - **Reverse holo**: the inverse of that box, inside the printed border.
+  - **Full art / illustration rares / rule-box cards (ex, V, VMAX…)**: soft foil over the whole card, plus glitter.
+  - **Ultra / secret / hyper rares**: stronger etched texture over the whole card, gold-tinted for hyper rares.
+
+  Art boxes for 10 frame layouts (WOTC through SV/ME) were measured on real scans and live in `layouts.ts`. Masks are inline SVG, so they don't depend on remote-image CORS. The foil lab (`#/foil`) shows every era in normal, holo and reverse next to real full-art examples, with an art-box overlay, a light sweep, and strength sliders for tuning. Reduced motion shrinks tilt, skips the burst, and stops glitter chasing the pointer.
 
 ## API findings (checked 2026-09-22)
 

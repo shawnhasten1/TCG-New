@@ -1,14 +1,15 @@
 // The opening experience, ported from the "Booster pack opening" prototype:
 // drag across the top to tear, cards slide out, tap through them one by one.
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type Ref } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
 import type { SetDetail } from "../api/types";
 import { pullTier } from "../engine/tiers";
 import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
-import { ensureSparkles } from "./sparkles";
+import { FoilCard } from "../foil/FoilCard";
+import { layoutFor } from "../foil/layouts";
 import { Tilt } from "./tilt";
 import "./opener.css";
 
@@ -34,6 +35,7 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
+  const layout = layoutFor(set.serie.id);
 
   const packRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -60,7 +62,6 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
   };
 
   useEffect(() => {
-    ensureSparkles();
     tear.current.pts = buildTear(parts());
     setTearProgress(parts(), 0, 1);
     tilt.setActive(packRef.current, 8);
@@ -276,7 +277,16 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
                   className={`slot${phase === "reveal" && i < idx ? " gone" : ""}${phase === "reveal" && i === idx ? " top" : ""}`}
                   style={{ "--i": Math.max(0, i - idx), zIndex: pulls.length - i } as CSSProperties}
                 >
-                  <CardView pull={pull} ref={(el) => void (cardRefs.current[i] = el)} focusable={phase === "reveal" && i === idx} />
+                  <FoilCard
+                    ref={(el) => void (cardRefs.current[i] = el)}
+                    image={pull.card.image}
+                    rarity={pull.card.rarity}
+                    finish={pull.finish}
+                    layout={layout}
+                    data-tier={pullTier(pull)}
+                    tabIndex={phase === "reveal" && i === idx ? 0 : -1}
+                    aria-label={cardLabel(pull)}
+                  />
                 </div>
               ))}
             </div>
@@ -314,36 +324,9 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
   );
 }
 
-interface CardViewProps {
-  pull: PulledCard;
-  focusable: boolean;
-  ref?: Ref<HTMLDivElement>;
-}
-
-function CardView({ pull, focusable, ref }: CardViewProps) {
-  const [src, setSrc] = useState(() => cardImage(pull.card, "high"));
-  const foil = pull.finish !== "normal";
-  return (
-    <div
-      className="card"
-      ref={ref}
-      data-finish={pull.finish}
-      data-tier={pullTier(pull)}
-      tabIndex={focusable ? 0 : -1}
-      aria-label={`${pull.card.name}, ${pull.card.rarity}${foil ? `, ${pull.finish}` : ""}${pull.firstEdition ? ", 1st Edition" : ""}. Press Enter for the next card; arrow keys tilt.`}
-    >
-      <div className="face">
-        <img src={src} alt="" draggable={false} onError={() => setSrc(cardImage(pull.card, "low"))} />
-        {foil && (
-          <>
-            <div className="foil" />
-            <div className="glitter" />
-          </>
-        )}
-        <div className="glare" />
-      </div>
-    </div>
-  );
+function cardLabel(p: PulledCard): string {
+  const extras = [p.card.rarity, p.finish !== "normal" ? p.finish : "", p.firstEdition ? "1st Edition" : ""].filter(Boolean);
+  return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
 function PackSummary({ pulls }: { pulls: PulledCard[] }) {

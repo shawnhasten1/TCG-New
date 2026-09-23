@@ -92,7 +92,7 @@ export function SetPicker() {
       ))}
 
       <footer>
-        Card data and images from <a href="https://tcgdex.dev">TCGdex</a>. <a href={href.debug("sv03.5")}>Debug page</a>
+        Card data and images from <a href="https://tcgdex.dev">TCGdex</a>. <a href={href.debug("sv03.5")}>Debug page</a> · <a href={href.foil()}>Foil lab</a>
       </footer>
     </main>
   );

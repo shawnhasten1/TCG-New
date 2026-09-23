@@ -1,4 +1,5 @@
 import { DebugPage } from "../debug/DebugPage";
+import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
 import { SetPicker } from "../picker/SetPicker";
 import { useRoute } from "./router";
@@ -8,6 +9,8 @@ export function App() {
   switch (route.page) {
     case "open":
       return <OpenPage key={route.setId} setId={route.setId} />;
+    case "foil":
+      return <FoilLab />;
     case "debug":
       return <DebugPage initialSetId={route.setId} />;
     default:

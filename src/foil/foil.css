@@ -1,0 +1,115 @@
+/* Foil rendering on real scans. Tilt/glare/glitter come from the prototype; masks are per era.
+   Tuning knobs: --foil-k and --glitter-k scale every treatment (the foil lab sets them). */
+
+.tcg-card {
+  --rx: 0deg; --ry: 0deg; --px: 50; --py: 50; --o: .25;
+  --mx: calc(var(--px) * 1%); --my: calc(var(--py) * 1%);
+  --foil-k: 1; --glitter-k: 1;
+  width: 100%; height: 100%;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  border-radius: 4.5% / 3.3%;
+  touch-action: none;
+  box-shadow: 0 2px 4px #0003, calc(var(--ry) * -.8) calc(12px + var(--rx) * .8) 36px -8px #0007;
+}
+.tcg-card .face {
+  position: relative; width: 100%; height: 100%;
+  border-radius: inherit; overflow: hidden; isolation: isolate;
+  background: #d8d4cc;
+}
+.tcg-card .face img { display: block; width: 100%; height: 100%; object-fit: fill; }
+.tcg-card .foil, .tcg-card .etch, .tcg-card .glitter, .tcg-card .glare, .tcg-card .art-box {
+  position: absolute; inset: 0; pointer-events: none;
+}
+
+/* ---------- Rainbow foil (shared) ---------- */
+.tcg-card .foil {
+  background-image:
+    repeating-linear-gradient(-45deg, #0e152e 0%, hsl(180 10% 60%) 3.8%, hsl(180 29% 66%) 4.5%, hsl(180 10% 60%) 5.2%, #0e152e 10%, #0e152e 12%),
+    repeating-linear-gradient(110deg, hsl(2 100% 73%) 0%, hsl(53 100% 69%) 7%, hsl(93 100% 69%) 14%, hsl(176 100% 76%) 21%, hsl(228 100% 74%) 28%, hsl(283 100% 73%) 35%, hsl(2 100% 73%) 42%);
+  background-size: 400% 400%, 300% 300%;
+  background-position: calc(var(--px) * 1%) calc(var(--py) * 1%), calc(var(--px) * -1.5%) calc(var(--py) * -1.5%);
+  background-blend-mode: overlay; mix-blend-mode: color-dodge;
+  filter: brightness(.55) contrast(1.6) saturate(1.3);
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+
+/* Holo rare: foil on the art box only. */
+.tcg-card[data-treatment="holo"] .foil {
+  -webkit-mask-image: var(--art-mask); mask-image: var(--art-mask);
+  opacity: calc(var(--o) * .8 * var(--foil-k));
+}
+
+/* Reverse holo: everything but the art box, with straighter, calmer bands. */
+.tcg-card[data-treatment="reverse"] .foil {
+  -webkit-mask-image: var(--rev-mask); mask-image: var(--rev-mask);
+  background-image:
+    repeating-linear-gradient(0deg, #0e152e 0%, hsl(200 12% 62%) 5%, hsl(200 30% 72%) 6%, hsl(200 12% 62%) 7%, #0e152e 14%),
+    repeating-linear-gradient(100deg, hsl(2 100% 73%) 0%, hsl(53 100% 69%) 8%, hsl(176 100% 76%) 18%, hsl(283 100% 73%) 30%, hsl(2 100% 73%) 40%);
+  background-size: 300% 300%, 250% 250%;
+  opacity: calc(var(--o) * .5 * var(--foil-k));
+}
+
+/* Full art, illustration rares, rule-box cards: whole card, softer, plus glitter. */
+.tcg-card[data-treatment="fullart"] .foil {
+  opacity: calc(var(--o) * .35 * var(--foil-k));
+  filter: brightness(.6) contrast(1.4) saturate(1.2);
+}
+
+/* Ultra, secret, hyper rares: whole card, stronger, with an etched texture. */
+.tcg-card[data-treatment="etched"] .foil {
+  /* Full-art ultras are already bright, so color-dodge washes them out fast: keep this low. */
+  background-size: 250% 250%, 200% 200%;
+  opacity: calc(var(--o) * .32 * var(--foil-k));
+  filter: brightness(.5) contrast(1.8) saturate(1.4);
+}
+.tcg-card[data-treatment="etched"][data-tint="gold"] .foil {
+  background-image:
+    repeating-linear-gradient(-45deg, #2a1c05 0%, #c9a044 3.8%, #fff1b8 4.5%, #c9a044 5.2%, #2a1c05 10%, #2a1c05 12%),
+    repeating-linear-gradient(110deg, #f7d774 0%, #fff6d0 10%, #d8a93a 20%, #f7d774 30%);
+  mix-blend-mode: soft-light;
+  filter: contrast(1.3);
+  opacity: calc(var(--o) * .7 * var(--foil-k));
+}
+.tcg-card .etch {
+  background-image:
+    repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(-45deg, #fff 0 1px, transparent 1px 4px),
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), #fff 0%, #fff0 60%);
+  background-size: 6px 6px, 6px 6px, 100% 100%;
+  mix-blend-mode: overlay;
+  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%);
+          mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%);
+  opacity: calc(var(--o) * .35 * var(--foil-k));
+}
+
+/* ---------- Glitter ---------- */
+.tcg-card .glitter {
+  background-image: var(--sparkles), linear-gradient(125deg, #ff6bd6, #ffd36b, #6bffb8, #6bc8ff, #b46bff, #ff6bd6);
+  background-size: 180px 180px, 300% 300%;
+  background-position: calc(var(--px) * .4%) calc(var(--py) * .4%), calc(var(--px) * 1%) calc(var(--py) * 1%);
+  background-blend-mode: multiply; mix-blend-mode: color-dodge;
+  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 55%);
+          mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 55%);
+  opacity: calc(var(--o) * .8 * var(--glitter-k));
+}
+.tcg-card[data-treatment="etched"] .glitter { background-size: 120px 120px, 300% 300%; opacity: calc(var(--o) * .6 * var(--glitter-k)); }
+.tcg-card[data-tint="gold"] .glitter { background-image: var(--sparkles), linear-gradient(125deg, #ffe08a, #fff6d0, #e0b04a, #ffe08a); }
+
+/* ---------- Glare ---------- */
+.tcg-card .glare {
+  z-index: 5;
+  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffd0 8%, #ffffff55 22%, #00000066 95%);
+  mix-blend-mode: overlay; opacity: calc(var(--o) * .6);
+}
+.tcg-card:not([data-treatment="none"]) .glare { opacity: calc(var(--o) * .85); }
+
+/* ---------- Tuning overlay ---------- */
+.tcg-card .art-box { z-index: 6; overflow: visible; }
+.tcg-card .art-box rect { fill: none; stroke: #ff00ff; stroke-width: .5; vector-effect: non-scaling-stroke; }
+.tcg-card .art-box rect.border { fill: none; stroke: #00d0ff; stroke-dasharray: 4 3; }
+
+/* Reduced motion: the tilt engine shrinks tilt; keep glitter from chasing the pointer. */
+@media (prefers-reduced-motion: reduce) {
+  .tcg-card .glitter { -webkit-mask-image: none; mask-image: none; opacity: calc(var(--o) * .35 * var(--glitter-k)); }
+}
