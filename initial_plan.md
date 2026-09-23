@@ -50,9 +50,21 @@ Phase 4: Opening experience. Port the tear animation and use the booster artwork
 
 Phase 5: Foil rendering. Build the per-era masks, the finish types above, and a small dev page with every finish side by side for tuning. Respect reduced-motion settings.
 
-Phase 6: Collection. Save pulls to IndexedDB with card id, finish and date. Add a binder view per set with missing cards shown faded, completion percentage, and duplicate counts. Optionally, show market value using the TCGPlayer and Cardmarket pricing on each card, which is broken out by variant. 
+Phase 6: Pack realism. Make a pack's contents and card order match a real pack, not just its rarity odds. This comes before Collection because it changes what gets saved.
+
+What the data shows (checked 2026-09-22). Trainers are already in packs. TCGdex gives Trainer cards the same Common, Uncommon and Rare strings as Pokémon, so the rarity pools already include them. For example, 151 has 11 Trainer Uncommons and 51 Pokémon Uncommons, and a test pack pulled Erika's Invitation. Basic Energy depends on the era. From Base through XY, basic energies are numbered cards in the set with the rarity "Common", so they're mixed into the Common slot today. That gives about one energy per Base Set pack, but only by chance, and an energy can take a common's place. From Sword & Shield on, basic energies aren't part of the set, apart from gold Hyper Rare versions, so today's packs never include one. TCGdex keeps them in separate small sets instead: "Scarlet & Violet Energy" (sve, 24 cards) and "Mega Evolution Energy" (mee). The picker currently hides both.
+
+Card categories. Add category (Pokémon, Trainer, Energy) and energy type to the card query, and bump the cache version so sets refetch. Show category counts per rarity bucket on the debug page, and category rates in the simulator. This lets profiles tell a basic energy apart from a common Pokémon.
+
+Energy slot. Give each profile an optional energy slot. For WOTC through XY, it draws from the set's own basic energies, and the Common slot excludes them. That fixes the "energy by chance" problem. For Sword & Shield onward, it draws from the era's companion energy set (sve or mee), loaded alongside the main set. Energy cards are marked as filler: they sit in the pack in their real position, but the reveal moves past them quickly with no burst. For modern sets they don't count toward binder completion, because they aren't part of the set list. Sword & Shield has no companion energy set in TCGdex, so either borrow sve's images or leave the slot out for that era.
+
+Physical pack order. Split "slot order" (what the engine rolls) from "pack order" (how the cards sit in the wrapper). Each profile gets an order list of slot labels, front to back, plus where the energy and code card sit. The reveal then follows that order, with a per-profile option to flip the stack so the rare slot always comes last. The orders we have are community-reported, so treat them as defaults to confirm against a few real opening videos per era. For modern packs: commons, then uncommons, then reverse slots, then the rare, with the basic energy and code card at one end. For WOTC packs: the rare's position was not reliably fixed. Within a slot, cards stay in random order.
+
+Worth it? The energy slot is cheap: one extra 24-card download, and the pack gains its eleventh card. It's worth doing mainly for accuracy, and to stop basic energies crowding the commons in older sets. If that feels like noise, the smallest useful version is to keep basic energies out of the Common slot and skip the energy card entirely.
+
+Phase 7: Collection. Save pulls to IndexedDB with card id, finish and date. Add a binder view per set with missing cards shown faded, completion percentage, and duplicate counts. Optionally, show market value using the TCGPlayer and Cardmarket pricing on each card, which is broken out by variant. 
 tcgdex
 
-Phase 7: Polish. Sound effects, a "pack of the day" timer if you want pacing, export and import of the collection as JSON, and deployment.
+Phase 8: Polish. Sound effects, a "pack of the day" timer if you want pacing, export and import of the collection as JSON, and deployment.
 
 Phases 1 and 2 are the foundation, and they're quick. Once the engine can print real pulls from a real set, everything after that is presentation.
