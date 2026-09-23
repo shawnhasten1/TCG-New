@@ -18,8 +18,13 @@ type Phase = "sealed" | "opening" | "reveal" | "summary";
 interface Props {
   set: SetDetail;
   pulls: PulledCard[];
+  /** Cards not in the collection before this pack, shown with a "New" badge. */
+  newIds?: Set<string>;
+  /** Called once, when the pack is torn open (the pack is saved then). */
+  onOpened?(): void;
   onAgain(): void;
   onBack(): void;
+  binderHref?: string;
 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -31,7 +36,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, binderHref }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -78,6 +83,7 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
   const open = async (viaKeyboard = false) => {
     if (phaseRef.current !== "sealed") return;
     go("opening");
+    onOpened?.();
     tilt.rest();
     const pack = packRef.current!;
     const top = topRef.current!;
@@ -234,7 +240,7 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
       </button>
 
       {phase === "summary" ? (
-        <PackSummary pulls={pulls} />
+        <PackSummary pulls={pulls} newIds={newIds} />
       ) : (
         <div className="wrap enter" style={wrapperStyle}>
           <div
@@ -285,8 +291,9 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
                     layout={layout}
                     data-tier={pullTier(pull)}
                     tabIndex={phase === "reveal" && i === idx ? 0 : -1}
-                    aria-label={cardLabel(pull)}
+                    aria-label={cardLabel(pull) + (newIds?.has(pull.card.id) ? " New to your collection." : "")}
                   />
+                  {newIds?.has(pull.card.id) && phase === "reveal" && i === idx && <span className="new-badge">New</span>}
                 </div>
               ))}
             </div>
@@ -319,6 +326,11 @@ export function PackOpener({ set, pulls, onAgain, onBack }: Props) {
             Open another pack
           </button>
         )}
+        {phase === "summary" && binderHref && (
+          <a className="button" href={binderHref}>
+            View binder
+          </a>
+        )}
       </div>
     </div>
   );
@@ -329,12 +341,13 @@ function cardLabel(p: PulledCard): string {
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
-function PackSummary({ pulls }: { pulls: PulledCard[] }) {
+function PackSummary({ pulls, newIds }: { pulls: PulledCard[]; newIds?: Set<string> }) {
   return (
     <section className="summary-grid" aria-label="Pack summary">
       {pulls.map((p, i) => (
         <figure key={i} data-tier={pullTier(p)} data-finish={p.finish}>
           <img src={cardImage(p.card, "low")} alt={p.card.name} />
+          {newIds?.has(p.card.id) && <span className="new-badge">New</span>}
           <figcaption>
             {p.card.name}
             <small>

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
 import { client, getUnopenable } from "../app/client";
 import { href } from "../app/router";
+import { tallyBySet, type SetTally } from "../collection/progress";
+import { getPulls, onCollectionChange } from "../collection/store";
 import { hiddenReason } from "../engine/openable";
 import "./picker.css";
 
@@ -25,11 +27,20 @@ export function SetPicker() {
   const [error, setError] = useState<string>();
   const [query, setQuery] = useState("");
   const [showHidden, setShowHidden] = useState(false);
+  const [tallies, setTallies] = useState<Map<string, SetTally>>(new Map());
 
   useEffect(() => {
     client.listSetSummaries().then(setSets, (e) => setError(String(e)));
     getUnopenable().then(setUnopenable);
   }, []);
+
+  useEffect(() => {
+    if (!sets) return;
+    const official = new Map(sets.map((s) => [s.id, s.cardCount.official]));
+    const reload = () => getPulls().then((p) => setTallies(tallyBySet(p, (id) => official.get(id))), () => undefined);
+    void reload();
+    return onCollectionChange(reload);
+  }, [sets]);
 
   const groups = useMemo(() => {
     if (!sets) return [];
@@ -54,7 +65,12 @@ export function SetPicker() {
   return (
     <main className="picker">
       <header>
-        <h1>Pick a set</h1>
+        <div className="title-row">
+          <h1>Pick a set</h1>
+          <a className="collection-link" href={href.collection()}>
+            Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
+          </a>
+        </div>
         <p className="lede">Open booster packs from any Pokémon TCG expansion, using the real card list.</p>
         <div className="filters">
           <input type="search" placeholder="Search sets" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
@@ -82,7 +98,7 @@ export function SetPicker() {
                   </div>
                 ) : (
                   <a className="set-tile" href={href.open(s.id)}>
-                    <SetTileBody set={s} />
+                    <SetTileBody set={s} tally={tallies.get(s.id)} />
                   </a>
                 )}
               </li>
@@ -98,7 +114,7 @@ export function SetPicker() {
   );
 }
 
-function SetTileBody({ set, note }: { set: SetSummary; note?: string }) {
+function SetTileBody({ set, note, tally }: { set: SetSummary; note?: string; tally?: SetTally }) {
   const [logoFailed, setLogoFailed] = useState(false);
   return (
     <>
@@ -115,6 +131,11 @@ function SetTileBody({ set, note }: { set: SetSummary; note?: string }) {
           {formatDate(set.releaseDate)} · {set.cardCount.official} cards
         </span>
         {note && <em>{note}</em>}
+        {tally && (
+          <span className="owned-chip">
+            {tally.mainOwned} / {set.cardCount.official} collected
+          </span>
+        )}
       </div>
     </>
   );

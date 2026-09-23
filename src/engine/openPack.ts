@@ -150,3 +150,11 @@ export function openPack(data: SetData, profile: PackProfile, rng: Rng = Math.ra
   }
   return out;
 }
+
+/** Ids of every card this profile can put in a pack (for collection completion). */
+export function pullableCardIds(data: SetData, profile: PackProfile): Set<string> {
+  const prep = preparePack(data, profile);
+  const ids = new Set<string>();
+  for (const s of prep.slots) for (const sel of Object.keys(s.table)) for (const c of prep.pools.get(sel)!) ids.add(c.id);
+  return ids;
+}

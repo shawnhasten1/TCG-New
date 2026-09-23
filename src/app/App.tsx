@@ -1,3 +1,5 @@
+import { BinderPage } from "../collection/BinderPage";
+import { CollectionPage } from "../collection/CollectionPage";
 import { DebugPage } from "../debug/DebugPage";
 import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
@@ -9,6 +11,10 @@ export function App() {
   switch (route.page) {
     case "open":
       return <OpenPage key={route.setId} setId={route.setId} />;
+    case "collection":
+      return <CollectionPage />;
+    case "binder":
+      return <BinderPage key={route.setId} setId={route.setId} />;
     case "foil":
       return <FoilLab />;
     case "debug":

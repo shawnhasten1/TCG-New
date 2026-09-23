@@ -1,9 +1,10 @@
 // Loads a set (with progress), checks it can fill a pack, and deals packs to the opener.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SetData } from "../api/types";
 import { client, markUnopenable } from "../app/client";
 import { href } from "../app/router";
+import { getPulls, savePack } from "../collection/store";
 import { openPack, whyNotOpenable } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { createRng } from "../engine/rng";
@@ -15,12 +16,19 @@ type Load = { state: "loading"; done: number; total: number } | { state: "error"
 export function OpenPage({ setId }: { setId: string }) {
   const [load, setLoad] = useState<Load>({ state: "loading", done: 0, total: 0 });
   const [packNo, setPackNo] = useState(0);
+  /** Card ids already in the collection, kept current as packs are saved. */
+  const owned = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     let live = true;
     setLoad({ state: "loading", done: 0, total: 0 });
+    const ownedLoad = getPulls(setId).then(
+      (pulls) => void (owned.current = new Set(pulls.map((p) => p.cardId))),
+      (err) => console.warn("Couldn't read the collection", err),
+    );
     client
       .getSetCards(setId, (done, total) => live && setLoad({ state: "loading", done, total }))
+      .then(async (data) => (await ownedLoad, data))
       .then(
         (data) => {
           if (!live) return;
@@ -38,11 +46,21 @@ export function OpenPage({ setId }: { setId: string }) {
     };
   }, [setId]);
 
-  const pulls = useMemo(() => {
+  const pack = useMemo(() => {
     if (load.state !== "ready") return undefined;
     const profile = profileFor(load.data.set)!;
-    return openPack(load.data, profile, createRng(`${setId}:${Date.now()}:${packNo}`));
+    const pulls = openPack(load.data, profile, createRng(`${setId}:${Date.now()}:${packNo}`));
+    // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
+    const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !owned.current.has(id)));
+    return { pulls, newIds };
   }, [load, packNo, setId]);
+  const pulls = pack?.pulls;
+
+  const save = () => {
+    if (!pulls) return;
+    for (const p of pulls) owned.current.add(p.card.id);
+    savePack(setId, pulls).catch((err) => console.warn("Couldn't save this pack", err));
+  };
 
   const back = () => (location.hash = href.picker());
 
@@ -67,5 +85,16 @@ export function OpenPage({ setId }: { setId: string }) {
     );
   }
 
-  return <PackOpener key={packNo} set={load.data.set} pulls={pulls} onAgain={() => setPackNo((n) => n + 1)} onBack={back} />;
+  return (
+    <PackOpener
+      key={packNo}
+      set={load.data.set}
+      pulls={pulls}
+      newIds={pack!.newIds}
+      onOpened={save}
+      onAgain={() => setPackNo((n) => n + 1)}
+      onBack={back}
+      binderHref={href.binder(setId)}
+    />
+  );
 }

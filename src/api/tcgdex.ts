@@ -35,6 +35,8 @@ export interface TcgdexClient {
   getSerie(id: string): Promise<SerieDetail>;
   getSet(id: string): Promise<SetDetail>;
   getSetCards(id: string, onProgress?: Progress): Promise<SetData>;
+  /** Market prices for one card (REST only; GraphQL has no pricing). Cached per day. */
+  getCardPricing(id: string): Promise<CardPricing | null>;
 }
 
 const RETRYABLE = new Set([429, 500, 502, 503, 504]);
@@ -68,6 +70,12 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promis
   };
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
   return out;
+}
+
+/** TCGdex pricing: TCGplayer (USD, by printing) and Cardmarket (EUR, "-holo" fields = foil). */
+export interface CardPricing {
+  tcgplayer?: { unit?: string; updated?: string } & Record<string, unknown>;
+  cardmarket?: { unit?: string; updated?: string } & Record<string, unknown>;
 }
 
 export function groupByRarity(cards: Card[]): Record<string, Card[]> {
@@ -192,6 +200,12 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
         const order = new Map(set.cards.map((b, i) => [b.id, i]));
         cards.sort((a, b) => (order.get(a.id) ?? 1e9) - (order.get(b.id) ?? 1e9));
         return { set, cards, byRarity: groupByRarity(cards), source, fetchedAt: new Date().toISOString() };
+      }),
+
+    getCardPricing: (id) =>
+      cached(`pricing:${id}:${new Date().toISOString().slice(0, 10)}`, async () => {
+        const card = await getJson<{ pricing?: CardPricing }>(`${REST}/cards/${encodeURIComponent(id)}`);
+        return card.pricing ?? null;
       }),
   };
   return client;

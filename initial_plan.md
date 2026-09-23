@@ -59,6 +59,8 @@ Decisions (2026-09-22). Leave out the energy card. Keep plain basic energies out
 Done. Cards carry category, energy type and trainer type (cache version 2). The engine drops plain basic energies unless a profile sets includeBasicEnergy. Tests enforce commons → uncommons → foils with the rare slot last, 4/3/3 for Scarlet & Violet, and one reverse slot for older eras. The debug page, the rarities script and the simulator show Pokémon / Trainer / Energy counts.
 
 Phase 7: Collection. Save pulls to IndexedDB with card id, finish and date. Add a binder view per set with missing cards shown faded, completion percentage, and duplicate counts. Optionally, show market value using the TCGPlayer and Cardmarket pricing on each card, which is broken out by variant. 
+
+Done. Pulls are saved when a pack is torn open, with "New" badges for first copies. The binder has filters, finish chips and completion against cards packs can actually produce. A card detail view shows copies, first pull and prices, and there's a collection overview. Prices are per-card REST only (GraphQL has no pricing), so they load on request, three at a time, cached per day.
 tcgdex
 
 Phase 8: Polish. Sound effects, a "pack of the day" timer if you want pacing, export and import of the collection as JSON, and deployment.
