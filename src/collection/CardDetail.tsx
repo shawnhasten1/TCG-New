@@ -45,6 +45,10 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
   const [zoom, setZoom] = useState<{ x: number; y: number; s: number } | null>(null);
   const [spun, setSpun] = useState(false);
   const idle = useRef<ReturnType<typeof setTimeout>>(undefined);
+  /** The current press, so a drag (tilting, or pulling the sheet down) isn't also taken as a tap. */
+  const press = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  const sheetPull = useRef<{ y: number; dy: number } | null>(null);
+  const coarse = useMemo(() => matchMedia("(pointer: coarse)").matches, []);
 
   useEffect(() => {
     const d = dialogRef.current!;
@@ -83,8 +87,17 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
     };
   }, [zoomed, tilt, reduced]);
 
-  /** Tilts toward the pointer; while zoomed, anywhere on screen counts, and the sway resumes when it goes still. */
+  const onPointerDown = (e: PointerEvent) => {
+    press.current = { x: e.clientX, y: e.clientY, moved: false };
+    // A finger has no hover, so the tilt starts where it lands.
+    if (zoomed && e.pointerType !== "mouse") onPointerMove(e);
+  };
+
+  /** Tilts toward the pointer; while zoomed, anywhere on screen counts (drag, on touch), and the sway resumes when it goes still. */
   const onPointerMove = (e: PointerEvent) => {
+    const p = press.current;
+    if (p && !p.moved && Math.hypot(e.clientX - p.x, e.clientY - p.y) > 8) p.moved = true;
+    if (sheetPull.current) return;
     if (!zoomed && !slotRef.current?.contains(e.target as Node)) return;
     tilt.aim(e.clientX, e.clientY);
     if (!zoomed) return;
@@ -104,6 +117,35 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
   }, [card.id]);
 
   const firstEd = (owned?.firstEdition ?? 0) > 0;
+  const close = () => dialogRef.current?.close();
+  /** A tap, not the end of a drag. */
+  const tapped = () => !press.current?.moved;
+
+  /* ---------- Pull the sheet down by its handle to close it (phones) ---------- */
+  const onPullDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (zoomed || (e.target as Element).closest("button")) return;
+    sheetPull.current = { y: e.clientY, dy: 0 };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPullMove = (e: PointerEvent) => {
+    const pull = sheetPull.current;
+    if (!pull) return;
+    pull.dy = Math.max(0, e.clientY - pull.y);
+    const d = dialogRef.current!;
+    d.style.transition = "none";
+    d.style.transform = `translateY(${pull.dy}px)`;
+  };
+  const onPullEnd = () => {
+    const pull = sheetPull.current;
+    sheetPull.current = null;
+    if (!pull) return;
+    const d = dialogRef.current!;
+    d.style.transition = "";
+    if (pull.dy > 90) {
+      d.style.transform = "translateY(100%)";
+      setTimeout(close, reduced ? 0 : 200);
+    } else d.style.transform = "";
+  };
 
   return (
     <dialog
@@ -118,11 +160,21 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
         setZoomed(false);
       }}
       onClick={(e) => {
+        if (!tapped()) return;
         if (zoomed) setZoomed(false);
-        else if (e.target === dialogRef.current) dialogRef.current.close();
+        else if (e.target === dialogRef.current) close();
       }}
+      onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
     >
+      <div className="sheet-bar" onPointerDown={onPullDown} onPointerMove={onPullMove} onPointerUp={onPullEnd} onPointerCancel={onPullEnd}>
+        <span className="handle" aria-hidden="true" />
+        <button type="button" className="close-x" aria-label="Close" onClick={close}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
       <div className="detail-body">
         <div className="detail-card" ref={slotRef} onPointerLeave={() => !zoomed && tilt.rest()}>
           <div
@@ -134,7 +186,7 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
             style={zoom ? ({ "--zx": `${zoom.x}px`, "--zy": `${zoom.y}px`, "--zs": zoom.s } as CSSProperties) : undefined}
             onClick={(e) => {
               e.stopPropagation();
-              setZoomed(!zoomed);
+              if (tapped()) setZoomed(!zoomed);
             }}
             onKeyDown={(e) => {
               if (e.key !== "Enter" && e.key !== " ") return;
@@ -169,7 +221,7 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
           {card.category === "Pokemon" && !!card.dexId?.length && (
             <p className="species-links">
               {card.dexId.map((d) => (
-                <a key={d} href={href.pokemon(d)} onClick={() => dialogRef.current?.close()}>
+                <a key={d} href={href.pokemon(d)} onClick={close}>
                   All {pokemonName(d)} cards →
                 </a>
               ))}
@@ -209,12 +261,13 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
               })}
             </ul>
           )}
-
-          <button type="button" className="close" onClick={() => dialogRef.current?.close()}>
-            Close
-          </button>
         </div>
       </div>
+      {zoomed && (
+        <p className="zoom-hint" aria-hidden="true">
+          {coarse ? "Drag to tilt · tap to put it back" : "Move to tilt · click to put it back"}
+        </p>
+      )}
     </dialog>
   );
 }

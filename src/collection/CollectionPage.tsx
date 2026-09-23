@@ -46,7 +46,7 @@ export function CollectionPage() {
   return (
     <main className="collection">
       <nav className="crumbs">
-        <a href={href.picker()}>← All sets</a>
+        <a href={href.open()}>← Open packs</a>
         <a href={href.settings()}>Settings &amp; backup</a>
       </nav>
       <h1>Your collection</h1>
@@ -57,7 +57,7 @@ export function CollectionPage() {
         </p>
       ) : tallies.length === 0 ? (
         <p className="muted empty">
-          Nothing here yet. <a href={href.picker()}>Pick a set</a> and open a pack. Every card you pull is saved here.
+          Nothing here yet. <a href={href.open()}>Open a pack</a>. Every card you pull is saved here.
         </p>
       ) : (
         <>

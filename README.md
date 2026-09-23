@@ -6,7 +6,7 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (#/open, #/collection, #/pokedex, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run dev                          # app at http://localhost:5173 (#/ opens packs; #/sets, #/collection, #/pokedex, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
 npm run pokedex                      # regenerate src/collection/pokedex.json (Pokémon names) from PokéAPI
 npm test                             # engine unit tests (offline)
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
@@ -33,11 +33,12 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
 - **Phase 7, collection: done.** `src/collection/`. Each pack is saved to IndexedDB (`tcg-collection` database) as it's torn: card, finish, 1st Edition, pack id, date. Cards new to the collection get a "New" badge in the reveal and summary. `#/binder/<set>` shows every card in number order, missing cards faded, with copies, finish chips, filters (owned / missing / duplicates), and main-set and with-secrets completion. Completion only counts cards packs can produce, so 100% is reachable. Clicking a card opens a tiltable foil view with copies per finish, first-pull date and market prices. `#/collection` lists opened sets by most recent, and the picker shows a per-set "collected" chip. Prices come from TCGdex's per-card REST pricing (GraphQL has none): TCGplayer USD by printing, falling back to Cardmarket EUR. They are cached per day and fetched three at a time, only on request in the binder.
 - **Phase 8, polish: done.**
   - **Sound effects** (`src/app/sound.ts`) are synthesized with Web Audio, so there are no files to host or license: a foil tear, cards sliding out, a flick per card, and a chime that grows with the hit tier. There's a mute button in the opener, and volume is in settings.
-  - **Pack of the day** is an optional daily limit (1, 3, 5 or 10) across all sets, resetting at local midnight. It's counted from the collection itself, so there's no separate counter. When you run out you get a live countdown. A pack you're partway through revealing is never taken away.
+  - **Pack of the day**: 10 packs a day by default (1, 3, 5, 10 or unlimited in settings), across all sets. Once they run out, a pack recharges every 2 minutes, stacking back up to the limit, and midnight refills everything (`packAllowance` in `src/collection/daily.ts`). It's counted from the collection itself, so there's no separate counter. When you run out you get a live countdown. A pack you're partway through revealing is never taken away.
   - **Backup**: export the collection to JSON, and import it by merging (skips packs you already have) or replacing. Bad files get a readable error.
   - **Settings** live at `#/settings`, and preferences are kept in localStorage.
   - **Deployment**: GitHub Pages workflow and Netlify config (see below), a favicon, and a meta description.
-- **Phase 9, random sets: done.** Every pack comes from a randomly drawn set (`src/engine/randomSet.ts`); there's no manual set choice. The home page's "Open a pack" goes to `#/open`, and the set list opens binders. The next set downloads while you reveal, and Settings can limit the draw by era.
+- **Phase 9, random sets: done.** Every pack comes from a randomly drawn set (`src/engine/randomSet.ts`); there's no manual set choice. The app starts on the opener (`#/`; old `#/open` links still work), and the set list at `#/sets` opens binders. The next set downloads while you reveal, and Settings can limit the draw by era.
+- **Phase 11, mobile first: done.** The opener is home, with a thumb-sized top bar (collection, sets, settings, sound). The pack is sized so it and its button fit a phone screen, and the pack summary is three across. On phones the card detail is a bottom sheet with a pinned close button and a handle you can pull down; zoomed cards tilt by dragging, and a tap puts them back.
 - **Phase 10, collection by Pokémon: done.** `#/pokedex` lists the Pokémon you own (search jumps to any Pokémon). `#/pokemon/<dexId>` shows every printing of that Pokémon across sets, grouped by era, with finish chips for what you own and what's missing, and completion over the printings packs can give you. Promos and other products are behind a toggle. Logic is in `src/collection/pokedex.ts`.
 
 ## Deploying

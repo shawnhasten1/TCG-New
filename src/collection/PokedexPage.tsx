@@ -70,7 +70,7 @@ export function PokedexPage() {
   return (
     <main className="collection pokedex">
       <nav className="crumbs">
-        <a href={href.picker()}>← Home</a>
+        <a href={href.open()}>← Open packs</a>
       </nav>
       <h1>Your Pokémon</h1>
       <CollectionViewSwitch current="pokemon" />

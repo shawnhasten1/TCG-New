@@ -1,49 +1,55 @@
 /* Ported from "Booster pack opening.html". Card styles now target <img> scans. */
 
+/* Mobile first: the pack fills a phone, and the same layout centres with room to spare on desktop. */
 .opener {
-  --cw: min(300px, 66vw, 42vh); /* card width drives everything */
+  --cw: min(300px, 72vw, 36vh); /* card width drives everything; sized so pack + button fit a phone screen */
+  --cw: min(300px, 72vw, 36dvh);
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 22px; padding: 72px 16px 32px;
+  gap: 14px; padding: calc(68px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
   overflow-x: hidden;
   background: radial-gradient(ellipse at 50% 45%, var(--bg-glow), var(--bg) 70%);
   color: var(--ink);
   font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
 }
-.opener .back {
-  position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); left: 16px;
-  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif;
-  padding: 10px 16px; border-radius: 999px; cursor: pointer;
+/* ---------- Top bar ---------- */
+.opener .topbar {
+  position: absolute; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  width: min(100%, 1120px); margin-inline: auto; padding: 12px 16px;
+}
+.opener .topbar-links, .opener .topbar-tools { display: flex; gap: 8px; }
+.opener .topbar a, .opener .topbar button {
+  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif; text-decoration: none; cursor: pointer;
+  min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; border-radius: 999px;
   background: var(--btn); color: var(--ink);
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
-.opener .sound-toggle {
-  position: absolute; top: calc(16px + env(safe-area-inset-top, 0px)); right: 16px;
-  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif;
-  padding: 10px 16px; border-radius: 999px; cursor: pointer;
-  background: var(--btn); color: var(--ink);
-  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-}
+.opener .topbar .icon-button { width: 44px; padding: 0; justify-content: center; }
+.opener .topbar svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .opener .sound-toggle[aria-pressed="false"] { color: var(--muted); }
-.opener .sound-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.opener .hint { margin: 0; min-height: 1.4em; color: var(--muted); font-size: 1rem; text-align: center; }
-.opener .controls { display: flex; gap: 8px; min-height: 42px; }
+.opener .topbar a:hover, .opener .topbar button:hover { border-color: var(--focus); }
+.opener .topbar a:focus-visible, .opener .topbar button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.opener .hint { margin: 0; min-height: 1.4em; max-width: 36ch; color: var(--muted); font-size: 1rem; text-align: center; text-wrap: balance; }
+.opener .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; min-height: 46px; }
 .opener .controls button {
-  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif;
-  padding: 12px 18px; border-radius: 999px; cursor: pointer;
+  font: 600 1rem/1 "Alegreya Sans", system-ui, sans-serif; min-height: 46px;
+  padding: 12px 20px; border-radius: 999px; cursor: pointer;
   background: var(--btn); color: var(--ink);
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .opener .controls a.button {
-  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif; text-decoration: none;
-  padding: 12px 18px; border-radius: 999px;
+  font: 600 1rem/1 "Alegreya Sans", system-ui, sans-serif; text-decoration: none;
+  min-height: 46px; display: inline-flex; align-items: center;
+  padding: 12px 20px; border-radius: 999px;
   background: var(--btn); color: var(--ink);
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .opener .controls a.button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-.opener .controls button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
+.opener .controls a.button.primary, .opener .controls button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
 .opener button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 
 /* ---------- Stage ---------- */
@@ -170,7 +176,8 @@
 /* ---------- Pack summary ---------- */
 .opener .summary-grid {
   width: min(100%, 980px);
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 42vw), 1fr)); gap: 16px;
+  /* Three across on a phone, so a whole pack fits in a few rows. */
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 27vw), 1fr)); gap: 16px 10px;
   animation: packIn .5s cubic-bezier(.2,.9,.25,1) both;
 }
 .opener .summary-grid figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -178,8 +185,9 @@
 .opener .summary-grid figure[data-finish="holo"] img { box-shadow: 0 0 0 2px #e9d27a, 0 6px 16px -6px #0007; }
 .opener .summary-grid figure[data-finish="reverse"] img { box-shadow: 0 0 0 2px #c8d0dc, 0 6px 16px -6px #0007; }
 .opener .summary-grid figure[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 22px #ffd66b99; }
-.opener .summary-grid figcaption { font-weight: 700; line-height: 1.25; }
+.opener .summary-grid figcaption { font-weight: 700; line-height: 1.25; font-size: .9rem; overflow-wrap: anywhere; }
 .opener .summary-grid small { display: block; font-weight: 500; color: var(--muted); }
+@media (min-width: 640px) { .opener .summary-grid { gap: 16px; } .opener .summary-grid figcaption { font-size: 1rem; } }
 
 @media (prefers-reduced-motion: reduce) {
   .opener .wrap.enter, .opener .summary-grid { animation: none; }
@@ -226,7 +234,8 @@
 @media (prefers-reduced-motion: reduce) { .opener .rarity-tag { animation: none; } }
 
 /* ---------- Daily limit ---------- */
-.opener .limit-note { margin: -10px 0 0; color: var(--muted); font-size: .9rem; }
+.opener .limit-note { margin: -8px 0 0; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; text-align: center; }
 .opener .out-of-packs { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 .opener .out-of-packs h1 { font: italic 800 clamp(1.8rem, 6vw, 2.6rem)/1.1 "Alegreya", Georgia, serif; margin: 0; }
+.opener .out-of-packs .recharge { margin: 4px 0 8px; font-size: 1.15rem; }
 .opener .out-of-packs strong { color: var(--ink); font-variant-numeric: tabular-nums; }

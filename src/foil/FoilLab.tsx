@@ -106,7 +106,7 @@ export function FoilLab() {
   return (
     <main className="foil-lab" ref={rootRef} style={vars} onPointerMove={onMove} onPointerLeave={() => tilt.rest()}>
       <header>
-        <a href={href.picker()}>← Sets</a>
+        <a href={href.open()}>← Open packs</a>
         <h1>Foil lab</h1>
         <p>Hover a card to tilt it, or turn on the light sweep to compare everything at once. Art boxes are % of the card image, set in <code>src/foil/layouts.ts</code>.</p>
         <div className="controls">

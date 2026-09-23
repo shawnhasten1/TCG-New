@@ -21,7 +21,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { min-height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, sans-serif; overflow-x: hidden; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 
 /* ---------- Debug page ---------- */

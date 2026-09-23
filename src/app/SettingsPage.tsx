@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { parseBackup, planMerge, toBackup } from "../collection/backup";
-import { localDay, packsOpenedOn } from "../collection/daily";
+import { localDay, packAllowance, packsOpenedOn, RECHARGE_MS } from "../collection/daily";
 import { addPulls, clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
 import { ERAS } from "../engine/randomSet";
 import "../collection/collection.css";
@@ -10,7 +10,7 @@ import { href } from "./router";
 import { updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
 
-const LIMITS = [0, 1, 3, 5, 10];
+const LIMITS = [1, 3, 5, 10, 0];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 function download(filename: string, text: string) {
@@ -92,7 +92,7 @@ export function SettingsPage() {
   return (
     <main className="collection settings">
       <nav className="crumbs">
-        <a href={href.picker()}>← All sets</a>
+        <a href={href.open()}>← Open packs</a>
         <a href={href.collection()}>Your collection</a>
       </nav>
       <h1>Settings</h1>
@@ -113,16 +113,16 @@ export function SettingsPage() {
 
       <section>
         <h2>Pack of the day</h2>
-        <p className="muted">Limit how many packs you can open each day, across all sets. The count resets at midnight.</p>
+        <p className="muted">How many packs you can open at once, across all sets. Once they run out, a pack recharges every {RECHARGE_MS / 60_000} minutes, up to the limit. Everything refills at midnight.</p>
         <div role="radiogroup" aria-label="Daily pack limit" className="segmented">
           {LIMITS.map((n) => (
             <button key={n} type="button" role="radio" aria-checked={settings.dailyLimit === n} aria-pressed={settings.dailyLimit === n} onClick={() => updateSettings({ dailyLimit: n })}>
-              {n === 0 ? "Unlimited" : `${n} a day`}
+              {n === 0 ? "Unlimited" : plural(n, "pack")}
             </button>
           ))}
         </div>
         <p className="muted">
-          {plural(today, "pack")} opened today.
+          {plural(today, "pack")} opened today{settings.dailyLimit > 0 && pulls ? ` · ${plural(packAllowance(pulls, settings.dailyLimit, new Date()).left, "pack")} ready now` : ""}.
         </p>
       </section>
 

@@ -3,7 +3,6 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
-import { updateSettings, useSettings } from "../app/settings";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
 import { pullTier, rarityKind } from "../engine/tiers";
@@ -12,6 +11,7 @@ import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
 import { FoilCard } from "../foil/FoilCard";
 import { layoutFor } from "../foil/layouts";
+import { OpenerNav } from "./OpenerNav";
 import { Tilt } from "./tilt";
 import "./opener.css";
 
@@ -25,7 +25,6 @@ interface Props {
   /** Called once, when the pack is torn open (the pack is saved then). */
   onOpened?(): void;
   onAgain(): void;
-  onBack(): void;
   binderHref?: string;
   /** Daily-limit status line, e.g. "2 of 3 packs left today". */
   limitNote?: string;
@@ -42,7 +41,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, binderHref, limitNote, canOpenAgain = true }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, canOpenAgain = true }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -248,10 +247,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
 
   return (
     <div className="opener">
-      <button type="button" className="back" onClick={onBack}>
-        ← Home
-      </button>
-      <SoundToggle />
+      <OpenerNav />
 
       {phase === "summary" ? (
         <PackSummary pulls={pulls} newIds={newIds} />
@@ -355,15 +351,6 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, onBack, bind
         )}
       </div>
     </div>
-  );
-}
-
-function SoundToggle() {
-  const { sound } = useSettings();
-  return (
-    <button type="button" className="sound-toggle" aria-pressed={sound} onClick={() => updateSettings({ sound: !sound })}>
-      {sound ? "Sound on" : "Sound off"}
-    </button>
   );
 }
 

@@ -7,20 +7,27 @@ export interface Settings {
   sound: boolean;
   /** 0–1. */
   volume: number;
-  /** Packs per day; 0 means unlimited. */
+  /** Packs per day, recharging after they run out (see collection/daily.ts); 0 means unlimited. */
   dailyLimit: number;
   /** Eras packs are drawn from (pack profile ids); empty means every era. */
   eras: string[];
 }
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 0, eras: [] };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [] };
 const KEY = "tcg-pack-opener:settings";
+/** Bumped when a default changes in a way stored settings should pick up. */
+const VERSION = 2;
 const events = new EventTarget();
 
 export function getSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (raw) {
+      const { v, ...stored } = JSON.parse(raw) as Partial<Settings> & { v?: number };
+      // Before v2, "unlimited" was the default and got saved with any other change; adopt the new default.
+      if (!v && stored.dailyLimit === 0) delete stored.dailyLimit;
+      return { ...DEFAULTS, ...stored };
+    }
   } catch {
     // Private mode or blocked storage: use defaults.
   }
@@ -30,7 +37,7 @@ export function getSettings(): Settings {
 export function updateSettings(patch: Partial<Settings>): Settings {
   const next = { ...getSettings(), ...patch };
   try {
-    localStorage.setItem(KEY, JSON.stringify(next));
+    localStorage.setItem(KEY, JSON.stringify({ ...next, v: VERSION }));
   } catch {
     // Not persisted, but still applied for this session via the event below.
   }

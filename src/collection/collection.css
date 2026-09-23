@@ -9,7 +9,8 @@
 .collection .muted { color: var(--muted); }
 .collection .error { color: #c0392b; }
 .collection .empty { padding: 32px 0; }
-.collection .crumbs { display: flex; gap: 16px; }
+.collection .crumbs { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.collection .crumbs a { display: inline-block; padding: 10px 0; font-weight: 600; } /* thumb-sized */
 .collection button, .collection a.button {
   font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif; cursor: pointer; text-decoration: none;
   padding: 10px 16px; border-radius: 999px; color: var(--ink); background: var(--btn);
@@ -85,13 +86,35 @@
   font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
 }
 .card-detail::backdrop { background: #0009; }
+/* The page behind stays put while a card is open (and while you drag to tilt it). */
+html:has(.card-detail[open]) { overflow: hidden; }
 .card-detail .detail-body { display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; }
 .card-detail .detail-card { width: min(320px, 100%); aspect-ratio: 600 / 825; margin-inline: auto; }
 
+/* Close button, pinned to the top corner so it's reachable however far you've scrolled.
+   On desktop the bar takes no space; on phones it's the sheet's grab handle too. */
+.card-detail .sheet-bar { position: sticky; top: 0; z-index: 3; height: 0; transition: opacity .3s; }
+.card-detail .handle { display: none; }
+.card-detail .sheet-bar .close-x {
+  position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; padding: 0;
+  display: grid; place-items: center; border-radius: 50%;
+}
+.card-detail .close-x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.card-detail h2 { padding-right: 44px; }
+.card-detail.zoomed .sheet-bar { opacity: 0; pointer-events: none; }
+
+.card-detail .zoom-hint {
+  position: fixed; left: 0; right: 0; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 2;
+  text-align: center; color: #fffc; font-size: .95rem; pointer-events: none;
+  animation: hintIn .4s .9s both;
+}
+@keyframes hintIn { from { opacity: 0; } }
+
+
 /* Showcase: .showcase flies to the middle and grows, .spin turns once to show the back, .tcg-card tilts. */
-.card-detail { transition: background-color .35s, box-shadow .35s; }
+.card-detail { transition: background-color .35s, box-shadow .35s, transform .2s ease-in; }
 .card-detail::backdrop { transition: background-color .35s; }
-.card-detail.zoomed { overflow: visible; background-color: transparent; box-shadow: none; }
+.card-detail.zoomed { overflow: visible; background-color: transparent; box-shadow: none; touch-action: none; }
 .card-detail.zoomed::backdrop { background: #000d; }
 .card-detail .detail-info { transition: opacity .3s; }
 .card-detail.zoomed .detail-info { opacity: 0; pointer-events: none; }
@@ -114,6 +137,7 @@
 @media (prefers-reduced-motion: reduce) {
   .card-detail .showcase { transition-duration: .01s; }
   .card-detail .spin { transition: none; }
+  .card-detail[open], .card-detail .zoom-hint { animation: none; }
 }
 .card-detail .tcg-card.unowned { filter: grayscale(.85); opacity: .6; }
 .card-detail .detail-info { flex: 1; min-width: min(280px, 100%); display: flex; flex-direction: column; }
@@ -132,8 +156,26 @@
 .card-detail ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .card-detail .prices li { display: flex; justify-content: space-between; gap: 12px; }
 .card-detail .prices span { font-variant-numeric: tabular-nums; }
-.card-detail .close { margin-top: auto; align-self: flex-end; }
-.card-detail .detail-info .close { margin-top: 24px; }
+
+@media (max-width: 640px) {
+  /* A bottom sheet: close with the ×, a tap above it, or by pulling the handle down. */
+  .card-detail {
+    width: 100%; max-width: 100%; max-height: 92dvh; margin: auto 0 0;
+    border-radius: 22px 22px 0 0;
+  }
+  .card-detail[open] { animation: sheetUp .35s cubic-bezier(.2, .9, .25, 1); }
+  .card-detail .sheet-bar {
+    height: 52px; display: grid; place-items: center; touch-action: none; cursor: grab;
+    background: var(--bg); border-radius: inherit;
+  }
+  .card-detail.zoomed .sheet-bar { background: transparent; }
+  .card-detail .handle { display: block; width: 44px; height: 5px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 28%, transparent); }
+  .card-detail .sheet-bar .close-x { top: 4px; right: 8px; }
+  .card-detail .detail-body { gap: 16px; padding: 0 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .card-detail .detail-card { width: min(240px, 62vw); }
+  .card-detail h2 { padding-right: 0; font-size: 1.4rem; }
+}
+@keyframes sheetUp { from { transform: translateY(100%); } }
 
 /* ---------- Settings ---------- */
 .settings { max-width: 760px; }

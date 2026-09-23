@@ -1,19 +1,20 @@
 // Deals packs from randomly chosen sets. There is no manual set choice: every pack, including
 // "Open another pack", draws a new set. The next set is drawn and downloaded while you reveal
 // the current pack, so the next wrapper is usually ready at once.
-// Also enforces the optional daily pack limit ("pack of the day").
+// Also enforces the daily pack limit ("pack of the day"), which recharges a pack at a time once it runs out.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SetData, SetSummary } from "../api/types";
 import { client, getUnopenable, markUnopenable } from "../app/client";
 import { href } from "../app/router";
 import { useSettings } from "../app/settings";
-import { formatCountdown, localDay, nextReset, packsLeft, packsOpenedOn } from "../collection/daily";
+import { formatCountdown, packAllowance, RECHARGE_MS } from "../collection/daily";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { openPack, whyNotOpenable } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { drawableSets, pickRandomSet } from "../engine/randomSet";
 import { createRng } from "../engine/rng";
+import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
 
@@ -135,8 +136,9 @@ export function OpenPage() {
 
   const limited = dailyLimit > 0;
   const now = useNow(limited);
-  const left = packsLeft(dailyLimit, packsOpenedOn(stamps ?? [], localDay(now)));
+  const { left, nextAt } = packAllowance(stamps ?? [], dailyLimit, now);
   const outOfPacks = limited && left === 0;
+  const countdown = nextAt ? formatCountdown(nextAt.getTime() - now.getTime()) : "";
 
   const save = () => {
     if (!pack || !data) return;
@@ -163,27 +165,24 @@ export function OpenPage() {
     void deal(up);
   };
 
-  const home = () => (location.hash = href.picker());
-  const countdown = formatCountdown(nextReset(now).getTime() - now.getTime());
 
-  // Out of packs, and not in the middle of revealing one: wait for tomorrow.
+  // Out of packs, and not in the middle of revealing one: wait for the next recharge.
   if (stamps && outOfPacks && !torn) {
     return (
       <div className="opener">
-        <button type="button" className="back" onClick={home}>
-          ← Home
-        </button>
+        <OpenerNav />
         <div className="out-of-packs" role="status">
-          <h1>That's today's {dailyLimit === 1 ? "pack" : `${dailyLimit} packs`}</h1>
-          <p className="hint">
+          <h1>Out of packs</h1>
+          <p className="hint">You've used up your packs for now. A pack recharges every {RECHARGE_MS / 60_000} minutes, up to {dailyLimit}.</p>
+          <p className="recharge">
             Next pack in <strong>{countdown}</strong>
           </p>
           <div className="controls">
-            <a className="button" href={href.collection()}>
+            <a className="button primary" href={href.collection()}>
               Your collection
             </a>
             <a className="button" href={href.settings()}>
-              Change daily limit
+              Pack limit
             </a>
           </div>
         </div>
@@ -196,9 +195,7 @@ export function OpenPage() {
     const pct = loading?.total ? Math.round((loading.done / loading.total) * 100) : 0;
     return (
       <div className="opener">
-        <button type="button" className="back" onClick={home}>
-          ← Home
-        </button>
+        <OpenerNav />
         {stage.state === "error" ? (
           <div className="loading">
             <p className="hint">{stage.message}</p>
@@ -228,9 +225,8 @@ export function OpenPage() {
       newIds={pack.newIds}
       onOpened={save}
       onAgain={next}
-      onBack={home}
       binderHref={href.binder(data.set.id)}
-      limitNote={limited ? (left > 0 ? `${left} of ${dailyLimit} ${dailyLimit === 1 ? "pack" : "packs"} left today` : `Next pack in ${countdown}`) : undefined}
+      limitNote={limited ? (left === 0 ? `Next pack in ${countdown}` : `${left} of ${dailyLimit} ${dailyLimit === 1 ? "pack" : "packs"} left${nextAt ? ` · next in ${countdown}` : ""}`) : undefined}
       canOpenAgain={!outOfPacks}
     />
   );

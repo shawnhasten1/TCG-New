@@ -1,4 +1,4 @@
-// Home: open a pack (always from a random set), and browse sets by series to view their binders.
+// Set browser (#/sets): sets by series, each opening its binder. Packs themselves always come from a random set.
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
@@ -71,7 +71,7 @@ export function SetPicker() {
     <main className="picker">
       <header>
         <div className="title-row">
-          <h1>Pack Opener</h1>
+          <h1>All sets</h1>
           <nav className="header-links">
             <a className="collection-link" href={href.collection()}>
               Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
@@ -81,7 +81,7 @@ export function SetPicker() {
             </a>
           </nav>
         </div>
-        <p className="lede">Open booster packs from a random Pokémon TCG expansion, using the real card list.</p>
+        <p className="lede">Pick a set to see its binder: every card, what you own and what's missing.</p>
         <div className="open-hero">
           <a className="open-button" href={href.open()}>
             Open a pack
@@ -91,8 +91,6 @@ export function SetPicker() {
             <a href={href.settings()}>Change eras</a>
           </p>
         </div>
-        <h2 className="browse-title">Browse sets</h2>
-        <p className="muted">Pick a set to see its binder: every card, what you own and what's missing.</p>
         <div className="filters">
           <input type="search" placeholder="Search sets" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
           <label>

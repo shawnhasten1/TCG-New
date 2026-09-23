@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
 import { parseBackup, planMerge, toBackup, type StoredPull } from "./backup";
-import { formatCountdown, localDay, nextReset, packsLeft, packsOpenedOn } from "./daily";
+import { formatCountdown, localDay, nextReset, packAllowance, packsOpenedOn } from "./daily";
 import { addPulls, clearPulls, getPulls } from "./store";
 
 const pull = (packId: string, openedAt: string, cardId = "s-1"): StoredPull => ({
@@ -26,10 +26,47 @@ describe("daily packs", () => {
     expect(packsOpenedOn(pulls, localDay(today))).toBe(2);
   });
 
-  it("treats a limit of 0 as unlimited and never goes negative", () => {
-    expect(packsLeft(0, 50)).toBe(Infinity);
-    expect(packsLeft(3, 1)).toBe(2);
-    expect(packsLeft(3, 5)).toBe(0);
+  describe("allowance", () => {
+    const at = (h: number, m = 0, s = 0) => new Date(2026, 8, 23, h, m, s);
+    const packs = (...times: Date[]) => times.map((t, i) => pull(`p${i}`, t.toISOString()));
+
+    it("treats a limit of 0 as unlimited", () => {
+      expect(packAllowance(packs(at(9), at(9, 1)), 0, at(10))).toEqual({ left: Infinity });
+    });
+
+    it("counts down from the limit without recharging while packs remain", () => {
+      expect(packAllowance(packs(at(9), at(9, 5)), 3, at(12))).toEqual({ left: 1 });
+    });
+
+    it("counts a pack once however many cards it has, and ignores other days", () => {
+      const pulls = [...packs(at(9)), pull("p0", at(9).toISOString(), "s-2"), pull("old", new Date(2026, 8, 22, 23).toISOString())];
+      expect(packAllowance(pulls, 3, at(10)).left).toBe(2);
+    });
+
+    it("recharges one pack every two minutes after running out", () => {
+      const pulls = packs(at(9), at(9, 1), at(9, 2));
+      expect(packAllowance(pulls, 3, at(9, 3))).toEqual({ left: 0, nextAt: at(9, 4) });
+      expect(packAllowance(pulls, 3, at(9, 4))).toEqual({ left: 1, nextAt: at(9, 6) });
+      expect(packAllowance(pulls, 3, at(9, 7))).toEqual({ left: 2, nextAt: at(9, 8) });
+    });
+
+    it("stacks recharged packs up to the limit, then stops the clock", () => {
+      const pulls = packs(at(9), at(9, 1), at(9, 2));
+      expect(packAllowance(pulls, 3, at(9, 8))).toEqual({ left: 3 }); // three recharges after 9:02
+      expect(packAllowance(pulls, 3, at(11))).toEqual({ left: 3 });
+    });
+
+    it("keeps partial recharge progress when a recharged pack is opened", () => {
+      // Out at 9:02; one back at 9:04, opened at 9:05; the next is still due at 9:06.
+      const pulls = packs(at(9), at(9, 1), at(9, 2), at(9, 5));
+      expect(packAllowance(pulls, 3, at(9, 5, 30))).toEqual({ left: 0, nextAt: at(9, 6) });
+    });
+
+    it("refills at midnight, even mid-recharge", () => {
+      const late = [new Date(2026, 8, 23, 23, 59), new Date(2026, 8, 23, 23, 59, 30)];
+      expect(packAllowance(packs(...late), 2, new Date(2026, 8, 23, 23, 59, 45))).toEqual({ left: 0, nextAt: new Date(2026, 8, 24) });
+      expect(packAllowance(packs(...late), 2, new Date(2026, 8, 24, 0, 0, 1))).toEqual({ left: 2 });
+    });
   });
 
   it("resets at the next local midnight", () => {

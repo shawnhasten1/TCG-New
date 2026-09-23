@@ -1,4 +1,4 @@
-// Tiny hash router: #/ (home + set browser), #/open (a pack from a random set), #/collection, #/binder/<setId>,
+// Tiny hash router: #/ (home: a pack from a random set), #/sets (set browser), #/collection, #/binder/<setId>,
 // #/pokedex, #/pokemon/<dexId>, #/settings, #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
@@ -6,8 +6,7 @@ export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; set
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
-  // Packs always come from a random set; old #/open/<setId> links still land on a random pack.
-  if (page === "open") return { page: "open" };
+  if (page === "sets") return { page: "picker" };
   if (page === "debug") return { page: "debug", setId: id || undefined };
   if (page === "foil") return { page: "foil" };
   if (page === "collection") return { page: "collection" };
@@ -15,12 +14,13 @@ export function parseRoute(hash: string): Route {
   if (page === "pokedex") return { page: "pokedex" };
   if (page === "pokemon" && /^\d+$/.test(id ?? "")) return { page: "pokemon", dexId: Number(id) };
   if (page === "binder" && id) return { page: "binder", setId: id };
-  return { page: "picker" };
+  // Home is the opener. Packs always come from a random set, so old #/open and #/open/<setId> links land here too.
+  return { page: "open" };
 }
 
 export const href = {
-  picker: () => "#/",
-  open: () => "#/open",
+  picker: () => "#/sets",
+  open: () => "#/",
   debug: (setId: string) => `#/debug/${encodeURIComponent(setId)}`,
   foil: () => "#/foil",
   collection: () => "#/collection",
@@ -30,9 +30,9 @@ export const href = {
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
 };
 
-/** Old #/open/<setId> links: tidy the address, since the set is always random. */
+/** Old #/open and #/open/<setId> links: tidy the address, since home is the opener and the set is always random. */
 function tidyOpenLink() {
-  if (location.hash.startsWith("#/open/")) history.replaceState(null, "", "#/open");
+  if (/^#\/open(\/|$)/.test(location.hash)) history.replaceState(null, "", "#/");
 }
 
 export function useRoute(): Route {
