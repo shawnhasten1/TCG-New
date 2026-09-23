@@ -60,6 +60,13 @@
   perspective: 900px;
 }
 .opener .wrap.enter { animation: packIn .7s cubic-bezier(.2,.9,.25,1) both; }
+/* Once the wrapper drops away, the revealed card grows into the free space (PackOpener measures it).
+   Uses scale/translate rather than transform, so it stacks with the entry animation. */
+.opener .wrap.fitted {
+  scale: var(--fit-s, 1); translate: var(--fit-x, 0px) var(--fit-y, 0px);
+  transform-origin: var(--fit-ox, 50%) var(--fit-oy, 50%);
+  transition: scale .6s cubic-bezier(.2,.9,.25,1), translate .6s cubic-bezier(.2,.9,.25,1);
+}
 @keyframes packIn { from { transform: translateY(-40px) rotate(-3deg); opacity: 0; } }
 
 /* ---------- The pack ---------- */
@@ -191,7 +198,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .opener .wrap.enter, .opener .summary-grid { animation: none; }
-  .opener .slot, .opener .stack { transition-duration: .01s; }
+  .opener .slot, .opener .stack, .opener .wrap.fitted { transition-duration: .01s; }
 }
 
 /* ---------- Set loading ---------- */

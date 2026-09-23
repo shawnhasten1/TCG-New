@@ -1,7 +1,7 @@
 // The opening experience, ported from the "Booster pack opening" prototype:
 // drag across the top to tear, cards slide out, tap through them one by one.
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
@@ -47,6 +47,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
   const layout = layoutFor(set.serie.id);
 
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLParagraphElement>(null);
   const packRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -147,6 +149,42 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       go("summary");
     }
   };
+
+  /* ---------- Revealed cards grow to fill the space the wrapper leaves ---------- */
+  useLayoutEffect(() => {
+    if (phase !== "reveal") return;
+    const fit = () => {
+      const wrap = wrapRef.current;
+      const hint = hintRef.current;
+      const bar = document.querySelector(".opener .topbar");
+      if (!wrap || !hint) return;
+      // Layout box (offset*), not getBoundingClientRect, so the fit already applied doesn't skew it.
+      const parent = (wrap.offsetParent ?? document.body).getBoundingClientRect();
+      const x = parent.left + wrap.offsetLeft;
+      const y = parent.top + wrap.offsetTop;
+      const w = wrap.offsetWidth;
+      const h = wrap.offsetHeight;
+      // Where the settled card sits in the wrapper (see .stack in opener.css: top 15%, then translateY(-7.3%)).
+      const cw = w / 1.12;
+      const ch = (cw * 825) / 600;
+      const cy = y + 0.15 * h - 0.073 * ch + ch / 2;
+      const cx = x + w / 2;
+      // Free space: below the top bar, above the hint, leaving room for the badge and rarity tag.
+      const top = (bar?.getBoundingClientRect().bottom ?? 0) + 14;
+      const bottom = hint.getBoundingClientRect().top - 24;
+      const vw = document.documentElement.clientWidth;
+      const s = Math.max(1, Math.min((vw - 40) / cw, (bottom - top) / ch, 1.5));
+      const st = wrap.style;
+      st.setProperty("--fit-s", s.toFixed(3));
+      st.setProperty("--fit-ox", `${w / 2}px`);
+      st.setProperty("--fit-oy", `${cy - y}px`);
+      st.setProperty("--fit-x", `${vw / 2 - cx}px`);
+      st.setProperty("--fit-y", `${(top + bottom) / 2 - cy}px`);
+    };
+    fit();
+    addEventListener("resize", fit);
+    return () => removeEventListener("resize", fit);
+  }, [phase, idx]);
 
   /* ---------- Pack interaction: drag across the top to tear ---------- */
   const onPackDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -252,7 +290,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       {phase === "summary" ? (
         <PackSummary pulls={pulls} newIds={newIds} />
       ) : (
-        <div className="wrap enter" style={wrapperStyle}>
+        <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}`} ref={wrapRef} style={wrapperStyle}>
           <div
             className={`pack sealed${booster ? " has-art" : ""}`}
             ref={packRef}
@@ -329,7 +367,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
         </div>
       )}
 
-      <p className="hint" aria-live="polite">
+      <p className="hint" ref={hintRef} aria-live="polite">
         {hint}
       </p>
       {limitNote && (phase === "sealed" || phase === "summary" || (phase === "reveal" && isLast)) && <p className="limit-note">{limitNote}</p>}
