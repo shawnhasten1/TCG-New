@@ -46,7 +46,7 @@ describe("pickRandomSet", () => {
     const rng = createRng("draw");
     const counts = new Map<string, number>();
     for (let i = 0; i < 5000; i++) {
-      const s = pickRandomSet(pool, rng, undefined, () => "common")!;
+      const s = pickRandomSet(pool, rng, { tierOf: () => "common" })!;
       counts.set(s.id, (counts.get(s.id) ?? 0) + 1);
     }
     expect([...counts.keys()].sort()).toEqual(pool.map((s) => s.id).sort());
@@ -59,7 +59,7 @@ describe("pickRandomSet", () => {
     const counts: Record<string, number> = {};
     const n = 20000;
     for (let i = 0; i < n; i++) {
-      const tier = tiers[pickRandomSet(drawableSets(sets), rng, undefined, (id) => tiers[id])!.id];
+      const tier = tiers[pickRandomSet(drawableSets(sets), rng, { tierOf: (id) => tiers[id] })!.id];
       counts[tier] = (counts[tier] ?? 0) + 1;
     }
     expect(counts.common / n).toBeCloseTo(0.7, 1);
@@ -72,8 +72,8 @@ describe("pickRandomSet", () => {
   it("avoids a given set when there is another choice", () => {
     const pool = drawableSets(sets, { eras: ["sv"] });
     const rng = createRng(1);
-    for (let i = 0; i < 50; i++) expect(pickRandomSet(pool, rng, "sv03.5")!.id).toBe("me01");
-    expect(pickRandomSet([pool[0]], rng, "sv03.5")!.id).toBe("sv03.5");
+    for (let i = 0; i < 50; i++) expect(pickRandomSet(pool, rng, { avoid: "sv03.5" })!.id).toBe("me01");
+    expect(pickRandomSet([pool[0]], rng, { avoid: "sv03.5" })!.id).toBe("sv03.5");
   });
 
   it("returns undefined when nothing is drawable", () => {

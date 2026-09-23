@@ -1,6 +1,7 @@
 // Deals packs from randomly chosen sets. There is no manual set choice: every pack, including
 // "Open another pack", draws a new set. The next set is drawn and downloaded while you reveal
 // the current pack, so the next wrapper is usually ready at once.
+// Set rarity pity (see engine/setRarity.ts) counts from the saved packs, so it survives reloads and backups.
 // Also enforces the daily pack limit ("pack of the day"), which recharges a pack at a time once it runs out.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -14,6 +15,7 @@ import { openPack, whyNotOpenable } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { drawableSets, pickRandomSet } from "../engine/randomSet";
 import { createRng } from "../engine/rng";
+import { pityFloor } from "../engine/setRarity";
 import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
@@ -40,6 +42,13 @@ function useNow(on: boolean): Date {
   return now;
 }
 
+/** The set of each saved pack, oldest first. */
+function packHistory(pulls: PullRecord[]): string[] {
+  const packs = new Map<string, Pick<PullRecord, "setId" | "openedAt">>();
+  for (const p of pulls) if (!packs.has(p.packId)) packs.set(p.packId, p);
+  return [...packs.values()].sort((a, b) => a.openedAt.localeCompare(b.openedAt)).map((p) => p.setId);
+}
+
 export function OpenPage() {
   const { dailyLimit, eras } = useSettings();
   const [stage, setStage] = useState<Stage>({ state: "starting" });
@@ -52,6 +61,8 @@ export function OpenPage() {
   const owned = useRef(new Map<string, Set<string>>());
   const summaries = useRef<SetSummary[] | undefined>(undefined);
   const unopenable = useRef<Record<string, string>>({});
+  /** Set of every opened pack, oldest first, for the set rarity pity. */
+  const history = useRef<string[]>([]);
   /** The next pack's set, drawn and downloading in the background. */
   const upcoming = useRef<Draw | undefined>(undefined);
   /** Increments per dealt pack; keys the opener and seeds the pack. */
@@ -62,7 +73,7 @@ export function OpenPage() {
   /** Draws a set that isn't known to be unopenable. */
   const draw = useCallback((avoid?: string): SetSummary | undefined => {
     const pool = drawableSets(summaries.current ?? [], { unopenable: unopenable.current, eras: erasKey ? erasKey.split(",") : [] });
-    return pickRandomSet(pool, Math.random, avoid);
+    return pickRandomSet(pool, Math.random, { avoid, floor: pityFloor(history.current) });
   }, [erasKey]);
   const drawNext = useCallback((avoid?: string) => {
     const set = draw(avoid);
@@ -112,6 +123,7 @@ export function OpenPage() {
       summaries.current = sets;
       unopenable.current = { ...unopen };
       for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
+      history.current = packHistory(pulls);
       setStamps(pulls.map(({ packId, openedAt }) => ({ packId, openedAt })));
       const first = draw();
       if (!first) setStage({ state: "error", message: "No set could be opened. Check the era filter in Settings." });
@@ -145,6 +157,7 @@ export function OpenPage() {
     const setId = data.set.id;
     const have = owned.current.get(setId) ?? owned.current.set(setId, new Set()).get(setId)!;
     for (const p of pack.pulls) have.add(p.card.id);
+    history.current.push(setId);
     const openedAt = new Date();
     setTorn(true);
     setStamps((s) => [...(s ?? []), { packId: `pending-${dealNo}`, openedAt: openedAt.toISOString() }]);

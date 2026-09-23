@@ -34,13 +34,18 @@ export function drawableSets(sets: SetSummary[], opts: DrawOptions = {}): SetSum
   });
 }
 
-/**
- * Picks one set, weighted by its rarity tier (scarcer sets come up less often).
- * `avoid` skips a set (e.g. one that just failed to load) when others exist.
- */
-export function pickRandomSet(sets: SetSummary[], rng: Rng, avoid?: string, tierOf: (id: string) => SetTier = setTier): SetSummary | undefined {
+export interface PickOptions {
+  /** Skip this set (e.g. one that just failed to load) when others exist. */
+  avoid?: string;
+  /** The lowest set tier allowed (a pity guarantee, see setRarity.ts). */
+  floor?: SetTier;
+  tierOf?: (id: string) => SetTier;
+}
+
+/** Picks one set, weighted by its rarity tier (scarcer sets come up less often). */
+export function pickRandomSet(sets: SetSummary[], rng: Rng, { avoid, floor, tierOf = setTier }: PickOptions = {}): SetSummary | undefined {
   const pool = sets.length > 1 && avoid ? sets.filter((s) => s.id !== avoid) : sets;
-  const weights = drawWeights(pool.map((s) => s.id), tierOf);
+  const weights = drawWeights(pool.map((s) => s.id), tierOf, floor);
   let roll = rng();
   for (let i = 0; i < pool.length; i++) {
     roll -= weights[i];
