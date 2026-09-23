@@ -6,19 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "rarities": "tsx scripts/rarities.ts",
     "simulate": "tsx scripts/simulate.ts",
     "open": "tsx scripts/open.ts",
-    "pokedex": "tsx scripts/pokedex.ts"
+    "pokedex": "tsx scripts/pokedex.ts",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.58.0",
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -27,6 +29,7 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "wrangler": "^4.137.0"
   }
 }
