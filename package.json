@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "rarities": "tsx scripts/rarities.ts",
     "simulate": "tsx scripts/simulate.ts",
-    "open": "tsx scripts/open.ts"
+    "open": "tsx scripts/open.ts",
+    "pokedex": "tsx scripts/pokedex.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

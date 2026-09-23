@@ -85,6 +85,13 @@ export interface Card {
   energyType?: string | null;
   /** "Supporter", "Item", "Stadium", "Tool"… Trainer cards only (not set for older sets). */
   trainerType?: string | null;
+  /** National Pokédex numbers. Pokémon cards only; tag-team cards list several. */
+  dexId?: number[] | null;
+}
+
+/** A card from a cross-set query, which also says which set it's from. */
+export interface CardWithSet extends Card {
+  set: { id: string };
 }
 
 /** Everything needed to open packs from one set. */

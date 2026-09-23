@@ -6,7 +6,8 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (#/open, #/collection, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run dev                          # app at http://localhost:5173 (#/open, #/collection, #/pokedex, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run pokedex                      # regenerate src/collection/pokedex.json (Pokémon names) from PokéAPI
 npm test                             # engine unit tests (offline)
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
 npm run open -- sv03.5 [seed]        # open one pack from a real set
@@ -37,6 +38,7 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
   - **Settings** live at `#/settings`, and preferences are kept in localStorage.
   - **Deployment**: GitHub Pages workflow and Netlify config (see below), a favicon, and a meta description.
 - **Phase 9, random sets: done.** Every pack comes from a randomly drawn set (`src/engine/randomSet.ts`); there's no manual set choice. The home page's "Open a pack" goes to `#/open`, and the set list opens binders. The next set downloads while you reveal, and Settings can limit the draw by era.
+- **Phase 10, collection by Pokémon: done.** `#/pokedex` lists the Pokémon you own (search jumps to any Pokémon). `#/pokemon/<dexId>` shows every printing of that Pokémon across sets, grouped by era, with finish chips for what you own and what's missing, and completion over the printings packs can give you. Promos and other products are behind a toggle. Logic is in `src/collection/pokedex.ts`.
 
 ## Deploying
 

@@ -94,6 +94,10 @@ The Pokémon page (#/pokemon/<dexId>).
 - Clicking a tile opens the existing card detail, with finish tabs, copies, first pull and prices.
 - Totals count unique printings and finish variants separately, so "96 cards, 180 card-and-finish combinations" can both be tracked.
 
+Decisions (2026-09-23). A Pokémon's completion counts only printings from sets packs can come from. A toggle shows promos and other products, which never count.
+
+Done. Cards carry dexId (cache version 3). client.getPokemonCards(dexId) fetches every printing across sets, cached per day. src/collection/pokedex.json holds 1,025 names from npm run pokedex. #/pokedex is the index of Pokémon you own, sortable, with search for any Pokémon. #/pokemon/<dexId> shows every printing in one grid per era, oldest first, each tile labelled with set, year, number and rarity, plus finish chips (owned ×n, missing faded). It has owned/missing, finish and era filters, the promos toggle, and previous/next Pokémon links. Completion is shown for cards and for card-and-finish combinations. For Black & White, XY and Sun & Moon, which have no finish data, finishes follow the pack rules. The collection page and binder have a By set / By Pokémon switch, and the card detail links to "All <Pokémon> cards". In testing, Pikachu showed 82 printings packs can give out of 209, and 126 card-and-finish combinations.
+
 Out of scope for now: grouping identical artwork reprinted in different sets (possible later by illustrator plus name), a Trainer-card view by name, and wishlists.
 
 Work. Pure grouping and completion functions with tests: owned cards by Pokémon, the finish matrix per printing, and eligibility filters. Then the API addition, the Pokédex data script, the two pages, and links from the binder and collection. About two to three days. Phase 10 doesn't depend on Phase 9, so they can be built in either order.

@@ -6,6 +6,7 @@ import { client } from "../app/client";
 import { href } from "../app/router";
 import { tallyBySet } from "./progress";
 import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -49,6 +50,7 @@ export function CollectionPage() {
         <a href={href.settings()}>Settings &amp; backup</a>
       </nav>
       <h1>Your collection</h1>
+      <CollectionViewSwitch current="set" />
       {!pulls || !sets ? (
         <p className="muted" role="status">
           Loading…

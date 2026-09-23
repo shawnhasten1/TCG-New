@@ -19,12 +19,13 @@ import type {
   SetData,
   SetDetail,
   SetSummary,
+  CardWithSet,
 } from "./types";
 
 const REST = "https://api.tcgdex.net/v2/en";
 const GRAPHQL = "https://api.tcgdex.net/v2/graphql";
 const GRAPHQL_PAGE = 100;
-const CACHE_VERSION = 2; // 2: cards gained category / energyType / trainerType
+const CACHE_VERSION = 3; // 2: cards gained category / energyType / trainerType. 3: dexId
 
 export type Progress = (done: number, total: number) => void;
 
@@ -35,6 +36,8 @@ export interface TcgdexClient {
   getSerie(id: string): Promise<SerieDetail>;
   getSet(id: string): Promise<SetDetail>;
   getSetCards(id: string, onProgress?: Progress): Promise<SetData>;
+  /** Every printing of one Pokémon across all sets (by National Pokédex number). Cached per day. */
+  getPokemonCards(dexId: number): Promise<CardWithSet[]>;
   /** Market prices for one card (REST only; GraphQL has no pricing). Cached per day. */
   getCardPricing(id: string): Promise<CardPricing | null>;
 }
@@ -102,7 +105,7 @@ async function fetchCardsGraphql(setId: string, onProgress?: Progress, expected 
   const cards: Card[] = [];
   for (let page = 1; ; page++) {
     const query = `{ cards(filters:{ id: ${JSON.stringify(setId + "-")} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
-      id localId name image rarity category energyType trainerType set { id } variants { normal reverse holo firstEdition } } }`;
+      id localId name image rarity category energyType trainerType dexId set { id } variants { normal reverse holo firstEdition } } }`;
     const pageCards = (await graphql<{ cards: (GqlCard | null)[] }>(query)).cards ?? [];
     for (const c of pageCards) {
       if (c && c.set?.id === setId) {
@@ -126,6 +129,7 @@ interface RestCard {
   category?: Card["category"];
   energyType?: string;
   trainerType?: string;
+  dexId?: number[];
 }
 
 function fromRest(c: RestCard): Card {
@@ -138,6 +142,7 @@ function fromRest(c: RestCard): Card {
     category: c.category,
     energyType: c.energyType ?? null,
     trainerType: c.trainerType ?? null,
+    dexId: c.dexId ?? null,
     variants: {
       normal: !!c.variants?.normal,
       reverse: !!c.variants?.reverse,
@@ -200,6 +205,20 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
         const order = new Map(set.cards.map((b, i) => [b.id, i]));
         cards.sort((a, b) => (order.get(a.id) ?? 1e9) - (order.get(b.id) ?? 1e9));
         return { set, cards, byRarity: groupByRarity(cards), source, fetchedAt: new Date().toISOString() };
+      }),
+
+    getPokemonCards: (dexId) =>
+      cached(`pokemon:${dexId}:${new Date().toISOString().slice(0, 10)}`, async () => {
+        const cards: CardWithSet[] = [];
+        for (let page = 1; ; page++) {
+          const query = `{ cards(filters:{ dexId: ${Math.trunc(dexId)} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
+            id localId name image rarity category dexId set { id } variants { normal reverse holo firstEdition } } }`;
+          const got = (await graphql<{ cards: (CardWithSet | null)[] }>(query)).cards ?? [];
+          // The filter is loose, so keep exact matches only (tag teams list several numbers).
+          for (const c of got) if (c?.dexId?.includes(dexId)) cards.push(c);
+          if (got.length < GRAPHQL_PAGE) break;
+        }
+        return cards;
       }),
 
     getCardPricing: (id) =>

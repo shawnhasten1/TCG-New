@@ -1,8 +1,8 @@
 // Tiny hash router: #/ (home + set browser), #/open (a pack from a random set), #/collection, #/binder/<setId>,
-// #/debug/<setId>, #/foil (foil lab).
+// #/pokedex, #/pokemon/<dexId>, #/settings, #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "pokemon"; dexId: number };
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -12,6 +12,8 @@ export function parseRoute(hash: string): Route {
   if (page === "foil") return { page: "foil" };
   if (page === "collection") return { page: "collection" };
   if (page === "settings") return { page: "settings" };
+  if (page === "pokedex") return { page: "pokedex" };
+  if (page === "pokemon" && /^\d+$/.test(id ?? "")) return { page: "pokemon", dexId: Number(id) };
   if (page === "binder" && id) return { page: "binder", setId: id };
   return { page: "picker" };
 }
@@ -23,6 +25,8 @@ export const href = {
   foil: () => "#/foil",
   collection: () => "#/collection",
   settings: () => "#/settings",
+  pokedex: () => "#/pokedex",
+  pokemon: (dexId: number) => `#/pokemon/${dexId}`,
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
 };
 

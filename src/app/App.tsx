@@ -1,5 +1,7 @@
 import { BinderPage } from "../collection/BinderPage";
 import { CollectionPage } from "../collection/CollectionPage";
+import { PokedexPage } from "../collection/PokedexPage";
+import { PokemonPage } from "../collection/PokemonPage";
 import { DebugPage } from "../debug/DebugPage";
 import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
@@ -14,6 +16,10 @@ export function App() {
       return <OpenPage />;
     case "settings":
       return <SettingsPage />;
+    case "pokedex":
+      return <PokedexPage />;
+    case "pokemon":
+      return <PokemonPage key={route.dexId} dexId={route.dexId} />;
     case "collection":
       return <CollectionPage />;
     case "binder":

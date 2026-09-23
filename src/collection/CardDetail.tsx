@@ -7,7 +7,9 @@ import { client } from "../app/client";
 import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
 import type { FrameLayout } from "../foil/layouts";
+import { href } from "../app/router";
 import { Tilt } from "../opener/tilt";
+import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
 import type { Ownership } from "./progress";
 
@@ -91,6 +93,16 @@ export function CardDetail({ card, official, owned, layout, onClose }: Props) {
                 </button>
               ))}
             </div>
+          )}
+
+          {card.category === "Pokemon" && !!card.dexId?.length && (
+            <p className="species-links">
+              {card.dexId.map((d) => (
+                <a key={d} href={href.pokemon(d)} onClick={() => dialogRef.current?.close()}>
+                  All {pokemonName(d)} cards →
+                </a>
+              ))}
+            </p>
           )}
 
           {owned ? (

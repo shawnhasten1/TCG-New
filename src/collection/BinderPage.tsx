@@ -99,6 +99,7 @@ export function BinderPage({ setId }: { setId: string }) {
       <nav className="crumbs">
         <a href={href.collection()}>← Collection</a>
         <a href={href.picker()}>All sets</a>
+        <a href={href.pokedex()}>By Pokémon</a>
       </nav>
 
       <header className="binder-head">
