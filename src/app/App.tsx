@@ -1,6 +1,7 @@
 import { BinderPage } from "../collection/BinderPage";
 import { CardsPage } from "../collection/CardsPage";
 import { CollectionPage } from "../collection/CollectionPage";
+import { FriendCollectionProvider } from "../collection/source";
 import { PokedexPage } from "../collection/PokedexPage";
 import { PokemonPage } from "../collection/PokemonPage";
 import { DebugPage } from "../debug/DebugPage";
@@ -25,6 +26,12 @@ export function App() {
       return <CardsPage />;
     case "pokemon":
       return <PokemonPage key={route.dexId} dexId={route.dexId} />;
+    case "friend":
+      return (
+        <FriendCollectionProvider key={route.friendId} friendId={route.friendId}>
+          {route.view === "binder" ? <BinderPage key={route.setId} setId={route.setId!} /> : route.view === "cards" ? <CardsPage /> : <CollectionPage />}
+        </FriendCollectionProvider>
+      );
     case "feed":
       return <FeedPage />;
     case "friends":

@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { Card } from "../api/types";
 import { applyRemote, clearPulls, dropOutbox, getPulls, getSyncMeta, linkAccount, peekOutbox, savePack, toSyncPacks, unlinkAccount, type PullRecord } from "../collection/store";
 import type { PulledCard } from "../engine/types";
-import { parsePush, type RemotePack } from "./protocol";
+import { cardUid, isOpenedPack, parseCardUid, parsePush, type RemotePack } from "./protocol";
 
-const rec = (packId: string, cardId: string, setId = "s"): Omit<PullRecord, "id"> => ({ packId, setId, cardId, localId: "1", finish: "normal", firstEdition: false, openedAt: "2026-09-01T10:00:00.000Z" });
+const rec = (packId: string, cardId: string, setId = "s"): Omit<PullRecord, "id"> => ({ packId, slot: 0, setId, cardId, localId: "1", finish: "normal", firstEdition: false, openedAt: "2026-09-01T10:00:00.000Z" });
 const remote = (packId: string, cardIds: string[], deleted = false, setId = "s"): RemotePack => ({
   packId,
   setId,
@@ -63,6 +63,22 @@ describe("collection sync bookkeeping", () => {
     expect((await getPulls()).map((p) => p.cardId).sort()).toEqual(["x", "y"]);
   });
 
+  it("replaces a pack that changed, leaving out cards traded away, and keeps every card's position", async () => {
+    await linkAccount("u1");
+    await savePack("p1", "s", pulled("a", "b", "c"));
+    await drain();
+    const changed = remote("p1", ["a", "b", "c"]);
+    changed.cards[1].gone = "trade-1";
+    await applyRemote("u1", [changed], "7:p1");
+    const pulls = await getPulls();
+    expect(pulls.map((p) => [p.cardId, p.slot]).sort()).toEqual([
+      ["a", 0],
+      ["c", 2],
+    ]);
+    // The server's copy wins, finish and all.
+    expect(pulls.every((p) => p.finish === "holo")).toBe(true);
+  });
+
   it("doesn't bring back a pack deleted here but not yet pushed", async () => {
     await linkAccount("u1");
     await clearPulls("s");
@@ -103,5 +119,22 @@ describe("push validation", () => {
     expect(() => parsePush({ ops: [{ op: "add", packs: [{ ...toSyncPacks([rec("p1", "a")])[0], cards: [{ cardId: "a", localId: "1", finish: "gold", firstEdition: false }] }] }] })).toThrow();
     const many = toSyncPacks(Array.from({ length: 201 }, (_, i) => rec(`p${i}`, "a")));
     expect(() => parsePush({ ops: [{ op: "add", packs: many }] })).toThrow(/Too many/);
+  });
+});
+
+describe("card identity", () => {
+  it("round-trips a pack id and slot, even when the pack id has colons", () => {
+    expect(cardUid("p1", 3)).toBe("p1:3");
+    expect(parseCardUid("p1:3")).toEqual({ packId: "p1", slot: 3 });
+    expect(parseCardUid("t-x:y:12")).toEqual({ packId: "t-x:y", slot: 12 });
+  });
+
+  it("rejects things that aren't card ids", () => {
+    for (const bad of ["p1", ":3", "p1:", "p1:x", "p1:-1", "p1:1.5", "p1:1234", 7, undefined]) expect(parseCardUid(bad)).toBeUndefined();
+  });
+
+  it("tells opened packs from cards received in trades", () => {
+    expect(isOpenedPack("0b6f3c1e-aaaa")).toBe(true);
+    expect(isOpenedPack("t-0b6f3c1e")).toBe(false);
   });
 });

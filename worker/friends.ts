@@ -2,7 +2,8 @@
 //
 // Every change answers with the whole updated list, so the page just shows what comes back.
 
-import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
+import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendCollection, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
+import { ownedCards } from "./cards";
 import { feedNew } from "./feed";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
@@ -20,6 +21,8 @@ export async function handleFriends(ctx: Ctx): Promise<Response> {
   if (route === "POST /api/friends/request") return request(ctx, user);
   let m = route.match(new RegExp(`^POST /api/friends/(${ID})/accept$`));
   if (m) return accept(ctx, user, m[1]);
+  m = route.match(new RegExp(`^GET /api/friends/(${ID})/collection$`));
+  if (m) return collection(ctx, user, m[1]);
   m = route.match(new RegExp(`^DELETE /api/friends/(${ID})$`));
   if (m) return remove(ctx, user, m[1]);
   throw new HttpError(404, "Not found");
@@ -102,6 +105,17 @@ async function inbox(ctx: Ctx, user: UserRow): Promise<Response> {
     .bind(user.id)
     .first<{ n: number }>();
   return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user) } satisfies InboxResponse);
+}
+
+/** A friend's cards, to browse. Only friends can see each other's collections. */
+async function collection(ctx: Ctx, user: UserRow, friendId: string): Promise<Response> {
+  if ((await friendship(ctx, user.id, friendId))?.status !== "accepted") throw new HttpError(404, "You can only see your friends' collections.");
+  const owner = await ctx.env.DB.prepare("SELECT id, display_name, avatar_url FROM users WHERE id = ?").bind(friendId).first<{ id: string; display_name: string | null; avatar_url: string | null }>();
+  if (!owner) throw new HttpError(404, "That player is gone.");
+  return json({
+    owner: { id: owner.id, displayName: owner.display_name ?? "New player", avatarUrl: owner.avatar_url },
+    cards: await ownedCards(ctx.env.DB, friendId),
+  } satisfies FriendCollection);
 }
 
 /* ---------- Changes ---------- */

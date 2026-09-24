@@ -56,6 +56,24 @@ export interface InboxResponse {
   feedNew: number;
 }
 
+/** A card someone owns, by its identity (see cardUid in sync/protocol.ts). */
+export interface OwnedCard {
+  uid: string;
+  setId: string;
+  cardId: string;
+  localId: string;
+  finish: Finish;
+  firstEdition: boolean;
+  /** When its pack was opened (ISO). */
+  openedAt: string;
+}
+
+/** A friend's collection, to browse (and, later, to pick cards to trade for). */
+export interface FriendCollection {
+  owner: FriendProfile;
+  cards: OwnedCard[];
+}
+
 /* ---------- Feed ---------- */
 
 /** Most cards one post shows (a whole pack is at most this). */

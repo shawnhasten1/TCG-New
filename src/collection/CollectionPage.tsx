@@ -1,12 +1,13 @@
-// Every set you've opened, with progress, most recent first.
+// Every set you've opened (or a friend has), with progress, most recent first.
 
 import { useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
 import type { SetSummary } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
-import { tallyBySet } from "./progress";
-import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { countPacks, tallyBySet } from "./progress";
+import { useCollectionSource, whose } from "./source";
+import type { PullRecord } from "./store";
 import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
@@ -14,24 +15,25 @@ import "./collection.css";
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export function CollectionPage() {
+  const source = useCollectionSource();
   const [pulls, setPulls] = useState<PullRecord[]>();
   /** Undefined until loaded; empty if the set list couldn't be fetched (names fall back to ids). */
   const [sets, setSets] = useState<SetSummary[]>();
 
   useEffect(() => {
     let live = true;
-    const reload = () => getPulls().then((p) => live && setPulls(p));
+    const reload = () => source.getPulls().then((p) => live && setPulls(p));
     void reload();
     client.listSetSummaries().then(
       (s) => live && setSets(s),
       () => live && setSets([]),
     );
-    const off = onCollectionChange(reload);
+    const off = source.onChange(reload);
     return () => {
       live = false;
       off();
     };
-  }, []);
+  }, [source]);
 
   const byId = useMemo(() => new Map((sets ?? []).map((s) => [s.id, s])), [sets]);
   const tallies = useMemo(
@@ -50,18 +52,24 @@ export function CollectionPage() {
 
   const totals = {
     pulls: pulls?.length ?? 0,
-    packs: new Set(pulls?.map((p) => p.packId)).size,
+    packs: countPacks(pulls ?? []),
     unique: new Set(pulls?.map((p) => p.cardId)).size,
   };
 
   return (
     <main className="collection">
       <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-        <a href={href.settings()}>Settings &amp; backup</a>
+        {source.owner ? (
+          <a href={href.friends()}>← Friends</a>
+        ) : (
+          <>
+            <a href={href.open()}>← Open packs</a>
+            <a href={href.settings()}>Settings &amp; backup</a>
+          </>
+        )}
       </nav>
-      <h1>Your collection</h1>
-      <GuestNotice />
+      <h1>{whose(source)} collection</h1>
+      {!source.owner && <GuestNotice />}
       <CollectionViewSwitch current="set" />
       {!pulls || !sets ? (
         <p className="muted" role="status">
@@ -69,7 +77,13 @@ export function CollectionPage() {
         </p>
       ) : tallies.length === 0 ? (
         <p className="muted empty">
-          Nothing here yet. <a href={href.open()}>Open a pack</a>. Every card you pull is saved here.
+          {source.owner ? (
+            `${source.owner.displayName} hasn't got any cards yet.`
+          ) : (
+            <>
+              Nothing here yet. <a href={href.open()}>Open a pack</a>. Every card you pull is saved here.
+            </>
+          )}
         </p>
       ) : (
         <>
@@ -87,7 +101,7 @@ export function CollectionPage() {
               const pct = official ? Math.min(100, (t.mainOwned / official) * 100) : 0;
               return (
                 <li key={t.setId}>
-                  <a href={href.binder(t.setId)}>
+                  <a href={source.links.binder(t.setId)}>
                     <div className="logo">{s?.logo ? <img src={`${s.logo}.webp`} alt="" loading="lazy" /> : <span>{s?.name ?? t.setId}</span>}</div>
                     <div className="meta">
                       <strong>{s?.name ?? t.setId}</strong>

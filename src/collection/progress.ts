@@ -2,7 +2,11 @@
 
 import type { Card } from "../api/types";
 import type { Finish } from "../engine/types";
+import { isOpenedPack } from "../sync/protocol";
 import type { PullRecord } from "./store";
+
+/** Packs opened, from their cards; cards received in trades don't count as packs. */
+export const countPacks = (pulls: Pick<PullRecord, "packId">[]) => new Set(pulls.filter((p) => isOpenedPack(p.packId)).map((p) => p.packId)).size;
 
 export interface Ownership {
   cardId: string;
@@ -66,7 +70,7 @@ export function setProgress(cards: Card[], official: number, pulls: PullRecord[]
     allTotal: counted.length,
     percent: main.length ? (mainOwned / main.length) * 100 : 0,
     pulls: pulls.length,
-    packs: new Set(pulls.map((p) => p.packId)).size,
+    packs: countPacks(pulls),
     duplicates: pulls.length - owned.size,
   };
 }
@@ -90,7 +94,7 @@ export function tallyBySet(pulls: PullRecord[], official: (setId: string) => num
     out.set(setId, {
       setId,
       pulls: ps.length,
-      packs: new Set(ps.map((p) => p.packId)).size,
+      packs: countPacks(ps),
       mainOwned: new Set(ps.filter((p) => isMainSet(p.localId, off)).map((p) => p.cardId)).size,
       lastOpenedAt: ps.reduce((m, p) => (p.openedAt > m ? p.openedAt : m), ""),
     });

@@ -4,7 +4,7 @@
 // they show (from the Worker's TCGdex cache), so reading the feed never needs whole sets. Posts from someone
 // who's no longer a friend simply stop showing.
 
-import type { SyncCard } from "../src/sync/protocol";
+import type { RemoteCard } from "../src/sync/protocol";
 import { parseSlots, type FeedPost, type FeedResponse, type ShareRequest, type SharedCard } from "../src/social/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, json, readJson, type Ctx } from "./http";
@@ -94,7 +94,7 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
   await db.batch(openStatements(db, user.id, packId));
   const pack = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND pack_id = ? AND deleted = 0").bind(user.id, packId).first<{ set_id: string; cards: string }>();
   if (!pack) throw new HttpError(404, "That pack isn't in your collection.");
-  const packCards = JSON.parse(pack.cards) as SyncCard[];
+  const packCards = JSON.parse(pack.cards) as RemoteCard[];
   let slots: number[];
   try {
     slots = parseSlots(body.slots, packCards.length);
@@ -114,6 +114,7 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
   const cards = new Map<number, SharedCard>((existing ? (JSON.parse(existing.cards) as SharedCard[]) : []).map((c) => [c.slot, c]));
   for (const slot of slots) {
     const c = packCards[slot];
+    if (c.gone) throw new HttpError(409, "You've traded that card away.");
     const card = byId.get(c.cardId);
     if (!card) throw new HttpError(503, "Couldn't find that card in the card database. Try again in a while.");
     cards.set(slot, { slot, finish: c.finish, firstEdition: c.firstEdition, card });

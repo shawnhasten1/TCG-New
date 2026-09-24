@@ -1,6 +1,7 @@
 // Day counting and countdowns for the pack allowance. The allowance itself is enforced by the server
 // (see packs/protocol.ts).
 
+import { countPacks } from "./progress";
 import type { PullRecord } from "./store";
 
 /** Local calendar day, YYYY-MM-DD. */
@@ -11,7 +12,7 @@ export function localDay(d: Date): string {
 
 /** Distinct packs opened on a local day. */
 export function packsOpenedOn(pulls: Pick<PullRecord, "packId" | "openedAt">[], day: string): number {
-  return new Set(pulls.filter((p) => localDay(new Date(p.openedAt)) === day).map((p) => p.packId)).size;
+  return countPacks(pulls.filter((p) => localDay(new Date(p.openedAt)) === day));
 }
 
 /** "5h 12m", "12m 30s" or "45s". */

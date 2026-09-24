@@ -1,5 +1,10 @@
-// The collection sync protocol, shared by the app and the Worker (worker/). Packs are the unit of sync:
-// a pack's id is made on the device that opened it, so adding the same pack twice is harmless.
+// The collection sync protocol, shared by the app and the Worker (worker/). Packs are the unit of sync.
+//
+// Every card is identified by its pack and its position in that pack ("<packId>:<slot>"), so it can be traded.
+// A card traded away stays in its pack, marked `gone`, so the pack's history (and the pack allowance) stay true;
+// devices drop it from the collection. Cards received in a trade arrive as packs of their own, with ids starting
+// "t-", which don't count as opened packs. When the server changes a pack it gives it a new seq, so every device
+// hears about it and replaces its copy.
 
 import type { Finish } from "../engine/types";
 
@@ -24,10 +29,33 @@ export interface SyncPack {
  */
 export type SyncOp = { op: "open"; packId: string } | { op: "add"; packs: SyncPack[] } | { op: "deletePacks"; packIds: string[] } | { op: "deleteSet"; setId: string } | { op: "clear" };
 
+/** A card as the server stores it: `gone` is the trade that took it, if one did. */
+export interface RemoteCard extends SyncCard {
+  gone?: string;
+}
+
 /** A pack as the server reports it; deleted packs come back empty so other devices drop them too. */
 export interface RemotePack extends SyncPack {
+  cards: RemoteCard[];
   deleted: boolean;
 }
+
+/** A card's identity: its pack and its position in the pack. */
+export const cardUid = (packId: string, slot: number) => `${packId}:${slot}`;
+
+/** The pack and position from a card's identity, or undefined if it isn't one. */
+export function parseCardUid(uid: unknown): { packId: string; slot: number } | undefined {
+  if (typeof uid !== "string" || uid.length > 90) return undefined;
+  const i = uid.lastIndexOf(":");
+  const slot = Number(uid.slice(i + 1));
+  return i > 0 && /^\d{1,3}$/.test(uid.slice(i + 1)) ? { packId: uid.slice(0, i), slot } : undefined;
+}
+
+/** Packs of cards received in trades start with this. */
+export const TRADE_PACK_PREFIX = "t-";
+
+/** Whether a pack was opened, rather than being cards received in a trade. */
+export const isOpenedPack = (packId: string) => !packId.startsWith(TRADE_PACK_PREFIX);
 
 export interface ChangesResponse {
   packs: RemotePack[];

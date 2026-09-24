@@ -5,6 +5,7 @@ import { AccountSection } from "../account/AccountSection";
 import { isMember, useAccount } from "../account/account";
 import { toBackup } from "../collection/backup";
 import { localDay, packsOpenedOn } from "../collection/daily";
+import { countPacks } from "../collection/progress";
 import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
 import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
@@ -47,7 +48,7 @@ export function SettingsPage() {
     };
   }, []);
 
-  const packs = new Set(pulls?.map((p) => p.packId)).size;
+  const packs = countPacks(pulls ?? []);
 
   // An empty list means every era, so all boxes show ticked; at least one always stays ticked.
   const eraOn = (id: string) => !settings.eras.length || settings.eras.includes(id);

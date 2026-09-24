@@ -91,3 +91,8 @@
   position: absolute; top: 6px; left: 6px; padding: 2px 8px; border-radius: 999px; font-size: .75rem; font-weight: 700;
   background: color-mix(in srgb, var(--bg) 85%, transparent); color: var(--ink);
 }
+
+/* ---------- Links into a friend's collection ---------- */
+.friends .friend-list .actions a.button { display: inline-flex; align-items: center; }
+.feed .feed-post .who-text strong a { color: inherit; text-decoration: none; }
+.feed .feed-post .who-text strong a:hover { text-decoration: underline; }

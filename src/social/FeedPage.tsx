@@ -119,7 +119,7 @@ export function FeedPage() {
                     <header>
                       <Avatar friend={post.author} />
                       <div className="who-text">
-                        <strong>{post.mine ? "You" : post.author.displayName}</strong>
+                        <strong>{post.mine ? "You" : <a href={href.friend(post.author.id)}>{post.author.displayName}</a>}</strong>
                         <span className="muted">
                           {post.set.name} · {ago(post.createdAt)}
                         </span>

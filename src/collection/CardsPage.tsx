@@ -9,7 +9,8 @@ import { FINISH_ORDER, finishCount, groupCards, pullHasFinish, sortRarities, typ
 import { FINISH_LABEL, type FinishKey } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
 import { ownership } from "./progress";
-import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { useCollectionSource, whose } from "./source";
+import type { PullRecord } from "./store";
 import { useOpenedSets } from "./useOpenedSets";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
@@ -20,6 +21,7 @@ const FINISH_HEADING: Record<FinishKey, string> = { firstEdition: "1st Edition",
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export function CardsPage() {
+  const source = useCollectionSource();
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [groupBy, setGroupBy] = useState<GroupBy>("rarity");
   const [finish, setFinish] = useState<FinishKey | "any">("any");
@@ -29,14 +31,14 @@ export function CardsPage() {
 
   useEffect(() => {
     let live = true;
-    const reload = () => getPulls().then((p) => live && setPulls(p));
+    const reload = () => source.getPulls().then((p) => live && setPulls(p));
     void reload();
-    const off = onCollectionChange(reload);
+    const off = source.onChange(reload);
     return () => {
       live = false;
       off();
     };
-  }, []);
+  }, [source]);
 
   const { sets, progress } = useOpenedSets(pulls);
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
@@ -76,19 +78,23 @@ export function CardsPage() {
 
   return (
     <main className="collection cards-page">
-      <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-      </nav>
-      <h1>Your cards</h1>
+      <nav className="crumbs">{source.owner ? <a href={href.friends()}>← Friends</a> : <a href={href.open()}>← Open packs</a>}</nav>
+      <h1>{whose(source)} cards</h1>
       <CollectionViewSwitch current="cards" />
 
       {!pulls || !sets ? (
         <p className="muted" role="status">
-          {progress[1] ? `Loading your sets… ${progress[0]} of ${progress[1]}` : "Loading…"}
+          {progress[1] ? `Loading ${source.owner ? "their" : "your"} sets… ${progress[0]} of ${progress[1]}` : "Loading…"}
         </p>
       ) : entries.length === 0 ? (
         <p className="muted empty">
-          Nothing here yet. <a href={href.open()}>Open a pack</a>. Every card you pull is saved here.
+          {source.owner ? (
+            `${source.owner.displayName} hasn't got any cards yet.`
+          ) : (
+            <>
+              Nothing here yet. <a href={href.open()}>Open a pack</a>. Every card you pull is saved here.
+            </>
+          )}
         </p>
       ) : (
         <>

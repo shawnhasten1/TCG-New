@@ -286,3 +286,6 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .card-detail .species-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; }
 .card-detail .species-links a { color: var(--focus); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .pokedex .dex-grid img { transition: none; } .pokedex .dex-grid a:hover img { transform: none; } }
+
+/* ---------- A friend's binder ---------- */
+.binder .binder-head .owner-note { margin: 2px 0 0; font-weight: 700; color: var(--focus); }

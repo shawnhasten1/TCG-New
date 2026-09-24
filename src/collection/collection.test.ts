@@ -62,6 +62,7 @@ const rec = (cardId: string, localId: string, finish: PullRecord["finish"], pack
   localId,
   finish,
   packId,
+  slot: 0,
   setId: "s",
   firstEdition: false,
   openedAt,

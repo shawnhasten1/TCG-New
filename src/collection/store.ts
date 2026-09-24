@@ -1,13 +1,16 @@
-// The collection: every pulled card, saved to IndexedDB when its pack is torn open.
-// Every change is also queued in an outbox for syncing to the signed-in account (see sync/sync.ts).
+// The collection: every card you own, saved to IndexedDB when its pack is torn open (or when sync brings it).
+// Every change is also queued in an outbox for syncing to the account (see sync/sync.ts).
+// Cards traded away aren't kept; cards received in trades come in packs of their own (see sync/protocol.ts).
 
 import type { Finish, PulledCard } from "../engine/types";
-import type { RemotePack, SyncOp, SyncPack } from "../sync/protocol";
+import { cardUid, type RemotePack, type SyncOp, type SyncPack } from "../sync/protocol";
 
 export interface PullRecord {
   /** Auto-increment key. */
   id?: number;
   packId: string;
+  /** Position in its pack; with the pack id, the card's identity (see cardUid). */
+  slot: number;
   setId: string;
   cardId: string;
   /** The card's number within its set, kept so progress can be counted without set data. */
@@ -29,7 +32,7 @@ let dbPromise: Promise<IDBDatabase> | undefined;
 
 function db(): Promise<IDBDatabase> {
   return (dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 2);
+    const req = indexedDB.open(DB_NAME, 3);
     req.onupgradeneeded = (e) => {
       if (e.oldVersion < 1) {
         const store = req.result.createObjectStore(STORE, { keyPath: "id", autoIncrement: true });
@@ -39,6 +42,13 @@ function db(): Promise<IDBDatabase> {
       if (e.oldVersion < 2) {
         req.result.createObjectStore(OUTBOX, { keyPath: "id", autoIncrement: true });
         req.result.createObjectStore(META);
+      }
+      if (e.oldVersion > 0 && e.oldVersion < 3) {
+        // Records gained their position in the pack. Pull the whole collection again to get it.
+        const tx = req.transaction!;
+        tx.objectStore(STORE).clear();
+        const meta = tx.objectStore(META);
+        readMeta(meta, (m) => m.account && meta.put({ ...m, cursor: null } satisfies SyncMeta, "sync"));
       }
     };
     req.onsuccess = () => resolve(req.result);
@@ -100,14 +110,17 @@ export function onLocalWrite(fn: () => void): () => void {
 export async function savePack(packId: string, setId: string, pulls: PulledCard[], openedAt = new Date()): Promise<string> {
   const tx = (await db()).transaction([STORE, OUTBOX], "readwrite");
   const store = tx.objectStore(STORE);
-  for (const p of pulls) {
-    store.add({ packId, setId, cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition, openedAt: openedAt.toISOString() } satisfies PullRecord);
-  }
+  pulls.forEach((p, slot) => {
+    store.add({ packId, slot, setId, cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition, openedAt: openedAt.toISOString() } satisfies PullRecord);
+  });
   tx.objectStore(OUTBOX).add({ op: "open", packId } satisfies SyncOp);
   await done(tx);
   changedHere();
   return packId;
 }
+
+/** A card's identity, from its record. */
+export const pullUid = (p: Pick<PullRecord, "packId" | "slot">) => cardUid(p.packId, p.slot);
 
 /** Every pull, or just one set's. */
 export async function getPulls(setId?: string): Promise<PullRecord[]> {
@@ -245,6 +258,7 @@ export async function outboxSize(): Promise<number> {
 
 /**
  * Applies a page of the account's changes and records the new cursor, in one transaction.
+ * A pack that changed (cards traded away, say) replaces this device's copy; its traded-away cards are left out.
  * Skipped if the device has since been unlinked or moved to another account. Packs this device
  * has deleted but not yet pushed stay deleted.
  */
@@ -263,13 +277,14 @@ export async function applyRemote(userId: string, packs: RemotePack[], cursor: s
       for (const p of packs) {
         const keys = pulls.index("packId").getAllKeys(p.packId);
         keys.onsuccess = () => {
-          if (p.deleted) {
-            keys.result.forEach((k) => pulls.delete(k));
-            touched ||= keys.result.length > 0;
-          } else if (!keys.result.length && !deletedHere(p)) {
-            for (const c of p.cards) pulls.add({ packId: p.packId, setId: p.setId, openedAt: p.openedAt, ...c } satisfies PullRecord);
+          keys.result.forEach((k) => pulls.delete(k));
+          touched ||= keys.result.length > 0;
+          if (p.deleted || deletedHere(p)) return;
+          p.cards.forEach(({ gone, ...c }, slot) => {
+            if (gone) return;
+            pulls.add({ packId: p.packId, slot, setId: p.setId, openedAt: p.openedAt, ...c } satisfies PullRecord);
             touched = true;
-          }
+          });
         };
       }
     };

@@ -4,6 +4,7 @@ import { formatCountdown, localDay, packsOpenedOn } from "./daily";
 
 const pull = (packId: string, openedAt: string, cardId = "s-1"): StoredPull => ({
   packId,
+  slot: 0,
   setId: "s",
   cardId,
   localId: "1",

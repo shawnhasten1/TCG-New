@@ -16,6 +16,7 @@ import type { PulledCard } from "../engine/types";
 import { dealPack } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
+import { isOpenedPack } from "../sync/protocol";
 import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
@@ -56,7 +57,7 @@ function useNow(on: boolean): number {
 /** The set of each saved pack, oldest first. */
 function packHistory(pulls: PullRecord[]): string[] {
   const packs = new Map<string, Pick<PullRecord, "setId" | "openedAt">>();
-  for (const p of pulls) if (!packs.has(p.packId)) packs.set(p.packId, p);
+  for (const p of pulls) if (isOpenedPack(p.packId) && !packs.has(p.packId)) packs.set(p.packId, p);
   return [...packs.values()].sort((a, b) => a.openedAt.localeCompare(b.openedAt)).map((p) => p.setId);
 }
 

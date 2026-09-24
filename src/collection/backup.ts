@@ -19,6 +19,6 @@ export function toBackup(pulls: PullRecord[], now = new Date()): Backup {
     app: BACKUP_APP,
     version: BACKUP_VERSION,
     exportedAt: now.toISOString(),
-    pulls: pulls.map(({ packId, setId, cardId, localId, finish, firstEdition, openedAt }) => ({ packId, setId, cardId, localId, finish, firstEdition, openedAt })),
+    pulls: pulls.map(({ packId, slot, setId, cardId, localId, finish, firstEdition, openedAt }) => ({ packId, slot, setId, cardId, localId, finish, firstEdition, openedAt })),
   };
 }

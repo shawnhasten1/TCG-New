@@ -11,13 +11,15 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { formatPrice } from "./prices";
 import { isMainSet, ownership, setProgress } from "./progress";
-import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "./store";
+import { useCollectionSource, whose } from "./source";
+import { clearPulls, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import "./collection.css";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
 
 export function BinderPage({ setId }: { setId: string }) {
+  const source = useCollectionSource();
   const [data, setData] = useState<SetData>();
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [error, setError] = useState<string>();
@@ -27,14 +29,14 @@ export function BinderPage({ setId }: { setId: string }) {
   useEffect(() => {
     let live = true;
     client.getSetCards(setId).then((d) => live && setData(d), (e) => live && setError(String(e)));
-    const reload = () => getPulls(setId).then((p) => live && setPulls(p));
+    const reload = () => source.getPulls(setId).then((p) => live && setPulls(p));
     void reload();
-    const off = onCollectionChange(reload);
+    const off = source.onChange(reload);
     return () => {
       live = false;
       off();
     };
-  }, [setId]);
+  }, [setId, source]);
 
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
   const profile = data && profileFor(data.set);
@@ -66,15 +68,25 @@ export function BinderPage({ setId }: { setId: string }) {
   return (
     <main className="collection binder">
       <nav className="crumbs">
-        <a href={href.collection()}>← Collection</a>
-        <a href={href.picker()}>All sets</a>
-        <a href={href.pokedex()}>By Pokémon</a>
+        {source.owner ? (
+          <>
+            <a href={source.links.collection()}>← {whose(source)} collection</a>
+            <a href={href.friends()}>Friends</a>
+          </>
+        ) : (
+          <>
+            <a href={href.collection()}>← Collection</a>
+            <a href={href.picker()}>All sets</a>
+            <a href={href.pokedex()}>By Pokémon</a>
+          </>
+        )}
       </nav>
 
       <header className="binder-head">
         {data.set.logo && <img className="set-logo" src={`${data.set.logo}.webp`} alt="" />}
         <div>
           <h1>{data.set.name}</h1>
+          {source.owner && <p className="owner-note">{whose(source)} binder</p>}
           <p className="muted">
             {data.set.serie.name}
             {data.set.releaseDate ? ` · ${data.set.releaseDate.slice(0, 4)}` : ""}
@@ -118,9 +130,11 @@ export function BinderPage({ setId }: { setId: string }) {
             )}
           </dl>
         </div>
-        <a className="button primary" href={href.open()}>
-          Open a random pack
-        </a>
+        {!source.owner && (
+          <a className="button primary" href={href.open()}>
+            Open a random pack
+          </a>
+        )}
       </header>
 
       <div className="toolbar">
@@ -176,7 +190,7 @@ export function BinderPage({ setId }: { setId: string }) {
 
       <footer>
         <p className="muted">Faded cards are still missing. “Not in packs” cards (basic energy, cards without scans) don't count toward completion. ✦ marks secret and subset cards.</p>
-        {progress.pulls > 0 && (
+        {progress.pulls > 0 && !source.owner && (
           <button type="button" className="danger" onClick={reset}>
             Reset this set
           </button>

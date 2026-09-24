@@ -231,6 +231,9 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
           <ul className="friend-list">
             {data.friends.map((f) => (
               <FriendRow key={f.id} friend={f} note={`Friends since ${day(f.since)}`}>
+                <a className="button" href={href.friend(f.id)}>
+                  Collection
+                </a>
                 <button type="button" className="danger" disabled={!!busy} onClick={() => decline(f, "remove")}>
                   Remove
                 </button>
