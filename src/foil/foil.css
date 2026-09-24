@@ -238,7 +238,8 @@
 .tcg-card[data-style="double"] .foil {
   background-image: linear-gradient(180deg, #000 0%, #000 42%, #888 47%, #fff 50%, #888 53%, #000 58%, #000 100%), var(--pillars);
   background-size: 100% 300%, 200% 700%;
-  background-position: 0 calc(50% + (50 - var(--by)) * 4%), 0% calc(var(--by) * 1%);
+  /* The band follows the pointer from about 10% to 90% down the card. */
+  background-position: 0 calc(50% + (50 - var(--by)) * 1.2%), 0% calc(var(--by) * 1%);
   background-blend-mode: multiply;
   filter: brightness(calc(.8 + var(--pc) * .5)) contrast(1.2) saturate(1.6);
 }
