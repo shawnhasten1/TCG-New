@@ -7,6 +7,7 @@ import { client } from "../app/client";
 import { href } from "../app/router";
 import { tallyBySet } from "./progress";
 import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 
@@ -38,6 +39,15 @@ export function CollectionPage() {
     [pulls, byId],
   );
 
+  const cardIds = useMemo(() => pulls?.map((p) => p.cardId) ?? [], [pulls]);
+  const { showPrices, prices, loading } = useCardPrices(cardIds);
+  const values = useMemo(() => {
+    if (!showPrices || !pulls) return undefined;
+    const bySet = new Map<string, PullRecord[]>();
+    for (const p of pulls) (bySet.get(p.setId) ?? bySet.set(p.setId, []).get(p.setId)!).push(p);
+    return { all: pullsValue(pulls, prices), bySet: new Map([...bySet].map(([id, ps]) => [id, pullsValue(ps, prices)])) };
+  }, [showPrices, pulls, prices]);
+
   const totals = {
     pulls: pulls?.length ?? 0,
     packs: new Set(pulls?.map((p) => p.packId)).size,
@@ -63,9 +73,13 @@ export function CollectionPage() {
         </p>
       ) : (
         <>
-          <p className="muted">
-            {plural(totals.packs, "pack")} opened · {plural(totals.pulls, "card")} pulled · {totals.unique} different
-          </p>
+          <div className="toolbar">
+            <p className="muted">
+              {plural(totals.packs, "pack")} opened · {plural(totals.pulls, "card")} pulled · {totals.unique} different
+              {values && ` · worth ${formatTotals(values.all)}${loading ? " (loading…)" : ""}`}
+            </p>
+            <PriceToggle />
+          </div>
           <ul className="set-progress">
             {tallies.map((t) => {
               const s = byId.get(t.setId);
@@ -82,6 +96,7 @@ export function CollectionPage() {
                       </div>
                       <span className="muted">
                         {t.mainOwned} / {official || "?"} main set · {plural(t.packs, "pack")} · {plural(t.pulls, "card")}
+                        {values && ` · ${formatTotals(values.bySet.get(t.setId)!)}`}
                       </span>
                     </div>
                   </a>

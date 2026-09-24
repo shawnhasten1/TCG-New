@@ -1,4 +1,4 @@
-// Per-browser preferences (sound, daily pack limit, theme), kept in localStorage.
+// Per-browser preferences (sound, daily pack limit, theme, prices), kept in localStorage.
 // The collection itself lives in IndexedDB; these are conveniences, so failures fall back to defaults.
 
 import { useEffect, useState } from "react";
@@ -15,11 +15,13 @@ export interface Settings {
   motion: boolean;
   /** "system" follows the device; index.html applies a forced theme before first paint. */
   theme: Theme;
+  /** Market prices in the collection views (fetched per card, so off until asked for). */
+  showPrices: boolean;
 }
 
 export type Theme = "system" | "light" | "dark";
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true, theme: "system" };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true, theme: "system", showPrices: false };
 const KEY = "tcg-pack-opener:settings";
 /** Bumped when a default changes in a way stored settings should pick up. */
 const VERSION = 2;

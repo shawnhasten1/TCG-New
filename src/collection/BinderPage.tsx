@@ -1,7 +1,6 @@
 // A set's binder: every card in number order, missing ones faded, with copies and completion.
 
 import { useEffect, useMemo, useState } from "react";
-import type { CardPricing } from "../api/tcgdex";
 import { cardImage } from "../api/tcgdex";
 import type { Card, SetData } from "../api/types";
 import { client } from "../app/client";
@@ -10,24 +9,13 @@ import { pullableCardIds } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
-import { formatPrice, priceFor } from "./prices";
+import { formatPrice } from "./prices";
 import { isMainSet, ownership, setProgress } from "./progress";
 import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "./store";
+import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import "./collection.css";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
-
-/** Fetches prices a few at a time; TCGdex rate-limits bursts. */
-async function loadPrices(ids: string[], onPrice: (id: string, p: CardPricing | null) => void, signal: { live: boolean }) {
-  let next = 0;
-  const worker = async () => {
-    while (next < ids.length && signal.live) {
-      const id = ids[next++];
-      onPrice(id, await client.getCardPricing(id).catch(() => null));
-    }
-  };
-  await Promise.all([worker(), worker(), worker()]);
-}
 
 export function BinderPage({ setId }: { setId: string }) {
   const [data, setData] = useState<SetData>();
@@ -35,8 +23,6 @@ export function BinderPage({ setId }: { setId: string }) {
   const [error, setError] = useState<string>();
   const [filter, setFilter] = useState<Filter>("all");
   const [selected, setSelected] = useState<Card>();
-  const [showPrices, setShowPrices] = useState(false);
-  const [prices, setPrices] = useState<Map<string, CardPricing | null>>(new Map());
 
   useEffect(() => {
     let live = true;
@@ -57,26 +43,9 @@ export function BinderPage({ setId }: { setId: string }) {
   const progress = data && pulls ? setProgress(data.cards, official, pulls, pullable) : undefined;
 
   // Prices for owned cards, on request.
-  const ownedIds = useMemo(() => [...owned.keys()].sort(), [owned]);
-  useEffect(() => {
-    if (!showPrices) return;
-    const signal = { live: true };
-    const todo = ownedIds.filter((id) => !prices.has(id));
-    void loadPrices(todo, (id, p) => signal.live && setPrices((m) => new Map(m).set(id, p)), signal);
-    return () => void (signal.live = false);
-    // `prices` is left out of the deps on purpose: it only skips what's already fetched.
-  }, [showPrices, ownedIds]);
-
-  const value = useMemo(() => {
-    if (!showPrices || !pulls) return undefined;
-    const totals = { USD: 0, EUR: 0 };
-    let priced = 0;
-    for (const p of pulls) {
-      const price = priceFor(prices.get(p.cardId), p.finish, p.firstEdition);
-      if (price) (totals[price.currency] += price.amount), priced++;
-    }
-    return { totals, priced, loading: ownedIds.some((id) => !prices.has(id)) };
-  }, [showPrices, pulls, prices, ownedIds]);
+  const ownedIds = useMemo(() => [...owned.keys()], [owned]);
+  const { showPrices, prices, loading } = useCardPrices(ownedIds);
+  const value = useMemo(() => (showPrices && pulls ? pullsValue(pulls, prices) : undefined), [showPrices, pulls, prices]);
 
   if (error) return <main className="collection"><p className="error">Couldn't load this set. {error}</p></main>;
   if (!data || !pulls || !progress) return <main className="collection"><p className="muted" role="status">Loading binder…</p></main>;
@@ -143,10 +112,8 @@ export function BinderPage({ setId }: { setId: string }) {
             </div>
             {value && (
               <div>
-                <dt>Value{value.loading ? " (loading…)" : ""}</dt>
-                <dd>
-                  {[value.totals.USD && formatPrice({ amount: value.totals.USD, currency: "USD" }), value.totals.EUR && formatPrice({ amount: value.totals.EUR, currency: "EUR" })].filter(Boolean).join(" + ") || "—"}
-                </dd>
+                <dt>Value{loading ? " (loading…)" : ""}</dt>
+                <dd>{formatTotals(value)}</dd>
               </div>
             )}
           </dl>
@@ -164,9 +131,7 @@ export function BinderPage({ setId }: { setId: string }) {
             </button>
           ))}
         </div>
-        <label>
-          <input type="checkbox" checked={showPrices} onChange={(e) => setShowPrices(e.target.checked)} /> Show market prices
-        </label>
+        <PriceToggle />
       </div>
 
       {visible.length === 0 ? (
@@ -176,7 +141,7 @@ export function BinderPage({ setId }: { setId: string }) {
           {visible.map((c) => {
             const o = owned.get(c.id);
             const state = o ? "owned" : pullable.has(c.id) ? "missing" : "unpullable";
-            const price = showPrices && o ? priceFor(prices.get(c.id), o.byFinish.holo ? "holo" : o.byFinish.reverse ? "reverse" : "normal", o.firstEdition > 0) : undefined;
+            const price = showPrices && o ? ownedPrice(prices.get(c.id), o) : undefined;
             const extra = !isMainSet(c.localId, official);
             return (
               <li key={c.id}>

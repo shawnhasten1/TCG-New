@@ -1,4 +1,5 @@
 import { BinderPage } from "../collection/BinderPage";
+import { CardsPage } from "../collection/CardsPage";
 import { CollectionPage } from "../collection/CollectionPage";
 import { PokedexPage } from "../collection/PokedexPage";
 import { PokemonPage } from "../collection/PokemonPage";
@@ -18,6 +19,8 @@ export function App() {
       return <SettingsPage />;
     case "pokedex":
       return <PokedexPage />;
+    case "cards":
+      return <CardsPage />;
     case "pokemon":
       return <PokemonPage key={route.dexId} dexId={route.dexId} />;
     case "collection":

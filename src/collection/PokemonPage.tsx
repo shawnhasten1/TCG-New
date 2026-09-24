@@ -10,7 +10,9 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { buildPrintings, FINISH_LABEL, groupByEra, pokemonName, pokemonProgress, type FinishKey, type Printing } from "./pokedex";
 import { ownership } from "./progress";
+import { formatPrice } from "./prices";
 import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 
@@ -52,6 +54,18 @@ export function PokemonPage({ dexId }: { dexId: number }) {
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
   const printings = useMemo(() => (cards && sets ? buildPrintings(cards, { sets, unopenable, owned }) : []), [cards, sets, unopenable, owned]);
   const progress = pokemonProgress(printings);
+  const ownedIds = useMemo(() => printings.filter((p) => p.owned).map((p) => p.card.id), [printings]);
+  const { showPrices, prices, loading } = useCardPrices(ownedIds);
+  const value = useMemo(() => {
+    if (!showPrices || !pulls) return undefined;
+    const ids = new Set(ownedIds);
+    return pullsValue(pulls.filter((p) => ids.has(p.cardId)), prices);
+  }, [showPrices, pulls, ownedIds, prices]);
+  const priceTag = (id: string) => {
+    const o = showPrices ? owned.get(id) : undefined;
+    const price = o && ownedPrice(prices.get(id), o);
+    return price && <span className="price"> · {formatPrice(price)}</span>;
+  };
   const name = pokemonName(dexId, cards?.[0]?.name);
 
   const visible = printings.filter((p) => {
@@ -89,6 +103,7 @@ export function PokemonPage({ dexId }: { dexId: number }) {
             <p>
               You own <strong>{progress.printingsOwned}</strong> of {progress.printingsTotal} {name} cards that packs can give you, and{" "}
               <strong>{progress.finishesOwned}</strong> of {progress.finishesTotal} card-and-finish combinations.
+              {value && ` Your ${name} cards are worth ${formatTotals(value)}${loading ? " (loading…)" : ""}.`}
             </p>
           </>
         )}
@@ -139,6 +154,7 @@ export function PokemonPage({ dexId }: { dexId: number }) {
                 <input type="checkbox" checked={includeOther} onChange={(e) => setIncludeOther(e.target.checked)} /> Include {otherCount} promos and other cards packs never give
               </label>
             )}
+            <PriceToggle />
           </div>
 
           {groups.length === 0 && <p className="muted empty">No {name} cards match these filters.</p>}
@@ -169,6 +185,7 @@ export function PokemonPage({ dexId }: { dexId: number }) {
                         </span>
                         <span className="caption">
                           #{p.card.localId} · {p.card.rarity}
+                          {priceTag(p.card.id)}
                         </span>
                         <ul className="finish-chips" aria-label="Finishes">
                           {p.finishes.map((f) => (

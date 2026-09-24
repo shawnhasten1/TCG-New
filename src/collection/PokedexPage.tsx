@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
-import type { Card } from "../api/types";
-import { client } from "../app/client";
 import { href } from "../app/router";
 import { ownedSpecies, searchPokemon, type SpeciesEntry } from "./pokedex";
 import { ownership } from "./progress";
 import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { useOpenedSets } from "./useOpenedSets";
+import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 
@@ -16,8 +16,6 @@ const pad = (n: number) => String(n).padStart(4, "0");
 
 export function PokedexPage() {
   const [pulls, setPulls] = useState<PullRecord[]>();
-  const [cards, setCards] = useState<Card[]>();
-  const [progress, setProgress] = useState<[number, number]>([0, 0]);
   const [sort, setSort] = useState<Sort>("dex");
   const [query, setQuery] = useState("");
 
@@ -32,27 +30,8 @@ export function PokedexPage() {
     };
   }, []);
 
-  // Card details come from each opened set (already cached from opening packs).
-  const setIds = useMemo(() => [...new Set(pulls?.map((p) => p.setId))].sort().join(","), [pulls]);
-  useEffect(() => {
-    if (!pulls) return;
-    let live = true;
-    const ids = setIds ? setIds.split(",") : [];
-    setProgress([0, ids.length]);
-    let done = 0;
-    Promise.all(
-      ids.map((id) =>
-        client.getSetCards(id).then(
-          (d) => (live && setProgress([++done, ids.length]), d.cards),
-          () => [] as Card[],
-        ),
-      ),
-    ).then((all) => live && setCards(all.flat()));
-    return () => {
-      live = false;
-    };
-    // Re-run only when the set of opened sets changes, not on every new pull.
-  }, [setIds, !!pulls]);
+  const { sets, progress } = useOpenedSets(pulls);
+  const cards = useMemo(() => sets?.flatMap((d) => d.cards), [sets]);
 
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
   const species = useMemo(() => {
@@ -64,6 +43,18 @@ export function PokedexPage() {
     };
     return list.sort(by[sort]);
   }, [cards, owned, sort]);
+  // Prices for owned Pokémon cards only; trainers and energy aren't shown here.
+  const dexOf = useMemo(() => new Map((cards ?? []).filter((c) => c.category === "Pokemon" && c.dexId?.length).map((c) => [c.id, c.dexId!])), [cards]);
+  const pokemonPulls = useMemo(() => (pulls ?? []).filter((p) => dexOf.has(p.cardId)), [pulls, dexOf]);
+  const pricedIds = useMemo(() => pokemonPulls.map((p) => p.cardId), [pokemonPulls]);
+  const { showPrices, prices, loading } = useCardPrices(pricedIds);
+  const values = useMemo(() => {
+    if (!showPrices) return undefined;
+    const byDex = new Map<number, PullRecord[]>();
+    for (const p of pokemonPulls) for (const d of dexOf.get(p.cardId)!) (byDex.get(d) ?? byDex.set(d, []).get(d)!).push(p);
+    return { all: pullsValue(pokemonPulls, prices), byDex: new Map([...byDex].map(([d, ps]) => [d, pullsValue(ps, prices)])) };
+  }, [showPrices, pokemonPulls, dexOf, prices]);
+
   const ownedDex = new Set(species.map((s) => s.dexId));
   const results = searchPokemon(query);
 
@@ -105,7 +96,9 @@ export function PokedexPage() {
           <div className="toolbar">
             <p className="muted">
               {species.length} Pokémon · {species.reduce((n, s) => n + s.printings, 0)} different cards
+              {values && ` · worth ${formatTotals(values.all)}${loading ? " (loading…)" : ""}`}
             </p>
+            <PriceToggle />
             <label>
               Sort{" "}
               <select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
@@ -126,6 +119,7 @@ export function PokedexPage() {
                     {s.printings} {s.printings === 1 ? "card" : "cards"}
                     {s.copies > s.printings ? ` · ${s.copies} copies` : ""}
                   </span>
+                  {values && <span className="price">{formatTotals(values.byDex.get(s.dexId)!)}</span>}
                 </a>
               </li>
             ))}
