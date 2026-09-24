@@ -84,10 +84,6 @@ export function FeedPage() {
 
   return (
     <main className="collection friends feed">
-      <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-        <a href={href.collection()}>Your collection</a>
-      </nav>
       <h1>Feed</h1>
       {!member ? (
         <p className="muted empty">

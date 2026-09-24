@@ -17,8 +17,9 @@ import { dealPack } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
 import { isOpenedPack } from "../sync/protocol";
-import { OpenerNav } from "./OpenerNav";
+import { OpenerBar } from "./OpenerBar";
 import { PackOpener } from "./PackOpener";
+import "../social/social.css"; // the summary's share picker
 import "./opener.css";
 
 /** A dealt pack with its set's cards, ready to show. */
@@ -184,7 +185,7 @@ export function OpenPage() {
   if (stage.state === "out") {
     return (
       <div className="opener">
-        <OpenerNav />
+        <OpenerBar />
         <div className="out-of-packs" role="status">
           <h1>Out of packs</h1>
           <p className="hint">
@@ -208,7 +209,7 @@ export function OpenPage() {
     const pct = loading?.total ? Math.round((loading.done / loading.total) * 100) : 0;
     return (
       <div className="opener">
-        <OpenerNav />
+        <OpenerBar />
         {stage.state === "error" ? (
           <div className="loading">
             <p className="hint">{stage.message}</p>

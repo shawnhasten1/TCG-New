@@ -71,17 +71,7 @@ export function SetPicker() {
   return (
     <main className="picker">
       <header>
-        <div className="title-row">
-          <h1>All sets</h1>
-          <nav className="header-links">
-            <a className="collection-link" href={href.collection()}>
-              Your collection{tallies.size ? ` · ${[...tallies.values()].reduce((n, t) => n + t.pulls, 0)} cards` : ""}
-            </a>
-            <a className="collection-link" href={href.settings()}>
-              Settings
-            </a>
-          </nav>
-        </div>
+        <h1>All sets</h1>
         <p className="lede">Pick a set to see its binder: every card, what you own and what's missing.</p>
         <div className="open-hero">
           <a className="open-button" href={href.open()}>

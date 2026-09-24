@@ -12,11 +12,22 @@ import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
 import { TradeComposer } from "../social/TradeComposer";
 import { TradesPage } from "../social/TradesPage";
-import { useRoute } from "./router";
+import { AppNav } from "./AppNav";
+import { navSection, useRoute, type Route } from "./router";
 import { SettingsPage } from "./SettingsPage";
 
 export function App() {
   const route = useRoute();
+  const section = navSection(route);
+  return (
+    <>
+      {section && <AppNav current={section} />}
+      <Page route={route} />
+    </>
+  );
+}
+
+function Page({ route }: { route: Route }) {
   switch (route.page) {
     case "open":
       return <OpenPage />;

@@ -10,7 +10,6 @@ import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../co
 import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
 import "../collection/collection.css";
-import { href } from "./router";
 import { type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
 
@@ -75,10 +74,6 @@ export function SettingsPage() {
 
   return (
     <main className="collection settings">
-      <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-        <a href={href.collection()}>Your collection</a>
-      </nav>
       <h1>Settings</h1>
 
       <AccountSection />

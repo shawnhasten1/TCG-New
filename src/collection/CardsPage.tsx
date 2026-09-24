@@ -78,7 +78,11 @@ export function CardsPage() {
 
   return (
     <main className="collection cards-page">
-      <nav className="crumbs">{source.owner ? <a href={href.friends()}>← Friends</a> : <a href={href.open()}>← Open packs</a>}</nav>
+      {source.owner && (
+        <nav className="crumbs">
+          <a href={href.friends()}>← Friends</a>
+        </nav>
+      )}
       <h1>{whose(source)} cards</h1>
       <CollectionViewSwitch current="cards" />
 

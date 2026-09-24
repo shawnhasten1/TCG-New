@@ -58,16 +58,11 @@ export function CollectionPage() {
 
   return (
     <main className="collection">
-      <nav className="crumbs">
-        {source.owner ? (
+      {source.owner && (
+        <nav className="crumbs">
           <a href={href.friends()}>← Friends</a>
-        ) : (
-          <>
-            <a href={href.open()}>← Open packs</a>
-            <a href={href.settings()}>Settings &amp; backup</a>
-          </>
-        )}
-      </nav>
+        </nav>
+      )}
       <h1>{whose(source)} collection</h1>
       {source.owner && (
         <p>

@@ -37,13 +37,6 @@
 .picker footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
 .picker footer a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { .picker .set-tile { transition: none; } .picker a.set-tile:hover { transform: none; } }
-.picker .title-row { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; justify-content: space-between; }
-.picker .collection-link {
-  font-weight: 700; text-decoration: none; color: var(--ink);
-  padding: 10px 16px; border-radius: 999px; background: var(--btn);
-  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-}
-.picker .collection-link:hover { border-color: var(--focus); }
 .picker .owned-chip {
   align-self: flex-start; margin-top: 4px; padding: 3px 9px; border-radius: 999px;
   font-size: .8rem; font-weight: 700; background: var(--btn-on); color: var(--btn-on-ink);
@@ -54,7 +47,6 @@
 }
 .picker .tier-chip[data-set-tier="rare"] { color: #fff; background: #6b3fd6; }
 .picker .tier-chip[data-set-tier="legendary"] { color: #2a1a00; background: linear-gradient(135deg, #fff1b8, #f3c34a); }
-.picker .header-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .picker .open-hero { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin: 8px 0 12px; }
 .picker .open-button {
   font: italic 800 1.4rem/1 "Alegreya", Georgia, serif; text-decoration: none;

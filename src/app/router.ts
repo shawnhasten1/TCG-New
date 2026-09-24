@@ -50,6 +50,35 @@ export const href = {
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
 };
 
+/** The main menu's sections. */
+export type NavSection = "open" | "collection" | "sets" | "social" | "settings";
+
+/** Which section of the main menu a page belongs to (none for the dev tools). */
+export function navSection(route: Route): NavSection | undefined {
+  switch (route.page) {
+    case "open":
+      return "open";
+    case "collection":
+    case "binder":
+    case "pokedex":
+    case "pokemon":
+    case "cards":
+      return "collection";
+    case "picker":
+      return "sets";
+    case "feed":
+    case "friends":
+    case "trades":
+    case "trade":
+    case "friend":
+      return "social";
+    case "settings":
+      return "settings";
+    default:
+      return undefined;
+  }
+}
+
 /** Old #/open and #/open/<setId> links: tidy the address, since home is the opener and the set is always random. */
 function tidyOpenLink() {
   if (/^#\/open(\/|$)/.test(location.hash)) history.replaceState(null, "", "#/");

@@ -37,10 +37,6 @@ export function FriendsPage({ inviteCode }: { inviteCode?: string }) {
 
   return (
     <main className="collection friends">
-      <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-        <a href={href.collection()}>Your collection</a>
-      </nav>
       <h1>Friends</h1>
       {signedIn && <SocialTabs current="friends" />}
       {!signedIn ? (

@@ -91,10 +91,6 @@ export function TradesPage() {
 
   return (
     <main className="collection friends feed trades">
-      <nav className="crumbs">
-        <a href={href.open()}>← Open packs</a>
-        <a href={href.collection()}>Your collection</a>
-      </nav>
       <h1>Trades</h1>
       {!member ? (
         <p className="muted empty">

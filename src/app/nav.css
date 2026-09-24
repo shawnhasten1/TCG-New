@@ -1,0 +1,74 @@
+/* ---------- Main menu (AppNav) ----------
+   Phones: a tab bar fixed along the bottom, icons over labels. Wider screens (and phones on their side):
+   a sticky header with the brand on the left and the sections as pills on the right.
+   --nav-top / --nav-bottom are the room it takes, so full-height pages (the opener) can fit around it. */
+:root { --nav-top: 0px; --nav-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 720px) { :root { --nav-top: 60px; --nav-bottom: 0px; } }
+body:has(.app-nav) { padding-bottom: var(--nav-bottom); }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.app-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  padding: 0 max(4px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(4px, env(safe-area-inset-left, 0px));
+}
+.app-nav .brand { display: none; }
+.app-nav ul { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); max-width: 520px; }
+.app-nav li a {
+  height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  color: var(--muted); text-decoration: none; font: 600 .75rem/1 "Alegreya Sans", system-ui, sans-serif;
+  border-radius: 12px; -webkit-user-select: none; user-select: none;
+}
+.app-nav .nav-icon {
+  position: relative; width: 52px; height: 30px; display: grid; place-items: center; border-radius: 999px;
+  transition: background-color .15s;
+}
+.app-nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.app-nav a[aria-current="page"] { color: var(--ink); font-weight: 800; }
+.app-nav a[aria-current="page"] .nav-icon { background: color-mix(in srgb, var(--focus) 20%, transparent); }
+.app-nav a:active .nav-icon { background: color-mix(in srgb, var(--ink) 10%, transparent); }
+.app-nav a:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.app-nav .badge {
+  position: absolute; top: -3px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+  display: grid; place-items: center; font: 700 .7rem/1 "Alegreya Sans", system-ui, sans-serif;
+  background: var(--primary); color: var(--primary-ink); border: 2px solid var(--bg);
+}
+@media (prefers-reduced-motion: reduce) { .app-nav .nav-icon { transition: none; } }
+
+@media (min-width: 720px) {
+  .app-nav {
+    position: sticky; top: 0; bottom: auto; height: var(--nav-top);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 0 max(16px, calc((100% - 1180px) / 2 + 16px));
+    border-top: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .app-nav .brand {
+    display: flex; align-items: center; gap: 8px; flex: none; color: var(--ink); text-decoration: none;
+    font: italic 800 1.3rem/1 "Alegreya", Georgia, serif; border-radius: 8px;
+  }
+  .app-nav .brand:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+  .app-nav ul { display: flex; gap: 4px; margin: 0; max-width: none; }
+  .app-nav li a {
+    height: 40px; flex-direction: row; gap: 6px; padding: 0 14px 0 10px; border-radius: 999px;
+    font-size: .95rem; color: var(--ink); transition: background-color .15s;
+  }
+  .app-nav .nav-icon { width: auto; height: auto; background: none !important; transition: none; }
+  .app-nav svg { width: 19px; height: 19px; }
+  .app-nav .badge { top: -8px; right: -8px; }
+  /* Settings sits apart from the sections, as an icon on its own. */
+  .app-nav li.nav-settings { margin-left: 8px; }
+  .app-nav li.nav-settings a { width: 40px; padding: 0; justify-content: center; }
+  .app-nav li.nav-settings .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .app-nav a[aria-current="page"] { background: var(--btn-on); color: var(--btn-on-ink); font-weight: 700; }
+  .app-nav a:focus-visible { outline-offset: 2px; }
+  @media (hover: hover) {
+    .app-nav a:not([aria-current="page"]):hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+  }
+}
+/* Narrow desktops: drop the brand's name before the menu gets cramped. */
+@media (min-width: 720px) and (max-width: 860px) {
+  .app-nav .brand { font-size: 0; gap: 0; }
+}

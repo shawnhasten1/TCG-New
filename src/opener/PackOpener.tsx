@@ -21,7 +21,7 @@ import { layoutFor, type FrameLayout } from "../foil/layouts";
 import { useSettings } from "../app/settings";
 import { followMotion, recenterMotion } from "./motion";
 import { href } from "../app/router";
-import { OpenerNav } from "./OpenerNav";
+import { OpenerBar } from "./OpenerBar";
 import { Tilt } from "./tilt";
 import "./opener.css";
 
@@ -334,7 +334,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
 
   return (
     <div className="opener">
-      <OpenerNav />
+      <OpenerBar />
 
       {phase === "summary" ? (
         <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} shared={shared} picking={picking} onPick={togglePick} />
