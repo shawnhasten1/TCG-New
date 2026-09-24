@@ -37,7 +37,7 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
   - **Pack of the day**: 10 packs a day by default (1, 3, 5, 10 or unlimited in settings), across all sets. Once they run out, a pack recharges every 2 minutes, stacking back up to the limit, and midnight refills everything (`packAllowance` in `src/collection/daily.ts`). It's counted from the collection itself, so there's no separate counter. When you run out you get a live countdown. A pack you're partway through revealing is never taken away.
   - **Backup**: export the collection to JSON, and import it by merging (skips packs you already have) or replacing. Bad files get a readable error.
   - **Settings** live at `#/settings`, and preferences are kept in localStorage.
-  - **Deployment**: GitHub Pages workflow and Netlify config (see below), a favicon, and a meta description.
+  - **Deployment**: Cloudflare Workers (see below), a favicon, and a meta description.
 - **Phase 9, random sets: done.** Every pack comes from a randomly drawn set (`src/engine/randomSet.ts`); there's no manual set choice. The app starts on the opener (`#/`; old `#/open` links still work), and the set list at `#/sets` opens binders. The next set downloads while you reveal, and Settings can limit the draw by era.
 - **Phase 11, mobile first: done.** The opener is home, with a thumb-sized top bar (collection, sets, settings, sound). The pack is sized so it and its button fit a phone screen, and the pack summary is three across. On phones the card detail is a bottom sheet with a pinned close button and a handle you can pull down; zoomed cards tilt by dragging, and a tap puts them back.
 - **Motion tilt**: on phones, tilting the phone tilts the card (`src/opener/motion.ts`), in the opener and the card detail. Level is however you hold the phone and slowly follows your hand; a finger on the card takes priority. iOS asks for motion access on the first tap. It needs HTTPS, so test it on the deployed site, not the dev server over your LAN. It can be turned off in settings.
@@ -65,7 +65,7 @@ One-time setup:
 
 Then `npm run deploy` builds, applies any new D1 migrations and deploys. For local dev, run `npm run db:migrate:local` once (and after adding a migration), then `npm run dev`. After changing bindings in `wrangler.jsonc`, run `npm run cf-typegen`.
 
-A static host (GitHub Pages, Netlify) can still serve the app, but without the Worker there's no sign-in or sync.
+`.github/workflows/ci.yml` runs the tests and a production build on every push and pull request; it doesn't deploy.
 
 ## API findings (checked 2026-09-22)
 
