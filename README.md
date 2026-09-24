@@ -45,7 +45,7 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
 
 ## Accounts and sync
 
-Players can sign in with Google or with an email and password, and their collection follows them to every device. Signing up is optional: a first visit quietly makes a **guest account** (`POST /api/auth/guest`, limited to 3 a minute per IP), tied to that browser's cookie. Signing up as a guest turns it into a real account, packs and all; signing in to an existing account moves the guest's packs into it. Guests can't add friends.
+Players can sign in with Google or with an email and password, and their collection follows them to every device. Signing up is optional: a first visit quietly makes a **guest account** (`POST /api/auth/guest`, limited to 20 a minute per IP), tied to that browser's cookie. Signing up as a guest turns it into a real account, packs and all; signing in to an existing account moves the guest's packs into it. Guests can't add friends.
 
 **Packs are opened by the server** (`worker/packs.ts`), so every card in a collection came from a real pack. `POST /api/packs/deal` draws a set (rarity tiers, pity and the era filter from Settings), rolls the pack with the same engine as before and holds it in `dealt_packs` until it's torn, so asking again, or reloading, returns the same pack. Tearing saves it here and queues `{ op: "open" }` in the outbox; the next deal also carries the torn pack's id, and whichever arrives first moves it into `packs`. The Worker fetches TCGdex data through the app's client with a D1 cache (`api_cache`, `worker/cache.ts`). Opening packs needs a connection. Uploads of packs made on a device (the old `add` op) are ignored.
 

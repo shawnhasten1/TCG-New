@@ -31,12 +31,13 @@
 				"period": 60
 			}
 		},
-		// Guest accounts per IP, so packs can't be farmed by clearing cookies over and over.
+		// Guest accounts per IP, so packs can't be farmed by clearing cookies over and over. Roomy enough for a group
+		// of friends on the same Wi-Fi all opening the app at once.
 		{
 			"name": "GUEST_LIMITER",
 			"namespace_id": "1003",
 			"simple": {
-				"limit": 3,
+				"limit": 20,
 				"period": 60
 			}
 		},
