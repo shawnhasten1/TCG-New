@@ -338,3 +338,60 @@
 @media (prefers-reduced-motion: reduce) {
   .tcg-card .glitter { -webkit-mask-image: none; mask-image: none; opacity: calc(var(--o) * .35 * var(--glitter-k)); }
 }
+
+/* ---------- Booster pack wrappers (FoilPack, and the opener's sealed pack) ----------
+   Packs are printed on metallic film, so the whole surface shines: a rainbow wash that slides with the tilt,
+   pooled toward the light, glitter near the pointer, and a glare with a specular streak across the film.
+   Everything is masked to the photo (--art), so crimps and cut corners stay clear. */
+.foil-pack, .opener .pack.photo {
+  --bx: calc(37 + var(--px) * .26); --by: calc(33 + var(--py) * .34);
+  --pc: min(1, hypot(calc(var(--px) - 50), calc(var(--py) - 50)) / 50);
+  --sun-1: hsl(2 100% 73%); --sun-2: hsl(53 100% 69%); --sun-3: hsl(93 100% 69%);
+  --sun-4: hsl(176 100% 76%); --sun-5: hsl(228 100% 74%); --sun-6: hsl(283 100% 73%);
+}
+.foil-pack {
+  --rx: 0deg; --ry: 0deg; --px: 50; --py: 50; --o: .25;
+  --mx: calc(var(--px) * 1%); --my: calc(var(--py) * 1%);
+  position: relative; width: 100%; height: 100%;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  touch-action: none;
+  filter: drop-shadow(calc(var(--ry) * -.6) calc(10px + var(--rx) * .6) 16px #0008);
+}
+.foil-pack .face {
+  position: relative; width: 100%; height: 100%; isolation: isolate;
+  -webkit-mask: var(--art) 0 0 / 100% 100% no-repeat; mask: var(--art) 0 0 / 100% 100% no-repeat;
+}
+.foil-pack .face img { display: block; width: 100%; height: 100%; object-fit: fill; }
+:is(.foil-pack, .opener .pack.photo) :is(.pack-foil, .pack-foil::after, .pack-glitter, .pack-glare) { position: absolute; inset: 0; pointer-events: none; }
+:is(.foil-pack, .opener .pack.photo) .pack-foil {
+  background-image: repeating-linear-gradient(115deg, var(--sun-1), var(--sun-2), var(--sun-3), var(--sun-4), var(--sun-5), var(--sun-6), var(--sun-1));
+  background-size: 400% 400%;
+  background-position: calc(50% + (50 - var(--bx)) * 3%) calc(50% + (50 - var(--by)) * 3%);
+  mix-blend-mode: color-dodge;
+  filter: brightness(calc(.5 + var(--pc) * .35)) saturate(1.1);
+  opacity: calc(var(--o) * .55);
+}
+/* Darkens the rainbow away from the light so it pools under the pointer, like the cards' holo. */
+:is(.foil-pack, .opener .pack.photo) .pack-foil::after {
+  content: "";
+  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(0 0% 90% / .8) 0%, hsl(0 0% 78% / .1) 25%, #000 90%);
+  mix-blend-mode: luminosity; filter: brightness(.6) contrast(4);
+}
+:is(.foil-pack, .opener .pack.photo) .pack-glitter {
+  background-image: var(--sparkles), linear-gradient(125deg, #fff, #cfe8ff, #fff3c4, #fff);
+  background-size: 150px 150px, 300% 300%;
+  background-position: calc(var(--bx) * -1.5px) calc(var(--by) * -1.5px), calc(var(--px) * 1%) calc(var(--py) * 1%);
+  background-blend-mode: multiply; mix-blend-mode: color-dodge;
+  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 50%);
+          mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 50%);
+  opacity: calc(var(--o) * .6);
+}
+:is(.foil-pack, .opener .pack.photo) .pack-glare {
+  background:
+    linear-gradient(105deg, transparent 38%, #ffffff70 47%, #ffffffb0 50%, #ffffff70 53%, transparent 62%) calc(var(--px) * 1%) 0 / 250% 100% no-repeat,
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffc0 6%, #ffffff40 24%, #00000055 90%);
+  mix-blend-mode: overlay; opacity: calc(.3 + var(--o) * .6);
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.foil-pack, .opener .pack.photo) .pack-glitter { -webkit-mask-image: none; mask-image: none; opacity: calc(var(--o) * .25); }
+}

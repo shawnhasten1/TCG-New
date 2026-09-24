@@ -325,3 +325,13 @@ html:has(.card-detail[open]) { overflow: hidden; }
   background: var(--primary); color: var(--primary-ink); box-shadow: 0 2px 8px -2px #0008;
 }
 .packs-page .credit { margin-top: 32px; font-size: .85rem; }
+.packs-page button.wrapper-img { all: unset; display: block; position: relative; cursor: zoom-in; border-radius: 4px; transition: transform .15s; }
+.packs-page button.wrapper-img:hover { transform: translateY(-3px); }
+.packs-page button.wrapper-img:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .packs-page button.wrapper-img { transition: none; } }
+
+/* A pack up close (PackDetail): the card detail dialog, with the pack's own shape. */
+.pack-detail .detail-card { width: min(260px, 100%); }
+.pack-detail .showcase { border-radius: 2px; }
+.pack-detail .tilt-tip { margin-top: 16px; font-size: .9rem; }
+@media (max-width: 640px) { .pack-detail .detail-card { width: min(200px, 52vw); } }

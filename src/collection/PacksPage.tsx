@@ -1,5 +1,6 @@
 // The pack wrappers you've collected: each set's packs came in several designs (packs/art.ts), and every pack
-// you open keeps the one it came in. Sets you've found wrappers for come first, most recent first.
+// you open keeps the one it came in. Sets you've found wrappers for come first, most recent first. Tap one you've
+// found to see it up close in its foil (PackDetail).
 
 import { useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
@@ -8,6 +9,7 @@ import { client } from "../app/client";
 import { href } from "../app/router";
 import { packArts, type PackArt } from "../packs/art";
 import manifest from "../packs/packArt.json";
+import { PackDetail } from "./PackDetail";
 import { getWrappers, onCollectionChange, type WrapperRecord } from "./store";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
@@ -19,6 +21,8 @@ interface SetWrappers {
   arts: PackArt[];
   /** Packs opened in each art, by art id. */
   counts: Map<string, number>;
+  /** When each art was first opened, by art id. */
+  firstAt: Map<string, string>;
   lastOpenedAt: string;
 }
 
@@ -43,11 +47,13 @@ export function PacksPage() {
 
   const groups = useMemo(() => {
     const bySet = new Map<string, SetWrappers>();
-    for (const setId of Object.keys(manifest)) bySet.set(setId, { setId, arts: packArts(setId), counts: new Map(), lastOpenedAt: "" });
+    for (const setId of Object.keys(manifest)) bySet.set(setId, { setId, arts: packArts(setId), counts: new Map(), firstAt: new Map(), lastOpenedAt: "" });
     for (const w of wrappers ?? []) {
       const g = bySet.get(w.setId);
       if (!g) continue; // a set whose photos have since been dropped
       g.counts.set(w.art, (g.counts.get(w.art) ?? 0) + 1);
+      const first = g.firstAt.get(w.art);
+      if (!first || w.openedAt < first) g.firstAt.set(w.art, w.openedAt);
       if (w.openedAt > g.lastOpenedAt) g.lastOpenedAt = w.openedAt;
     }
     const released = (id: string) => byId.get(id)?.releaseDate ?? "";
@@ -58,6 +64,8 @@ export function PacksPage() {
   }, [wrappers, byId]);
 
   const shown = showAll ? [...groups.found, ...groups.rest] : groups.found;
+  /** The wrapper open up close. */
+  const [selected, setSelected] = useState<{ group: SetWrappers; art: PackArt }>();
 
   return (
     <main className="collection packs-page">
@@ -97,10 +105,16 @@ export function PacksPage() {
                     const count = g.counts.get(a.id) ?? 0;
                     return (
                       <li key={a.id} data-found={count > 0 || undefined}>
-                        <div className="wrapper-img">
-                          <img src={a.src} alt={count ? `${name} pack: ${a.name}` : `${name} pack not found yet`} loading="lazy" />
-                          {count > 1 && <span className="count">×{count}</span>}
-                        </div>
+                        {count ? (
+                          <button type="button" className="wrapper-img" aria-label={`Look closer at the ${name} ${a.name} pack`} onClick={() => setSelected({ group: g, art: a })}>
+                            <img src={a.src} alt="" loading="lazy" />
+                            {count > 1 && <span className="count">×{count}</span>}
+                          </button>
+                        ) : (
+                          <div className="wrapper-img">
+                            <img src={a.src} alt={`${name} pack not found yet`} loading="lazy" />
+                          </div>
+                        )}
                         <span className={count ? undefined : "muted"}>{count ? a.name : "Not found yet"}</span>
                       </li>
                     );
@@ -109,6 +123,17 @@ export function PacksPage() {
               </section>
             );
           })}
+          {selected && (
+            <PackDetail
+              art={selected.art}
+              setName={byId.get(selected.group.setId)?.name ?? selected.group.setId}
+              count={selected.group.counts.get(selected.art.id) ?? 0}
+              firstOpenedAt={selected.group.firstAt.get(selected.art.id) ?? ""}
+              found={selected.group.counts.size}
+              total={selected.group.arts.length}
+              onClose={() => setSelected(undefined)}
+            />
+          )}
           <p className="muted credit">
             Pack photos from <a href="https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Trading_Card_Game#International_sets">Bulbapedia</a>.
           </p>

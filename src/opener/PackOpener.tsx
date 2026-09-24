@@ -17,6 +17,7 @@ import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
 import { FoilCard } from "../foil/FoilCard";
+import { PackShine } from "../foil/FoilPack";
 import { layoutFor, type FrameLayout } from "../foil/layouts";
 import { useSettings } from "../app/settings";
 import { followMotion, recenterMotion } from "./motion";
@@ -362,7 +363,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
                 </div>
               )}
               <div className="crimp" />
-              <div className="sheen" />
+              {packPhoto ? <PackShine /> : <div className="sheen" />}
             </div>
 
             <div
@@ -407,7 +408,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
             <div className="layer pack-top" ref={topRef}>
               <div className="crimp" />
               <span className="tear-label">✂ tear here</span>
-              <div className="sheen" />
+              {packPhoto ? <PackShine /> : <div className="sheen" />}
             </div>
 
             <svg className="tear-line" ref={tearLineRef} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
