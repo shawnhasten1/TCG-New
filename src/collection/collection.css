@@ -194,6 +194,22 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .settings .ok { color: var(--ink); font-weight: 600; }
 .settings .error { font-weight: 600; }
 .settings .eras { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.settings button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
+.settings button.link { background: none; border: 0; padding: 10px 4px; color: var(--focus); text-decoration: underline; }
+.settings a.button.google { display: inline-flex; align-items: center; gap: 10px; }
+.settings .google-logo { width: 18px; height: 18px; flex: none; }
+.settings .or { margin: 14px 0 4px; }
+.settings .auth-form { display: flex; flex-direction: column; gap: 12px; max-width: 360px; margin-top: 8px; }
+.settings .auth-form label { display: flex; flex-direction: column; align-items: stretch; gap: 4px; cursor: default; font-weight: 600; }
+.settings .auth-form label .muted { font-weight: 400; }
+.settings .auth-form input {
+  font: 400 1rem/1.2 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); background: var(--btn);
+  padding: 10px 12px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.settings .auth-form input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.settings .auth-form .row { margin: 4px 0 0; }
+.settings .who { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; }
+.settings .who img { width: 44px; height: 44px; border-radius: 50%; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ---------- View switch ---------- */

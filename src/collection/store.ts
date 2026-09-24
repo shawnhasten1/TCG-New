@@ -1,6 +1,8 @@
 // The collection: every pulled card, saved to IndexedDB when its pack is torn open.
+// Every change is also queued in an outbox for syncing to the signed-in account (see sync/sync.ts).
 
 import type { Finish, PulledCard } from "../engine/types";
+import { OUTBOX_CHUNK, type RemotePack, type SyncOp, type SyncPack } from "../sync/protocol";
 
 export interface PullRecord {
   /** Auto-increment key. */
@@ -18,16 +20,26 @@ export interface PullRecord {
 
 const DB_NAME = "tcg-collection";
 const STORE = "pulls";
+/** Changes not yet pushed to the account, oldest first. */
+const OUTBOX = "outbox";
+/** Sync bookkeeping: which account this collection belongs to, and how far its changes have been pulled. */
+const META = "meta";
 
 let dbPromise: Promise<IDBDatabase> | undefined;
 
 function db(): Promise<IDBDatabase> {
   return (dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = () => {
-      const store = req.result.createObjectStore(STORE, { keyPath: "id", autoIncrement: true });
-      store.createIndex("setId", "setId");
-      store.createIndex("packId", "packId");
+    const req = indexedDB.open(DB_NAME, 2);
+    req.onupgradeneeded = (e) => {
+      if (e.oldVersion < 1) {
+        const store = req.result.createObjectStore(STORE, { keyPath: "id", autoIncrement: true });
+        store.createIndex("setId", "setId");
+        store.createIndex("packId", "packId");
+      }
+      if (e.oldVersion < 2) {
+        req.result.createObjectStore(OUTBOX, { keyPath: "id", autoIncrement: true });
+        req.result.createObjectStore(META);
+      }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -65,6 +77,20 @@ export function onCollectionChange(fn: () => void): () => void {
   return () => events.removeEventListener("change", fn);
 }
 
+/** Fires in this tab only, when something here changed the collection, so there's something to push. */
+const localWrites = new EventTarget();
+
+function changedHere() {
+  changed();
+  localWrites.dispatchEvent(new Event("write"));
+}
+
+/** Calls `fn` after this tab changes the collection. Returns an unsubscribe function. */
+export function onLocalWrite(fn: () => void): () => void {
+  localWrites.addEventListener("write", fn);
+  return () => localWrites.removeEventListener("write", fn);
+}
+
 /* ---------- Reads and writes ---------- */
 
 const newPackId = () =>
@@ -73,10 +99,8 @@ const newPackId = () =>
 /** Saves one opened pack. Returns its pack id. */
 export async function savePack(setId: string, pulls: PulledCard[], openedAt = new Date()): Promise<string> {
   const packId = newPackId();
-  const tx = (await db()).transaction(STORE, "readwrite");
-  const store = tx.objectStore(STORE);
-  for (const p of pulls) {
-    const record: PullRecord = {
+  await addPulls(
+    pulls.map((p) => ({
       packId,
       setId,
       cardId: p.card.id,
@@ -84,22 +108,20 @@ export async function savePack(setId: string, pulls: PulledCard[], openedAt = ne
       finish: p.finish,
       firstEdition: p.firstEdition,
       openedAt: openedAt.toISOString(),
-    };
-    store.add(record);
-  }
-  await done(tx);
-  changed();
+    })),
+  );
   return packId;
 }
 
-/** Adds already-formed records in one transaction (collection import). */
+/** Adds already-formed records in one transaction (a new pack, or a collection import). */
 export async function addPulls(records: Omit<PullRecord, "id">[]): Promise<void> {
   if (!records.length) return;
-  const tx = (await db()).transaction(STORE, "readwrite");
+  const tx = (await db()).transaction([STORE, OUTBOX], "readwrite");
   const store = tx.objectStore(STORE);
   for (const r of records) store.add({ ...r });
+  queueAdds(tx.objectStore(OUTBOX), records);
   await done(tx);
-  changed();
+  changedHere();
 }
 
 /** Every pull, or just one set's. */
@@ -108,27 +130,176 @@ export async function getPulls(setId?: string): Promise<PullRecord[]> {
   return all<PullRecord>(setId ? store.index("setId").getAll(setId) : store.getAll());
 }
 
-/** Deletes every record matching an index value, inside one transaction. */
-async function deleteWhere(index: "packId" | "setId", value: string): Promise<void> {
-  const tx = (await db()).transaction(STORE, "readwrite");
-  const store = tx.objectStore(STORE);
-  // Delete from the success callback, not after an await, so the transaction is still active.
+/** Deletes every record matching an index value (from a success callback, so the transaction is still active). */
+function deleteWhere(store: IDBObjectStore, index: "packId" | "setId", value: string) {
   const req = store.index(index).getAllKeys(value);
   req.onsuccess = () => req.result.forEach((k) => store.delete(k));
-  await done(tx);
-  changed();
 }
 
 /** Removes every pull from one pack (e.g. undo). */
-export function deletePack(packId: string): Promise<void> {
-  return deleteWhere("packId", packId);
+export async function deletePack(packId: string): Promise<void> {
+  const tx = (await db()).transaction([STORE, OUTBOX], "readwrite");
+  deleteWhere(tx.objectStore(STORE), "packId", packId);
+  tx.objectStore(OUTBOX).add({ op: "deletePacks", packIds: [packId] } satisfies SyncOp);
+  await done(tx);
+  changedHere();
 }
 
 /** Wipes one set's pulls, or the whole collection. */
 export async function clearPulls(setId?: string): Promise<void> {
-  if (setId) return deleteWhere("setId", setId);
-  const tx = (await db()).transaction(STORE, "readwrite");
-  tx.objectStore(STORE).clear();
+  const tx = (await db()).transaction([STORE, OUTBOX], "readwrite");
+  if (setId) deleteWhere(tx.objectStore(STORE), "setId", setId);
+  else tx.objectStore(STORE).clear();
+  tx.objectStore(OUTBOX).add((setId ? { op: "deleteSet", setId } : { op: "clear" }) satisfies SyncOp);
+  await done(tx);
+  changedHere();
+}
+
+/* ---------- Sync bookkeeping ---------- */
+
+/** Groups pull records into packs, the unit sync works in. */
+export function toSyncPacks(records: Omit<PullRecord, "id">[]): SyncPack[] {
+  const packs = new Map<string, SyncPack>();
+  for (const r of records) {
+    let p = packs.get(r.packId);
+    if (!p) packs.set(r.packId, (p = { packId: r.packId, setId: r.setId, openedAt: r.openedAt, cards: [] }));
+    p.cards.push({ cardId: r.cardId, localId: r.localId, finish: r.finish, firstEdition: r.firstEdition });
+  }
+  return [...packs.values()];
+}
+
+function queueAdds(outbox: IDBObjectStore, records: Omit<PullRecord, "id">[]) {
+  const packs = toSyncPacks(records);
+  for (let i = 0; i < packs.length; i += OUTBOX_CHUNK) outbox.add({ op: "add", packs: packs.slice(i, i + OUTBOX_CHUNK) } satisfies SyncOp);
+}
+
+export interface OutboxEntry {
+  id: number;
+  op: SyncOp;
+}
+
+export interface SyncMeta {
+  /** The account this device's collection belongs to; unset while playing as a guest. */
+  account?: string;
+  /** How far the account's changes have been pulled. */
+  cursor?: string | null;
+}
+
+function readMeta(store: IDBObjectStore, then: (m: SyncMeta) => void) {
+  const req = store.get("sync");
+  req.onsuccess = () => then((req.result as SyncMeta | undefined) ?? {});
+}
+
+export async function getSyncMeta(): Promise<SyncMeta> {
+  const tx = (await db()).transaction(META, "readonly");
+  let meta: SyncMeta = {};
+  readMeta(tx.objectStore(META), (m) => (meta = m));
+  await done(tx);
+  return meta;
+}
+
+/**
+ * Ties this device's collection to an account before syncing. A guest collection joins the account:
+ * the outbox is replaced by an upload of every pack here. A collection left from a different account
+ * is dropped, since that account keeps it.
+ */
+export async function linkAccount(userId: string): Promise<"same" | "joined" | "replaced"> {
+  const tx = (await db()).transaction([STORE, OUTBOX, META], "readwrite");
+  const pulls = tx.objectStore(STORE);
+  const outbox = tx.objectStore(OUTBOX);
+  const meta = tx.objectStore(META);
+  // Set inside the callback below, which TypeScript can't see.
+  let result = "same" as "same" | "joined" | "replaced";
+  readMeta(meta, (m) => {
+    if (m.account === userId) return;
+    outbox.clear();
+    meta.put({ account: userId, cursor: null } satisfies SyncMeta, "sync");
+    if (m.account) {
+      result = "replaced";
+      pulls.clear();
+    } else {
+      result = "joined";
+      const req = pulls.getAll();
+      req.onsuccess = () => queueAdds(outbox, req.result as PullRecord[]);
+    }
+  });
+  await done(tx);
+  if (result === "replaced") changed();
+  return result;
+}
+
+/** Signing out: the collection stays with the account, so this device goes back to an empty guest one. */
+export async function unlinkAccount(): Promise<void> {
+  const tx = (await db()).transaction([STORE, OUTBOX, META], "readwrite");
+  for (const name of [STORE, OUTBOX, META]) tx.objectStore(name).clear();
   await done(tx);
   changed();
+}
+
+/** The oldest queued changes, up to about `maxPacks` packs (always at least one entry if any are queued). */
+export async function peekOutbox(maxPacks: number): Promise<OutboxEntry[]> {
+  const tx = (await db()).transaction(OUTBOX, "readonly");
+  const req = tx.objectStore(OUTBOX).openCursor();
+  const entries: OutboxEntry[] = [];
+  let packs = 0;
+  req.onsuccess = () => {
+    const c = req.result;
+    if (!c) return;
+    const { id, ...op } = c.value as SyncOp & { id: number };
+    const size = op.op === "add" ? op.packs.length : op.op === "deletePacks" ? op.packIds.length : 1;
+    if (entries.length && packs + size > maxPacks) return;
+    entries.push({ id, op: op as SyncOp });
+    packs += size;
+    c.continue();
+  };
+  await done(tx);
+  return entries;
+}
+
+export async function dropOutbox(ids: number[]): Promise<void> {
+  const tx = (await db()).transaction(OUTBOX, "readwrite");
+  for (const id of ids) tx.objectStore(OUTBOX).delete(id);
+  await done(tx);
+}
+
+export async function outboxSize(): Promise<number> {
+  const tx = (await db()).transaction(OUTBOX, "readonly");
+  const req = tx.objectStore(OUTBOX).count();
+  await done(tx);
+  return req.result;
+}
+
+/**
+ * Applies a page of the account's changes and records the new cursor, in one transaction.
+ * Skipped if the device has since been unlinked or moved to another account. Packs this device
+ * has deleted but not yet pushed stay deleted.
+ */
+export async function applyRemote(userId: string, packs: RemotePack[], cursor: string | null): Promise<void> {
+  const tx = (await db()).transaction([STORE, OUTBOX, META], "readwrite");
+  const pulls = tx.objectStore(STORE);
+  const meta = tx.objectStore(META);
+  let touched = false;
+  readMeta(meta, (m) => {
+    if (m.account !== userId) return;
+    meta.put({ ...m, cursor } satisfies SyncMeta, "sync");
+    const pending = tx.objectStore(OUTBOX).getAll();
+    pending.onsuccess = () => {
+      const ops = pending.result as SyncOp[];
+      const deletedHere = (p: RemotePack) => ops.some((o) => o.op === "clear" || (o.op === "deleteSet" && o.setId === p.setId) || (o.op === "deletePacks" && o.packIds.includes(p.packId)));
+      for (const p of packs) {
+        const keys = pulls.index("packId").getAllKeys(p.packId);
+        keys.onsuccess = () => {
+          if (p.deleted) {
+            keys.result.forEach((k) => pulls.delete(k));
+            touched ||= keys.result.length > 0;
+          } else if (!keys.result.length && !deletedHere(p)) {
+            for (const c of p.cards) pulls.add({ packId: p.packId, setId: p.setId, openedAt: p.openedAt, ...c } satisfies PullRecord);
+            touched = true;
+          }
+        };
+      }
+    };
+  });
+  await done(tx);
+  if (touched) changed();
 }

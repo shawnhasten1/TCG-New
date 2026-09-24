@@ -5,16 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && tsc -p worker && vite build",
     "preview": "npm run build && wrangler dev",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p worker",
+    "cf-typegen": "wrangler types worker/worker-configuration.d.ts",
+    "db:migrate:local": "wrangler d1 migrations apply tcg --local",
     "rarities": "tsx scripts/rarities.ts",
     "simulate": "tsx scripts/simulate.ts",
     "open": "tsx scripts/open.ts",
     "pokedex": "tsx scripts/pokedex.ts",
     "set-rarity": "tsx scripts/setRarity.ts",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler d1 migrations apply tcg --remote && wrangler deploy"
   },
   "dependencies": {
     "react": "^19.3.0",

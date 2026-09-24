@@ -8,7 +8,8 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 npm install
 npm run dev                          # app at http://localhost:5173 (#/ opens packs; #/sets, #/collection, #/pokedex, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
 npm run pokedex                      # regenerate src/collection/pokedex.json (Pokémon names) from PokéAPI
-npm test                             # engine unit tests (offline)
+npm test                             # unit tests (offline)
+npm run deploy                       # build, apply D1 migrations, deploy to Cloudflare
 npm run rarities -- sv03.5 swsh7     # distinct rarities + variant counts per set
 npm run open -- sv03.5 [seed]        # open one pack from a real set
 npm run simulate -- sv03.5 [n] [seed]   # open n packs (default 10,000) and report rates
@@ -42,15 +43,29 @@ Scripts cache API responses in `.cache/`. Delete it to refetch.
 - **Motion tilt**: on phones, tilting the phone tilts the card (`src/opener/motion.ts`), in the opener and the card detail. Level is however you hold the phone and slowly follows your hand; a finger on the card takes priority. iOS asks for motion access on the first tap. It needs HTTPS, so test it on the deployed site, not the dev server over your LAN. It can be turned off in settings.
 - **Phase 10, collection by Pokémon: done.** `#/pokedex` lists the Pokémon you own (search jumps to any Pokémon). `#/pokemon/<dexId>` shows every printing of that Pokémon across sets, grouped by era, with finish chips for what you own and what's missing, and completion over the printings packs can give you. Promos and other products are behind a toggle. Logic is in `src/collection/pokedex.ts`.
 
+## Accounts and sync
+
+Players can sign in with Google or with an email and password, and their collection follows them to every device. Signing in is optional; without an account the collection stays in the browser as before.
+
+- **Worker** (`worker/`): `/api/auth/*` (register, login, logout, password, Google OAuth with PKCE) and `/api/collection` (push changes, pull changes since a cursor). Everything outside `/api/` is served straight from the built app (`run_worker_first` in `wrangler.jsonc`).
+- **D1** (`migrations/`): `users`, `sessions` (hashed tokens in an HttpOnly cookie, 30 days, extended when used) and `packs` (one row per pack; deletes stay as tombstones so every device hears about them).
+- **App**: IndexedDB is still what the app reads. Each change also goes into an outbox (`src/collection/store.ts`), and `src/sync/sync.ts` pushes it and then pulls the account's changes: at startup, after a change, when the tab comes back, when back online, and every 5 minutes. Signing in adds this device's packs to the account; signing out clears the device.
+- **Google and password accounts** match on email. Password sign-ups aren't email-verified, so if Google signs in to an unverified account with the same email, the account is linked, its password removed and other sessions ended. The owner can add a new password in Settings.
+- **Not yet**: "forgot password" (needs an email sender) and account deletion.
+
 ## Deploying
 
-The build is a static site with relative paths and hash routes, so it works from any sub-path with no server config.
+The app runs on Cloudflare Workers (static assets plus the API Worker), at tcg.spudfurd.dev.
 
-- **GitHub Pages**: push this repo to GitHub, then set Settings → Pages → Source to "GitHub Actions". `.github/workflows/deploy.yml` runs the tests, builds, and publishes `dist/` on every push to `main`/`master`.
-- **Netlify**: "Add new site → Import from Git" and pick the repo. `netlify.toml` sets the build command (`npm run build`) and publish directory (`dist`).
-- **Anywhere else**: `npm run build` and upload `dist/`.
+One-time setup:
 
-The collection is stored per browser and per site address, so moving from localhost to a deployed URL starts empty. Use Settings → Export / Import to carry it over.
+1. `npx wrangler d1 create tcg` and put the `database_id` it prints into `wrangler.jsonc`.
+2. Google Cloud Console → APIs & Services → Credentials → Create OAuth client ID (Web application). Authorized redirect URIs: `https://tcg.spudfurd.dev/api/auth/google/callback`, `https://tcg-pack-opener.<account>.workers.dev/api/auth/google/callback` and `http://localhost:5173/api/auth/google/callback`. Set up the consent screen with the `openid`, `email` and `profile` scopes.
+3. `npx wrangler secret put GOOGLE_CLIENT_ID` and `npx wrangler secret put GOOGLE_CLIENT_SECRET`. For local dev, copy `.dev.vars.example` to `.dev.vars` and fill it in. Without them, Google sign-in is hidden and email/password still works.
+
+Then `npm run deploy` builds, applies any new D1 migrations and deploys. For local dev, run `npm run db:migrate:local` once (and after adding a migration), then `npm run dev`. After changing bindings in `wrangler.jsonc`, run `npm run cf-typegen`.
+
+A static host (GitHub Pages, Netlify) can still serve the app, but without the Worker there's no sign-in or sync.
 
 ## API findings (checked 2026-09-22)
 

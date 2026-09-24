@@ -1,11 +1,37 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tcg-pack-opener",
-  "compatibility_date": "2026-09-21",
-  "observability": {
-    "enabled": true
-  },
-  "assets": {
-    "not_found_handling": "single-page-application"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tcg-pack-opener",
+	"compatibility_date": "2026-09-21",
+	// The API (accounts and collection sync). Everything outside /api/ is served straight from the built app.
+	"main": "worker/index.ts",
+	"observability": {
+		"enabled": true
+	},
+	"assets": {
+		"not_found_handling": "single-page-application",
+		"run_worker_first": [
+			"/api/*"
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "tcg",
+			"database_id": "a089ed41-7c13-4624-ba5d-f8ad1ab4690d",
+			"migrations_dir": "migrations"
+		}
+	],
+	// Slows password guessing: sign-in, sign-up and password changes, per IP.
+	"ratelimits": [
+		{
+			"name": "AUTH_LIMITER",
+			"namespace_id": "1001",
+			"simple": {
+				"limit": 10,
+				"period": 60
+			}
+		}
+	]
+	// GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are secrets (`npx wrangler secret put ...`, or .dev.vars locally).
+	// Without them Google sign-in is hidden and email/password still works.
 }

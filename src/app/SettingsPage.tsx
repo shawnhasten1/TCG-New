@@ -1,6 +1,8 @@
-// Settings: sound, daily pack limit, collection backup and reset.
+// Settings: account, sound, daily pack limit, collection backup and reset.
 
 import { useEffect, useRef, useState } from "react";
+import { AccountSection } from "../account/AccountSection";
+import { useAccount } from "../account/account";
 import { parseBackup, planMerge, toBackup } from "../collection/backup";
 import { localDay, packAllowance, packsOpenedOn, RECHARGE_MS } from "../collection/daily";
 import { addPulls, clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
@@ -24,6 +26,7 @@ function download(filename: string, text: string) {
 
 export function SettingsPage() {
   const settings = useSettings();
+  const signedIn = useAccount().status === "signedIn";
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [mode, setMode] = useState<"merge" | "replace">("merge");
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string }>();
@@ -83,7 +86,7 @@ export function SettingsPage() {
   };
 
   const resetAll = async () => {
-    if (confirm(`Delete your whole collection (${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")})? Export it first if you might want it back.`)) {
+    if (confirm(`Delete your whole collection (${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")})${signedIn ? ", on every device you're signed in on" : ""}? Export it first if you might want it back.`)) {
       await clearPulls();
       setMessage({ kind: "ok", text: "Collection cleared." });
     }
@@ -96,6 +99,8 @@ export function SettingsPage() {
         <a href={href.collection()}>Your collection</a>
       </nav>
       <h1>Settings</h1>
+
+      <AccountSection />
 
       <section>
         <h2>Sound</h2>
@@ -150,7 +155,8 @@ export function SettingsPage() {
       <section>
         <h2>Backup</h2>
         <p className="muted">
-          Your collection is stored in this browser only ({pulls ? `${plural(pulls.length, "card")} from ${plural(packs, "pack")}` : "loading…"}). Export it to keep a copy or move it to another device.
+          {signedIn ? "Your collection is saved to your account" : "Your collection is stored in this browser only"} ({pulls ? `${plural(pulls.length, "card")} from ${plural(packs, "pack")}` : "loading…"}).{" "}
+          {signedIn ? "Export it to keep a copy of your own." : "Sign in to keep it on every device, or export it to keep a copy."}
         </p>
         <div className="row">
           <button type="button" onClick={exportCollection} disabled={!pulls?.length}>
