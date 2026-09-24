@@ -31,6 +31,15 @@
 				"period": 60
 			}
 		},
+		// Guest accounts per IP, so packs can't be farmed by clearing cookies over and over.
+		{
+			"name": "GUEST_LIMITER",
+			"namespace_id": "1003",
+			"simple": {
+				"limit": 3,
+				"period": 60
+			}
+		},
 		// Friend requests per account, so friend codes can't be guessed by trying them all.
 		{
 			"name": "FRIEND_LIMITER",

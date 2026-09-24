@@ -36,6 +36,8 @@ export interface TcgdexClient {
   getSerie(id: string): Promise<SerieDetail>;
   getSet(id: string): Promise<SetDetail>;
   getSetCards(id: string, onProgress?: Progress): Promise<SetData>;
+  /** Drops a set's cached cards, so the next getSetCards fetches them fresh. */
+  forgetSetCards(id: string): Promise<void>;
   /** Every printing of one Pokémon across all sets (by National Pokédex number). Cached per day. */
   getPokemonCards(dexId: number): Promise<CardWithSet[]>;
   /** Market prices for one card (REST only; GraphQL has no pricing). Cached per day. */
@@ -208,6 +210,8 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
         cards.sort((a, b) => (order.get(a.id) ?? 1e9) - (order.get(b.id) ?? 1e9));
         return { set, cards, byRarity: groupByRarity(cards), source, fetchedAt: new Date().toISOString() };
       }),
+
+    forgetSetCards: (id) => cache.delete(`v${CACHE_VERSION}:setcards:${id}`),
 
     getPokemonCards: (dexId) =>
       cached(`pokemon:${dexId}:${new Date().toISOString().slice(0, 10)}`, async () => {

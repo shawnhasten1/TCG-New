@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { outboxSize } from "../collection/store";
 import { signOut, syncNow, useSyncStatus } from "../sync/sync";
-import { changePassword, GOOGLE_SIGN_IN, register, signIn, useAccount } from "./account";
+import { changePassword, GOOGLE_SIGN_IN, isMember, register, signIn, useAccount } from "./account";
 
 const MIN_PASSWORD = 8;
 
@@ -42,7 +42,7 @@ export function AccountSection() {
   return (
     <section className="account">
       <h2>Account</h2>
-      {account.status === "signedIn" && account.user ? <SignedIn onError={setError} /> : <SignedOut google={account.google} onError={setError} />}
+      {isMember(account) ? <SignedIn onError={setError} /> : <SignedOut google={account.google} onError={setError} />}
       {error && (
         <p className="error" role="alert">
           {error}
@@ -76,7 +76,7 @@ function SignedOut({ google, onError }: { google: boolean; onError: (e?: string)
 
   return (
     <>
-      <p className="muted">Sign in to keep your collection on every device you play on. Packs you've opened here are added to your account.</p>
+      <p className="muted">Sign up or sign in to keep your collection on every device you play on, and to add friends. Packs you've opened as a guest come with you.</p>
       {google && (
         <>
           <div className="row">
@@ -184,7 +184,7 @@ function SignedIn({ onError }: { onError: (e?: string) => void }) {
       <div className="who">
         {user.avatarUrl && <img src={user.avatarUrl} alt="" referrerPolicy="no-referrer" />}
         <div>
-          <strong>{user.name ?? user.email}</strong>
+          <strong>{user.name ?? user.email ?? ""}</strong>
           {user.name && <div className="muted">{user.email}</div>}
         </div>
       </div>
@@ -210,7 +210,7 @@ function SignedIn({ onError }: { onError: (e?: string) => void }) {
       {editingPassword && (
         <form className="auth-form" onSubmit={savePassword}>
           {/* Lets password managers file the new password under the right account. */}
-          <input type="email" name="username" autoComplete="username" value={user.email} readOnly hidden />
+          <input type="email" name="username" autoComplete="username" value={user.email ?? ""} readOnly hidden />
           {user.hasPassword && (
             <label>
               Current password

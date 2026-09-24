@@ -23,8 +23,8 @@ describe("collection store", () => {
   beforeEach(() => clearPulls());
 
   it("saves packs and reads them back by set", async () => {
-    await savePack("s", [pull(a), pull(b, "reverse")]);
-    await savePack("other", [pull(card("o-1", "1"))]);
+    await savePack("p1", "s", [pull(a), pull(b, "reverse")]);
+    await savePack("p2", "other", [pull(card("o-1", "1"))]);
     const pulls = await getPulls("s");
     expect(pulls.map((p) => [p.cardId, p.finish, p.localId])).toEqual([
       ["s-1", "normal", "1"],
@@ -34,15 +34,15 @@ describe("collection store", () => {
   });
 
   it("deletes one pack without touching others", async () => {
-    const first = await savePack("s", [pull(a), pull(b)]);
-    await savePack("s", [pull(a)]);
+    const first = await savePack("p3", "s", [pull(a), pull(b)]);
+    await savePack("p4", "s", [pull(a)]);
     await deletePack(first);
     expect((await getPulls("s")).map((p) => p.cardId)).toEqual(["s-1"]);
   });
 
   it("clears a single set", async () => {
-    await savePack("s", [pull(a)]);
-    await savePack("other", [pull(card("o-1", "1"))]);
+    await savePack("p5", "s", [pull(a)]);
+    await savePack("p6", "other", [pull(card("o-1", "1"))]);
     await clearPulls("s");
     expect((await getPulls()).map((p) => p.setId)).toEqual(["other"]);
   });
@@ -50,9 +50,9 @@ describe("collection store", () => {
   it("notifies listeners on change", async () => {
     let calls = 0;
     const off = onCollectionChange(() => calls++);
-    await savePack("s", [pull(a)]);
+    await savePack("p7", "s", [pull(a)]);
     off();
-    await savePack("s", [pull(a)]);
+    await savePack("p8", "s", [pull(a)]);
     expect(calls).toBe(1);
   });
 });

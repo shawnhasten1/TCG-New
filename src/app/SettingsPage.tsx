@@ -1,18 +1,18 @@
-// Settings: account, appearance, sound, daily pack limit, collection backup and reset.
+// Settings: account, appearance, sound, the pack allowance, collection export and reset.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AccountSection } from "../account/AccountSection";
-import { useAccount } from "../account/account";
-import { parseBackup, planMerge, toBackup } from "../collection/backup";
-import { localDay, packAllowance, packsOpenedOn, RECHARGE_MS } from "../collection/daily";
-import { addPulls, clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
+import { isMember, useAccount } from "../account/account";
+import { toBackup } from "../collection/backup";
+import { localDay, packsOpenedOn } from "../collection/daily";
+import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
 import { ERAS } from "../engine/randomSet";
+import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
 import "../collection/collection.css";
 import { href } from "./router";
 import { type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
 
-const LIMITS = [1, 3, 5, 10, 0];
 const THEMES: { id: Theme; name: string }[] = [
   { id: "system", name: "Match device" },
   { id: "light", name: "Light" },
@@ -31,11 +31,10 @@ function download(filename: string, text: string) {
 
 export function SettingsPage() {
   const settings = useSettings();
-  const signedIn = useAccount().status === "signedIn";
+  const account = useAccount();
+  const signedIn = isMember(account);
   const [pulls, setPulls] = useState<PullRecord[]>();
-  const [mode, setMode] = useState<"merge" | "replace">("merge");
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string }>();
-  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let live = true;
@@ -66,32 +65,8 @@ export function SettingsPage() {
     setMessage({ kind: "ok", text: `Exported ${plural(pulls.length, "card")} from ${plural(packs, "pack")}.` });
   };
 
-  const importCollection = async (file: File) => {
-    try {
-      const incoming = parseBackup(await file.text());
-      if (mode === "replace") {
-        if (!confirm(`Replace your collection (${pulls?.length ?? 0} cards) with the ${incoming.length} cards in this file?`)) return;
-        await clearPulls();
-        await addPulls(incoming);
-        setMessage({ kind: "ok", text: `Replaced your collection with ${incoming.length} cards.` });
-      } else {
-        const plan = planMerge(await getPulls(), incoming);
-        await addPulls(plan.toAdd);
-        const skipped = plan.packsSkipped ? ` Skipped ${plural(plan.packsSkipped, "pack")} you already had.` : "";
-        setMessage({
-          kind: "ok",
-          text: plan.toAdd.length ? `Added ${plural(plan.toAdd.length, "card")} from ${plural(plan.packsAdded, "pack")}.${skipped}` : `Nothing new to add.${skipped}`,
-        });
-      }
-    } catch (err) {
-      setMessage({ kind: "error", text: err instanceof Error ? err.message : String(err) });
-    } finally {
-      if (fileRef.current) fileRef.current.value = "";
-    }
-  };
-
   const resetAll = async () => {
-    if (confirm(`Delete your whole collection (${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")})${signedIn ? ", on every device you're signed in on" : ""}? Export it first if you might want it back.`)) {
+    if (confirm(`Delete your whole collection (${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")})${signedIn ? ", on every device you're signed in on" : ""}? Export it first to keep a record, but you can't bring it back from the file.`)) {
       await clearPulls();
       setMessage({ kind: "ok", text: "Collection cleared." });
     }
@@ -141,18 +116,11 @@ export function SettingsPage() {
       </section>
 
       <section>
-        <h2>Pack of the day</h2>
-        <p className="muted">How many packs you can open at once, across all sets. Once they run out, a pack recharges every {RECHARGE_MS / 60_000} minutes, up to the limit. Everything refills at midnight.</p>
-        <div role="radiogroup" aria-label="Daily pack limit" className="segmented">
-          {LIMITS.map((n) => (
-            <button key={n} type="button" role="radio" aria-checked={settings.dailyLimit === n} aria-pressed={settings.dailyLimit === n} onClick={() => updateSettings({ dailyLimit: n })}>
-              {n === 0 ? "Unlimited" : plural(n, "pack")}
-            </button>
-          ))}
-        </div>
+        <h2>Packs</h2>
         <p className="muted">
-          {plural(today, "pack")} opened today{settings.dailyLimit > 0 && pulls ? ` · ${plural(packAllowance(pulls, settings.dailyLimit, new Date()).left, "pack")} ready now` : ""}.
+          You can hold up to {PACK_LIMIT} packs, across all sets. Once you're below that, one comes back every {RECHARGE_MS / 60_000} minutes.
         </p>
+        <p className="muted">{plural(today, "pack")} opened today.</p>
       </section>
 
       <section>
@@ -169,27 +137,15 @@ export function SettingsPage() {
       </section>
 
       <section>
-        <h2>Backup</h2>
+        <h2>Export</h2>
         <p className="muted">
-          {signedIn ? "Your collection is saved to your account" : "Your collection is stored in this browser only"} ({pulls ? `${plural(pulls.length, "card")} from ${plural(packs, "pack")}` : "loading…"}).{" "}
-          {signedIn ? "Export it to keep a copy of your own." : "Sign in to keep it on every device, or export it to keep a copy."}
+          {signedIn ? "Your collection is saved to your account" : "As a guest, your collection belongs to this browser"} ({pulls ? `${plural(pulls.length, "card")} from ${plural(packs, "pack")}` : "loading…"}).{" "}
+          {signedIn ? "Export it to keep a copy of your own." : "Sign up to keep it on every device, or export it to keep a copy."}
         </p>
         <div className="row">
           <button type="button" onClick={exportCollection} disabled={!pulls?.length}>
             Export collection
           </button>
-        </div>
-        <fieldset className="row">
-          <legend className="muted">Import</legend>
-          <label>
-            <input type="radio" name="mode" checked={mode === "merge"} onChange={() => setMode("merge")} /> Merge with my collection
-          </label>
-          <label>
-            <input type="radio" name="mode" checked={mode === "replace"} onChange={() => setMode("replace")} /> Replace my collection
-          </label>
-        </fieldset>
-        <div className="row">
-          <input ref={fileRef} type="file" accept="application/json,.json" aria-label="Collection backup file" onChange={(e) => e.target.files?.[0] && importCollection(e.target.files[0])} />
         </div>
         {message && (
           <p className={message.kind === "error" ? "error" : "ok"} role="status">

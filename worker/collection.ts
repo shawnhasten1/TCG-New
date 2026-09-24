@@ -2,6 +2,7 @@
 
 import { parsePush, type ChangesResponse, type RemotePack, type SyncOp } from "../src/sync/protocol";
 import { HttpError, json, readJson, type Ctx } from "./http";
+import { openStatements } from "./packs";
 import { requireUser } from "./session";
 
 const PAGE = 300;
@@ -56,17 +57,11 @@ function statements(ctx: Ctx, userId: string, op: SyncOp): D1PreparedStatement[]
   const db = ctx.env.DB;
   const tombstone = `UPDATE packs SET deleted = 1, cards = '[]', seq = ${NEXT_SEQ} WHERE user_id = ?1 AND deleted = 0`;
   switch (op.op) {
+    case "open":
+      return openStatements(db, userId, op.packId);
     case "add":
-      // A pack already here is left alone, but a deleted one comes back: re-adding it (say, from a backup) is deliberate.
-      return op.packs.map((p) =>
-        db
-          .prepare(
-            `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, deleted, seq) VALUES (?1, ?2, ?3, ?4, ?5, 0, ${NEXT_SEQ})
-             ON CONFLICT (user_id, pack_id) DO UPDATE SET set_id = excluded.set_id, opened_at = excluded.opened_at, cards = excluded.cards, deleted = 0, seq = excluded.seq
-             WHERE packs.deleted = 1`,
-          )
-          .bind(userId, p.packId, p.setId, p.openedAt, JSON.stringify(p.cards)),
-      );
+      // Packs only come from the server now, so a pack made on a device isn't taken.
+      return [];
     case "deletePacks":
       return op.packIds.map((id) => db.prepare(`${tombstone} AND pack_id = ?2`).bind(userId, id));
     case "deleteSet":

@@ -4,6 +4,10 @@
 // their email, so when Google (which does) signs in to an unverified account with the same email,
 // the Google owner wins: the account is linked, its password removed and its other sessions ended.
 // That stops someone from registering your email first and keeping a way in.
+//
+// Players who haven't signed up play on a silent guest account (POST /api/auth/guest), since the server opens
+// every pack. Signing up as a guest turns that account into a real one; signing in to an existing account
+// moves the guest's packs into it and deletes the guest.
 
 import type { MeResponse } from "../src/sync/protocol";
 import { base64url, cookie, fromBase64url, getCookie, HttpError, isSecure, json, limitAuth, randomToken, readJson, redirect, sha256, type Ctx } from "./http";
@@ -32,6 +36,8 @@ export async function handleAuth(ctx: Ctx): Promise<Response> {
       const user = await currentUser(ctx);
       return json({ user: user && publicUser(user), google: googleConfigured(ctx.env) } satisfies MeResponse);
     }
+    case "POST /api/auth/guest":
+      return guest(ctx);
     case "POST /api/auth/register":
       return register(ctx);
     case "POST /api/auth/login":
@@ -49,6 +55,51 @@ export async function handleAuth(ctx: Ctx): Promise<Response> {
   throw new HttpError(404, "Not found");
 }
 
+/* ---------- Guests ---------- */
+
+async function guest(ctx: Ctx): Promise<Response> {
+  const existing = await currentUser(ctx);
+  if (existing) return json({ user: publicUser(existing) });
+  const ip = ctx.req.headers.get("CF-Connecting-IP") ?? "local";
+  if (!(await ctx.env.GUEST_LIMITER.limit({ key: ip })).success) throw new HttpError(429, "Too many new players from here. Wait a minute and try again.");
+
+  const id = crypto.randomUUID();
+  const user: UserRow = {
+    id,
+    email: `guest-${id}`,
+    email_verified: 0,
+    name: null,
+    avatar_url: null,
+    password_hash: null,
+    google_sub: null,
+    created_at: Date.now(),
+    display_name: null,
+    friend_code: null,
+    guest: 1,
+  };
+  await ctx.env.DB.prepare("INSERT INTO users (id, email, email_verified, created_at, guest) VALUES (?, ?, 0, ?, 1)").bind(user.id, user.email, user.created_at).run();
+  await startSession(ctx, user.id);
+  return json({ user: publicUser(user) });
+}
+
+/** The signed-in guest, if this device is playing as one. */
+async function currentGuest(ctx: Ctx): Promise<UserRow | null> {
+  const user = await currentUser(ctx);
+  return user?.guest ? user : null;
+}
+
+/** Moves a guest's packs (and its dealt pack, if the account has none waiting) into an account, then deletes the guest. */
+async function mergeGuest(ctx: Ctx, guestId: string, intoId: string): Promise<void> {
+  const db = ctx.env.DB;
+  await db.batch([
+    // The subquery is read once per statement, so the moved packs share the account's next seq.
+    db.prepare("UPDATE packs SET user_id = ?2, seq = (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?2) WHERE user_id = ?1").bind(guestId, intoId),
+    db.prepare("UPDATE OR IGNORE dealt_packs SET user_id = ?2 WHERE user_id = ?1").bind(guestId, intoId),
+    // Takes its sessions and any dealt pack left behind with it.
+    db.prepare("DELETE FROM users WHERE id = ? AND guest = 1").bind(guestId),
+  ]);
+}
+
 /* ---------- Email and password ---------- */
 
 async function register(ctx: Ctx): Promise<Response> {
@@ -61,6 +112,17 @@ async function register(ctx: Ctx): Promise<Response> {
   const existing = await findByEmail(ctx, email);
   if (existing) throw new HttpError(409, existing.password_hash ? "There's already an account with that email. Sign in instead." : "That email already signs in with Google. Use Continue with Google.");
 
+  // Signing up as a guest keeps the guest's account, and with it every pack opened so far.
+  const guest = await currentGuest(ctx);
+  if (guest) {
+    const upgraded: UserRow = { ...guest, email, name: parseName(body.name), password_hash: await hashPassword(body.password as string), guest: 0 };
+    await ctx.env.DB.prepare("UPDATE users SET email = ?, name = ?, password_hash = ?, guest = 0 WHERE id = ? AND guest = 1")
+      .bind(upgraded.email, upgraded.name, upgraded.password_hash, guest.id)
+      .run();
+    await startSession(ctx, guest.id);
+    return json({ user: publicUser(upgraded) });
+  }
+
   const user: UserRow = {
     id: crypto.randomUUID(),
     email,
@@ -72,6 +134,7 @@ async function register(ctx: Ctx): Promise<Response> {
     created_at: Date.now(),
     display_name: null,
     friend_code: null,
+    guest: 0,
   };
   await ctx.env.DB.prepare("INSERT INTO users (id, email, email_verified, name, avatar_url, password_hash, google_sub, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
     .bind(user.id, user.email, user.email_verified, user.name, user.avatar_url, user.password_hash, user.google_sub, user.created_at)
@@ -93,6 +156,8 @@ async function login(ctx: Ctx): Promise<Response> {
     throw new HttpError(401, "Wrong email or password.");
   }
   if (!(await verifyPassword(password, user.password_hash))) throw new HttpError(401, "Wrong email or password.");
+  const guest = await currentGuest(ctx);
+  if (guest) await mergeGuest(ctx, guest.id, user.id);
   await startSession(ctx, user.id);
   return json({ user: publicUser(user) });
 }
@@ -187,11 +252,15 @@ async function googleCallback(ctx: Ctx): Promise<Response> {
   if (!claims.email || !claims.email_verified) return backToApp(ctx, "Your Google account needs a verified email.");
 
   const email = claims.email.toLowerCase();
-  const signedIn = await currentUser(ctx);
+  const current = await currentUser(ctx);
+  // A guest signing in brings their packs along; a signed-up player is connecting Google to their account.
+  const guest = current?.guest ? current : null;
+  const signedIn = guest ? null : current;
   const bySub = await ctx.env.DB.prepare("SELECT * FROM users WHERE google_sub = ?").bind(claims.sub).first<UserRow>();
 
   if (bySub) {
     if (signedIn && signedIn.id !== bySub.id) return backToApp(ctx, "That Google account is already used by another account.");
+    if (guest) await mergeGuest(ctx, guest.id, bySub.id);
     await startSession(ctx, bySub.id);
     return backToApp(ctx);
   }
@@ -213,7 +282,17 @@ async function googleCallback(ctx: Ctx): Promise<Response> {
       .bind(claims.sub, claims.picture ?? null, claims.name ?? null, byEmail.id)
       .run();
     if (takeover) await endAllSessions(ctx, byEmail.id);
+    if (guest) await mergeGuest(ctx, guest.id, byEmail.id);
     await startSession(ctx, byEmail.id);
+    return backToApp(ctx);
+  }
+
+  // A new Google player: a guest's account becomes theirs, packs and all.
+  if (guest) {
+    await ctx.env.DB.prepare("UPDATE users SET email = ?, email_verified = 1, name = ?, avatar_url = ?, google_sub = ?, guest = 0 WHERE id = ? AND guest = 1")
+      .bind(email, claims.name ?? null, claims.picture ?? null, claims.sub, guest.id)
+      .run();
+    await startSession(ctx, guest.id);
     return backToApp(ctx);
   }
 

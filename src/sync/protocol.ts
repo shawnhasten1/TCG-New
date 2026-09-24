@@ -18,8 +18,11 @@ export interface SyncPack {
   cards: SyncCard[];
 }
 
-/** One change pushed from a device, applied in order. */
-export type SyncOp = { op: "add"; packs: SyncPack[] } | { op: "deletePacks"; packIds: string[] } | { op: "deleteSet"; setId: string } | { op: "clear" };
+/**
+ * One change pushed from a device, applied in order. "open" opens a pack the server dealt (see packs/protocol.ts).
+ * "add" is from before the server dealt packs: outboxes may still hold one, but the server ignores it.
+ */
+export type SyncOp = { op: "open"; packId: string } | { op: "add"; packs: SyncPack[] } | { op: "deletePacks"; packIds: string[] } | { op: "deleteSet"; setId: string } | { op: "clear" };
 
 /** A pack as the server reports it; deleted packs come back empty so other devices drop them too. */
 export interface RemotePack extends SyncPack {
@@ -39,7 +42,10 @@ export interface PushRequest {
 
 export interface PublicUser {
   id: string;
-  email: string;
+  /** Null for a guest. */
+  email: string | null;
+  /** A silent account made on a first visit, with no way to sign in again; signing up or in keeps its cards. */
+  guest: boolean;
   name: string | null;
   avatarUrl: string | null;
   hasPassword: boolean;
@@ -54,8 +60,6 @@ export interface MeResponse {
 
 /** Most packs one push may carry, across all its ops. */
 export const MAX_PUSH_PACKS = 200;
-/** Packs per "add" op the app queues; keeps each push well under MAX_PUSH_PACKS. */
-export const OUTBOX_CHUNK = 100;
 const MAX_OPS = 50;
 const MAX_CARDS = 60;
 
@@ -92,6 +96,9 @@ export function parsePush(body: unknown): SyncOp[] {
         packs += o.packIds.length;
         return { op: "deletePacks", packIds: o.packIds as string[] };
       }
+      case "open":
+        if (!id(o.packId, 64)) throw new Error("Malformed open");
+        return { op: "open", packId: o.packId };
       case "deleteSet":
         if (!id(o.setId)) throw new Error("Malformed delete");
         return { op: "deleteSet", setId: o.setId };

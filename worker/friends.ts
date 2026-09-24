@@ -4,14 +4,14 @@
 
 import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
 import { HttpError, json, readJson, type Ctx } from "./http";
-import { requireUser, type UserRow } from "./session";
+import { requireMember, type UserRow } from "./session";
 
 /** Most unanswered requests one player can have out at once. */
 const MAX_OUTGOING = 50;
 const ID = "[0-9a-f-]{36}";
 
 export async function handleFriends(ctx: Ctx): Promise<Response> {
-  const user = await requireUser(ctx);
+  const user = await requireMember(ctx);
   const route = `${ctx.req.method} ${ctx.url.pathname}`;
   if (route === "GET /api/social/inbox") return inbox(ctx, user);
   if (route === "GET /api/friends") return list(ctx, user);

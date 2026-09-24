@@ -8,10 +8,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true,
     "types": []
   },
-  "include": ["./**/*.ts", "../src/sync/protocol.ts", "../src/social/protocol.ts"],
+  "include": ["./**/*.ts", "../src/sync/protocol.ts", "../src/social/protocol.ts", "../src/packs/protocol.ts"],
   "exclude": ["./**/*.test.ts"]
 }

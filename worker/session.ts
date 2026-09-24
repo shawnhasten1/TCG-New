@@ -20,11 +20,14 @@ export interface UserRow {
   created_at: number;
   display_name: string | null;
   friend_code: string | null;
+  /** 1 for a silent guest account, whose email is a "guest-<id>" placeholder. */
+  guest: number;
 }
 
 export const publicUser = (u: UserRow): PublicUser => ({
   id: u.id,
-  email: u.email,
+  email: u.guest ? null : u.email,
+  guest: !!u.guest,
   name: u.name,
   avatarUrl: u.avatar_url,
   hasPassword: !!u.password_hash,
@@ -81,6 +84,13 @@ export async function currentUser(ctx: Ctx): Promise<UserRow | null> {
 export async function requireUser(ctx: Ctx): Promise<UserRow> {
   const user = await currentUser(ctx);
   if (!user) throw new HttpError(401, "Sign in first.");
+  return user;
+}
+
+/** A signed-up player, not a guest. */
+export async function requireMember(ctx: Ctx): Promise<UserRow> {
+  const user = await requireUser(ctx);
+  if (user.guest) throw new HttpError(403, "Create an account first.");
   return user;
 }
 

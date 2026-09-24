@@ -2,7 +2,7 @@
 // Every change is also queued in an outbox for syncing to the signed-in account (see sync/sync.ts).
 
 import type { Finish, PulledCard } from "../engine/types";
-import { OUTBOX_CHUNK, type RemotePack, type SyncOp, type SyncPack } from "../sync/protocol";
+import type { RemotePack, SyncOp, SyncPack } from "../sync/protocol";
 
 export interface PullRecord {
   /** Auto-increment key. */
@@ -93,35 +93,20 @@ export function onLocalWrite(fn: () => void): () => void {
 
 /* ---------- Reads and writes ---------- */
 
-const newPackId = () =>
-  typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-
-/** Saves one opened pack. Returns its pack id. */
-export async function savePack(setId: string, pulls: PulledCard[], openedAt = new Date()): Promise<string> {
-  const packId = newPackId();
-  await addPulls(
-    pulls.map((p) => ({
-      packId,
-      setId,
-      cardId: p.card.id,
-      localId: p.card.localId,
-      finish: p.finish,
-      firstEdition: p.firstEdition,
-      openedAt: openedAt.toISOString(),
-    })),
-  );
-  return packId;
-}
-
-/** Adds already-formed records in one transaction (a new pack, or a collection import). */
-export async function addPulls(records: Omit<PullRecord, "id">[]): Promise<void> {
-  if (!records.length) return;
+/**
+ * Saves a pack the server dealt, as it's torn (its deal id is its pack id), and queues opening it on the server.
+ * Returns the pack id.
+ */
+export async function savePack(packId: string, setId: string, pulls: PulledCard[], openedAt = new Date()): Promise<string> {
   const tx = (await db()).transaction([STORE, OUTBOX], "readwrite");
   const store = tx.objectStore(STORE);
-  for (const r of records) store.add({ ...r });
-  queueAdds(tx.objectStore(OUTBOX), records);
+  for (const p of pulls) {
+    store.add({ packId, setId, cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition, openedAt: openedAt.toISOString() } satisfies PullRecord);
+  }
+  tx.objectStore(OUTBOX).add({ op: "open", packId } satisfies SyncOp);
   await done(tx);
   changedHere();
+  return packId;
 }
 
 /** Every pull, or just one set's. */
@@ -168,11 +153,6 @@ export function toSyncPacks(records: Omit<PullRecord, "id">[]): SyncPack[] {
   return [...packs.values()];
 }
 
-function queueAdds(outbox: IDBObjectStore, records: Omit<PullRecord, "id">[]) {
-  const packs = toSyncPacks(records);
-  for (let i = 0; i < packs.length; i += OUTBOX_CHUNK) outbox.add({ op: "add", packs: packs.slice(i, i + OUTBOX_CHUNK) } satisfies SyncOp);
-}
-
 export interface OutboxEntry {
   id: number;
   op: SyncOp;
@@ -199,29 +179,23 @@ export async function getSyncMeta(): Promise<SyncMeta> {
 }
 
 /**
- * Ties this device's collection to an account before syncing. A guest collection joins the account:
- * the outbox is replaced by an upload of every pack here. A collection left from a different account
- * is dropped, since that account keeps it.
+ * Ties this device's collection to an account before syncing. Anything else here is dropped and the
+ * account's collection pulled fresh: a collection left from a different account stays with that account,
+ * and one from before packs came from the server (a guest's, kept only on this device) can't be uploaded.
  */
-export async function linkAccount(userId: string): Promise<"same" | "joined" | "replaced"> {
+export async function linkAccount(userId: string): Promise<"same" | "replaced"> {
   const tx = (await db()).transaction([STORE, OUTBOX, META], "readwrite");
   const pulls = tx.objectStore(STORE);
   const outbox = tx.objectStore(OUTBOX);
   const meta = tx.objectStore(META);
   // Set inside the callback below, which TypeScript can't see.
-  let result = "same" as "same" | "joined" | "replaced";
+  let result = "same" as "same" | "replaced";
   readMeta(meta, (m) => {
     if (m.account === userId) return;
+    result = "replaced";
     outbox.clear();
+    pulls.clear();
     meta.put({ account: userId, cursor: null } satisfies SyncMeta, "sync");
-    if (m.account) {
-      result = "replaced";
-      pulls.clear();
-    } else {
-      result = "joined";
-      const req = pulls.getAll();
-      req.onsuccess = () => queueAdds(outbox, req.result as PullRecord[]);
-    }
   });
   await done(tx);
   if (result === "replaced") changed();
@@ -246,7 +220,7 @@ export async function peekOutbox(maxPacks: number): Promise<OutboxEntry[]> {
     const c = req.result;
     if (!c) return;
     const { id, ...op } = c.value as SyncOp & { id: number };
-    const size = op.op === "add" ? op.packs.length : op.op === "deletePacks" ? op.packIds.length : 1;
+    const size = op.op === "deletePacks" ? op.packIds.length : 1;
     if (entries.length && packs + size > maxPacks) return;
     entries.push({ id, op: op as SyncOp });
     packs += size;

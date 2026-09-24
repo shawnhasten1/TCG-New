@@ -1,4 +1,4 @@
-import { idbCache } from "../api/cache";
+import { idbCache } from "../api/idbCache";
 import { createClient } from "../api/tcgdex";
 
 /** One shared, IndexedDB-cached API client for the app. */

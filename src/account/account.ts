@@ -39,6 +39,9 @@ function set(next: AccountState) {
 
 export const getAccount = () => state;
 
+/** Signed up, rather than playing on a guest account (or not signed in at all). */
+export const isMember = (s: AccountState) => s.status === "signedIn" && !!s.user && !s.user.guest;
+
 export function useAccount(): AccountState {
   const [s, setS] = useState(state);
   useEffect(() => {
@@ -100,6 +103,13 @@ export async function refreshAccount(): Promise<AccountState> {
 /** The server no longer accepts this device's session (expired, or the password changed elsewhere). */
 function sessionEnded() {
   set({ ...state, status: "signedOut", user: null });
+}
+
+/** Starts a guest account for this browser, so the server can deal it packs. */
+export async function startGuest(): Promise<PublicUser> {
+  const { user } = await api<{ user: PublicUser }>("/api/auth/guest", { body: {} });
+  set({ ...state, status: "signedIn", user });
+  return user;
 }
 
 export async function signIn(email: string, password: string): Promise<void> {

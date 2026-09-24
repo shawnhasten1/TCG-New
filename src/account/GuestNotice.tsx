@@ -1,13 +1,13 @@
-// A one-line reminder, shown until you sign in, that a guest's collection lives on this device only.
+// A one-line reminder, shown until you sign up, that a guest's collection belongs to this browser.
 
 import { href } from "../app/router";
-import { useAccount } from "./account";
+import { isMember, useAccount } from "./account";
 
 export function GuestNotice() {
-  if (useAccount().status === "signedIn") return null;
+  if (isMember(useAccount())) return null;
   return (
     <p className="guest-note">
-      You're playing as a guest, so your cards are saved on this device only. <a href={href.settings()}>Sign in</a> to keep them everywhere.
+      You're playing as a guest, so your cards belong to this browser. <a href={href.settings()}>Sign up or sign in</a> to keep them everywhere.
     </p>
   );
 }

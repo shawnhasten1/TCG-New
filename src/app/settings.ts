@@ -1,4 +1,4 @@
-// Per-browser preferences (sound, daily pack limit, theme, prices), kept in localStorage.
+// Per-browser preferences (sound, eras, theme, prices), kept in localStorage.
 // The collection itself lives in IndexedDB; these are conveniences, so failures fall back to defaults.
 
 import { useEffect, useState } from "react";
@@ -7,8 +7,6 @@ export interface Settings {
   sound: boolean;
   /** 0–1. */
   volume: number;
-  /** Packs per day, recharging after they run out (see collection/daily.ts); 0 means unlimited. */
-  dailyLimit: number;
   /** Eras packs are drawn from (pack profile ids); empty means every era. */
   eras: string[];
   /** Tilt cards by tilting the phone. */
@@ -21,7 +19,7 @@ export interface Settings {
 
 export type Theme = "system" | "light" | "dark";
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true, theme: "system", showPrices: false };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, eras: [], motion: true, theme: "system", showPrices: false };
 const KEY = "tcg-pack-opener:settings";
 /** Bumped when a default changes in a way stored settings should pick up. */
 const VERSION = 2;
@@ -31,9 +29,8 @@ export function getSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      const { v, ...stored } = JSON.parse(raw) as Partial<Settings> & { v?: number };
-      // Before v2, "unlimited" was the default and got saved with any other change; adopt the new default.
-      if (!v && stored.dailyLimit === 0) delete stored.dailyLimit;
+      // The pack limit used to be a setting; the server sets it now.
+      const { v: _v, dailyLimit: _limit, ...stored } = JSON.parse(raw) as Partial<Settings> & { v?: number; dailyLimit?: number };
       return { ...DEFAULTS, ...stored };
     }
   } catch {

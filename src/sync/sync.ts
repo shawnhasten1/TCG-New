@@ -6,10 +6,10 @@
 // when the connection returns, and every few minutes while the tab is open.
 
 import { useEffect, useState } from "react";
-import { ApiError, getAccount, onAccountChange, refreshAccount, signOutOfServer, api } from "../account/account";
+import { ApiError, getAccount, onAccountChange, refreshAccount, signOutOfServer, startGuest, api } from "../account/account";
 import { refreshInbox } from "../social/friends";
 import { applyRemote, dropOutbox, getSyncMeta, linkAccount, onLocalWrite, outboxSize, peekOutbox, unlinkAccount } from "../collection/store";
-import { MAX_PUSH_PACKS, type ChangesResponse, type PushRequest } from "./protocol";
+import { MAX_PUSH_PACKS, type ChangesResponse, type PublicUser, type PushRequest } from "./protocol";
 
 export interface SyncStatus {
   state: "idle" | "syncing" | "offline" | "error";
@@ -58,6 +58,18 @@ async function syncOnce(): Promise<void> {
     cursor = page.cursor;
     if (!page.more) break;
   }
+}
+
+/**
+ * The account packs are dealt to: the signed-in one, or a new guest account. This device is linked to it
+ * first, so linking can never drop a pack torn here.
+ */
+export async function ensureAccount(): Promise<PublicUser> {
+  let { status, user } = getAccount();
+  if (status === "unknown") ({ status, user } = await refreshAccount());
+  if (status !== "signedIn" || !user) user = await startGuest();
+  await linkAccount(user.id);
+  return user;
 }
 
 let running: Promise<void> | undefined;

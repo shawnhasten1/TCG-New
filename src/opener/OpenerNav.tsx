@@ -1,6 +1,6 @@
 // The opener's top bar: the opener is home, so this is the way to everything else.
 
-import { useAccount } from "../account/account";
+import { isMember, useAccount } from "../account/account";
 import { GuestNotice } from "../account/GuestNotice";
 import { href } from "../app/router";
 import { updateSettings, useSettings } from "../app/settings";
@@ -9,7 +9,7 @@ import "../social/social.css";
 
 export function OpenerNav() {
   const { sound } = useSettings();
-  const signedIn = useAccount().status === "signedIn";
+  const signedIn = isMember(useAccount());
   const { friendRequests } = useInbox();
   return (
     <header className="topbar">

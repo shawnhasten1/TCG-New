@@ -2,7 +2,7 @@
 // The inbox refreshes after every sync (see sync/sync.ts), so it follows the same schedule.
 
 import { useEffect, useState } from "react";
-import { api, getAccount, onAccountChange } from "../account/account";
+import { api, getAccount, isMember, onAccountChange } from "../account/account";
 import type { FriendsResponse, InboxResponse } from "./protocol";
 
 export const loadFriends = () => api<FriendsResponse>("/api/friends");
@@ -33,7 +33,7 @@ function seen(res: FriendsResponse): FriendsResponse {
 export const noteFriends = (res: FriendsResponse) => void seen(res);
 
 export async function refreshInbox(): Promise<void> {
-  if (getAccount().status !== "signedIn") return setInbox(EMPTY);
+  if (!isMember(getAccount())) return setInbox(EMPTY);
   try {
     setInbox(await api<InboxResponse>("/api/social/inbox"));
   } catch {
@@ -41,7 +41,7 @@ export async function refreshInbox(): Promise<void> {
   }
 }
 
-onAccountChange(() => getAccount().status !== "signedIn" && setInbox(EMPTY));
+onAccountChange(() => !isMember(getAccount()) && setInbox(EMPTY));
 
 export function useInbox(): InboxResponse {
   const [s, setS] = useState(inbox);

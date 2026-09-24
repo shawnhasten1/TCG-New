@@ -1,7 +1,7 @@
 // #/friends: your friend code, adding friends by code (or an invite link, #/friends/<code>), requests and your friends.
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { useAccount } from "../account/account";
+import { isMember, useAccount } from "../account/account";
 import { href } from "../app/router";
 import { acceptFriend, loadFriends, noteFriends, removeFriend, sendFriendRequest, setDisplayName } from "./friends";
 import { formatFriendCode, NAME_MAX, normalizeFriendCode, type FriendEntry, type FriendsResponse } from "./protocol";
@@ -12,7 +12,7 @@ const message = (err: unknown) => (err instanceof Error ? err.message : String(e
 
 export function FriendsPage({ inviteCode }: { inviteCode?: string }) {
   const account = useAccount();
-  const signedIn = account.status === "signedIn";
+  const signedIn = isMember(account);
   const [data, setData] = useState<FriendsResponse>();
   const [loadError, setLoadError] = useState<string>();
 
@@ -43,7 +43,7 @@ export function FriendsPage({ inviteCode }: { inviteCode?: string }) {
       <h1>Friends</h1>
       {!signedIn ? (
         <p className="muted empty">
-          {inviteCode ? "Someone invited you to be friends. " : ""}Friends need an account. <a href={href.settings()}>Sign in or create one</a>
+          {inviteCode ? "Someone invited you to be friends. " : ""}Friends need an account. <a href={href.settings()}>Sign up or sign in</a>
           {inviteCode ? ", then open the invite link again." : "."}
         </p>
       ) : loadError && !data ? (
