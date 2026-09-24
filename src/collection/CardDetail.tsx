@@ -14,6 +14,7 @@ import { Tilt } from "../opener/tilt";
 import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
 import type { Ownership } from "./progress";
+import "./collection.css";
 
 const FINISH_LABEL: Record<Finish, string> = { normal: "Normal", holo: "Holo", reverse: "Reverse holo" };
 
@@ -31,17 +32,19 @@ interface Props {
   official: number;
   owned?: Ownership;
   layout: FrameLayout;
+  /** Finish to show first, e.g. the one just pulled; defaults to the most special one owned. */
+  finish?: Finish;
   onClose(): void;
 }
 
-export function CardDetail({ card, official, owned, layout, onClose }: Props) {
+export function CardDetail({ card, official, owned, layout, finish: initialFinish, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const ownedFinishes = (["holo", "reverse", "normal"] as Finish[]).filter((f) => (owned?.byFinish[f] ?? 0) > 0);
   const finishes = owned ? ownedFinishes : printings(card);
-  const [finish, setFinish] = useState<Finish>(finishes[0]);
+  const [finish, setFinish] = useState<Finish>(initialFinish && finishes.includes(initialFinish) ? initialFinish : finishes[0]);
   const [pricing, setPricing] = useState<CardPricing | null | "loading" | "error">("loading");
   const slotRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState<{ x: number; y: number; s: number } | null>(null);

@@ -5,6 +5,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { cardImage } from "../api/tcgdex";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
+import { CardDetail } from "../collection/CardDetail";
+import { ownership, type Ownership } from "../collection/progress";
+import { getPulls } from "../collection/store";
 import { setTier, tierInfo, type SetTier } from "../engine/setRarity";
 
 /** The sealed pack wears a set-rarity tag in the same colours as the card rarity tag. */
@@ -14,7 +17,7 @@ import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
 import { FoilCard } from "../foil/FoilCard";
-import { layoutFor } from "../foil/layouts";
+import { layoutFor, type FrameLayout } from "../foil/layouts";
 import { useSettings } from "../app/settings";
 import { followMotion, recenterMotion } from "./motion";
 import { OpenerNav } from "./OpenerNav";
@@ -301,7 +304,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       <OpenerNav />
 
       {phase === "summary" ? (
-        <PackSummary pulls={pulls} newIds={newIds} />
+        <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} />
       ) : (
         <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}`} ref={wrapRef} style={wrapperStyle}>
           <div
@@ -419,12 +422,25 @@ function cardLabel(p: PulledCard): string {
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
-function PackSummary({ pulls, newIds }: { pulls: PulledCard[]; newIds?: Set<string> }) {
+function PackSummary({ pulls, newIds, official, layout }: { pulls: PulledCard[]; newIds?: Set<string>; official: number; layout: FrameLayout }) {
+  const [selected, setSelected] = useState<PulledCard>();
+  // The pack is saved when it's torn open, so the collection already counts these cards.
+  const [owned, setOwned] = useState<Map<string, Ownership>>();
+  useEffect(() => {
+    let live = true;
+    getPulls().then((p) => live && setOwned(ownership(p)));
+    return () => {
+      live = false;
+    };
+  }, [pulls]);
+
   return (
     <section className="summary-grid" aria-label="Pack summary">
       {pulls.map((p, i) => (
         <figure key={i} data-tier={pullTier(p)} data-finish={p.finish}>
-          <img src={cardImage(p.card, "low")} alt={p.card.name} />
+          <button type="button" aria-label={`Look closer at ${p.card.name}`} onClick={() => setSelected(p)}>
+            <img src={cardImage(p.card, "low")} alt="" />
+          </button>
           {newIds?.has(p.card.id) && <span className="new-badge">New</span>}
           <figcaption>
             {p.card.name}
@@ -436,6 +452,16 @@ function PackSummary({ pulls, newIds }: { pulls: PulledCard[]; newIds?: Set<stri
           </figcaption>
         </figure>
       ))}
+      {selected && (
+        <CardDetail
+          card={selected.card}
+          official={official}
+          owned={owned?.get(selected.card.id)}
+          layout={layout}
+          finish={selected.finish}
+          onClose={() => setSelected(undefined)}
+        />
+      )}
     </section>
   );
 }
