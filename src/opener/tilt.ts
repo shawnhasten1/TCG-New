@@ -135,6 +135,12 @@ export class Tilt {
     this.aim(r.left + (r.width * px) / 100, r.top + (r.height * py) / 100);
   }
 
+  /** Settles level and keeps phone motion off it for a moment, e.g. while the pack is being torn. Call it on each move. */
+  hold() {
+    this.heldUntil = performance.now() + 1200;
+    this.rest();
+  }
+
   rest() {
     this.sway = null;
     this.spring = SETTLE;

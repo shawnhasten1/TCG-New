@@ -53,6 +53,9 @@ interface Props {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** The top of the pack that tears when dragged across (a fraction of its height). */
+const TEAR_STRIP = 0.32;
+
 /** Stable 0–359 hue per set, for the generic wrapper. */
 function setHue(id: string): number {
   let h = 0;
@@ -240,17 +243,23 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   }, [phase, idx]);
 
   /* ---------- Pack interaction: drag across the top to tear ---------- */
-  const onPackDown = (e: PointerEvent<HTMLDivElement>) => {
-    if (phaseRef.current !== "sealed") return;
+  /** Whether the pointer is over the tear strip. */
+  const onTearStrip = (e: PointerEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
-    if ((e.clientY - r.top) / r.height > 0.32) return; // only the top strip tears
+    return (e.clientY - r.top) / r.height <= TEAR_STRIP;
+  };
+  const onPackDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (phaseRef.current !== "sealed" || !onTearStrip(e)) return;
+    tilt.hold();
     Object.assign(tear.current, { tearing: true, startX: e.clientX, base: tear.current.progress });
     e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPackMove = (e: PointerEvent<HTMLDivElement>) => {
     if (phaseRef.current !== "sealed") return;
-    tilt.aim(e.clientX, e.clientY);
     const t = tear.current;
+    // The pack holds still on the tear strip and while it's being torn, so the rip goes where it's dragged.
+    if (t.tearing || onTearStrip(e)) tilt.hold();
+    else tilt.aim(e.clientX, e.clientY);
     if (!t.tearing) return;
     const dx = e.clientX - t.startX;
     if (!t.dirLocked && Math.abs(dx) > 6) {
@@ -275,6 +284,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
 
   const tearWithButton = () => {
     if (phaseRef.current !== "sealed") return;
+    tilt.hold();
     tear.current.dirLocked = true;
     const from = tear.current.progress;
     const t0 = performance.now();
