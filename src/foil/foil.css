@@ -368,8 +368,8 @@
   background-size: 400% 400%;
   background-position: calc(50% + (50 - var(--bx)) * 3%) calc(50% + (50 - var(--by)) * 3%);
   mix-blend-mode: color-dodge;
-  filter: brightness(calc(.5 + var(--pc) * .35)) saturate(1.1);
-  opacity: calc(var(--o) * .55);
+  filter: brightness(calc(.45 + var(--pc) * .25));
+  opacity: calc(var(--o) * .3);
 }
 /* Darkens the rainbow away from the light so it pools under the pointer, like the cards' holo. */
 :is(.foil-pack, .opener .pack.photo) .pack-foil::after {
@@ -384,13 +384,13 @@
   background-blend-mode: multiply; mix-blend-mode: color-dodge;
   -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 50%);
           mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, transparent 50%);
-  opacity: calc(var(--o) * .6);
+  opacity: calc(var(--o) * .3);
 }
 :is(.foil-pack, .opener .pack.photo) .pack-glare {
   background:
-    linear-gradient(105deg, transparent 38%, #ffffff70 47%, #ffffffb0 50%, #ffffff70 53%, transparent 62%) calc(var(--px) * 1%) 0 / 250% 100% no-repeat,
-    radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffc0 6%, #ffffff40 24%, #00000055 90%);
-  mix-blend-mode: overlay; opacity: calc(.3 + var(--o) * .6);
+    linear-gradient(105deg, transparent 38%, #ffffff38 47%, #ffffff60 50%, #ffffff38 53%, transparent 62%) calc(var(--px) * 1%) 0 / 250% 100% no-repeat,
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffff90 6%, #ffffff30 24%, #00000040 90%);
+  mix-blend-mode: overlay; opacity: calc(.2 + var(--o) * .4);
 }
 @media (prefers-reduced-motion: reduce) {
   :is(.foil-pack, .opener .pack.photo) .pack-glitter { -webkit-mask-image: none; mask-image: none; opacity: calc(var(--o) * .25); }
