@@ -1,4 +1,4 @@
-// Settings: account, sound, daily pack limit, collection backup and reset.
+// Settings: account, appearance, sound, daily pack limit, collection backup and reset.
 
 import { useEffect, useRef, useState } from "react";
 import { AccountSection } from "../account/AccountSection";
@@ -9,10 +9,15 @@ import { addPulls, clearPulls, getPulls, onCollectionChange, type PullRecord } f
 import { ERAS } from "../engine/randomSet";
 import "../collection/collection.css";
 import { href } from "./router";
-import { updateSettings, useSettings } from "./settings";
+import { type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
 
 const LIMITS = [1, 3, 5, 10, 0];
+const THEMES: { id: Theme; name: string }[] = [
+  { id: "system", name: "Match device" },
+  { id: "light", name: "Light" },
+  { id: "dark", name: "Dark" },
+];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 function download(filename: string, text: string) {
@@ -101,6 +106,17 @@ export function SettingsPage() {
       <h1>Settings</h1>
 
       <AccountSection />
+
+      <section>
+        <h2>Appearance</h2>
+        <div role="radiogroup" aria-label="Theme" className="segmented">
+          {THEMES.map((t) => (
+            <button key={t.id} type="button" role="radio" aria-checked={settings.theme === t.id} aria-pressed={settings.theme === t.id} onClick={() => updateSettings({ theme: t.id })}>
+              {t.name}
+            </button>
+          ))}
+        </div>
+      </section>
 
       <section>
         <h2>Sound</h2>

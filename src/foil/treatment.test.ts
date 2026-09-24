@@ -16,7 +16,7 @@ describe("foilTreatment", () => {
     ["holo", "Holo Rare V", "fullart"],
     ["holo", "Holo Rare VMAX", "fullart"],
     ["holo", "Illustration rare", "fullart"],
-    ["holo", "Special illustration rare", "fullart"],
+    ["holo", "Special illustration rare", "etched"],
     ["holo", "Radiant Rare", "fullart"],
     ["holo", "Ultra Rare", "etched"],
     ["holo", "Secret Rare", "etched"],
@@ -58,9 +58,12 @@ describe("foilStyle", () => {
     ["Promo", "cosmos"],
     ["Secret Rare", "rainbow"],
     ["Rare Holo", undefined],
-    ["Ultra Rare", undefined],
+    ["Double rare", "double"],
+    ["Illustration rare", "illustration"],
+    ["Special illustration rare", "special"],
+    ["Ultra Rare", "ultra"],
     ["Hyper rare", undefined],
-    ["Illustration rare", undefined],
+    ["Mega Hyper Rare", undefined],
   ] as const)("holo %s → %s", (rarity, expected) => expect(foilStyle("holo", rarity, { category: "Pokemon" })).toBe(expected));
 
   it("leaves gold secret rares to the gold tint", () => {

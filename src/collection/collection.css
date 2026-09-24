@@ -7,7 +7,7 @@
 .collection h3 { font: 700 1rem/1.2 "Alegreya Sans", sans-serif; margin: 18px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; }
 .collection a { color: var(--focus); }
 .collection .muted { color: var(--muted); }
-.collection .error { color: #c0392b; }
+.collection .error { color: var(--danger); }
 .collection .empty { padding: 32px 0; }
 .collection .guest-note { margin: 0 0 12px; color: var(--muted); }
 .collection .guest-note a { font-weight: 700; }
@@ -18,9 +18,9 @@
   padding: 10px 16px; border-radius: 999px; color: var(--ink); background: var(--btn);
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
-.collection a.button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
+.collection a.button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
 .collection button:focus-visible, .collection a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-.collection button.danger { color: #c0392b; }
+.collection button.danger { color: var(--danger); }
 
 .collection .bar { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 12%, transparent); overflow: hidden; flex: 1; }
 .collection .bar > div { height: 100%; border-radius: inherit; background: var(--focus); }
@@ -29,7 +29,7 @@
 .collection .set-progress { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); }
 .collection .set-progress a {
   display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 14px; color: inherit; text-decoration: none;
-  background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
 }
 .collection .set-progress a:hover { border-color: var(--focus); }
 .collection .set-progress .logo { width: 110px; height: 56px; flex: none; display: grid; place-items: center; }
@@ -196,7 +196,7 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .settings .ok { color: var(--ink); font-weight: 600; }
 .settings .error { font-weight: 600; }
 .settings .eras { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.settings button.primary { background: var(--btn-on); color: var(--btn-on-ink); border-color: transparent; }
+.settings button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
 .settings button.link { background: none; border: 0; padding: 10px 4px; color: var(--focus); text-decoration: underline; }
 .settings a.button.google { display: inline-flex; align-items: center; gap: 10px; }
 .settings .google-logo { width: 18px; height: 18px; flex: none; }
@@ -231,7 +231,7 @@ html:has(.card-detail[open]) { overflow: hidden; }
   background: var(--bg); border-radius: 14px; box-shadow: 0 16px 40px -16px #000a; border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .pokedex .dex-results a { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; }
-.pokedex .dex-results a:hover, .pokedex .dex-results a:focus-visible { background: var(--btn); }
+.pokedex .dex-results a:hover, .pokedex .dex-results a:focus-visible { background: var(--surface); }
 .pokedex .dex-results li.muted { padding: 8px 10px; }
 .collection .dex-no { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .85rem; }
 .collection .chip { margin-left: auto; font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--btn-on); color: var(--btn-on-ink); }
@@ -240,7 +240,7 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .collection select { font: inherit; color: var(--ink); background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-radius: 8px; padding: 6px 8px; }
 .pokedex .dex-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px 12px; grid-template-columns: repeat(auto-fill, minmax(min(150px, 42vw), 1fr)); }
 .pokedex .dex-grid a { display: flex; flex-direction: column; gap: 2px; color: inherit; text-decoration: none; }
-.pokedex .dex-grid img { width: 100%; aspect-ratio: 245 / 337; border-radius: 4.5% / 3.3%; box-shadow: 0 4px 12px -6px #0007; margin-bottom: 6px; transition: transform .15s; background: var(--btn); }
+.pokedex .dex-grid img { width: 100%; aspect-ratio: 245 / 337; border-radius: 4.5% / 3.3%; box-shadow: 0 4px 12px -6px #0007; margin-bottom: 6px; transition: transform .15s; background: var(--surface); }
 .pokedex .dex-grid a:hover img { transform: translateY(-2px); }
 .pokedex .dex-grid .muted { font-size: .85rem; }
 

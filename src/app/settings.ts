@@ -1,4 +1,4 @@
-// Per-browser preferences (sound, daily pack limit), kept in localStorage.
+// Per-browser preferences (sound, daily pack limit, theme), kept in localStorage.
 // The collection itself lives in IndexedDB; these are conveniences, so failures fall back to defaults.
 
 import { useEffect, useState } from "react";
@@ -13,9 +13,13 @@ export interface Settings {
   eras: string[];
   /** Tilt cards by tilting the phone. */
   motion: boolean;
+  /** "system" follows the device; index.html applies a forced theme before first paint. */
+  theme: Theme;
 }
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true };
+export type Theme = "system" | "light" | "dark";
+
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, dailyLimit: 10, eras: [], motion: true, theme: "system" };
 const KEY = "tcg-pack-opener:settings";
 /** Bumped when a default changes in a way stored settings should pick up. */
 const VERSION = 2;
@@ -47,13 +51,15 @@ export function updateSettings(patch: Partial<Settings>): Settings {
   return next;
 }
 
+export function onSettingsChange(fn: (s: Settings) => void): () => void {
+  const on = (e: Event) => fn((e as CustomEvent<Settings>).detail);
+  events.addEventListener("change", on);
+  return () => events.removeEventListener("change", on);
+}
+
 /** Current settings, re-rendering when any component changes them. */
 export function useSettings(): Settings {
   const [s, setS] = useState(getSettings);
-  useEffect(() => {
-    const on = (e: Event) => setS((e as CustomEvent<Settings>).detail);
-    events.addEventListener("change", on);
-    return () => events.removeEventListener("change", on);
-  }, []);
+  useEffect(() => onSettingsChange(setS), []);
   return s;
 }

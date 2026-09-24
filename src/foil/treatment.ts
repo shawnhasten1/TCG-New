@@ -6,10 +6,10 @@ import type { Finish } from "../engine/types";
 
 export type Treatment = "none" | "holo" | "reverse" | "fullart" | "etched";
 export type Tint = "rainbow" | "gold";
-export type Style = "cosmos" | "radiant" | "amazing" | "shiny" | "rainbow" | "v" | "vmax" | "acespec";
+export type Style = "cosmos" | "radiant" | "amazing" | "shiny" | "rainbow" | "v" | "vmax" | "acespec" | "double" | "illustration" | "special" | "ultra";
 
-/** Textured full-card foil: full-art ultra rares, secrets, hypers. */
-const ETCHED = /ultra|secret|hyper|gold|rainbow/i;
+/** Textured full-card foil: full-art ultra rares, special illustration rares, secrets, hypers. */
+const ETCHED = /ultra|special illustration|secret|hyper|gold|rainbow/i;
 /** Softer full-card foil plus glitter: illustration rares and rule-box cards. */
 const FULLART = /illustration|full art|double|\bv\b|vmax|vstar|lv\.x|prime|legend|radiant|amazing|ace spec|shiny|classic collection|black white|\bex\b|\bgx\b/i;
 const GOLD = /hyper|gold/i;
@@ -46,5 +46,11 @@ export function foilStyle(finish: Finish, rarity: string, kind: Kind = {}): Styl
   if (/\bv\b/i.test(rarity)) return "v";
   if (/promo/i.test(rarity)) return "cosmos";
   if (/secret/i.test(rarity) && foilTint(rarity, kind) === "rainbow") return "rainbow";
+  // Scarlet & Violet's own tiers: ex get a star-like sheen, illustration rares are smooth,
+  // special illustration and ultra rares are textured (the gold hypers keep the gold tint).
+  if (/double/i.test(rarity)) return "double";
+  if (/special illustration/i.test(rarity)) return "special";
+  if (/illustration/i.test(rarity)) return "illustration";
+  if (/ultra/i.test(rarity)) return "ultra";
   return undefined;
 }

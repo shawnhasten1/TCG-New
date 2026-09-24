@@ -128,13 +128,12 @@
   opacity: calc(var(--o) * .7 * var(--foil-k));
 }
 .tcg-card[data-treatment="etched"][data-tint="gold"] .foil::before { content: none; }
+/* Embossed texture, lit where the pointer is. It stays put on the card: only the light moves. */
 .tcg-card .etch {
-  background-image:
-    repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 4px),
-    repeating-linear-gradient(-45deg, #fff 0 1px, transparent 1px 4px),
-    radial-gradient(farthest-corner circle at var(--mx) var(--my), #fff 0%, #fff0 60%);
-  background-size: 6px 6px, 6px 6px, 100% 100%;
-  mix-blend-mode: overlay;
+  background-image: var(--ridges), radial-gradient(farthest-corner circle at var(--mx) var(--my), #fff 0%, #fff0 60%);
+  background-size: 42% auto, 100% 100%;
+  background-blend-mode: screen;
+  mix-blend-mode: soft-light;
   -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%);
           mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%);
   opacity: calc(var(--o) * .35 * var(--foil-k));
@@ -232,6 +231,47 @@
   --sun-1: hsl(320 100% 75%); --sun-2: hsl(285 90% 74%); --sun-3: hsl(250 100% 78%);
   --sun-4: hsl(190 100% 76%); --sun-5: hsl(300 100% 80%); --sun-6: hsl(340 100% 76%);
 }
+
+/* Scarlet & Violet tiers, after how the physical cards look (see treatment.ts). */
+
+/* Double rare (ex): no texture; a horizontal band of shine sweeping with the tilt, and star-like sparkle. */
+.tcg-card[data-style="double"] .foil {
+  background-image: linear-gradient(180deg, #000 0%, #000 42%, #888 47%, #fff 50%, #888 53%, #000 58%, #000 100%), var(--pillars);
+  background-size: 100% 300%, 200% 700%;
+  background-position: 0 calc(50% + (50 - var(--by)) * 4%), 0% calc(var(--by) * 1%);
+  background-blend-mode: multiply;
+  filter: brightness(calc(.8 + var(--pc) * .5)) contrast(1.2) saturate(1.6);
+}
+.tcg-card[data-style="double"] .foil::before, .tcg-card[data-style="special"] .foil::before {
+  background-image: var(--sparkles);
+  background-size: 140px 140px;
+  background-position: calc(var(--bx) * -1.5px) calc(var(--by) * -1.5px);
+  mix-blend-mode: screen;
+  filter: brightness(1.3);
+}
+
+/* Illustration rare: smooth, no texture and no glitter; one broad soft rainbow sheen. */
+.tcg-card[data-style="illustration"] .foil {
+  --space: 9%;
+  background-image: linear-gradient(125deg, #000 20%, #999 44%, #fff 50%, #999 56%, #000 80%), var(--pillars);
+  background-size: 250% 250%, 200% 700%;
+  background-position: calc(50% + (50 - var(--bx)) * 3%) calc(50% + (50 - var(--by)) * 3%), 0% calc(var(--by) * 1%);
+  background-blend-mode: multiply;
+  filter: brightness(calc(.6 + var(--pc) * .4)) contrast(1.1) saturate(1.5);
+}
+.tcg-card[data-style="illustration"] .foil::before, .tcg-card[data-style="illustration"] .glitter { display: none; }
+
+/* Ultra rare (full art) and special illustration rare: rainbow over an embossed ridge texture that stays
+   fixed to the card. Special illustration rares add a layer of glitter on top. */
+.tcg-card[data-style="ultra"] .foil, .tcg-card[data-style="special"] .foil {
+  background-image: var(--pillars), var(--ridges);
+  background-size: 200% 700%, 42% auto;
+  background-position: 0% calc(var(--by) * 1%), 0 0;
+  background-blend-mode: multiply;
+  filter: brightness(calc(.6 + var(--pc) * .5)) contrast(1.3) saturate(1.6);
+}
+.tcg-card[data-style="ultra"] .foil::before { content: none; }
+.tcg-card[data-style="special"] .foil { background-size: 200% 700%, 32% auto; }
 
 /* ---------- Glitter ---------- */
 .tcg-card .glitter {

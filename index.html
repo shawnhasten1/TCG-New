@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Pack Opener</title>
     <meta name="description" content="Open virtual Pokémon TCG booster packs with real card scans, foil effects and a collection binder." />
-    <meta name="theme-color" content="#e7e2ee" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1d1528" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)" />
+    <script>
+      // Apply a forced theme before first paint (src/app/theme.ts keeps it in step afterwards).
+      try {
+        var t = JSON.parse(localStorage.getItem("tcg-pack-opener:settings") || "{}").theme;
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

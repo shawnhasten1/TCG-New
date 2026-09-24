@@ -1,21 +1,25 @@
-/* App tokens (from the prototype). Debug-page tokens are prefixed --d-. */
+/* App tokens. Light follows pokemon.com: white pages, light-gray tiles, charcoal ink, red and blue accents.
+   Dark is neutral charcoal. Settings can force either through data-theme on <html>. Debug-page tokens are prefixed --d-. */
 :root {
-  --bg: #e7e2ee; --bg-glow: #f6f2fb; --ink: #2a2236; --muted: #6b6178;
-  --btn: #ffffffb3; --btn-on: #2a2236; --btn-on-ink: #f6f2fb; --focus: #6a4bd6;
+  --bg: #ffffff; --bg-glow: #ffffff; --stage: #eceff2; --surface: #f2f2f2; --ink: #313131; --muted: #616161;
+  --btn: #ffffff; --btn-on: #313131; --btn-on-ink: #ffffff; --focus: #1b74b4;
+  --primary: #d0300b; --primary-ink: #ffffff; --danger: #c0392b;
   --d-bg: #f6f6f4; --d-surface: #ffffff; --d-border: #deded9; --d-ok: #1f7a3a; --d-bad: #b3261e; --d-warn: #fff5d6;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #1d1528; --bg-glow: #34244a; --ink: #efe9f7; --muted: #a698b8;
-    --btn: #ffffff14; --btn-on: #efe9f7; --btn-on-ink: #1d1528; --focus: #b9a4ff;
+    --bg: #15171c; --bg-glow: #262a33; --stage: #0d0f12; --surface: #1f2228; --ink: #eef0f3; --muted: #a2a8b3;
+    --btn: #262a31; --btn-on: #eef0f3; --btn-on-ink: #15171c; --focus: #5cc0ee;
+    --primary: #d0300b; --primary-ink: #ffffff; --danger: #ff8a80;
     --d-bg: #141416; --d-surface: #1d1d20; --d-border: #33333a; --d-ok: #6fd08c; --d-bad: #ff8a80; --d-warn: #3a3218;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #1d1528; --bg-glow: #34244a; --ink: #efe9f7; --muted: #a698b8;
-  --btn: #ffffff14; --btn-on: #efe9f7; --btn-on-ink: #1d1528; --focus: #b9a4ff;
+  --bg: #15171c; --bg-glow: #262a33; --stage: #0d0f12; --surface: #1f2228; --ink: #eef0f3; --muted: #a2a8b3;
+  --btn: #262a31; --btn-on: #eef0f3; --btn-on-ink: #15171c; --focus: #5cc0ee;
+  --primary: #d0300b; --primary-ink: #ffffff; --danger: #ff8a80;
   --d-bg: #141416; --d-surface: #1d1d20; --d-border: #33333a; --d-ok: #6fd08c; --d-bad: #ff8a80; --d-warn: #3a3218;
   color-scheme: dark;
 }

@@ -1,6 +1,7 @@
 // Foil textures, generated once and shared as CSS variables on :root:
 //   --sparkles: sparse bright points, for the glitter layer.
 //   --flecks:   dense glitter flakes, for Amazing, shiny and rainbow foils.
+//   --ridges:   fine flowing lines, for textured (embossed) full arts.
 //   --cosmos:   overlapping soft discs and stars, for cosmos holo.
 // White on black: foil.css colours them and color-dodge makes the black disappear.
 let done = false;
@@ -54,6 +55,30 @@ export function ensureSparkles() {
           g.fillRect(-w, -w / 3, w * 2, (w * 2) / 3);
           g.restore();
         });
+      }
+    }),
+  );
+
+  set(
+    "--ridges",
+    texture(256, (g, rnd) => {
+      // Fine flowing lines, like the embossing on textured full arts (real ones follow the artwork; these
+      // just meander). Built from sines with whole periods across the tile, so it repeats seamlessly.
+      const S = 256, TAU = Math.PI * 2;
+      const waves = Array.from({ length: 3 }, (_, i) => ({ kx: i + 1, ky: 1 + Math.floor(rnd() * 3), amp: 10 / (i + 1), ph: rnd() * TAU }));
+      const bend = (x: number, y: number) => waves.reduce((d, w) => d + w.amp * Math.sin(TAU * ((w.kx * x) / S + (w.ky * y) / S) + w.ph), 0);
+      g.lineWidth = 1.1;
+      for (let y0 = 0; y0 < S; y0 += 4) {
+        g.strokeStyle = `hsl(0 0% ${Math.round(55 + rnd() * 45)}%)`;
+        for (const dy of [-S, 0, S]) {
+          g.beginPath();
+          for (let x = 0; x <= S; x += 4) {
+            const y = y0 + dy + bend(x, y0);
+            if (x === 0) g.moveTo(x, y);
+            else g.lineTo(x, y);
+          }
+          g.stroke();
+        }
       }
     }),
   );
