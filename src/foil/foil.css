@@ -1,7 +1,8 @@
 /* Foil rendering on real scans. Masks are per era (layouts.ts); textures are generated (sparkles.ts).
    Each foil is a small stack: .foil is the shine (color-dodged onto the scan) and its ::before/::after
    are extra passes blended inside it, so black anywhere in the stack means "no shine here".
-   Tuning knobs: --foil-k and --glitter-k scale every treatment (the foil lab sets them). */
+   Tuning knobs: --foil-k and --glitter-k scale every treatment, and --glow (default .45) how bright foil cards
+   get right under the pointer: glare, hotspot and pooling. The foil lab sets all three. */
 
 .tcg-card {
   --rx: 0deg; --ry: 0deg; --px: 50; --py: 50; --o: .25;
@@ -36,37 +37,51 @@
   -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
-/* Shared pass: darkens the shine away from the pointer so it pools where the light is. */
+/* Shared pass: darkens the shine away from the pointer so it pools where the light is.
+   --glow softens the peak so the pattern under the pointer isn't washed out. */
 .tcg-card .foil::after {
-  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(0 0% 90% / .8) 0%, hsl(0 0% 78% / .1) 25%, #000 90%);
+  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(0 0% calc(55% + 35% * var(--glow, .45)) / .8) 0%, hsl(0 0% 78% / .1) 25%, #000 90%);
   mix-blend-mode: luminosity;
-  filter: brightness(.6) contrast(4);
+  filter: brightness(.6) contrast(calc(2 + 2 * var(--glow, .45)));
 }
 
-/* ---------- Holo rare: art box only, rainbow over fine scanlines, with sweeping light bars ---------- */
+/* ---------- Holo rare: art box only ----------
+   A moving rainbow colours the era's holo pattern (data-holo, from layouts.ts), which stays fixed to the card
+   like the printed foil. Textures come from holoTextures.ts and sparkles.ts. */
 .tcg-card[data-treatment="holo"] .foil {
   -webkit-mask-image: var(--art-mask); mask-image: var(--art-mask);
-  background-image:
-    repeating-linear-gradient(110deg, var(--sun-6), var(--sun-5), var(--sun-4), var(--sun-2), var(--sun-1), var(--sun-6), var(--sun-5), var(--sun-4), var(--sun-2), var(--sun-1)),
-    repeating-linear-gradient(90deg, #000 0 1px, #666 1px 2px);
-  background-size: 400% 400%, auto;
-  background-position: calc(50% + (50 - var(--bx)) * 2.6%) calc(50% + (50 - var(--by)) * 3.5%), center;
-  background-blend-mode: overlay;
-  filter: brightness(calc(.75 + var(--pc) * .35)) contrast(1.1) saturate(1.2);
+  --rainbow: repeating-linear-gradient(110deg, var(--sun-6), var(--sun-5), var(--sun-4), var(--sun-2), var(--sun-1), var(--sun-6), var(--sun-5), var(--sun-4), var(--sun-2), var(--sun-1));
+  background-image: var(--rainbow);
+  background-size: 400% 400%;
+  background-position: calc(50% + (50 - var(--bx)) * 2.6%) calc(50% + (50 - var(--by)) * 3.5%), 0 0;
+  background-blend-mode: color;
+  filter: brightness(calc(.8 + var(--pc) * .4)) contrast(1.2) saturate(1.4);
   opacity: calc(var(--o) * .7 * var(--foil-k));
 }
-.tcg-card[data-treatment="holo"] .foil::before {
-  --bar: #b3b3b3; --gap: #000;
-  background-image:
-    repeating-linear-gradient(90deg, var(--gap) 6%, var(--bar) 9%, var(--gap) 10.5%, var(--bar) 12%, var(--gap) 15%, var(--gap) 42%),
-    repeating-linear-gradient(90deg, var(--gap) 6%, var(--bar) 9%, var(--gap) 10.5%, var(--bar) 12%, var(--gap) 15%, var(--gap) 30%);
-  background-size: 200% 200%;
-  background-position:
-    calc(50% + (50 - var(--bx)) * 1.65% + var(--by) * .5%) calc(var(--bx) * 1%),
-    calc(50% - (50 - var(--bx)) * .9% - var(--by) * .75%) calc(var(--by) * 1%);
-  background-blend-mode: screen;
-  mix-blend-mode: hard-light;
+.tcg-card[data-treatment="holo"] .foil::before { content: none; }
+/* Cosmos (EX to HGSS): overlapping rainbow circles, like a galaxy. */
+.tcg-card[data-holo="cosmos"] .foil { background-image: var(--rainbow), var(--cosmos); background-size: 400% 400%, 55% auto; }
+/* Cracked ice: angular shards with bright fracture lines. */
+.tcg-card[data-holo="cracked"] .foil { background-image: var(--rainbow), var(--cracked); background-size: 400% 400%, 70% auto; }
+/* Starlight (WOTC): scattered points and small bursts that twinkle as a second sparkle layer drifts against the tilt. */
+.tcg-card[data-holo="starlight"] .foil { background-image: var(--rainbow), var(--starlight); background-size: 400% 400%, 60% auto; }
+.tcg-card[data-holo="starlight"] .foil::before {
+  content: "";
+  background: var(--sparkles);
+  background-size: 140px 140px;
+  background-position: calc(var(--bx) * -1.5px) calc(var(--by) * -1.5px);
+  mix-blend-mode: screen;
 }
+/* Sheen (XY): a smooth diagonal band of light. */
+.tcg-card[data-holo="sheen"] .foil {
+  background-image: var(--rainbow), repeating-linear-gradient(125deg, #111 0%, #555 8%, #fff 11%, #555 14%, #111 22%);
+  background-size: 400% 400%, 250% 250%;
+  background-position: calc(50% + (50 - var(--bx)) * 2.6%) calc(50% + (50 - var(--by)) * 3.5%), calc(50% + (50 - var(--bx)) * 4%) calc(50% + (50 - var(--by)) * 4%);
+}
+/* Tinsel (BW): fine, tight streaks. */
+.tcg-card[data-holo="tinsel"] .foil { background-image: var(--rainbow), var(--tinsel); background-size: 400% 400%, 45% auto; }
+/* Water web (SM): a soft wavy mesh. */
+.tcg-card[data-holo="waterweb"] .foil { background-image: var(--rainbow), var(--waterweb); background-size: 400% 400%, 60% auto; }
 
 /* ---------- Reverse holo: everything but the art box ----------
    The era's foil pattern (--rev-tex, from reverse.ts: type-symbol tiles, cobblestones…) stays fixed to
@@ -313,13 +328,13 @@
   background: radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffd0 8%, #ffffff55 22%, #00000066 95%);
   mix-blend-mode: overlay; opacity: calc(var(--o) * .6);
 }
-.tcg-card:not([data-treatment="none"]) .glare { opacity: calc(var(--o) * .8); filter: brightness(.9) contrast(1.4); }
+.tcg-card:not([data-treatment="none"]) .glare { opacity: calc(var(--o) * .8 * var(--glow, .45)); filter: brightness(.9) contrast(1.4); }
 /* Foil cards get a tight specular hotspot on top; mid grey is neutral under hard-light. */
 .tcg-card:not([data-treatment="none"]) .face::after {
   content: ""; z-index: 5;
   background: radial-gradient(farthest-corner circle at var(--mx) var(--my), hsl(180 100% 97%) 0%, hsl(0 0% 50%) 35%, hsl(0 0% 42%) 120%);
   mix-blend-mode: hard-light;
-  opacity: calc(.25 + var(--pc) * .35);
+  opacity: calc((.25 + var(--pc) * .35) * var(--glow, .45));
 }
 
 /* ---------- Card back (public/tcg-card-back-2x.jpg), shown when a card spins ---------- */

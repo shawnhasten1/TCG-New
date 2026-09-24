@@ -5,7 +5,7 @@ import { href } from "../app/router";
 import type { Finish } from "../engine/types";
 import { Tilt } from "../opener/tilt";
 import { FoilCard } from "./FoilCard";
-import { layoutFor, layouts } from "./layouts";
+import { layoutFor, layouts, type HoloPattern } from "./layouts";
 import type { CardCategory } from "../api/types";
 import { typeSymbol } from "./reverse";
 import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
@@ -13,6 +13,18 @@ import "./foil-lab.css";
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
 
+/** Holo patterns to try on the era masks' Holo column. "Era-accurate" is what real cards use (layouts.ts holo). */
+const HOLO_TRIES: { id: "era" | HoloPattern; label: string }[] = [
+  { id: "era", label: "Era-accurate (live)" },
+  { id: "smooth", label: "Smooth rainbow" },
+  { id: "cosmos", label: "Cosmos" },
+  { id: "cracked", label: "Cracked ice" },
+  { id: "starlight", label: "Starlight" },
+  { id: "sheen", label: "Sheen" },
+  { id: "tinsel", label: "Tinsel" },
+  { id: "waterweb", label: "Water web" },
+];
+type HoloTry = (typeof HOLO_TRIES)[number]["id"];
 interface Sample {
   id: string;
   image: string;
@@ -127,6 +139,8 @@ export function FoilLab() {
   const [foilK, setFoilK] = useState(1);
   const [glitterK, setGlitterK] = useState(1);
   const [cardWidth, setCardWidth] = useState(220);
+  const [holoTry, setHoloTry] = useState<HoloTry>("era");
+  const [glow, setGlow] = useState(0.45);
 
   useEffect(() => {
     if (sweep) return;
@@ -168,7 +182,7 @@ export function FoilLab() {
     tilt.aim(e.clientX, e.clientY);
   };
 
-  const vars = { "--foil-k": foilK, "--glitter-k": glitterK, "--lab-cw": `${cardWidth}px` } as CSSProperties;
+  const vars = { "--foil-k": foilK, "--glitter-k": glitterK, "--glow": glow, "--lab-cw": `${cardWidth}px` } as CSSProperties;
 
   return (
     <main className="foil-lab" ref={rootRef} style={vars} onPointerMove={onMove} onPointerLeave={() => tilt.rest()}>
@@ -188,6 +202,19 @@ export function FoilLab() {
           </label>
           <label>
             Glitter strength <input type="range" min="0" max="2.5" step="0.05" value={glitterK} onChange={(e) => setGlitterK(+e.target.value)} /> <output>{glitterK.toFixed(2)}</output>
+          </label>
+          <label>
+            Holo pattern{" "}
+            <select value={holoTry} onChange={(e) => setHoloTry(e.target.value as HoloTry)}>
+              {HOLO_TRIES.map((h) => (
+                <option key={h.id} value={h.id}>
+                  {h.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Pointer glow <input type="range" min="0" max="1" step="0.05" value={glow} onChange={(e) => setGlow(+e.target.value)} /> <output>{Math.round(glow * 100)}%</output>
           </label>
           <label>
             Card size <input type="range" min="140" max="360" step="10" value={cardWidth} onChange={(e) => setCardWidth(+e.target.value)} />
@@ -210,7 +237,7 @@ export function FoilLab() {
             </div>
           ))}
           {layouts.map((l) => (
-            <EraRow key={l.id} layoutId={l.id} showArtBox={showArtBox} />
+            <EraRow key={l.id} layoutId={l.id} showArtBox={showArtBox} holoTry={holoTry} />
           ))}
         </div>
       </section>
@@ -239,8 +266,9 @@ export function FoilLab() {
   );
 }
 
-function EraRow({ layoutId, showArtBox }: { layoutId: string; showArtBox: boolean }) {
+function EraRow({ layoutId, showArtBox, holoTry }: { layoutId: string; showArtBox: boolean; holoTry: HoloTry }) {
   const layout = layouts.find((l) => l.id === layoutId)!;
+  const holo = holoTry === "era" ? layout.holo : holoTry;
   return (
     <>
       <div className="row-head">
@@ -248,10 +276,11 @@ function EraRow({ layoutId, showArtBox }: { layoutId: string; showArtBox: boolea
         <small>
           {layout.sample.name} · art {layout.art.x}–{+(layout.art.x + layout.art.w).toFixed(1)}% × {layout.art.y}–{+(layout.art.y + layout.art.h).toFixed(1)}%
         </small>
+        <small>Holo: {HOLO_TRIES.find((h) => h.id === holo)?.label}</small>
       </div>
       {ERA_COLUMNS.map((c) => (
         <div key={c.label} className="lab-card">
-          <FoilCard image={layout.sample.image} rarity={layout.sample.rarity} category="Pokemon" types={layout.sample.types} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
+          <FoilCard holoPattern={holoTry === "era" ? undefined : holoTry} image={layout.sample.image} rarity={layout.sample.rarity} category="Pokemon" types={layout.sample.types} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
         </div>
       ))}
     </>

@@ -3,7 +3,10 @@
 //   --flecks:   dense glitter flakes, for Amazing, shiny and rainbow foils.
 //   --ridges:   fine flowing lines, for textured (embossed) full arts.
 //   --cosmos:   overlapping soft discs and stars, for cosmos holo.
+// Plus the era holo textures from holoTextures.ts (--cracked, --starlight, --tinsel, --waterweb).
 // White on black: foil.css colours them and color-dodge makes the black disappear.
+import { holoTextures } from "./holoTextures";
+
 let done = false;
 
 function texture(size: number, draw: (g: CanvasRenderingContext2D, rnd: () => number) => void): string | undefined {
@@ -111,4 +114,6 @@ export function ensureSparkles() {
       }
     }),
   );
+
+  for (const [name, url] of Object.entries(holoTextures())) set(name, url);
 }

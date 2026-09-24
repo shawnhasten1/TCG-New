@@ -4,6 +4,9 @@
 
 import type { ReversePattern } from "./reverse";
 
+/** Art-box holo patterns for regular holo rares, after the physical cards of each era (see foil.css). */
+export type HoloPattern = "smooth" | "cosmos" | "cracked" | "starlight" | "sheen" | "tinsel" | "waterweb";
+
 export interface Box {
   x: number;
   y: number;
@@ -24,6 +27,9 @@ export interface FrameLayout {
   border: { x: number; y: number };
   /** The era's reverse holo pattern (see reverse.ts). */
   reverse: ReversePattern;
+  /** The era's holo rare pattern. Collector guides: WOTC starlight, EX–HGSS cosmos, BW tinsel, XY sheen,
+   *  SM water web; no source found for e-Card or from Sword & Shield on, so those are a smooth rainbow. */
+  holo: HoloPattern;
   /** A sample holo card from this era, for the foil lab. */
   sample: { image: string; name: string; rarity: string; types: string[] };
 }
@@ -39,6 +45,7 @@ export const layouts: FrameLayout[] = [
     art: box(10.5, 11, 89, 50.5, 0.3),
     border: { x: 5, y: 3.6 },
     reverse: "fireworks",
+    holo: "starlight",
     sample: { image: img("base/base1/1"), name: "Alakazam", rarity: "Rare", types: ["Psychic"] },
   },
   {
@@ -49,6 +56,7 @@ export const layouts: FrameLayout[] = [
     // The e-Card art window runs into the right border.
     border: { x: 4, y: 3.6 },
     reverse: "plain",
+    holo: "smooth",
     sample: { image: img("ecard/ecard1/1"), name: "Alakazam", rarity: "Holo Rare", types: ["Psychic"] },
   },
   {
@@ -58,6 +66,7 @@ export const layouts: FrameLayout[] = [
     art: box(9, 8, 92, 46),
     border: { x: 4.6, y: 3.4 },
     reverse: "plain",
+    holo: "cosmos",
     sample: { image: img("ex/ex1/1"), name: "Aggron", rarity: "Holo Rare", types: ["Metal"] },
   },
   {
@@ -67,6 +76,7 @@ export const layouts: FrameLayout[] = [
     art: box(7, 8.5, 94, 49),
     border: { x: 4.4, y: 3.2 },
     reverse: "plain",
+    holo: "cosmos",
     sample: { image: img("dp/dp1/1"), name: "Dialga", rarity: "Rare Holo", types: ["Metal"] },
   },
   {
@@ -76,6 +86,7 @@ export const layouts: FrameLayout[] = [
     art: box(7, 9, 93, 52),
     border: { x: 4.4, y: 3.2 },
     reverse: "plain",
+    holo: "cosmos",
     sample: { image: img("hgss/hgss1/1"), name: "Arcanine", rarity: "Holo Rare", types: ["Fire"] },
   },
   {
@@ -85,6 +96,7 @@ export const layouts: FrameLayout[] = [
     art: box(8, 9.5, 92, 49, 0.4),
     border: { x: 4.4, y: 3.2 },
     reverse: "plain",
+    holo: "tinsel",
     sample: { image: img("bw/bw1/5"), name: "Serperior", rarity: "Rare", types: ["Grass"] },
   },
   {
@@ -94,6 +106,7 @@ export const layouts: FrameLayout[] = [
     art: box(8, 9.5, 92, 49, 0.4),
     border: { x: 4.4, y: 3.2 },
     reverse: "xy",
+    holo: "sheen",
     sample: { image: img("xy/xy1/5"), name: "Beedrill", rarity: "Rare", types: ["Grass"] },
   },
   {
@@ -103,6 +116,7 @@ export const layouts: FrameLayout[] = [
     art: box(5.6, 8, 92.2, 47.7),
     border: { x: 4.4, y: 3.2 },
     reverse: "sm",
+    holo: "waterweb",
     sample: { image: img("sm/sm1/3"), name: "Butterfree", rarity: "Rare", types: ["Grass"] },
   },
   {
@@ -112,6 +126,7 @@ export const layouts: FrameLayout[] = [
     art: box(7.5, 9.3, 92.5, 47.7),
     border: { x: 4.4, y: 3.2 },
     reverse: "swsh",
+    holo: "smooth",
     sample: { image: img("swsh/swsh7/4"), name: "Jumpluff", rarity: "Holo Rare", types: ["Grass"] },
   },
   {
@@ -121,6 +136,7 @@ export const layouts: FrameLayout[] = [
     art: box(7.5, 9.3, 92.5, 47.7),
     border: { x: 4.4, y: 3.2 },
     reverse: "sv",
+    holo: "smooth",
     sample: { image: img("sv/sv01/015"), name: "Meowscarada", rarity: "Rare", types: ["Grass"] },
   },
   {
@@ -131,6 +147,7 @@ export const layouts: FrameLayout[] = [
     art: box(7.5, 9.3, 92.5, 47.7),
     border: { x: 4.4, y: 3.2 },
     reverse: "plain",
+    holo: "smooth",
     sample: { image: img("me/me01/001"), name: "Bulbasaur", rarity: "Common", types: ["Grass"] },
   },
 ];

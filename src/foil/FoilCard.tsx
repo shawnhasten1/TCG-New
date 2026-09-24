@@ -4,7 +4,7 @@
 import { useEffect, useState, type CSSProperties, type HTMLAttributes, type Ref } from "react";
 import type { CardCategory } from "../api/types";
 import type { Finish } from "../engine/types";
-import { artMask, reverseMask, type FrameLayout } from "./layouts";
+import { artMask, reverseMask, type FrameLayout, type HoloPattern } from "./layouts";
 import { reverseTexture, typeSymbol, type ReversePattern } from "./reverse";
 import { ensureSparkles } from "./sparkles";
 import { foilStyle, foilTint, foilTreatment, type Style, type Treatment } from "./treatment";
@@ -23,6 +23,8 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   types?: string[] | null;
   /** Overrides the era's reverse holo pattern (foil lab). */
   reversePattern?: ReversePattern;
+  /** Overrides the era's holo rare pattern (foil lab). */
+  holoPattern?: HoloPattern;
   /** Overrides the treatment derived from finish + rarity (foil lab). */
   treatment?: Treatment;
   /** Overrides the style derived from finish + rarity; null turns it off (foil lab). */
@@ -45,11 +47,13 @@ function reverseVars(pattern: ReversePattern, category?: CardCategory, types?: s
   return (tex ? { "--rev-tex": tex } : {}) as CSSProperties;
 }
 
-export function FoilCard({ image, rarity, finish, layout, category, trainerType, types, reversePattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
+export function FoilCard({ image, rarity, finish, layout, category, trainerType, types, reversePattern, holoPattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
   const t = treatment ?? foilTreatment(finish, rarity);
   const kind = { category, trainerType };
   const look = styleOverride === undefined ? foilStyle(finish, rarity, kind) : (styleOverride ?? undefined);
   const rev = t === "reverse" ? (reversePattern ?? layout.reverse) : undefined;
+  // Rarity styles (e.g. promo cosmos) bring their own pattern; plain holo rares get the era's.
+  const holo = t === "holo" && !look ? (holoPattern ?? layout.holo) : undefined;
   const [src, setSrc] = useState(image && `${image}/${quality}.webp`);
   useEffect(() => setSrc(image && `${image}/${quality}.webp`), [image, quality]);
   useEffect(ensureSparkles, []);
@@ -63,6 +67,7 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
       data-tint={foilTint(rarity, kind)}
       data-style={t === "none" ? undefined : look}
       data-rev={rev}
+      data-holo={holo}
       style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout) : undefined), ...(rev ? reverseVars(rev, category, types) : undefined), ...style }}
     >
       <div className="face">

@@ -33,3 +33,7 @@
 }
 .foil-lab .rev-group h3 { font: 700 1rem/1.2 "Alegreya Sans", sans-serif; margin: 24px 0 2px; }
 .foil-lab .rev-group .muted { color: var(--muted); margin: 0 0 12px; }
+
+/* The lab's sliders set --foil-k, --glitter-k and --glow on the page; cards declare their own defaults,
+   so take the page's values instead. */
+.foil-lab .tcg-card { --foil-k: inherit; --glitter-k: inherit; }
