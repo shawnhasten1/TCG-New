@@ -281,7 +281,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const isLast = idx === pulls.length - 1;
   let hint = "";
   const packTier = setTier(set.id);
-  if (phase === "sealed") hint = `${packTier === "common" ? "" : `A ${tierInfo(packTier).name.toLowerCase()}! `}${set.name}. Drag across the top of the pack to tear it open.`;
+  if (phase === "sealed") hint = "Drag across the top of the pack to tear it open.";
   else if (phase === "opening" && waitingForImages) hint = "Loading cards…";
   else if (phase === "reveal") {
     const lead = `Card ${idx + 1} of ${pulls.length}.`;
@@ -316,12 +316,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
             <div className="layer pack-body" ref={bodyRef}>
               {!booster && (
                 <div className="pack-art">
-                  {set.logo ? <img className="pack-logo" src={`${set.logo}.webp`} alt="" draggable={false} /> : <div className="set-name">{set.name}</div>}
-                  <div className="pack-sub">
-                    {set.logo && set.name}
-                    {set.logo && <br />}
-                    Booster pack · {pulls.length} cards
-                  </div>
+                  {set.logo ? <img className="pack-logo" src={`${set.logo}.webp`} alt={set.name} draggable={false} /> : <div className="set-name">{set.name}</div>}
                 </div>
               )}
               <div className="crimp" />
@@ -386,28 +381,35 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
         </div>
       )}
 
+      {/* Kept through "opening" too, so the pack doesn't jump when the button goes. */}
+      {(phase === "sealed" || phase === "opening") && (
+        <div className="controls">
+          {phase === "sealed" && (
+            <button type="button" onClick={tearWithButton}>
+              Tear open
+            </button>
+          )}
+        </div>
+      )}
       <p className="hint" ref={hintRef} aria-live="polite">
         {hint}
       </p>
       {limitNote && (phase === "sealed" || phase === "summary" || (phase === "reveal" && isLast)) && <p className="limit-note">{limitNote}</p>}
       {pityNote && (phase === "sealed" || phase === "summary") && <p className="limit-note">{pityNote}</p>}
-      <div className="controls">
-        {phase === "sealed" && (
-          <button type="button" onClick={tearWithButton}>
-            Tear open
-          </button>
-        )}
-        {canOpenAgain && (phase === "summary" || (phase === "reveal" && isLast)) && (
-          <button type="button" className="primary" onClick={onAgain} autoFocus={phase === "summary"}>
-            Open another pack
-          </button>
-        )}
-        {phase === "summary" && binderHref && (
-          <a className="button" href={binderHref}>
-            View binder
-          </a>
-        )}
-      </div>
+      {(phase === "reveal" || phase === "summary") && (
+        <div className="controls">
+          {canOpenAgain && phase === "summary" && (
+            <button type="button" className="primary" onClick={onAgain} autoFocus={phase === "summary"}>
+              Open another pack
+            </button>
+          )}
+          {phase === "summary" && binderHref && (
+            <a className="button" href={binderHref}>
+              View binder
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }
