@@ -9,6 +9,7 @@ import { profileFor } from "../src/engine/profiles";
 import { drawableSets, ERAS, pickRandomSet } from "../src/engine/randomSet";
 import { createRng } from "../src/engine/rng";
 import { pityFloor, PITY } from "../src/engine/setRarity";
+import { pickPackArt } from "../src/packs/art";
 import { ALLOWANCE_WINDOW_MS, packAllowance, type DealRequest, type DealResponse, type DealtCard, type DealtPack } from "../src/packs/protocol";
 import type { SyncCard } from "../src/sync/protocol";
 import { tcgdex } from "./cache";
@@ -32,8 +33,8 @@ export function openStatements(db: D1Database, userId: string, dealId: string): 
   return [
     db
       .prepare(
-        `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, deleted, seq)
-         SELECT user_id, deal_id, set_id, ?3, cards, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1)
+        `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq)
+         SELECT user_id, deal_id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1)
          FROM dealt_packs WHERE user_id = ?1 AND deal_id = ?2
          ON CONFLICT (user_id, pack_id) DO NOTHING`,
       )
@@ -47,16 +48,17 @@ interface DealtRow {
   set_id: string;
   cards: string;
   reveal: string;
+  art: string | null;
 }
 
 function toPack(r: DealtRow): DealtPack {
   const cards = JSON.parse(r.cards) as SyncCard[];
   const reveal = JSON.parse(r.reveal) as Pick<DealtCard, "slot" | "outcome">[];
-  return { dealId: r.deal_id, setId: r.set_id, cards: cards.map((c, i) => ({ ...c, ...reveal[i] })) };
+  return { dealId: r.deal_id, setId: r.set_id, art: r.art, cards: cards.map((c, i) => ({ ...c, ...reveal[i] })) };
 }
 
 const dealtPack = (ctx: Ctx, userId: string) =>
-  ctx.env.DB.prepare("SELECT deal_id, set_id, cards, reveal FROM dealt_packs WHERE user_id = ?").bind(userId).first<DealtRow>();
+  ctx.env.DB.prepare("SELECT deal_id, set_id, cards, reveal, art FROM dealt_packs WHERE user_id = ?").bind(userId).first<DealtRow>();
 
 async function allowanceFor(ctx: Ctx, userId: string) {
   const now = Date.now();
@@ -90,8 +92,8 @@ async function deal(ctx: Ctx, userId: string): Promise<Response> {
 
   // Two tabs asking at once: the first one's pack wins, and both get it.
   await db
-    .prepare("INSERT INTO dealt_packs (user_id, deal_id, set_id, cards, reveal, dealt_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (user_id) DO NOTHING")
-    .bind(userId, row.deal_id, row.set_id, row.cards, row.reveal, Date.now())
+    .prepare("INSERT INTO dealt_packs (user_id, deal_id, set_id, cards, reveal, art, dealt_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (user_id) DO NOTHING")
+    .bind(userId, row.deal_id, row.set_id, row.cards, row.reveal, row.art, Date.now())
     .run();
   const pack = (await dealtPack(ctx, userId)) ?? row;
   return json({ pack: toPack(pack), allowance } satisfies DealResponse);
@@ -135,6 +137,7 @@ async function roll(ctx: Ctx, eras: string[], history: string[]): Promise<DealtR
       set_id: set.id,
       cards: JSON.stringify(pulls.map((p): SyncCard => ({ cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition }))),
       reveal: JSON.stringify(pulls.map((p) => ({ slot: p.slot, outcome: p.outcome }))),
+      art: pickPackArt(set.id),
     };
   }
   throw new HttpError(503, "No set could be opened. Check the era filter in Settings.");

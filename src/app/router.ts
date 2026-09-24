@@ -1,16 +1,18 @@
 // Tiny hash router: #/ (home: a pack from a random set), #/sets (set browser), #/collection, #/binder/<setId>,
-// #/pokedex, #/pokemon/<dexId>, #/cards, #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab).
+// #/pokedex, #/pokemon/<dexId>, #/cards, #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab), #/pack-lab (pack photo lab), #/packs (collected pack wrappers).
 // A friend's collection: #/friend/<id> (by set), #/friend/<id>/cards, #/friend/<id>/binder/<setId>.
 // Trades: #/trades, and #/trade/<friendId> to put an offer together.
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   if (page === "sets") return { page: "picker" };
   if (page === "debug") return { page: "debug", setId: id || undefined };
   if (page === "foil") return { page: "foil" };
+  if (page === "pack-lab") return { page: "packLab" };
+  if (page === "packs") return { page: "packs" };
   if (page === "collection") return { page: "collection" };
   if (page === "settings") return { page: "settings" };
   if (page === "pokedex") return { page: "pokedex" };
@@ -34,6 +36,8 @@ export const href = {
   open: () => "#/",
   debug: (setId: string) => `#/debug/${encodeURIComponent(setId)}`,
   foil: () => "#/foil",
+  packLab: () => "#/pack-lab",
+  packs: () => "#/packs",
   collection: () => "#/collection",
   settings: () => "#/settings",
   pokedex: () => "#/pokedex",
@@ -63,6 +67,7 @@ export function navSection(route: Route): NavSection | undefined {
     case "pokedex":
     case "pokemon":
     case "cards":
+    case "packs":
       return "collection";
     case "picker":
       return "sets";

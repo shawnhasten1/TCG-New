@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Card } from "../api/types";
-import { applyRemote, clearPulls, dropOutbox, getPulls, getSyncMeta, linkAccount, peekOutbox, savePack, toSyncPacks, unlinkAccount, type PullRecord } from "../collection/store";
+import { applyRemote, clearPulls, deletePack, dropOutbox, getPulls, getWrappers, getSyncMeta, linkAccount, peekOutbox, savePack, toSyncPacks, unlinkAccount, type PullRecord } from "../collection/store";
 import type { PulledCard } from "../engine/types";
 import { cardUid, isOpenedPack, parseCardUid, parsePush, type RemotePack } from "./protocol";
 
@@ -102,6 +102,39 @@ describe("collection sync bookkeeping", () => {
       { op: "deleteSet", setId: "x" },
       { op: "deleteSet", setId: "y" },
     ]);
+  });
+});
+
+describe("pack wrappers", () => {
+  beforeEach(async () => {
+    await unlinkAccount();
+    await linkAccount("u1");
+  });
+
+  it("keeps the wrapper a pack was opened in, and only when it had one", async () => {
+    await savePack("p1", "s", pulled("a"), new Date("2026-09-03T10:00:00.000Z"), "gyarados");
+    await savePack("p2", "s", pulled("b"));
+    expect(await getWrappers()).toEqual([{ packId: "p1", setId: "s", art: "gyarados", openedAt: "2026-09-03T10:00:00.000Z" }]);
+  });
+
+  it("takes wrappers from other devices, and keeps one after its cards are traded away", async () => {
+    const traded = { ...remote("p1", ["a"]), art: "giovanni" };
+    traded.cards[0].gone = "trade-1";
+    await applyRemote("u1", [traded, { ...remote("p2", ["b"]), art: null }], "2:p2");
+    expect((await getPulls()).map((p) => p.cardId)).toEqual(["b"]);
+    expect((await getWrappers()).map((w) => w.art)).toEqual(["giovanni"]);
+  });
+
+  it("throws the wrapper away with its pack", async () => {
+    await savePack("p1", "s", pulled("a"), new Date(), "gyarados");
+    await savePack("p2", "other", pulled("b"), new Date(), "lugia");
+    await savePack("p3", "other", pulled("c"), new Date(), "ho-oh");
+    await deletePack("p1");
+    expect((await getWrappers()).map((w) => w.packId).sort()).toEqual(["p2", "p3"]);
+    await applyRemote("u1", [remote("p2", [], true)], "5:p2");
+    expect((await getWrappers()).map((w) => w.packId)).toEqual(["p3"]);
+    await clearPulls("other");
+    expect(await getWrappers()).toEqual([]);
   });
 });
 

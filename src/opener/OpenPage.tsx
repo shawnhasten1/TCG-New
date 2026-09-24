@@ -13,12 +13,14 @@ import { formatCountdown } from "../collection/daily";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
+import { packArt } from "../packs/art";
 import { dealPack } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
 import { isOpenedPack } from "../sync/protocol";
 import { OpenerBar } from "./OpenerBar";
 import { PackOpener } from "./PackOpener";
+import { preloadImage, withTimeout } from "./preload";
 import "../social/social.css"; // the summary's share picker
 import "./opener.css";
 
@@ -109,6 +111,9 @@ export function OpenPage() {
     // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
     const have = owned.current.get(pack.setId);
     const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have?.has(id)));
+    // The wrapper shows first, so have it ready (it falls back to the plain one if it doesn't load).
+    const art = packArt(pack.setId, pack.art);
+    if (art) await withTimeout(preloadImage(art.src), 4000);
     return { res, ready: { pack, data, pulls, newIds } };
   }, []);
 
@@ -166,7 +171,7 @@ export function OpenPage() {
     for (const p of pulls) have.add(p.card.id);
     history.current.push(pack.setId);
     setTorn(true);
-    savePack(pack.dealId, data.set.id, pulls).catch((err) => console.warn("Couldn't save this pack", err));
+    savePack(pack.dealId, data.set.id, pulls, new Date(), packArt(pack.setId, pack.art)?.id).catch((err) => console.warn("Couldn't save this pack", err));
     // Deal the next pack now (the server opens this one first) and download its set during the reveal.
     const up: Upcoming = { promise: request(pack.dealId), settled: false };
     up.promise.then(
@@ -233,12 +238,14 @@ export function OpenPage() {
     );
   }
 
+  const wrapper = packArt(ready.pack.setId, ready.pack.art);
   return (
     <PackOpener
       key={stage.state === "ready" ? stage.dealNo : 0}
       set={ready.data.set}
       pulls={ready.pulls}
       newIds={ready.newIds}
+      packPhoto={wrapper}
       onOpened={save}
       onAgain={next}
       binderHref={href.binder(ready.data.set.id)}

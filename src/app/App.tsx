@@ -4,9 +4,11 @@ import { CollectionPage } from "../collection/CollectionPage";
 import { FriendCollectionProvider } from "../collection/source";
 import { PokedexPage } from "../collection/PokedexPage";
 import { PokemonPage } from "../collection/PokemonPage";
+import { PacksPage } from "../collection/PacksPage";
 import { DebugPage } from "../debug/DebugPage";
 import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
+import { PackLab } from "../opener/PackLab";
 import { SetPicker } from "../picker/SetPicker";
 import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
@@ -59,6 +61,10 @@ function Page({ route }: { route: Route }) {
       return <BinderPage key={route.setId} setId={route.setId} />;
     case "foil":
       return <FoilLab />;
+    case "packLab":
+      return <PackLab />;
+    case "packs":
+      return <PacksPage />;
     case "debug":
       return <DebugPage initialSetId={route.setId} />;
     default:

@@ -304,3 +304,24 @@ html:has(.card-detail[open]) { overflow: hidden; }
 
 /* ---------- A friend's binder ---------- */
 .binder .binder-head .owner-note { margin: 2px 0 0; font-weight: 700; color: var(--focus); }
+
+/* ---------- Pack wrappers ---------- */
+.packs-page .toolbar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 10px; }
+.packs-page .toolbar p { margin: 0; }
+.packs-page .toolbar label { display: flex; gap: 6px; align-items: center; color: var(--muted); cursor: pointer; }
+.packs-page .wrapper-set { margin: 22px 0 0; }
+.packs-page .wrapper-set h2 { font-size: 1.25rem; }
+.packs-page .wrapper-set h2 .muted { font: 600 .95rem "Alegreya Sans", sans-serif; font-variant-numeric: tabular-nums; }
+.packs-page .wrapper-grid { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 14px 10px; grid-template-columns: repeat(auto-fill, minmax(min(120px, 28vw), 1fr)); }
+.packs-page .wrapper-grid li { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: .9rem; line-height: 1.2; overflow-wrap: anywhere; }
+.packs-page .wrapper-img { position: relative; }
+.packs-page .wrapper-img img { display: block; width: 100%; aspect-ratio: .6; object-fit: contain; filter: drop-shadow(0 6px 10px #0006); }
+/* Not found yet: a faded, grey glimpse, so there's something to look for. */
+.packs-page li:not([data-found]) img { filter: grayscale(1) blur(1.5px); opacity: .28; }
+.packs-page li:not([data-found]) span { font-weight: 500; }
+.packs-page .count {
+  position: absolute; top: 6px; right: 6px; padding: 3px 8px; border-radius: 999px;
+  font: 800 .8rem/1 "Alegreya Sans", sans-serif; font-variant-numeric: tabular-nums;
+  background: var(--primary); color: var(--primary-ink); box-shadow: 0 2px 8px -2px #0008;
+}
+.packs-page .credit { margin-top: 32px; font-size: .85rem; }

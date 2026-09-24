@@ -17,6 +17,14 @@ export function preloadPack(pulls: PulledCard[]): Promise<void> {
   ).then(() => undefined);
 }
 
+/** Loads one image (the pack's wrapper, say). Never rejects. */
+export function preloadImage(src: string): Promise<void> {
+  const img = new Image();
+  img.decoding = "async";
+  img.src = src;
+  return img.decode().catch(() => undefined);
+}
+
 export function withTimeout(p: Promise<void>, ms: number): Promise<void> {
   return Promise.race([p, new Promise<void>((r) => setTimeout(r, ms))]);
 }

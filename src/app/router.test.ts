@@ -11,6 +11,7 @@ describe("navSection", () => {
     expect(section("#/pokedex")).toBe("collection");
     expect(section("#/pokemon/25")).toBe("collection");
     expect(section("#/cards")).toBe("collection");
+    expect(section("#/packs")).toBe("collection");
     expect(section("#/sets")).toBe("sets");
     expect(section("#/feed")).toBe("social");
     expect(section("#/friends/abc")).toBe("social");
@@ -23,5 +24,6 @@ describe("navSection", () => {
   it("leaves the dev tools out of the menu", () => {
     expect(section("#/debug")).toBeUndefined();
     expect(section("#/foil")).toBeUndefined();
+    expect(section("#/pack-lab")).toBeUndefined();
   });
 });

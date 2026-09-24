@@ -38,6 +38,8 @@ export interface RemoteCard extends SyncCard {
 export interface RemotePack extends SyncPack {
   cards: RemoteCard[];
   deleted: boolean;
+  /** Which photo of the real pack it came in (see packs/art.ts), if any. */
+  art?: string | null;
 }
 
 /** A card's identity: its pack and its position in the pack. */

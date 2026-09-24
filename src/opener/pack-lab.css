@@ -1,0 +1,17 @@
+.pack-lab {
+  min-height: 100vh;
+  color: var(--ink); font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  background: var(--stage);
+}
+.pack-lab > header { max-width: 1120px; margin-inline: auto; padding: 16px 16px 0; }
+.pack-lab h1 { font: italic 800 2rem/1 "Alegreya", Georgia, serif; margin: 8px 0; }
+.pack-lab header p { color: var(--muted); margin: 0 0 12px; }
+.pack-lab .lab-controls { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; }
+.pack-lab .lab-controls label { display: flex; gap: 6px; align-items: center; }
+.pack-lab .lab-controls select, .pack-lab .lab-controls input[type="file"] { max-width: 100%; min-width: 0; }
+.pack-lab fieldset { display: flex; flex-wrap: wrap; gap: 4px 16px; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-radius: 8px; margin: 0; padding: 4px 12px 8px; }
+.pack-lab small { color: var(--muted); }
+.pack-lab .error { color: #e5484d; }
+.pack-lab .loading-note { text-align: center; color: var(--muted); padding: 48px 16px; }
+/* The opener sits under the lab's controls rather than filling the screen from the top. */
+.pack-lab .opener { min-height: 0; }

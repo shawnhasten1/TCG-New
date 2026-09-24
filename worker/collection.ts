@@ -30,6 +30,7 @@ interface PackRow {
   set_id: string;
   opened_at: string;
   cards: string;
+  art: string | null;
   deleted: number;
   seq: number;
 }
@@ -38,13 +39,13 @@ async function changes(ctx: Ctx, userId: string): Promise<Response> {
   const since = ctx.url.searchParams.get("since");
   const [seq, packId] = parseCursor(since);
   const { results } = await ctx.env.DB.prepare(
-    "SELECT pack_id, set_id, opened_at, cards, deleted, seq FROM packs WHERE user_id = ? AND (seq, pack_id) > (?, ?) ORDER BY seq, pack_id LIMIT ?",
+    "SELECT pack_id, set_id, opened_at, cards, art, deleted, seq FROM packs WHERE user_id = ? AND (seq, pack_id) > (?, ?) ORDER BY seq, pack_id LIMIT ?",
   )
     .bind(userId, seq, packId, PAGE + 1)
     .all<PackRow>();
   const page = results.slice(0, PAGE);
   const last = page.at(-1);
-  const packs: RemotePack[] = page.map((r) => ({ packId: r.pack_id, setId: r.set_id, openedAt: r.opened_at, cards: JSON.parse(r.cards), deleted: !!r.deleted }));
+  const packs: RemotePack[] = page.map((r) => ({ packId: r.pack_id, setId: r.set_id, openedAt: r.opened_at, cards: JSON.parse(r.cards), art: r.art, deleted: !!r.deleted }));
   return json({ packs, cursor: last ? `${last.seq}:${last.pack_id}` : since, more: results.length > PAGE } satisfies ChangesResponse);
 }
 

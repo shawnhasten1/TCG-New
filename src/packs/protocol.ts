@@ -55,6 +55,8 @@ export interface DealtPack {
   /** Becomes the pack id once opened. */
   dealId: string;
   setId: string;
+  /** Which photo of the real pack it comes in (see packs/art.ts); null when the set has none. */
+  art: string | null;
   cards: DealtCard[];
 }
 

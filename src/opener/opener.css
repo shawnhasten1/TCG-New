@@ -97,6 +97,11 @@
   filter: drop-shadow(0 18px 24px #0006);
 }
 .opener .pack.has-art .layer { background: var(--art) center / cover no-repeat, #222; }
+/* A photo of the real pack: it has its own crimps, and in its own shape it fills the pack exactly. */
+.opener .wrap.photo-shape { height: calc(var(--cw) * 1.12 / var(--pack-aspect)); }
+.opener .wrap.photo-shape .pack.has-art .layer { background-size: 100% 100%; }
+.opener .pack.photo .crimp { display: none; }
+.opener .pack.photo .layer { background-color: transparent; }
 .opener .sheen {
   position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(farthest-corner circle at var(--mx) var(--my), #ffffffb0 6%, #ffffff30 24%, #00000055 90%);

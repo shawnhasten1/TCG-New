@@ -1,0 +1,3681 @@
+{
+  "30th": [
+    {
+      "id": "standard",
+      "name": "Standard",
+      "src": "/packs/30th/standard.webp",
+      "aspect": 0.547,
+      "source": "File:30th Celebration Booster.png"
+    }
+  ],
+  "base1": [
+    {
+      "id": "venusaur-shadowless",
+      "name": "Venusaur (Shadowless)",
+      "src": "/packs/base1/venusaur-shadowless.webp",
+      "aspect": 0.59,
+      "source": "File:Base Set Booster Venusaur Shadowless.jpg"
+    },
+    {
+      "id": "charizard-shadowless",
+      "name": "Charizard (Shadowless)",
+      "src": "/packs/base1/charizard-shadowless.webp",
+      "aspect": 0.577,
+      "source": "File:Base Set Booster Charizard Shadowless.jpg"
+    },
+    {
+      "id": "blastoise-shadowless",
+      "name": "Blastoise (Shadowless)",
+      "src": "/packs/base1/blastoise-shadowless.webp",
+      "aspect": 0.587,
+      "source": "File:Base Set Booster Blastoise Shadowless.jpg"
+    },
+    {
+      "id": "venusaur-unlimited",
+      "name": "Venusaur (Unlimited)",
+      "src": "/packs/base1/venusaur-unlimited.webp",
+      "aspect": 0.555,
+      "source": "File:Base Set Booster Venusaur Unlimited.jpg"
+    },
+    {
+      "id": "charizard-unlimited",
+      "name": "Charizard (Unlimited)",
+      "src": "/packs/base1/charizard-unlimited.webp",
+      "aspect": 0.581,
+      "source": "File:Base Set Booster Charizard Unlimited.jpg"
+    },
+    {
+      "id": "blastoise-unlimited",
+      "name": "Blastoise (Unlimited)",
+      "src": "/packs/base1/blastoise-unlimited.webp",
+      "aspect": 0.565,
+      "source": "File:Base Set Booster Blastoise Unlimited.jpg"
+    },
+    {
+      "id": "venusaur-long-pack",
+      "name": "Venusaur (Long pack)",
+      "src": "/packs/base1/venusaur-long-pack.webp",
+      "aspect": 0.519,
+      "source": "File:Base Set Booster Venusaur Long.jpg"
+    },
+    {
+      "id": "charizard-long-pack",
+      "name": "Charizard (Long pack)",
+      "src": "/packs/base1/charizard-long-pack.webp",
+      "aspect": 0.509,
+      "source": "File:Base Set Booster Charizard Long.jpg"
+    },
+    {
+      "id": "blastoise-long-pack",
+      "name": "Blastoise (Long pack)",
+      "src": "/packs/base1/blastoise-long-pack.webp",
+      "aspect": 0.518,
+      "source": "File:Base Set Booster Blastoise Long.jpg"
+    }
+  ],
+  "base2": [
+    {
+      "id": "wigglytuff",
+      "name": "Wigglytuff",
+      "src": "/packs/base2/wigglytuff.webp",
+      "aspect": 0.587,
+      "source": "File:Jungle Booster Wigglytuff.jpg"
+    },
+    {
+      "id": "scyther",
+      "name": "Scyther",
+      "src": "/packs/base2/scyther.webp",
+      "aspect": 0.5,
+      "source": "File:Jungle Booster Scyther.jpg"
+    },
+    {
+      "id": "flareon",
+      "name": "Flareon",
+      "src": "/packs/base2/flareon.webp",
+      "aspect": 0.583,
+      "source": "File:Jungle Booster Flareon.jpg"
+    }
+  ],
+  "base3": [
+    {
+      "id": "lapras",
+      "name": "Lapras",
+      "src": "/packs/base3/lapras.webp",
+      "aspect": 0.561,
+      "source": "File:Fossil Booster Lapras.jpg"
+    },
+    {
+      "id": "aerodactyl",
+      "name": "Aerodactyl",
+      "src": "/packs/base3/aerodactyl.webp",
+      "aspect": 0.578,
+      "source": "File:Fossil Booster Aerodactyl.jpg"
+    },
+    {
+      "id": "zapdos",
+      "name": "Zapdos",
+      "src": "/packs/base3/zapdos.webp",
+      "aspect": 0.572,
+      "source": "File:Fossil Booster Zapdos.jpg"
+    }
+  ],
+  "base4": [
+    {
+      "id": "pidgeot",
+      "name": "Pidgeot",
+      "src": "/packs/base4/pidgeot.webp",
+      "aspect": 0.596,
+      "source": "File:Base Set 2 Booster Pidgeot.jpg"
+    },
+    {
+      "id": "raichu",
+      "name": "Raichu",
+      "src": "/packs/base4/raichu.webp",
+      "aspect": 0.638,
+      "source": "File:Base Set 2 Booster Raichu.jpg"
+    },
+    {
+      "id": "gyarados",
+      "name": "Gyarados",
+      "src": "/packs/base4/gyarados.webp",
+      "aspect": 0.581,
+      "source": "File:Base Set 2 Booster Gyarados.jpg"
+    },
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/base4/mewtwo.webp",
+      "aspect": 0.564,
+      "source": "File:Base Set 2 Booster Mewtwo.jpg"
+    }
+  ],
+  "base5": [
+    {
+      "id": "gyarados",
+      "name": "Gyarados",
+      "src": "/packs/base5/gyarados.webp",
+      "aspect": 0.579,
+      "source": "File:Team Rocket Booster Gyarados.jpg"
+    },
+    {
+      "id": "jessie-and-james",
+      "name": "Jessie and James",
+      "src": "/packs/base5/jessie-and-james.webp",
+      "aspect": 0.587,
+      "source": "File:Team Rocket Booster Jessie James.jpg"
+    },
+    {
+      "id": "giovanni",
+      "name": "Giovanni",
+      "src": "/packs/base5/giovanni.webp",
+      "aspect": 0.579,
+      "source": "File:Team Rocket Booster Giovanni.jpg"
+    },
+    {
+      "id": "with-all-three",
+      "name": "With all three",
+      "src": "/packs/base5/with-all-three.webp",
+      "aspect": 0.561,
+      "source": "File:Team Rocket Booster Team Rocket.jpg"
+    }
+  ],
+  "bw1": [
+    {
+      "id": "zebstrika",
+      "name": "Zebstrika",
+      "src": "/packs/bw1/zebstrika.webp",
+      "aspect": 0.56,
+      "source": "File:BW1 Booster Zebstrika.jpg"
+    },
+    {
+      "id": "zoroark",
+      "name": "Zoroark",
+      "src": "/packs/bw1/zoroark.webp",
+      "aspect": 0.56,
+      "source": "File:BW1 Booster Zoroark.jpg"
+    },
+    {
+      "id": "reshiram",
+      "name": "Reshiram",
+      "src": "/packs/bw1/reshiram.webp",
+      "aspect": 0.537,
+      "source": "File:BW1 Booster Reshiram.jpg"
+    },
+    {
+      "id": "zekrom",
+      "name": "Zekrom",
+      "src": "/packs/bw1/zekrom.webp",
+      "aspect": 0.537,
+      "source": "File:BW1 Booster Zekrom.jpg"
+    }
+  ],
+  "bw10": [
+    {
+      "id": "porygon-z",
+      "name": "Porygon-Z",
+      "src": "/packs/bw10/porygon-z.webp",
+      "aspect": 0.543,
+      "source": "File:BW10 Booster Porygon-Z.jpg"
+    },
+    {
+      "id": "dialga",
+      "name": "Dialga",
+      "src": "/packs/bw10/dialga.webp",
+      "aspect": 0.543,
+      "source": "File:BW10 Booster Dialga.jpg"
+    },
+    {
+      "id": "palkia",
+      "name": "Palkia",
+      "src": "/packs/bw10/palkia.webp",
+      "aspect": 0.543,
+      "source": "File:BW10 Booster Palkia.jpg"
+    },
+    {
+      "id": "genesect",
+      "name": "Genesect",
+      "src": "/packs/bw10/genesect.webp",
+      "aspect": 0.543,
+      "source": "File:BW10 Booster Genesect.jpg"
+    }
+  ],
+  "bw11": [
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/bw11/mewtwo.webp",
+      "aspect": 0.526,
+      "source": "File:BW11 Booster Mewtwo.jpg"
+    },
+    {
+      "id": "reshiram",
+      "name": "Reshiram",
+      "src": "/packs/bw11/reshiram.webp",
+      "aspect": 0.526,
+      "source": "File:BW11 Booster Reshiram.jpg"
+    },
+    {
+      "id": "zekrom",
+      "name": "Zekrom",
+      "src": "/packs/bw11/zekrom.webp",
+      "aspect": 0.564,
+      "source": "File:BW11 Booster Zekrom.jpg"
+    },
+    {
+      "id": "genesect",
+      "name": "Genesect",
+      "src": "/packs/bw11/genesect.webp",
+      "aspect": 0.564,
+      "source": "File:BW11 Booster Genesect.jpg"
+    }
+  ],
+  "bw2": [
+    {
+      "id": "darmanitan",
+      "name": "Darmanitan",
+      "src": "/packs/bw2/darmanitan.webp",
+      "aspect": 0.526,
+      "source": "File:BW2 Booster Darmanitan.jpg"
+    },
+    {
+      "id": "braviary",
+      "name": "Braviary",
+      "src": "/packs/bw2/braviary.webp",
+      "aspect": 0.526,
+      "source": "File:BW2 Booster Braviary.jpg"
+    },
+    {
+      "id": "cobalion",
+      "name": "Cobalion",
+      "src": "/packs/bw2/cobalion.webp",
+      "aspect": 0.526,
+      "source": "File:BW2 Booster Cobalion.jpg"
+    },
+    {
+      "id": "tornadus",
+      "name": "Tornadus",
+      "src": "/packs/bw2/tornadus.webp",
+      "aspect": 0.526,
+      "source": "File:BW2 Booster Tornadus.jpg"
+    },
+    {
+      "id": "sampling-with-drilbur-gothita-and-rufflet",
+      "name": "Sampling with Drilbur, Gothita & Rufflet",
+      "src": "/packs/bw2/sampling-with-drilbur-gothita-and-rufflet.webp",
+      "aspect": 0.571,
+      "source": "File:BW2 Booster Sampling.jpg"
+    }
+  ],
+  "bw3": [
+    {
+      "id": "victini",
+      "name": "Victini",
+      "src": "/packs/bw3/victini.webp",
+      "aspect": 0.549,
+      "source": "File:BW3 Booster Victini.jpg"
+    },
+    {
+      "id": "druddigon",
+      "name": "Druddigon",
+      "src": "/packs/bw3/druddigon.webp",
+      "aspect": 0.551,
+      "source": "File:BW3 Booster Druddigon.jpg"
+    },
+    {
+      "id": "hydreigon",
+      "name": "Hydreigon",
+      "src": "/packs/bw3/hydreigon.webp",
+      "aspect": 0.549,
+      "source": "File:BW3 Booster Hydreigon.jpg"
+    },
+    {
+      "id": "kyurem",
+      "name": "Kyurem",
+      "src": "/packs/bw3/kyurem.webp",
+      "aspect": 0.549,
+      "source": "File:BW3 Booster Kyurem.jpg"
+    }
+  ],
+  "bw4": [
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/bw4/mewtwo.webp",
+      "aspect": 0.526,
+      "source": "File:BW4 Booster Mewtwo.jpg"
+    },
+    {
+      "id": "regigigas",
+      "name": "Regigigas",
+      "src": "/packs/bw4/regigigas.webp",
+      "aspect": 0.526,
+      "source": "File:BW4 Booster Regigigas.jpg"
+    },
+    {
+      "id": "reshiram",
+      "name": "Reshiram",
+      "src": "/packs/bw4/reshiram.webp",
+      "aspect": 0.526,
+      "source": "File:BW4 Booster Reshiram.jpg"
+    },
+    {
+      "id": "zekrom",
+      "name": "Zekrom",
+      "src": "/packs/bw4/zekrom.webp",
+      "aspect": 0.526,
+      "source": "File:BW4 Booster Zekrom.jpg"
+    }
+  ],
+  "bw5": [
+    {
+      "id": "venusaur",
+      "name": "Venusaur",
+      "src": "/packs/bw5/venusaur.webp",
+      "aspect": 0.548,
+      "source": "File:BW5 Booster Venusaur.jpg"
+    },
+    {
+      "id": "darkrai",
+      "name": "Darkrai",
+      "src": "/packs/bw5/darkrai.webp",
+      "aspect": 0.548,
+      "source": "File:BW5 Booster Darkrai.jpg"
+    },
+    {
+      "id": "excadrill",
+      "name": "Excadrill",
+      "src": "/packs/bw5/excadrill.webp",
+      "aspect": 0.548,
+      "source": "File:BW5 Booster Excadrill.jpg"
+    },
+    {
+      "id": "scrafty",
+      "name": "Scrafty",
+      "src": "/packs/bw5/scrafty.webp",
+      "aspect": 0.548,
+      "source": "File:BW5 Booster Scrafty.jpg"
+    }
+  ],
+  "bw6": [
+    {
+      "id": "gyarados",
+      "name": "Gyarados",
+      "src": "/packs/bw6/gyarados.webp",
+      "aspect": 0.55,
+      "source": "File:BW6 Booster Gyarados.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/bw6/rayquaza.webp",
+      "aspect": 0.55,
+      "source": "File:BW6 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "giratina",
+      "name": "Giratina",
+      "src": "/packs/bw6/giratina.webp",
+      "aspect": 0.549,
+      "source": "File:BW6 Booster Giratina.jpg"
+    },
+    {
+      "id": "terrakion",
+      "name": "Terrakion",
+      "src": "/packs/bw6/terrakion.webp",
+      "aspect": 0.55,
+      "source": "File:BW6 Booster Terrakion.jpg"
+    }
+  ],
+  "bw7": [
+    {
+      "id": "landorus",
+      "name": "Landorus",
+      "src": "/packs/bw7/landorus.webp",
+      "aspect": 0.563,
+      "source": "File:BW7 Booster Landorus.jpg"
+    },
+    {
+      "id": "black-kyurem",
+      "name": "Black Kyurem",
+      "src": "/packs/bw7/black-kyurem.webp",
+      "aspect": 0.563,
+      "source": "File:BW7 Booster Black Kyurem.jpg"
+    },
+    {
+      "id": "white-kyurem",
+      "name": "White Kyurem",
+      "src": "/packs/bw7/white-kyurem.webp",
+      "aspect": 0.563,
+      "source": "File:BW7 Booster White Kyurem.jpg"
+    },
+    {
+      "id": "keldeo",
+      "name": "Keldeo",
+      "src": "/packs/bw7/keldeo.webp",
+      "aspect": 0.563,
+      "source": "File:BW7 Booster Keldeo.jpg"
+    }
+  ],
+  "bw8": [
+    {
+      "id": "articuno",
+      "name": "Articuno",
+      "src": "/packs/bw8/articuno.webp",
+      "aspect": 0.542,
+      "source": "File:BW8 Booster Articuno.jpg"
+    },
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/bw8/lugia.webp",
+      "aspect": 0.543,
+      "source": "File:BW8 Booster Lugia.jpg"
+    },
+    {
+      "id": "infernape",
+      "name": "Infernape",
+      "src": "/packs/bw8/infernape.webp",
+      "aspect": 0.542,
+      "source": "File:BW8 Booster Infernape.jpg"
+    },
+    {
+      "id": "liepard",
+      "name": "Liepard",
+      "src": "/packs/bw8/liepard.webp",
+      "aspect": 0.543,
+      "source": "File:BW8 Booster Liepard.jpg"
+    }
+  ],
+  "bw9": [
+    {
+      "id": "absol",
+      "name": "Absol",
+      "src": "/packs/bw9/absol.webp",
+      "aspect": 0.552,
+      "source": "File:BW9 Booster Absol.jpg"
+    },
+    {
+      "id": "deoxys",
+      "name": "Deoxys",
+      "src": "/packs/bw9/deoxys.webp",
+      "aspect": 0.551,
+      "source": "File:BW9 Booster Deoxys.jpg"
+    },
+    {
+      "id": "bisharp",
+      "name": "Bisharp",
+      "src": "/packs/bw9/bisharp.webp",
+      "aspect": 0.552,
+      "source": "File:BW9 Booster Bisharp.jpg"
+    },
+    {
+      "id": "thundurus",
+      "name": "Thundurus",
+      "src": "/packs/bw9/thundurus.webp",
+      "aspect": 0.552,
+      "source": "File:BW9 Booster Thundurus.jpg"
+    }
+  ],
+  "cel25": [
+    {
+      "id": "celebrations",
+      "name": "Celebrations",
+      "src": "/packs/cel25/celebrations.webp",
+      "aspect": 0.546,
+      "source": "File:Celebrations Booster.jpg"
+    }
+  ],
+  "col1": [
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/col1/lugia.webp",
+      "aspect": 0.54,
+      "source": "File:CL Booster Lugia.jpg"
+    },
+    {
+      "id": "kyogre",
+      "name": "Kyogre",
+      "src": "/packs/col1/kyogre.webp",
+      "aspect": 0.54,
+      "source": "File:CL Booster Kyogre.jpg"
+    },
+    {
+      "id": "groudon",
+      "name": "Groudon",
+      "src": "/packs/col1/groudon.webp",
+      "aspect": 0.538,
+      "source": "File:CL Booster Groudon.jpg"
+    },
+    {
+      "id": "deoxys",
+      "name": "Deoxys",
+      "src": "/packs/col1/deoxys.webp",
+      "aspect": 0.527,
+      "source": "File:CL Booster Deoxys.jpg"
+    }
+  ],
+  "dc1": [
+    {
+      "id": "kyogre-and-shelly",
+      "name": "Kyogre and Shelly",
+      "src": "/packs/dc1/kyogre-and-shelly.webp",
+      "aspect": 0.566,
+      "source": "File:Double Crisis Booster Kyogre Shelly.jpg"
+    },
+    {
+      "id": "groudon-and-courtney",
+      "name": "Groudon and Courtney",
+      "src": "/packs/dc1/groudon-and-courtney.webp",
+      "aspect": 0.563,
+      "source": "File:Double Crisis Booster Groudon Courtney.jpg"
+    }
+  ],
+  "det1": [
+    {
+      "id": "standard",
+      "name": "Standard",
+      "src": "/packs/det1/standard.webp",
+      "aspect": 0.545,
+      "source": "File:Detective Pikachu Booster.jpg"
+    }
+  ],
+  "dp1": [
+    {
+      "id": "lucario",
+      "name": "Lucario",
+      "src": "/packs/dp1/lucario.webp",
+      "aspect": 0.579,
+      "source": "File:DP1 Booster Lucario.jpg"
+    },
+    {
+      "id": "electivire",
+      "name": "Electivire",
+      "src": "/packs/dp1/electivire.webp",
+      "aspect": 0.584,
+      "source": "File:DP1 Booster Electivire.jpg"
+    },
+    {
+      "id": "dialga",
+      "name": "Dialga",
+      "src": "/packs/dp1/dialga.webp",
+      "aspect": 0.573,
+      "source": "File:DP1 Booster Dialga.jpg"
+    },
+    {
+      "id": "palkia",
+      "name": "Palkia",
+      "src": "/packs/dp1/palkia.webp",
+      "aspect": 0.583,
+      "source": "File:DP1 Booster Palkia.jpg"
+    }
+  ],
+  "dp2": [
+    {
+      "id": "garchomp",
+      "name": "Garchomp",
+      "src": "/packs/dp2/garchomp.webp",
+      "aspect": 0.553,
+      "source": "File:DP2 Booster Garchomp.jpg"
+    },
+    {
+      "id": "toxicroak",
+      "name": "Toxicroak",
+      "src": "/packs/dp2/toxicroak.webp",
+      "aspect": 0.565,
+      "source": "File:DP2 Booster Toxicroak.jpg"
+    },
+    {
+      "id": "magmortar",
+      "name": "Magmortar",
+      "src": "/packs/dp2/magmortar.webp",
+      "aspect": 0.525,
+      "source": "File:DP2 Booster Magmortar.jpg"
+    },
+    {
+      "id": "uxie-mesprit-and-azelf",
+      "name": "Uxie, Mesprit and Azelf",
+      "src": "/packs/dp2/uxie-mesprit-and-azelf.webp",
+      "aspect": 0.524,
+      "source": "File:DP2 Booster Uxie Mesprit Azelf.jpg"
+    }
+  ],
+  "dp3": [
+    {
+      "id": "roserade",
+      "name": "Roserade",
+      "src": "/packs/dp3/roserade.webp",
+      "aspect": 0.556,
+      "source": "File:DP3 Booster Roserade.jpg"
+    },
+    {
+      "id": "murkrow-and-honchkrow",
+      "name": "Murkrow & Honchkrow",
+      "src": "/packs/dp3/murkrow-and-honchkrow.webp",
+      "aspect": 0.579,
+      "source": "File:DP3 Booster Honchkrow.jpg"
+    },
+    {
+      "id": "weavile",
+      "name": "Weavile",
+      "src": "/packs/dp3/weavile.webp",
+      "aspect": 0.574,
+      "source": "File:DP3 Booster Weavile.jpg"
+    },
+    {
+      "id": "gallade",
+      "name": "Gallade",
+      "src": "/packs/dp3/gallade.webp",
+      "aspect": 0.541,
+      "source": "File:DP3 Booster Gallade.jpg"
+    }
+  ],
+  "dp4": [
+    {
+      "id": "dialga",
+      "name": "Dialga",
+      "src": "/packs/dp4/dialga.webp",
+      "aspect": 0.564,
+      "source": "File:DP4 Booster Dialga.jpg"
+    },
+    {
+      "id": "palkia",
+      "name": "Palkia",
+      "src": "/packs/dp4/palkia.webp",
+      "aspect": 0.568,
+      "source": "File:DP4 Booster Palkia.jpg"
+    },
+    {
+      "id": "cresselia",
+      "name": "Cresselia",
+      "src": "/packs/dp4/cresselia.webp",
+      "aspect": 0.561,
+      "source": "File:DP4 Booster Cresselia.jpg"
+    },
+    {
+      "id": "darkrai",
+      "name": "Darkrai",
+      "src": "/packs/dp4/darkrai.webp",
+      "aspect": 0.562,
+      "source": "File:DP4 Booster Darkrai.jpg"
+    }
+  ],
+  "dp5": [
+    {
+      "id": "empoleon",
+      "name": "Empoleon",
+      "src": "/packs/dp5/empoleon.webp",
+      "aspect": 0.575,
+      "source": "File:DP5 Booster Empoleon.jpg"
+    },
+    {
+      "id": "garchomp",
+      "name": "Garchomp",
+      "src": "/packs/dp5/garchomp.webp",
+      "aspect": 0.553,
+      "source": "File:DP5 Booster Garchomp.jpg"
+    },
+    {
+      "id": "hippowdon",
+      "name": "Hippowdon",
+      "src": "/packs/dp5/hippowdon.webp",
+      "aspect": 0.597,
+      "source": "File:DP5 Booster Hippowdon.jpg"
+    },
+    {
+      "id": "darkrai",
+      "name": "Darkrai",
+      "src": "/packs/dp5/darkrai.webp",
+      "aspect": 0.525,
+      "source": "File:DP5 Booster Darkrai.jpg"
+    }
+  ],
+  "dp6": [
+    {
+      "id": "luxray",
+      "name": "Luxray",
+      "src": "/packs/dp6/luxray.webp",
+      "aspect": 0.528,
+      "source": "File:DP6 Booster Luxray.jpg"
+    },
+    {
+      "id": "lucario",
+      "name": "Lucario",
+      "src": "/packs/dp6/lucario.webp",
+      "aspect": 0.528,
+      "source": "File:DP6 Booster Lucario.jpg"
+    },
+    {
+      "id": "rhyperior",
+      "name": "Rhyperior",
+      "src": "/packs/dp6/rhyperior.webp",
+      "aspect": 0.556,
+      "source": "File:DP6 Booster Rhyperior.jpg"
+    },
+    {
+      "id": "giratina",
+      "name": "Giratina",
+      "src": "/packs/dp6/giratina.webp",
+      "aspect": 0.569,
+      "source": "File:DP6 Booster Giratina.jpg"
+    }
+  ],
+  "dp7": [
+    {
+      "id": "torterra",
+      "name": "Torterra",
+      "src": "/packs/dp7/torterra.webp",
+      "aspect": 0.535,
+      "source": "File:DP7 Booster Torterra.jpg"
+    },
+    {
+      "id": "infernape",
+      "name": "Infernape",
+      "src": "/packs/dp7/infernape.webp",
+      "aspect": 0.535,
+      "source": "File:DP7 Booster Infernape.jpg"
+    },
+    {
+      "id": "dusknoir",
+      "name": "Dusknoir",
+      "src": "/packs/dp7/dusknoir.webp",
+      "aspect": 0.536,
+      "source": "File:DP7 Booster Dusknoir.jpg"
+    },
+    {
+      "id": "regigigas",
+      "name": "Regigigas",
+      "src": "/packs/dp7/regigigas.webp",
+      "aspect": 0.536,
+      "source": "File:DP7 Booster Regigigas.jpg"
+    }
+  ],
+  "dv1": [
+    {
+      "id": "dragonite",
+      "name": "Dragonite",
+      "src": "/packs/dv1/dragonite.webp",
+      "aspect": 0.542,
+      "source": "File:Dragon Vault Booster Dragonite.jpg"
+    },
+    {
+      "id": "salamence",
+      "name": "Salamence",
+      "src": "/packs/dv1/salamence.webp",
+      "aspect": 0.535,
+      "source": "File:Dragon Vault Booster Salamence.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/dv1/rayquaza.webp",
+      "aspect": 0.533,
+      "source": "File:Dragon Vault Booster Rayquaza.jpg"
+    },
+    {
+      "id": "haxorus",
+      "name": "Haxorus",
+      "src": "/packs/dv1/haxorus.webp",
+      "aspect": 0.54,
+      "source": "File:Dragon Vault Booster Haxorus.jpg"
+    },
+    {
+      "id": "druddigon",
+      "name": "Druddigon",
+      "src": "/packs/dv1/druddigon.webp",
+      "aspect": 0.583,
+      "source": "File:Dragon Vault Booster Druddigon.jpg"
+    }
+  ],
+  "ecard1": [
+    {
+      "id": "venusaur",
+      "name": "Venusaur",
+      "src": "/packs/ecard1/venusaur.webp",
+      "aspect": 0.598,
+      "source": "File:E1 Booster Venusaur.jpg"
+    },
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/ecard1/charizard.webp",
+      "aspect": 0.621,
+      "source": "File:E1 Booster Charizard.jpg"
+    },
+    {
+      "id": "blastoise",
+      "name": "Blastoise",
+      "src": "/packs/ecard1/blastoise.webp",
+      "aspect": 0.532,
+      "source": "File:E1 Booster Blastoise.jpg"
+    },
+    {
+      "id": "feraligatr",
+      "name": "Feraligatr",
+      "src": "/packs/ecard1/feraligatr.webp",
+      "aspect": 0.553,
+      "source": "File:E1 Booster Feraligatr.jpg"
+    }
+  ],
+  "ecard2": [
+    {
+      "id": "arcanine",
+      "name": "Arcanine",
+      "src": "/packs/ecard2/arcanine.webp",
+      "aspect": 0.544,
+      "source": "File:E2 Booster Arcanine.jpg"
+    },
+    {
+      "id": "scizor",
+      "name": "Scizor",
+      "src": "/packs/ecard2/scizor.webp",
+      "aspect": 0.563,
+      "source": "File:E2 Booster Scizor.jpg"
+    },
+    {
+      "id": "entei",
+      "name": "Entei",
+      "src": "/packs/ecard2/entei.webp",
+      "aspect": 0.554,
+      "source": "File:E2 Booster Entei.jpg"
+    },
+    {
+      "id": "tyranitar",
+      "name": "Tyranitar",
+      "src": "/packs/ecard2/tyranitar.webp",
+      "aspect": 0.545,
+      "source": "File:E2 Booster Tyranitar.jpg"
+    }
+  ],
+  "ecard3": [
+    {
+      "id": "poliwrath",
+      "name": "Poliwrath",
+      "src": "/packs/ecard3/poliwrath.webp",
+      "aspect": 0.563,
+      "source": "File:E3 Booster Poliwrath.jpg"
+    },
+    {
+      "id": "vaporeon",
+      "name": "Vaporeon",
+      "src": "/packs/ecard3/vaporeon.webp",
+      "aspect": 0.551,
+      "source": "File:E3 Booster Vaporeon.jpg"
+    },
+    {
+      "id": "kabutops",
+      "name": "Kabutops",
+      "src": "/packs/ecard3/kabutops.webp",
+      "aspect": 0.558,
+      "source": "File:E3 Booster Kabutops.jpg"
+    },
+    {
+      "id": "ho-oh",
+      "name": "Ho-Oh",
+      "src": "/packs/ecard3/ho-oh.webp",
+      "aspect": 0.564,
+      "source": "File:E3 Booster Ho-Oh.jpg"
+    }
+  ],
+  "ex1": [
+    {
+      "id": "sceptile",
+      "name": "Sceptile",
+      "src": "/packs/ex1/sceptile.webp",
+      "aspect": 0.551,
+      "source": "File:EX1 Booster Sceptile.jpg"
+    },
+    {
+      "id": "mightyena",
+      "name": "Mightyena",
+      "src": "/packs/ex1/mightyena.webp",
+      "aspect": 0.551,
+      "source": "File:EX1 Booster Mightyena.jpg"
+    },
+    {
+      "id": "lairon",
+      "name": "Lairon",
+      "src": "/packs/ex1/lairon.webp",
+      "aspect": 0.564,
+      "source": "File:EX1 Booster Lairon.jpg"
+    },
+    {
+      "id": "manectric",
+      "name": "Manectric",
+      "src": "/packs/ex1/manectric.webp",
+      "aspect": 0.555,
+      "source": "File:EX1 Booster Manectric.jpg"
+    }
+  ],
+  "ex10": [
+    {
+      "id": "typhlosion",
+      "name": "Typhlosion",
+      "src": "/packs/ex10/typhlosion.webp",
+      "aspect": 0.566,
+      "source": "File:EX10 Booster Typhlosion.jpg"
+    },
+    {
+      "id": "umbreon",
+      "name": "Umbreon",
+      "src": "/packs/ex10/umbreon.webp",
+      "aspect": 0.545,
+      "source": "File:EX10 Booster Umbreon.jpg"
+    },
+    {
+      "id": "steelix",
+      "name": "Steelix",
+      "src": "/packs/ex10/steelix.webp",
+      "aspect": 0.556,
+      "source": "File:EX10 Booster Steelix.jpg"
+    },
+    {
+      "id": "raikou",
+      "name": "Raikou",
+      "src": "/packs/ex10/raikou.webp",
+      "aspect": 0.558,
+      "source": "File:EX10 Booster Raikou.jpg"
+    }
+  ],
+  "ex11": [
+    {
+      "id": "flareon",
+      "name": "Flareon",
+      "src": "/packs/ex11/flareon.webp",
+      "aspect": 0.549,
+      "source": "File:EX11 Booster Flareon.jpg"
+    },
+    {
+      "id": "dragonite",
+      "name": "Dragonite",
+      "src": "/packs/ex11/dragonite.webp",
+      "aspect": 0.556,
+      "source": "File:EX11 Booster Dragonite.jpg"
+    },
+    {
+      "id": "salamence",
+      "name": "Salamence",
+      "src": "/packs/ex11/salamence.webp",
+      "aspect": 0.551,
+      "source": "File:EX11 Booster Salamence.jpg"
+    },
+    {
+      "id": "metagross",
+      "name": "Metagross",
+      "src": "/packs/ex11/metagross.webp",
+      "aspect": 0.56,
+      "source": "File:EX11 Booster Metagross.jpg"
+    }
+  ],
+  "ex12": [
+    {
+      "id": "arcanine",
+      "name": "Arcanine",
+      "src": "/packs/ex12/arcanine.webp",
+      "aspect": 0.564,
+      "source": "File:EX12 Booster Arcanine.jpg"
+    },
+    {
+      "id": "aerodactyl",
+      "name": "Aerodactyl",
+      "src": "/packs/ex12/aerodactyl.webp",
+      "aspect": 0.57,
+      "source": "File:EX12 Booster Aerodactyl.jpg"
+    },
+    {
+      "id": "mew",
+      "name": "Mew",
+      "src": "/packs/ex12/mew.webp",
+      "aspect": 0.561,
+      "source": "File:EX12 Booster Mew.jpg"
+    },
+    {
+      "id": "banette",
+      "name": "Banette",
+      "src": "/packs/ex12/banette.webp",
+      "aspect": 0.571,
+      "source": "File:EX12 Booster Banette.jpg"
+    }
+  ],
+  "ex13": [
+    {
+      "id": "gyarados",
+      "name": "Gyarados",
+      "src": "/packs/ex13/gyarados.webp",
+      "aspect": 0.548,
+      "source": "File:EX13 Booster Gyarados.jpg"
+    },
+    {
+      "id": "kabutops",
+      "name": "Kabutops",
+      "src": "/packs/ex13/kabutops.webp",
+      "aspect": 0.569,
+      "source": "File:EX13 Booster Kabutops.jpg"
+    },
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/ex13/mewtwo.webp",
+      "aspect": 0.571,
+      "source": "File:EX13 Booster Mewtwo.jpg"
+    },
+    {
+      "id": "zangoose",
+      "name": "Zangoose",
+      "src": "/packs/ex13/zangoose.webp",
+      "aspect": 0.582,
+      "source": "File:EX13 Booster Zangoose.jpg"
+    }
+  ],
+  "ex14": [
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/ex14/charizard.webp",
+      "aspect": 0.565,
+      "source": "File:EX14 Booster Charizard.jpg"
+    },
+    {
+      "id": "blaziken",
+      "name": "Blaziken",
+      "src": "/packs/ex14/blaziken.webp",
+      "aspect": 0.558,
+      "source": "File:EX14 Booster Blaziken.jpg"
+    },
+    {
+      "id": "delcatty",
+      "name": "Delcatty",
+      "src": "/packs/ex14/delcatty.webp",
+      "aspect": 0.564,
+      "source": "File:EX14 Booster Delcatty.jpg"
+    }
+  ],
+  "ex15": [
+    {
+      "id": "arbok-and-nidoking",
+      "name": "Arbok & Nidoking",
+      "src": "/packs/ex15/arbok-and-nidoking.webp",
+      "aspect": 0.556,
+      "source": "File:EX15 Booster Nidoking.jpg"
+    },
+    {
+      "id": "tyranitar-and-tropius",
+      "name": "Tyranitar & Tropius",
+      "src": "/packs/ex15/tyranitar-and-tropius.webp",
+      "aspect": 0.551,
+      "source": "File:EX15 Booster Tyranitar.jpg"
+    },
+    {
+      "id": "dragonair-and-salamence",
+      "name": "Dragonair & Salamence",
+      "src": "/packs/ex15/dragonair-and-salamence.webp",
+      "aspect": 0.552,
+      "source": "File:EX15 Booster Salamence.jpg"
+    },
+    {
+      "id": "latias-and-latios",
+      "name": "Latias & Latios",
+      "src": "/packs/ex15/latias-and-latios.webp",
+      "aspect": 0.542,
+      "source": "File:EX15 Booster Latias.jpg"
+    }
+  ],
+  "ex16": [
+    {
+      "id": "raichu",
+      "name": "Raichu",
+      "src": "/packs/ex16/raichu.webp",
+      "aspect": 0.554,
+      "source": "File:EX16 Booster Raichu.jpg"
+    },
+    {
+      "id": "aggron",
+      "name": "Aggron",
+      "src": "/packs/ex16/aggron.webp",
+      "aspect": 0.564,
+      "source": "File:EX16 Booster Aggron.jpg"
+    },
+    {
+      "id": "absol",
+      "name": "Absol",
+      "src": "/packs/ex16/absol.webp",
+      "aspect": 0.553,
+      "source": "File:EX16 Booster Absol.jpg"
+    },
+    {
+      "id": "walrein",
+      "name": "Walrein",
+      "src": "/packs/ex16/walrein.webp",
+      "aspect": 0.549,
+      "source": "File:EX16 Booster Walrein.jpg"
+    }
+  ],
+  "ex2": [
+    {
+      "id": "shiftry",
+      "name": "Shiftry",
+      "src": "/packs/ex2/shiftry.webp",
+      "aspect": 0.551,
+      "source": "File:EX2 Booster Shiftry.jpg"
+    },
+    {
+      "id": "zangoose",
+      "name": "Zangoose",
+      "src": "/packs/ex2/zangoose.webp",
+      "aspect": 0.546,
+      "source": "File:EX2 Booster Zangoose.jpg"
+    },
+    {
+      "id": "seviper",
+      "name": "Seviper",
+      "src": "/packs/ex2/seviper.webp",
+      "aspect": 0.543,
+      "source": "File:EX2 Booster Seviper.jpg"
+    },
+    {
+      "id": "dusclops",
+      "name": "Dusclops",
+      "src": "/packs/ex2/dusclops.webp",
+      "aspect": 0.555,
+      "source": "File:EX2 Booster Dusclops.jpg"
+    }
+  ],
+  "ex3": [
+    {
+      "id": "absol",
+      "name": "Absol",
+      "src": "/packs/ex3/absol.webp",
+      "aspect": 0.561,
+      "source": "File:EX3 Booster Absol.jpg"
+    },
+    {
+      "id": "latias",
+      "name": "Latias",
+      "src": "/packs/ex3/latias.webp",
+      "aspect": 0.566,
+      "source": "File:EX3 Booster Latias.jpg"
+    },
+    {
+      "id": "latios",
+      "name": "Latios",
+      "src": "/packs/ex3/latios.webp",
+      "aspect": 0.554,
+      "source": "File:EX3 Booster Latios.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/ex3/rayquaza.webp",
+      "aspect": 0.552,
+      "source": "File:EX3 Booster Rayquaza.jpg"
+    }
+  ],
+  "ex4": [
+    {
+      "id": "houndoom",
+      "name": "Houndoom",
+      "src": "/packs/ex4/houndoom.webp",
+      "aspect": 0.542,
+      "source": "File:EX4 Booster Houndoom.jpg"
+    },
+    {
+      "id": "aggron",
+      "name": "Aggron",
+      "src": "/packs/ex4/aggron.webp",
+      "aspect": 0.559,
+      "source": "File:EX4 Booster Aggron.jpg"
+    },
+    {
+      "id": "sharpedo",
+      "name": "Sharpedo",
+      "src": "/packs/ex4/sharpedo.webp",
+      "aspect": 0.554,
+      "source": "File:EX4 Booster Sharpedo.jpg"
+    },
+    {
+      "id": "walrein",
+      "name": "Walrein",
+      "src": "/packs/ex4/walrein.webp",
+      "aspect": 0.55,
+      "source": "File:EX4 Booster Walrein.jpg"
+    }
+  ],
+  "ex5": [
+    {
+      "id": "metagross",
+      "name": "Metagross",
+      "src": "/packs/ex5/metagross.webp",
+      "aspect": 0.566,
+      "source": "File:EX5 Booster Metagross.jpg"
+    },
+    {
+      "id": "regirock",
+      "name": "Regirock",
+      "src": "/packs/ex5/regirock.webp",
+      "aspect": 0.564,
+      "source": "File:EX5 Booster Regirock.jpg"
+    },
+    {
+      "id": "regice",
+      "name": "Regice",
+      "src": "/packs/ex5/regice.webp",
+      "aspect": 0.546,
+      "source": "File:EX5 Booster Regice.jpg"
+    },
+    {
+      "id": "registeel",
+      "name": "Registeel",
+      "src": "/packs/ex5/registeel.webp",
+      "aspect": 0.568,
+      "source": "File:EX5 Booster Registeel.jpg"
+    }
+  ],
+  "ex6": [
+    {
+      "id": "venusaur",
+      "name": "Venusaur",
+      "src": "/packs/ex6/venusaur.webp",
+      "aspect": 0.569,
+      "source": "File:EX6 Booster Venusaur.jpg"
+    },
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/ex6/charizard.webp",
+      "aspect": 0.559,
+      "source": "File:EX6 Booster Charizard.jpg"
+    },
+    {
+      "id": "blastoise",
+      "name": "Blastoise",
+      "src": "/packs/ex6/blastoise.webp",
+      "aspect": 0.556,
+      "source": "File:EX6 Booster Blastoise.jpg"
+    },
+    {
+      "id": "pikachu",
+      "name": "Pikachu",
+      "src": "/packs/ex6/pikachu.webp",
+      "aspect": 0.558,
+      "source": "File:EX6 Booster Pikachu.jpg"
+    }
+  ],
+  "ex7": [
+    {
+      "id": "scyther",
+      "name": "Scyther",
+      "src": "/packs/ex7/scyther.webp",
+      "aspect": 0.566,
+      "source": "File:EX7 Booster Scyther.jpg"
+    },
+    {
+      "id": "gyarados",
+      "name": "Gyarados",
+      "src": "/packs/ex7/gyarados.webp",
+      "aspect": 0.575,
+      "source": "File:EX7 Booster Gyarados.jpg"
+    },
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/ex7/mewtwo.webp",
+      "aspect": 0.566,
+      "source": "File:EX7 Booster Mewtwo.jpg"
+    },
+    {
+      "id": "tyranitar",
+      "name": "Tyranitar",
+      "src": "/packs/ex7/tyranitar.webp",
+      "aspect": 0.56,
+      "source": "File:EX7 Booster Tyranitar.jpg"
+    }
+  ],
+  "ex8": [
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/ex8/rayquaza.webp",
+      "aspect": 0.564,
+      "source": "File:EX8 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "deoxys-normal-forme",
+      "name": "Deoxys Normal Forme",
+      "src": "/packs/ex8/deoxys-normal-forme.webp",
+      "aspect": 0.56,
+      "source": "File:EX8 Booster Deoxys Normal.jpg"
+    },
+    {
+      "id": "deoxys-attack-forme",
+      "name": "Deoxys Attack Forme",
+      "src": "/packs/ex8/deoxys-attack-forme.webp",
+      "aspect": 0.57,
+      "source": "File:EX8 Booster Deoxys Attack.jpg"
+    },
+    {
+      "id": "deoxys-defense-forme",
+      "name": "Deoxys Defense Forme",
+      "src": "/packs/ex8/deoxys-defense-forme.webp",
+      "aspect": 0.578,
+      "source": "File:EX8 Booster Deoxys Defense.jpg"
+    }
+  ],
+  "ex9": [
+    {
+      "id": "kyogre",
+      "name": "Kyogre",
+      "src": "/packs/ex9/kyogre.webp",
+      "aspect": 0.551,
+      "source": "File:EX9 Booster Kyogre.jpg"
+    },
+    {
+      "id": "groudon",
+      "name": "Groudon",
+      "src": "/packs/ex9/groudon.webp",
+      "aspect": 0.556,
+      "source": "File:EX9 Booster Groudon.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/ex9/rayquaza.webp",
+      "aspect": 0.546,
+      "source": "File:EX9 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "deoxys-speed-forme",
+      "name": "Deoxys Speed Forme",
+      "src": "/packs/ex9/deoxys-speed-forme.webp",
+      "aspect": 0.574,
+      "source": "File:EX9 Booster Deoxys Speed.jpg"
+    }
+  ],
+  "g1": [
+    {
+      "id": "venusaur",
+      "name": "Venusaur",
+      "src": "/packs/g1/venusaur.webp",
+      "aspect": 0.552,
+      "source": "File:Generations Booster Venusaur.jpg"
+    },
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/g1/charizard.webp",
+      "aspect": 0.559,
+      "source": "File:Generations Booster Charizard.jpg"
+    },
+    {
+      "id": "blastoise",
+      "name": "Blastoise",
+      "src": "/packs/g1/blastoise.webp",
+      "aspect": 0.558,
+      "source": "File:Generations Booster Blastoise.jpg"
+    },
+    {
+      "id": "pikachu",
+      "name": "Pikachu",
+      "src": "/packs/g1/pikachu.webp",
+      "aspect": 0.548,
+      "source": "File:Generations Booster Pikachu.jpg"
+    }
+  ],
+  "gym1": [
+    {
+      "id": "brock",
+      "name": "Brock",
+      "src": "/packs/gym1/brock.webp",
+      "aspect": 0.559,
+      "source": "File:Gym Heroes Booster Brock.jpg"
+    },
+    {
+      "id": "misty",
+      "name": "Misty",
+      "src": "/packs/gym1/misty.webp",
+      "aspect": 0.542,
+      "source": "File:Gym Heroes Booster Misty.jpg"
+    },
+    {
+      "id": "lt-surge",
+      "name": "Lt. Surge",
+      "src": "/packs/gym1/lt-surge.webp",
+      "aspect": 0.555,
+      "source": "File:Gym Heroes Booster Lt Surge.jpg"
+    },
+    {
+      "id": "erika",
+      "name": "Erika",
+      "src": "/packs/gym1/erika.webp",
+      "aspect": 0.57,
+      "source": "File:Gym Heroes Booster Erika.jpg"
+    }
+  ],
+  "gym2": [
+    {
+      "id": "sabrina",
+      "name": "Sabrina",
+      "src": "/packs/gym2/sabrina.webp",
+      "aspect": 0.562,
+      "source": "File:Gym Challenge Booster Sabrina.jpg"
+    },
+    {
+      "id": "koga",
+      "name": "Koga",
+      "src": "/packs/gym2/koga.webp",
+      "aspect": 0.508,
+      "source": "File:Gym Challenge Booster Koga.jpg"
+    },
+    {
+      "id": "blaine",
+      "name": "Blaine",
+      "src": "/packs/gym2/blaine.webp",
+      "aspect": 0.551,
+      "source": "File:Gym Challenge Booster Blaine.jpg"
+    },
+    {
+      "id": "giovanni",
+      "name": "Giovanni",
+      "src": "/packs/gym2/giovanni.webp",
+      "aspect": 0.586,
+      "source": "File:Gym Challenge Booster Giovanni.jpg"
+    }
+  ],
+  "hgss1": [
+    {
+      "id": "ampharos",
+      "name": "Ampharos",
+      "src": "/packs/hgss1/ampharos.webp",
+      "aspect": 0.539,
+      "source": "File:HS1 Booster Ampharos.jpg"
+    },
+    {
+      "id": "donphan",
+      "name": "Donphan",
+      "src": "/packs/hgss1/donphan.webp",
+      "aspect": 0.539,
+      "source": "File:HS1 Booster Donphan.jpg"
+    },
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/hgss1/lugia.webp",
+      "aspect": 0.539,
+      "source": "File:HS1 Booster Lugia.jpg"
+    },
+    {
+      "id": "ho-oh",
+      "name": "Ho-Oh",
+      "src": "/packs/hgss1/ho-oh.webp",
+      "aspect": 0.539,
+      "source": "File:HS1 Booster Ho-Oh.jpg"
+    }
+  ],
+  "hgss2": [
+    {
+      "id": "crobat",
+      "name": "Crobat",
+      "src": "/packs/hgss2/crobat.webp",
+      "aspect": 0.525,
+      "source": "File:HS2 Booster Crobat.jpg"
+    },
+    {
+      "id": "raikou",
+      "name": "Raikou",
+      "src": "/packs/hgss2/raikou.webp",
+      "aspect": 0.525,
+      "source": "File:HS2 Booster Raikou.jpg"
+    },
+    {
+      "id": "entei",
+      "name": "Entei",
+      "src": "/packs/hgss2/entei.webp",
+      "aspect": 0.525,
+      "source": "File:HS2 Booster Entei.jpg"
+    },
+    {
+      "id": "suicune",
+      "name": "Suicune",
+      "src": "/packs/hgss2/suicune.webp",
+      "aspect": 0.525,
+      "source": "File:HS2 Booster Suicune.jpg"
+    }
+  ],
+  "hgss3": [
+    {
+      "id": "jolteon",
+      "name": "Jolteon",
+      "src": "/packs/hgss3/jolteon.webp",
+      "aspect": 0.526,
+      "source": "File:HS3 Booster Jolteon.jpg"
+    },
+    {
+      "id": "skarmory",
+      "name": "Skarmory",
+      "src": "/packs/hgss3/skarmory.webp",
+      "aspect": 0.526,
+      "source": "File:HS3 Booster Skarmory.jpg"
+    },
+    {
+      "id": "houndoom",
+      "name": "Houndoom",
+      "src": "/packs/hgss3/houndoom.webp",
+      "aspect": 0.526,
+      "source": "File:HS3 Booster Houndoom.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/hgss3/rayquaza.webp",
+      "aspect": 0.526,
+      "source": "File:HS3 Booster Rayquaza.jpg"
+    }
+  ],
+  "hgss4": [
+    {
+      "id": "electivire",
+      "name": "Electivire",
+      "src": "/packs/hgss4/electivire.webp",
+      "aspect": 0.526,
+      "source": "File:HS4 Booster Electivire.jpg"
+    },
+    {
+      "id": "magmortar",
+      "name": "Magmortar",
+      "src": "/packs/hgss4/magmortar.webp",
+      "aspect": 0.526,
+      "source": "File:HS4 Booster Magmortar.jpg"
+    },
+    {
+      "id": "dialga",
+      "name": "Dialga",
+      "src": "/packs/hgss4/dialga.webp",
+      "aspect": 0.526,
+      "source": "File:HS4 Booster Dialga.jpg"
+    },
+    {
+      "id": "palkia",
+      "name": "Palkia",
+      "src": "/packs/hgss4/palkia.webp",
+      "aspect": 0.526,
+      "source": "File:HS4 Booster Palkia.jpg"
+    }
+  ],
+  "lc": [
+    {
+      "id": "venusaur-charizard-and-blastoise",
+      "name": "Venusaur, Charizard, and Blastoise",
+      "src": "/packs/lc/venusaur-charizard-and-blastoise.webp",
+      "aspect": 0.603,
+      "source": "File:Legendary Collection Booster Starters.jpg"
+    },
+    {
+      "id": "vaporeon-jolteon-and-flareon",
+      "name": "Vaporeon, Jolteon, and Flareon",
+      "src": "/packs/lc/vaporeon-jolteon-and-flareon.webp",
+      "aspect": 0.548,
+      "source": "File:Legendary Collection Booster Eeveelution.jpg"
+    },
+    {
+      "id": "articuno-zapdos-and-moltres",
+      "name": "Articuno, Zapdos, and Moltres",
+      "src": "/packs/lc/articuno-zapdos-and-moltres.webp",
+      "aspect": 0.684,
+      "source": "File:Legendary Collection Booster Birds.jpg"
+    },
+    {
+      "id": "alakazam-machamp-and-mewtwo",
+      "name": "Alakazam, Machamp, and Mewtwo",
+      "src": "/packs/lc/alakazam-machamp-and-mewtwo.webp",
+      "aspect": 0.549,
+      "source": "File:Legendary Collection Booster Mewtwo.jpg"
+    }
+  ],
+  "me01": [
+    {
+      "id": "mega-lucario",
+      "name": "Mega Lucario",
+      "src": "/packs/me01/mega-lucario.webp",
+      "aspect": 0.547,
+      "source": "File:ME1 Booster Mega Lucario.png"
+    },
+    {
+      "id": "mega-gardevoir",
+      "name": "Mega Gardevoir",
+      "src": "/packs/me01/mega-gardevoir.webp",
+      "aspect": 0.547,
+      "source": "File:ME1 Booster Mega Gardevoir.png"
+    },
+    {
+      "id": "mega-venusaur",
+      "name": "Mega Venusaur",
+      "src": "/packs/me01/mega-venusaur.webp",
+      "aspect": 0.547,
+      "source": "File:ME1 Booster Mega Venusaur.png"
+    },
+    {
+      "id": "mega-kangaskhan",
+      "name": "Mega Kangaskhan",
+      "src": "/packs/me01/mega-kangaskhan.webp",
+      "aspect": 0.547,
+      "source": "File:ME1 Booster Mega Kangaskhan.png"
+    }
+  ],
+  "me02": [
+    {
+      "id": "mega-charizard-x",
+      "name": "Mega Charizard X",
+      "src": "/packs/me02/mega-charizard-x.webp",
+      "aspect": 0.547,
+      "source": "File:ME2 Booster Mega Charizard X.png"
+    },
+    {
+      "id": "mega-gengar",
+      "name": "Mega Gengar",
+      "src": "/packs/me02/mega-gengar.webp",
+      "aspect": 0.547,
+      "source": "File:ME2 Booster Mega Gengar.png"
+    },
+    {
+      "id": "mega-heracross",
+      "name": "Mega Heracross",
+      "src": "/packs/me02/mega-heracross.webp",
+      "aspect": 0.547,
+      "source": "File:ME2 Booster Mega Heracross.png"
+    },
+    {
+      "id": "mega-lopunny",
+      "name": "Mega Lopunny",
+      "src": "/packs/me02/mega-lopunny.webp",
+      "aspect": 0.547,
+      "source": "File:ME2 Booster Mega Lopunny.png"
+    }
+  ],
+  "me02.5": [
+    {
+      "id": "standard",
+      "name": "Standard",
+      "src": "/packs/me02.5/standard.webp",
+      "aspect": 0.547,
+      "source": "File:Ascended Heroes Booster.png"
+    }
+  ],
+  "me03": [
+    {
+      "id": "mega-zygarde",
+      "name": "Mega Zygarde",
+      "src": "/packs/me03/mega-zygarde.webp",
+      "aspect": 0.547,
+      "source": "File:ME3 Booster Mega Zygarde.png"
+    },
+    {
+      "id": "mega-clefable",
+      "name": "Mega Clefable",
+      "src": "/packs/me03/mega-clefable.webp",
+      "aspect": 0.547,
+      "source": "File:ME3 Booster Mega Clefable.png"
+    },
+    {
+      "id": "mega-starmie",
+      "name": "Mega Starmie",
+      "src": "/packs/me03/mega-starmie.webp",
+      "aspect": 0.547,
+      "source": "File:ME3 Booster Mega Starmie.png"
+    },
+    {
+      "id": "meowth",
+      "name": "Meowth",
+      "src": "/packs/me03/meowth.webp",
+      "aspect": 0.547,
+      "source": "File:ME3 Booster Meowth.png"
+    }
+  ],
+  "me04": [
+    {
+      "id": "mega-greninja",
+      "name": "Mega Greninja",
+      "src": "/packs/me04/mega-greninja.webp",
+      "aspect": 0.547,
+      "source": "File:ME4 Booster Mega Greninja.png"
+    },
+    {
+      "id": "mega-floette",
+      "name": "Mega Floette",
+      "src": "/packs/me04/mega-floette.webp",
+      "aspect": 0.547,
+      "source": "File:ME4 Booster Mega Floette.png"
+    },
+    {
+      "id": "mega-pyroar",
+      "name": "Mega Pyroar",
+      "src": "/packs/me04/mega-pyroar.webp",
+      "aspect": 0.547,
+      "source": "File:ME4 Booster Mega Pyroar.png"
+    },
+    {
+      "id": "mega-dragalge",
+      "name": "Mega Dragalge",
+      "src": "/packs/me04/mega-dragalge.webp",
+      "aspect": 0.547,
+      "source": "File:ME4 Booster Mega Dragalge.png"
+    }
+  ],
+  "me05": [
+    {
+      "id": "mega-darkrai",
+      "name": "Mega Darkrai",
+      "src": "/packs/me05/mega-darkrai.webp",
+      "aspect": 0.547,
+      "source": "File:ME5 Booster Mega Darkrai.png"
+    },
+    {
+      "id": "mega-zeraora",
+      "name": "Mega Zeraora",
+      "src": "/packs/me05/mega-zeraora.webp",
+      "aspect": 0.547,
+      "source": "File:ME5 Booster Mega Zeraora.png"
+    },
+    {
+      "id": "mega-chandelure",
+      "name": "Mega Chandelure",
+      "src": "/packs/me05/mega-chandelure.webp",
+      "aspect": 0.547,
+      "source": "File:ME5 Booster Mega Chandelure.png"
+    },
+    {
+      "id": "mega-excadrill",
+      "name": "Mega Excadrill",
+      "src": "/packs/me05/mega-excadrill.webp",
+      "aspect": 0.547,
+      "source": "File:ME5 Booster Mega Excadrill.png"
+    }
+  ],
+  "neo1": [
+    {
+      "id": "meganium",
+      "name": "Meganium",
+      "src": "/packs/neo1/meganium.webp",
+      "aspect": 0.581,
+      "source": "File:Neo Genesis Booster Meganium.jpg"
+    },
+    {
+      "id": "typhlosion",
+      "name": "Typhlosion",
+      "src": "/packs/neo1/typhlosion.webp",
+      "aspect": 0.546,
+      "source": "File:Neo Genesis Booster Typhlosion.jpg"
+    },
+    {
+      "id": "feraligatr",
+      "name": "Feraligatr",
+      "src": "/packs/neo1/feraligatr.webp",
+      "aspect": 0.543,
+      "source": "File:Neo Genesis Booster Feraligatr.jpg"
+    },
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/neo1/lugia.webp",
+      "aspect": 0.56,
+      "source": "File:Neo Genesis Booster Lugia.jpg"
+    }
+  ],
+  "neo2": [
+    {
+      "id": "xatu",
+      "name": "Xatu",
+      "src": "/packs/neo2/xatu.webp",
+      "aspect": 0.579,
+      "source": "File:Neo Discovery Booster Xatu.jpg"
+    },
+    {
+      "id": "umbreon",
+      "name": "Umbreon",
+      "src": "/packs/neo2/umbreon.webp",
+      "aspect": 0.575,
+      "source": "File:Neo Discovery Booster Umbreon.jpg"
+    },
+    {
+      "id": "scizor",
+      "name": "Scizor",
+      "src": "/packs/neo2/scizor.webp",
+      "aspect": 0.567,
+      "source": "File:Neo Discovery Booster Scizor.jpg"
+    },
+    {
+      "id": "smeargle",
+      "name": "Smeargle",
+      "src": "/packs/neo2/smeargle.webp",
+      "aspect": 0.558,
+      "source": "File:Neo Discovery Booster Smeargle.jpg"
+    }
+  ],
+  "neo3": [
+    {
+      "id": "misdreavus",
+      "name": "Misdreavus",
+      "src": "/packs/neo3/misdreavus.webp",
+      "aspect": 0.571,
+      "source": "File:Neo Revelation Booster Misdreavus.jpg"
+    },
+    {
+      "id": "raikou",
+      "name": "Raikou",
+      "src": "/packs/neo3/raikou.webp",
+      "aspect": 0.575,
+      "source": "File:Neo Revelation Booster Raikou.jpg"
+    },
+    {
+      "id": "entei",
+      "name": "Entei",
+      "src": "/packs/neo3/entei.webp",
+      "aspect": 0.558,
+      "source": "File:Neo Revelation Booster Entei.jpg"
+    },
+    {
+      "id": "suicune",
+      "name": "Suicune",
+      "src": "/packs/neo3/suicune.webp",
+      "aspect": 0.534,
+      "source": "File:Neo Revelation Booster Suicune.jpg"
+    }
+  ],
+  "neo4": [
+    {
+      "id": "noctowl",
+      "name": "Noctowl",
+      "src": "/packs/neo4/noctowl.webp",
+      "aspect": 0.551,
+      "source": "File:Neo Destiny Booster Noctowl.jpg"
+    },
+    {
+      "id": "togetic",
+      "name": "Togetic",
+      "src": "/packs/neo4/togetic.webp",
+      "aspect": 0.561,
+      "source": "File:Neo Destiny Booster Togetic.jpg"
+    },
+    {
+      "id": "tyranitar",
+      "name": "Tyranitar",
+      "src": "/packs/neo4/tyranitar.webp",
+      "aspect": 0.554,
+      "source": "File:Neo Destiny Booster Tyranitar.jpg"
+    },
+    {
+      "id": "celebi",
+      "name": "Celebi",
+      "src": "/packs/neo4/celebi.webp",
+      "aspect": 0.545,
+      "source": "File:Neo Destiny Booster Celebi.jpg"
+    }
+  ],
+  "pl1": [
+    {
+      "id": "dialga",
+      "name": "Dialga",
+      "src": "/packs/pl1/dialga.webp",
+      "aspect": 0.544,
+      "source": "File:PL1 Booster Dialga.jpg"
+    },
+    {
+      "id": "palkia",
+      "name": "Palkia",
+      "src": "/packs/pl1/palkia.webp",
+      "aspect": 0.544,
+      "source": "File:PL1 Booster Palkia.jpg"
+    },
+    {
+      "id": "giratina",
+      "name": "Giratina",
+      "src": "/packs/pl1/giratina.webp",
+      "aspect": 0.544,
+      "source": "File:PL1 Booster Giratina.jpg"
+    },
+    {
+      "id": "shaymin",
+      "name": "Shaymin",
+      "src": "/packs/pl1/shaymin.webp",
+      "aspect": 0.544,
+      "source": "File:PL1 Booster Shaymin.jpg"
+    }
+  ],
+  "pl2": [
+    {
+      "id": "scizor",
+      "name": "Scizor",
+      "src": "/packs/pl2/scizor.webp",
+      "aspect": 0.537,
+      "source": "File:PL2 Booster Scizor.jpg"
+    },
+    {
+      "id": "houndoom",
+      "name": "Houndoom",
+      "src": "/packs/pl2/houndoom.webp",
+      "aspect": 0.537,
+      "source": "File:PL2 Booster Houndoom.jpg"
+    },
+    {
+      "id": "leafeon",
+      "name": "Leafeon",
+      "src": "/packs/pl2/leafeon.webp",
+      "aspect": 0.537,
+      "source": "File:PL2 Booster Leafeon.jpg"
+    },
+    {
+      "id": "rotom",
+      "name": "Rotom",
+      "src": "/packs/pl2/rotom.webp",
+      "aspect": 0.539,
+      "source": "File:PL2 Booster Rotom.jpg"
+    }
+  ],
+  "pl3": [
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/pl3/charizard.webp",
+      "aspect": 0.53,
+      "source": "File:PL3 Booster Charizard.jpg"
+    },
+    {
+      "id": "absol",
+      "name": "Absol",
+      "src": "/packs/pl3/absol.webp",
+      "aspect": 0.53,
+      "source": "File:PL3 Booster Absol.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/pl3/rayquaza.webp",
+      "aspect": 0.531,
+      "source": "File:PL3 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "garchomp",
+      "name": "Garchomp",
+      "src": "/packs/pl3/garchomp.webp",
+      "aspect": 0.534,
+      "source": "File:PL3 Booster Garchomp.jpg"
+    }
+  ],
+  "sm1": [
+    {
+      "id": "decidueye",
+      "name": "Decidueye",
+      "src": "/packs/sm1/decidueye.webp",
+      "aspect": 0.546,
+      "source": "File:SM1 Booster Decidueye.jpg"
+    },
+    {
+      "id": "incineroar",
+      "name": "Incineroar",
+      "src": "/packs/sm1/incineroar.webp",
+      "aspect": 0.546,
+      "source": "File:SM1 Booster Incineroar.jpg"
+    },
+    {
+      "id": "primarina",
+      "name": "Primarina",
+      "src": "/packs/sm1/primarina.webp",
+      "aspect": 0.546,
+      "source": "File:SM1 Booster Primarina.jpg"
+    },
+    {
+      "id": "solgaleo",
+      "name": "Solgaleo",
+      "src": "/packs/sm1/solgaleo.webp",
+      "aspect": 0.546,
+      "source": "File:SM1 Booster Solgaleo.jpg"
+    },
+    {
+      "id": "lunala",
+      "name": "Lunala",
+      "src": "/packs/sm1/lunala.webp",
+      "aspect": 0.546,
+      "source": "File:SM1 Booster Lunala.jpg"
+    }
+  ],
+  "sm10": [
+    {
+      "id": "charizard-and-reshiram",
+      "name": "Charizard and Reshiram",
+      "src": "/packs/sm10/charizard-and-reshiram.webp",
+      "aspect": 0.547,
+      "source": "File:SM10 Booster Charizard Reshiram.jpg"
+    },
+    {
+      "id": "machamp-and-marshadow",
+      "name": "Machamp and Marshadow",
+      "src": "/packs/sm10/machamp-and-marshadow.webp",
+      "aspect": 0.546,
+      "source": "File:SM10 Booster Machamp Marshadow.jpg"
+    },
+    {
+      "id": "gardevoir-and-sylveon",
+      "name": "Gardevoir and Sylveon",
+      "src": "/packs/sm10/gardevoir-and-sylveon.webp",
+      "aspect": 0.547,
+      "source": "File:SM10 Booster Gardevoir Sylveon.jpg"
+    },
+    {
+      "id": "lucario-and-melmetal",
+      "name": "Lucario and Melmetal",
+      "src": "/packs/sm10/lucario-and-melmetal.webp",
+      "aspect": 0.546,
+      "source": "File:SM10 Booster Lucario Melmetal.jpg"
+    }
+  ],
+  "sm11": [
+    {
+      "id": "mewtwo-and-mew",
+      "name": "Mewtwo and Mew",
+      "src": "/packs/sm11/mewtwo-and-mew.webp",
+      "aspect": 0.546,
+      "source": "File:SM11 Booster Mewtwo Mew.jpg"
+    },
+    {
+      "id": "espeon-and-deoxys",
+      "name": "Espeon and Deoxys",
+      "src": "/packs/sm11/espeon-and-deoxys.webp",
+      "aspect": 0.546,
+      "source": "File:SM11 Booster Espeon Deoxys.jpg"
+    },
+    {
+      "id": "umbreon-and-darkrai",
+      "name": "Umbreon and Darkrai",
+      "src": "/packs/sm11/umbreon-and-darkrai.webp",
+      "aspect": 0.547,
+      "source": "File:SM11 Booster Umbreon Darkrai.jpg"
+    },
+    {
+      "id": "garchomp-and-giratina",
+      "name": "Garchomp and Giratina",
+      "src": "/packs/sm11/garchomp-and-giratina.webp",
+      "aspect": 0.546,
+      "source": "File:SM11 Booster Garchomp Giratina.jpg"
+    }
+  ],
+  "sm115": [
+    {
+      "id": "shiny-charizard",
+      "name": "Shiny Charizard",
+      "src": "/packs/sm115/shiny-charizard.webp",
+      "aspect": 0.598,
+      "source": "File:Hidden Fates Booster Charizard.jpg"
+    },
+    {
+      "id": "legendary-birds",
+      "name": "Legendary birds",
+      "src": "/packs/sm115/legendary-birds.webp",
+      "aspect": 0.583,
+      "source": "File:Hidden Fates Booster Legendary Birds.jpg"
+    },
+    {
+      "id": "shiny-mewtwo",
+      "name": "Shiny Mewtwo",
+      "src": "/packs/sm115/shiny-mewtwo.webp",
+      "aspect": 0.548,
+      "source": "File:Hidden Fates Booster Mewtwo.jpg"
+    },
+    {
+      "id": "mew",
+      "name": "Mew",
+      "src": "/packs/sm115/mew.webp",
+      "aspect": 0.555,
+      "source": "File:Hidden Fates Booster Mew.jpg"
+    }
+  ],
+  "sm12": [
+    {
+      "id": "blastoise-and-piplup",
+      "name": "Blastoise and Piplup",
+      "src": "/packs/sm12/blastoise-and-piplup.webp",
+      "aspect": 0.544,
+      "source": "File:SM12 Booster Blastoise Piplup.jpg"
+    },
+    {
+      "id": "cleffa-igglybuff-and-togepi",
+      "name": "Cleffa, Igglybuff, and Togepi",
+      "src": "/packs/sm12/cleffa-igglybuff-and-togepi.webp",
+      "aspect": 0.544,
+      "source": "File:SM12 Booster Cleffa Igglybuff Togepi.jpg"
+    },
+    {
+      "id": "dialga-palkia-and-arceus",
+      "name": "Dialga, Palkia, and Arceus",
+      "src": "/packs/sm12/dialga-palkia-and-arceus.webp",
+      "aspect": 0.544,
+      "source": "File:SM12 Booster Dialga Palkia Arceus.jpg"
+    },
+    {
+      "id": "solgaleo-and-lunala",
+      "name": "Solgaleo and Lunala",
+      "src": "/packs/sm12/solgaleo-and-lunala.webp",
+      "aspect": 0.544,
+      "source": "File:SM12 Booster Solgaleo Lunala.jpg"
+    }
+  ],
+  "sm2": [
+    {
+      "id": "alolan-ninetales",
+      "name": "Alolan Ninetales",
+      "src": "/packs/sm2/alolan-ninetales.webp",
+      "aspect": 0.547,
+      "source": "File:SM2 Booster Ninetales.jpg"
+    },
+    {
+      "id": "lycanroc",
+      "name": "Lycanroc",
+      "src": "/packs/sm2/lycanroc.webp",
+      "aspect": 0.547,
+      "source": "File:SM2 Booster Lycanroc.jpg"
+    },
+    {
+      "id": "kommo-o",
+      "name": "Kommo-o",
+      "src": "/packs/sm2/kommo-o.webp",
+      "aspect": 0.546,
+      "source": "File:SM2 Booster Kommo-o.jpg"
+    },
+    {
+      "id": "tapu-koko",
+      "name": "Tapu Koko",
+      "src": "/packs/sm2/tapu-koko.webp",
+      "aspect": 0.547,
+      "source": "File:SM2 Booster Tapu Koko.jpg"
+    }
+  ],
+  "sm3": [
+    {
+      "id": "ho-oh",
+      "name": "Ho-Oh",
+      "src": "/packs/sm3/ho-oh.webp",
+      "aspect": 0.549,
+      "source": "File:SM3 Booster Ho-Oh.jpg"
+    },
+    {
+      "id": "tapu-fini",
+      "name": "Tapu Fini",
+      "src": "/packs/sm3/tapu-fini.webp",
+      "aspect": 0.548,
+      "source": "File:SM3 Booster Tapu Fini.jpg"
+    },
+    {
+      "id": "necrozma",
+      "name": "Necrozma",
+      "src": "/packs/sm3/necrozma.webp",
+      "aspect": 0.548,
+      "source": "File:SM3 Booster Necrozma.jpg"
+    },
+    {
+      "id": "marshadow",
+      "name": "Marshadow",
+      "src": "/packs/sm3/marshadow.webp",
+      "aspect": 0.549,
+      "source": "File:SM3 Booster Marshadow.jpg"
+    }
+  ],
+  "sm3.5": [
+    {
+      "id": "mewtwo",
+      "name": "Mewtwo",
+      "src": "/packs/sm3.5/mewtwo.webp",
+      "aspect": 0.538,
+      "source": "File:Shining Legends Booster Mewtwo.jpg"
+    },
+    {
+      "id": "shiny-rayquaza",
+      "name": "Shiny Rayquaza",
+      "src": "/packs/sm3.5/shiny-rayquaza.webp",
+      "aspect": 0.554,
+      "source": "File:Shining Legends Booster Rayquaza.jpg"
+    },
+    {
+      "id": "shiny-genesect",
+      "name": "Shiny Genesect",
+      "src": "/packs/sm3.5/shiny-genesect.webp",
+      "aspect": 0.578,
+      "source": "File:Shining Legends Booster Genesect.jpg"
+    }
+  ],
+  "sm4": [
+    {
+      "id": "silvally",
+      "name": "Silvally",
+      "src": "/packs/sm4/silvally.webp",
+      "aspect": 0.547,
+      "source": "File:SM4 Booster Silvally.jpg"
+    },
+    {
+      "id": "buzzwole",
+      "name": "Buzzwole",
+      "src": "/packs/sm4/buzzwole.webp",
+      "aspect": 0.544,
+      "source": "File:SM4 Booster Buzzwole.jpg"
+    },
+    {
+      "id": "kartana",
+      "name": "Kartana",
+      "src": "/packs/sm4/kartana.webp",
+      "aspect": 0.546,
+      "source": "File:SM4 Booster Kartana.jpg"
+    },
+    {
+      "id": "guzzlord",
+      "name": "Guzzlord",
+      "src": "/packs/sm4/guzzlord.webp",
+      "aspect": 0.546,
+      "source": "File:SM4 Booster Guzzlord.jpg"
+    }
+  ],
+  "sm5": [
+    {
+      "id": "leafeon",
+      "name": "Leafeon",
+      "src": "/packs/sm5/leafeon.webp",
+      "aspect": 0.549,
+      "source": "File:SM5 Booster Leafeon.jpg"
+    },
+    {
+      "id": "giratina",
+      "name": "Giratina",
+      "src": "/packs/sm5/giratina.webp",
+      "aspect": 0.548,
+      "source": "File:SM5 Booster Giratina.jpg"
+    },
+    {
+      "id": "dusk-mane-necrozma",
+      "name": "Dusk Mane Necrozma",
+      "src": "/packs/sm5/dusk-mane-necrozma.webp",
+      "aspect": 0.545,
+      "source": "File:SM5 Booster Dusk Mane Necrozma.jpg"
+    },
+    {
+      "id": "dawn-wings-necrozma",
+      "name": "Dawn Wings Necrozma",
+      "src": "/packs/sm5/dawn-wings-necrozma.webp",
+      "aspect": 0.548,
+      "source": "File:SM5 Booster Dawn Wings Necrozma.jpg"
+    }
+  ],
+  "sm6": [
+    {
+      "id": "greninja",
+      "name": "Greninja",
+      "src": "/packs/sm6/greninja.webp",
+      "aspect": 0.543,
+      "source": "File:SM6 Booster Greninja.jpg"
+    },
+    {
+      "id": "zygarde",
+      "name": "Zygarde",
+      "src": "/packs/sm6/zygarde.webp",
+      "aspect": 0.541,
+      "source": "File:SM6 Booster Zygarde.jpg"
+    },
+    {
+      "id": "ultra-necrozma",
+      "name": "Ultra Necrozma",
+      "src": "/packs/sm6/ultra-necrozma.webp",
+      "aspect": 0.541,
+      "source": "File:SM6 Booster Necrozma.jpg"
+    },
+    {
+      "id": "naganadel",
+      "name": "Naganadel",
+      "src": "/packs/sm6/naganadel.webp",
+      "aspect": 0.541,
+      "source": "File:SM6 Booster Naganadel.jpg"
+    }
+  ],
+  "sm7": [
+    {
+      "id": "blaziken",
+      "name": "Blaziken",
+      "src": "/packs/sm7/blaziken.webp",
+      "aspect": 0.545,
+      "source": "File:SM7 Booster Blaziken.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/sm7/rayquaza.webp",
+      "aspect": 0.545,
+      "source": "File:SM7 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "jirachi",
+      "name": "Jirachi",
+      "src": "/packs/sm7/jirachi.webp",
+      "aspect": 0.546,
+      "source": "File:SM7 Booster Jirachi.jpg"
+    },
+    {
+      "id": "stakataka",
+      "name": "Stakataka",
+      "src": "/packs/sm7/stakataka.webp",
+      "aspect": 0.545,
+      "source": "File:SM7 Booster Stakataka.jpg"
+    }
+  ],
+  "sm7.5": [
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/sm7.5/charizard.webp",
+      "aspect": 0.591,
+      "source": "File:Dragon Majesty Booster Charizard.jpg"
+    },
+    {
+      "id": "dragonite",
+      "name": "Dragonite",
+      "src": "/packs/sm7.5/dragonite.webp",
+      "aspect": 0.54,
+      "source": "File:Dragon Majesty Booster Dragonite.jpg"
+    },
+    {
+      "id": "salamence",
+      "name": "Salamence",
+      "src": "/packs/sm7.5/salamence.webp",
+      "aspect": 0.56,
+      "source": "File:Dragon Majesty Booster Salamence.jpg"
+    },
+    {
+      "id": "reshiram",
+      "name": "Reshiram",
+      "src": "/packs/sm7.5/reshiram.webp",
+      "aspect": 0.58,
+      "source": "File:Dragon Majesty Booster Reshiram.jpg"
+    }
+  ],
+  "sm8": [
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/sm8/lugia.webp",
+      "aspect": 0.559,
+      "source": "File:SM8 Booster Lugia.jpg"
+    },
+    {
+      "id": "celebi",
+      "name": "Celebi",
+      "src": "/packs/sm8/celebi.webp",
+      "aspect": 0.558,
+      "source": "File:SM8 Booster Celebi.jpg"
+    },
+    {
+      "id": "blacephalon",
+      "name": "Blacephalon",
+      "src": "/packs/sm8/blacephalon.webp",
+      "aspect": 0.559,
+      "source": "File:SM8 Booster Blacephalon.jpg"
+    },
+    {
+      "id": "zeraora",
+      "name": "Zeraora",
+      "src": "/packs/sm8/zeraora.webp",
+      "aspect": 0.567,
+      "source": "File:SM8 Booster Zeraora.jpg"
+    }
+  ],
+  "sm9": [
+    {
+      "id": "venusaur-and-celebi",
+      "name": "Venusaur and Celebi",
+      "src": "/packs/sm9/venusaur-and-celebi.webp",
+      "aspect": 0.551,
+      "source": "File:SM9 Booster Venusaur Celebi.jpg"
+    },
+    {
+      "id": "pikachu-and-zekrom",
+      "name": "Pikachu and Zekrom",
+      "src": "/packs/sm9/pikachu-and-zekrom.webp",
+      "aspect": 0.557,
+      "source": "File:SM9 Booster Pikachu Zekrom.jpg"
+    },
+    {
+      "id": "gengar-and-mimikyu",
+      "name": "Gengar and Mimikyu",
+      "src": "/packs/sm9/gengar-and-mimikyu.webp",
+      "aspect": 0.546,
+      "source": "File:SM9 Booster Gengar Mimikyu.jpg"
+    },
+    {
+      "id": "eevee-and-snorlax",
+      "name": "Eevee and Snorlax",
+      "src": "/packs/sm9/eevee-and-snorlax.webp",
+      "aspect": 0.553,
+      "source": "File:SM9 Booster Eevee Snorlax.jpg"
+    }
+  ],
+  "sv01": [
+    {
+      "id": "terastallized-gyarados",
+      "name": "Terastallized Gyarados",
+      "src": "/packs/sv01/terastallized-gyarados.webp",
+      "aspect": 0.546,
+      "source": "File:SV1 Booster Gyarados.png"
+    },
+    {
+      "id": "koraidon",
+      "name": "Koraidon",
+      "src": "/packs/sv01/koraidon.webp",
+      "aspect": 0.546,
+      "source": "File:SV1 Booster Koraidon.png"
+    },
+    {
+      "id": "miraidon",
+      "name": "Miraidon",
+      "src": "/packs/sv01/miraidon.webp",
+      "aspect": 0.546,
+      "source": "File:SV1 Booster Miraidon.png"
+    },
+    {
+      "id": "first-partner-pokemon",
+      "name": "First partner Pokémon",
+      "src": "/packs/sv01/first-partner-pokemon.webp",
+      "aspect": 0.546,
+      "source": "File:SV1 Booster Partners.png"
+    }
+  ],
+  "sv02": [
+    {
+      "id": "meowscarada",
+      "name": "Meowscarada",
+      "src": "/packs/sv02/meowscarada.webp",
+      "aspect": 0.546,
+      "source": "File:SV2 Booster Meowscarada.png"
+    },
+    {
+      "id": "skeledirge",
+      "name": "Skeledirge",
+      "src": "/packs/sv02/skeledirge.webp",
+      "aspect": 0.546,
+      "source": "File:SV2 Booster Skeledirge.png"
+    },
+    {
+      "id": "quaquaval",
+      "name": "Quaquaval",
+      "src": "/packs/sv02/quaquaval.webp",
+      "aspect": 0.546,
+      "source": "File:SV2 Booster Quaquaval.png"
+    },
+    {
+      "id": "chien-pao",
+      "name": "Chien-Pao",
+      "src": "/packs/sv02/chien-pao.webp",
+      "aspect": 0.546,
+      "source": "File:SV2 Booster Chien-Pao.png"
+    },
+    {
+      "id": "ting-lu",
+      "name": "Ting-Lu",
+      "src": "/packs/sv02/ting-lu.webp",
+      "aspect": 0.546,
+      "source": "File:SV2 Booster Ting-Lu.png"
+    }
+  ],
+  "sv03": [
+    {
+      "id": "terastallized-charizard",
+      "name": "Terastallized Charizard",
+      "src": "/packs/sv03/terastallized-charizard.webp",
+      "aspect": 0.546,
+      "source": "File:SV3 Booster Charizard.png"
+    },
+    {
+      "id": "terastallized-dragonite",
+      "name": "Terastallized Dragonite",
+      "src": "/packs/sv03/terastallized-dragonite.webp",
+      "aspect": 0.546,
+      "source": "File:SV3 Booster Dragonite.png"
+    },
+    {
+      "id": "terastallized-tyranitar",
+      "name": "Terastallized Tyranitar",
+      "src": "/packs/sv03/terastallized-tyranitar.webp",
+      "aspect": 0.546,
+      "source": "File:SV3 Booster Tyranitar.png"
+    },
+    {
+      "id": "revavroom",
+      "name": "Revavroom",
+      "src": "/packs/sv03/revavroom.webp",
+      "aspect": 0.546,
+      "source": "File:SV3 Booster Revavroom.png"
+    }
+  ],
+  "sv03.5": [
+    {
+      "id": "151",
+      "name": "151",
+      "src": "/packs/sv03.5/151.webp",
+      "aspect": 0.546,
+      "source": "File:151 Booster.png"
+    }
+  ],
+  "sv04": [
+    {
+      "id": "roaring-moon",
+      "name": "Roaring Moon",
+      "src": "/packs/sv04/roaring-moon.webp",
+      "aspect": 0.546,
+      "source": "File:SV4 Booster Roaring Moon.png"
+    },
+    {
+      "id": "iron-valiant",
+      "name": "Iron Valiant",
+      "src": "/packs/sv04/iron-valiant.webp",
+      "aspect": 0.546,
+      "source": "File:SV4 Booster Iron Valiant.png"
+    },
+    {
+      "id": "armarouge",
+      "name": "Armarouge",
+      "src": "/packs/sv04/armarouge.webp",
+      "aspect": 0.546,
+      "source": "File:SV4 Booster Armarouge.png"
+    },
+    {
+      "id": "terastallized-garchomp",
+      "name": "Terastallized Garchomp",
+      "src": "/packs/sv04/terastallized-garchomp.webp",
+      "aspect": 0.546,
+      "source": "File:SV4 Booster Garchomp.png"
+    }
+  ],
+  "sv04.5": [
+    {
+      "id": "shiny-pikachu",
+      "name": "Shiny Pikachu",
+      "src": "/packs/sv04.5/shiny-pikachu.webp",
+      "aspect": 0.546,
+      "source": "File:Paldean Fates Booster Pikachu.png"
+    },
+    {
+      "id": "shiny-ceruledge",
+      "name": "Shiny Ceruledge",
+      "src": "/packs/sv04.5/shiny-ceruledge.webp",
+      "aspect": 0.546,
+      "source": "File:Paldean Fates Booster Ceruledge.png"
+    },
+    {
+      "id": "shiny-tinkaton",
+      "name": "Shiny Tinkaton",
+      "src": "/packs/sv04.5/shiny-tinkaton.webp",
+      "aspect": 0.546,
+      "source": "File:Paldean Fates Booster Tinkaton.png"
+    },
+    {
+      "id": "shiny-dondozo",
+      "name": "Shiny Dondozo",
+      "src": "/packs/sv04.5/shiny-dondozo.webp",
+      "aspect": 0.546,
+      "source": "File:Paldean Fates Booster Dondozo.png"
+    }
+  ],
+  "sv05": [
+    {
+      "id": "walking-wake",
+      "name": "Walking Wake",
+      "src": "/packs/sv05/walking-wake.webp",
+      "aspect": 0.546,
+      "source": "File:SV5 Booster Walking Wake.png"
+    },
+    {
+      "id": "iron-leaves",
+      "name": "Iron Leaves",
+      "src": "/packs/sv05/iron-leaves.webp",
+      "aspect": 0.546,
+      "source": "File:SV5 Booster Iron Leaves.png"
+    },
+    {
+      "id": "raging-bolt",
+      "name": "Raging Bolt",
+      "src": "/packs/sv05/raging-bolt.webp",
+      "aspect": 0.546,
+      "source": "File:SV5 Booster Raging Bolt.png"
+    },
+    {
+      "id": "iron-crown",
+      "name": "Iron Crown",
+      "src": "/packs/sv05/iron-crown.webp",
+      "aspect": 0.547,
+      "source": "File:SV5 Booster Iron Crown.png"
+    }
+  ],
+  "sv06": [
+    {
+      "id": "teal-mask-ogerpon",
+      "name": "Teal Mask Ogerpon",
+      "src": "/packs/sv06/teal-mask-ogerpon.webp",
+      "aspect": 0.546,
+      "source": "File:SV6 Booster Ogerpon.png"
+    },
+    {
+      "id": "bloodmoon-ursaluna",
+      "name": "Bloodmoon Ursaluna",
+      "src": "/packs/sv06/bloodmoon-ursaluna.webp",
+      "aspect": 0.546,
+      "source": "File:SV6 Booster Ursaluna.png"
+    },
+    {
+      "id": "sinistcha",
+      "name": "Sinistcha",
+      "src": "/packs/sv06/sinistcha.webp",
+      "aspect": 0.546,
+      "source": "File:SV6 Booster Sinistcha.png"
+    },
+    {
+      "id": "terastallized-dragapult",
+      "name": "Terastallized Dragapult",
+      "src": "/packs/sv06/terastallized-dragapult.webp",
+      "aspect": 0.546,
+      "source": "File:SV6 Booster Dragapult.png"
+    }
+  ],
+  "sv06.5": [
+    {
+      "id": "okidogi",
+      "name": "Okidogi",
+      "src": "/packs/sv06.5/okidogi.webp",
+      "aspect": 0.547,
+      "source": "File:Shrouded Fable Booster Okidogi.png"
+    },
+    {
+      "id": "munkidori",
+      "name": "Munkidori",
+      "src": "/packs/sv06.5/munkidori.webp",
+      "aspect": 0.547,
+      "source": "File:Shrouded Fable Booster Munkidori.png"
+    },
+    {
+      "id": "fezandipiti",
+      "name": "Fezandipiti",
+      "src": "/packs/sv06.5/fezandipiti.webp",
+      "aspect": 0.547,
+      "source": "File:Shrouded Fable Booster Fezandipiti.png"
+    },
+    {
+      "id": "pecharunt",
+      "name": "Pecharunt",
+      "src": "/packs/sv06.5/pecharunt.webp",
+      "aspect": 0.547,
+      "source": "File:Shrouded Fable Booster Pecharunt.png"
+    }
+  ],
+  "sv07": [
+    {
+      "id": "terapagos",
+      "name": "Terapagos",
+      "src": "/packs/sv07/terapagos.webp",
+      "aspect": 0.546,
+      "source": "File:SV7 Booster Terapagos.png"
+    },
+    {
+      "id": "cinderace",
+      "name": "Cinderace",
+      "src": "/packs/sv07/cinderace.webp",
+      "aspect": 0.546,
+      "source": "File:SV7 Booster Cinderace.png"
+    },
+    {
+      "id": "lapras",
+      "name": "Lapras",
+      "src": "/packs/sv07/lapras.webp",
+      "aspect": 0.546,
+      "source": "File:SV7 Booster Lapras.png"
+    },
+    {
+      "id": "galvantula",
+      "name": "Galvantula",
+      "src": "/packs/sv07/galvantula.webp",
+      "aspect": 0.546,
+      "source": "File:SV7 Booster Galvantula.png"
+    }
+  ],
+  "sv08": [
+    {
+      "id": "pikachu",
+      "name": "Pikachu",
+      "src": "/packs/sv08/pikachu.webp",
+      "aspect": 0.546,
+      "source": "File:SV8 Booster Pikachu.png"
+    },
+    {
+      "id": "alolan-exeggutor",
+      "name": "Alolan Exeggutor",
+      "src": "/packs/sv08/alolan-exeggutor.webp",
+      "aspect": 0.546,
+      "source": "File:SV8 Booster Alolan Exeggutor.png"
+    },
+    {
+      "id": "latias-and-latios",
+      "name": "Latias & Latios",
+      "src": "/packs/sv08/latias-and-latios.webp",
+      "aspect": 0.546,
+      "source": "File:SV8 Booster Latias.png"
+    },
+    {
+      "id": "archaludon",
+      "name": "Archaludon",
+      "src": "/packs/sv08/archaludon.webp",
+      "aspect": 0.546,
+      "source": "File:SV8 Booster Archaludon.png"
+    }
+  ],
+  "sv08.5": [
+    {
+      "id": "eevee-and-sylveon",
+      "name": "Eevee and Sylveon",
+      "src": "/packs/sv08.5/eevee-and-sylveon.webp",
+      "aspect": 0.546,
+      "source": "File:Prismatic Evolutions Booster Eevee Sylveon.png"
+    },
+    {
+      "id": "vaporeon-jolteon-and-flareon",
+      "name": "Vaporeon, Jolteon and Flareon",
+      "src": "/packs/sv08.5/vaporeon-jolteon-and-flareon.webp",
+      "aspect": 0.546,
+      "source": "File:Prismatic Evolutions Booster Vaporeon Jolteon Flareon.png"
+    },
+    {
+      "id": "espeon-and-umbreon",
+      "name": "Espeon and Umbreon",
+      "src": "/packs/sv08.5/espeon-and-umbreon.webp",
+      "aspect": 0.546,
+      "source": "File:Prismatic Evolutions Booster Espeon Umbreon.png"
+    },
+    {
+      "id": "leafeon-and-glaceon",
+      "name": "Leafeon and Glaceon",
+      "src": "/packs/sv08.5/leafeon-and-glaceon.webp",
+      "aspect": 0.546,
+      "source": "File:Prismatic Evolutions Booster Leafeon Glaceon.png"
+    }
+  ],
+  "sv09": [
+    {
+      "id": "n-s-zoroark",
+      "name": "N's Zoroark",
+      "src": "/packs/sv09/n-s-zoroark.webp",
+      "aspect": 0.546,
+      "source": "File:SV9 Booster N Zoroark.png"
+    },
+    {
+      "id": "iono-s-bellibolt",
+      "name": "Iono's Bellibolt",
+      "src": "/packs/sv09/iono-s-bellibolt.webp",
+      "aspect": 0.546,
+      "source": "File:SV9 Booster Iono Bellibolt.png"
+    },
+    {
+      "id": "lillie-s-clefairy",
+      "name": "Lillie's Clefairy",
+      "src": "/packs/sv09/lillie-s-clefairy.webp",
+      "aspect": 0.546,
+      "source": "File:SV9 Booster Lillie Clefairy.png"
+    },
+    {
+      "id": "hop-s-zacian",
+      "name": "Hop's Zacian",
+      "src": "/packs/sv09/hop-s-zacian.webp",
+      "aspect": 0.546,
+      "source": "File:SV9 Booster Hop Zacian.png"
+    }
+  ],
+  "sv10": [
+    {
+      "id": "giovanni-and-mewtwo",
+      "name": "Giovanni and Mewtwo",
+      "src": "/packs/sv10/giovanni-and-mewtwo.webp",
+      "aspect": 0.546,
+      "source": "File:SV10 Booster Giovanni Mewtwo.png"
+    },
+    {
+      "id": "team-rocket",
+      "name": "Team Rocket",
+      "src": "/packs/sv10/team-rocket.webp",
+      "aspect": 0.546,
+      "source": "File:SV10 Booster Team Rocket.png"
+    },
+    {
+      "id": "cynthia-and-garchomp",
+      "name": "Cynthia and Garchomp",
+      "src": "/packs/sv10/cynthia-and-garchomp.webp",
+      "aspect": 0.546,
+      "source": "File:SV10 Booster Cynthia Garchomp.png"
+    },
+    {
+      "id": "ethan-and-ho-oh",
+      "name": "Ethan and Ho-Oh",
+      "src": "/packs/sv10/ethan-and-ho-oh.webp",
+      "aspect": 0.546,
+      "source": "File:SV10 Booster Ethan Ho-Oh.png"
+    }
+  ],
+  "sv10.5b": [
+    {
+      "id": "black-bolt",
+      "name": "Black Bolt",
+      "src": "/packs/sv10.5b/black-bolt.webp",
+      "aspect": 0.545,
+      "source": "File:SV10.5 BLK Booster EN.png"
+    }
+  ],
+  "sv10.5w": [
+    {
+      "id": "white-flare",
+      "name": "White Flare",
+      "src": "/packs/sv10.5w/white-flare.webp",
+      "aspect": 0.545,
+      "source": "File:SV10.5 WHT Booster EN.png"
+    }
+  ],
+  "swsh1": [
+    {
+      "id": "zacian",
+      "name": "Zacian",
+      "src": "/packs/swsh1/zacian.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH1 Booster Zacian.jpg"
+    },
+    {
+      "id": "zamazenta",
+      "name": "Zamazenta",
+      "src": "/packs/swsh1/zamazenta.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH1 Booster Zamazenta.jpg"
+    },
+    {
+      "id": "gigantamax-snorlax",
+      "name": "Gigantamax Snorlax",
+      "src": "/packs/swsh1/gigantamax-snorlax.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH1 Booster Gigantamax Snorlax.jpg"
+    }
+  ],
+  "swsh10": [
+    {
+      "id": "hisuian-decidueye",
+      "name": "Hisuian Decidueye",
+      "src": "/packs/swsh10/hisuian-decidueye.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH10 Booster Hisuian Decidueye.jpg"
+    },
+    {
+      "id": "hisuian-typhlosion",
+      "name": "Hisuian Typhlosion",
+      "src": "/packs/swsh10/hisuian-typhlosion.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH10 Booster Hisuian Typhlosion.jpg"
+    },
+    {
+      "id": "hisuian-samurott",
+      "name": "Hisuian Samurott",
+      "src": "/packs/swsh10/hisuian-samurott.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH10 Booster Hisuian Samurott.jpg"
+    },
+    {
+      "id": "origin-dialga",
+      "name": "Origin Dialga",
+      "src": "/packs/swsh10/origin-dialga.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH10 Booster Origin Dialga.jpg"
+    },
+    {
+      "id": "origin-palkia",
+      "name": "Origin Palkia",
+      "src": "/packs/swsh10/origin-palkia.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH10 Booster Origin Palkia.jpg"
+    }
+  ],
+  "swsh10.5": [
+    {
+      "id": "artwork",
+      "name": "Artwork",
+      "src": "/packs/swsh10.5/artwork.webp",
+      "aspect": 0.553,
+      "source": "File:Pokémon GO Booster.jpg"
+    }
+  ],
+  "swsh11": [
+    {
+      "id": "enamorus",
+      "name": "Enamorus",
+      "src": "/packs/swsh11/enamorus.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH11 Booster Enamorus.jpg"
+    },
+    {
+      "id": "hisuian-zoroark",
+      "name": "Hisuian Zoroark",
+      "src": "/packs/swsh11/hisuian-zoroark.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH11 Booster Hisuian Zoroark.jpg"
+    },
+    {
+      "id": "origin-forme-giratina",
+      "name": "Origin Forme Giratina",
+      "src": "/packs/swsh11/origin-forme-giratina.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH11 Booster Origin Forme Giratina.jpg"
+    },
+    {
+      "id": "radiant-gardevoir",
+      "name": "Radiant Gardevoir",
+      "src": "/packs/swsh11/radiant-gardevoir.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH11 Booster Radiant Gardevoir.jpg"
+    }
+  ],
+  "swsh12": [
+    {
+      "id": "alolan-vulpix",
+      "name": "Alolan Vulpix",
+      "src": "/packs/swsh12/alolan-vulpix.webp",
+      "aspect": 0.56,
+      "source": "File:SWSH12 Booster Alolan Vulpix.jpg"
+    },
+    {
+      "id": "lugia",
+      "name": "Lugia",
+      "src": "/packs/swsh12/lugia.webp",
+      "aspect": 0.56,
+      "source": "File:SWSH12 Booster Lugia.jpg"
+    },
+    {
+      "id": "regieleki",
+      "name": "Regieleki",
+      "src": "/packs/swsh12/regieleki.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH12 Booster Regieleki.jpg"
+    },
+    {
+      "id": "regidrago",
+      "name": "Regidrago",
+      "src": "/packs/swsh12/regidrago.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH12 Booster Regidrago.jpg"
+    }
+  ],
+  "swsh12.5": [
+    {
+      "id": "zacian-and-zamazenta",
+      "name": "Zacian & Zamazenta",
+      "src": "/packs/swsh12.5/zacian-and-zamazenta.webp",
+      "aspect": 0.546,
+      "source": "File:Crown Zenith Booster.jpg"
+    }
+  ],
+  "swsh2": [
+    {
+      "id": "gigantamax-toxtricity",
+      "name": "Gigantamax Toxtricity",
+      "src": "/packs/swsh2/gigantamax-toxtricity.webp",
+      "aspect": 0.547,
+      "source": "File:SWSH2 Booster Gigantamax Toxtricity.jpg"
+    },
+    {
+      "id": "inteleon",
+      "name": "Inteleon",
+      "src": "/packs/swsh2/inteleon.webp",
+      "aspect": 0.547,
+      "source": "File:SWSH2 Booster Inteleon.jpg"
+    },
+    {
+      "id": "rillaboom",
+      "name": "Rillaboom",
+      "src": "/packs/swsh2/rillaboom.webp",
+      "aspect": 0.547,
+      "source": "File:SWSH2 Booster Rillaboom.jpg"
+    },
+    {
+      "id": "cinderace",
+      "name": "Cinderace",
+      "src": "/packs/swsh2/cinderace.webp",
+      "aspect": 0.547,
+      "source": "File:SWSH2 Booster Cinderace.jpg"
+    }
+  ],
+  "swsh3": [
+    {
+      "id": "gigantamax-charizard",
+      "name": "Gigantamax Charizard",
+      "src": "/packs/swsh3/gigantamax-charizard.webp",
+      "aspect": 0.545,
+      "source": "File:SWSH3 Booster Gigantamax Charizard.jpg"
+    },
+    {
+      "id": "gigantamax-centiskorch",
+      "name": "Gigantamax Centiskorch",
+      "src": "/packs/swsh3/gigantamax-centiskorch.webp",
+      "aspect": 0.545,
+      "source": "File:SWSH3 Booster Gigantamax Centiskorch.jpg"
+    },
+    {
+      "id": "gigantamax-grimmsnarl",
+      "name": "Gigantamax Grimmsnarl",
+      "src": "/packs/swsh3/gigantamax-grimmsnarl.webp",
+      "aspect": 0.545,
+      "source": "File:SWSH3 Booster Gigantamax Grimmsnarl.jpg"
+    },
+    {
+      "id": "eternamax-eternatus",
+      "name": "Eternamax Eternatus",
+      "src": "/packs/swsh3/eternamax-eternatus.webp",
+      "aspect": 0.545,
+      "source": "File:SWSH3 Booster Eternamax Eternatus.jpg"
+    }
+  ],
+  "swsh3.5": [
+    {
+      "id": "gardevoir",
+      "name": "Gardevoir",
+      "src": "/packs/swsh3.5/gardevoir.webp",
+      "aspect": 0.545,
+      "source": "File:Champion Path Booster Gardevoir.jpg"
+    },
+    {
+      "id": "gigantamax-drednaw",
+      "name": "Gigantamax Drednaw",
+      "src": "/packs/swsh3.5/gigantamax-drednaw.webp",
+      "aspect": 0.545,
+      "source": "File:Champion Path Booster Gigantamax Drednaw.jpg"
+    },
+    {
+      "id": "obstagoon",
+      "name": "Obstagoon",
+      "src": "/packs/swsh3.5/obstagoon.webp",
+      "aspect": 0.545,
+      "source": "File:Champion Path Booster Obstagoon.jpg"
+    },
+    {
+      "id": "gigantamax-alcremie",
+      "name": "Gigantamax Alcremie",
+      "src": "/packs/swsh3.5/gigantamax-alcremie.webp",
+      "aspect": 0.545,
+      "source": "File:Champion Path Booster Gigantamax Alcremie.jpg"
+    }
+  ],
+  "swsh4": [
+    {
+      "id": "gigantamax-pikachu",
+      "name": "Gigantamax Pikachu",
+      "src": "/packs/swsh4/gigantamax-pikachu.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH4 Booster Gigantamax Pikachu.jpg"
+    },
+    {
+      "id": "celebi",
+      "name": "Celebi",
+      "src": "/packs/swsh4/celebi.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH4 Booster Celebi.jpg"
+    },
+    {
+      "id": "gigantamax-orbeetle",
+      "name": "Gigantamax Orbeetle",
+      "src": "/packs/swsh4/gigantamax-orbeetle.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH4 Booster Gigantamax Orbeetle.jpg"
+    },
+    {
+      "id": "zarude",
+      "name": "Zarude",
+      "src": "/packs/swsh4/zarude.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH4 Booster Zarude.jpg"
+    }
+  ],
+  "swsh4.5": [
+    {
+      "id": "gigantamax-charizard",
+      "name": "Gigantamax Charizard",
+      "src": "/packs/swsh4.5/gigantamax-charizard.webp",
+      "aspect": 0.546,
+      "source": "File:Shining Fates Booster Shiny Charizard.jpg"
+    },
+    {
+      "id": "corviknight",
+      "name": "Corviknight",
+      "src": "/packs/swsh4.5/corviknight.webp",
+      "aspect": 0.546,
+      "source": "File:Shining Fates Booster Shiny Corviknight.jpg"
+    },
+    {
+      "id": "toxtricity",
+      "name": "Toxtricity",
+      "src": "/packs/swsh4.5/toxtricity.webp",
+      "aspect": 0.546,
+      "source": "File:Shining Fates Booster Shiny Toxtricity.jpg"
+    },
+    {
+      "id": "dragapult",
+      "name": "Dragapult",
+      "src": "/packs/swsh4.5/dragapult.webp",
+      "aspect": 0.546,
+      "source": "File:Shining Fates Booster Shiny Dragapult.jpg"
+    }
+  ],
+  "swsh5": [
+    {
+      "id": "tyranitar",
+      "name": "Tyranitar",
+      "src": "/packs/swsh5/tyranitar.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH5 Booster Tyranitar.jpg"
+    },
+    {
+      "id": "empoleon",
+      "name": "Empoleon",
+      "src": "/packs/swsh5/empoleon.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH5 Booster Empoleon.jpg"
+    },
+    {
+      "id": "single-strike-urshifu",
+      "name": "Single Strike Urshifu",
+      "src": "/packs/swsh5/single-strike-urshifu.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH5 Booster Single Strike Urshifu.jpg"
+    },
+    {
+      "id": "rapid-strike-urshifu",
+      "name": "Rapid Strike Urshifu",
+      "src": "/packs/swsh5/rapid-strike-urshifu.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH5 Booster Rapid Strike Urshifu.jpg"
+    }
+  ],
+  "swsh6": [
+    {
+      "id": "galarian-articuno",
+      "name": "Galarian Articuno",
+      "src": "/packs/swsh6/galarian-articuno.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH6 Booster Galarian Articuno copy.jpg"
+    },
+    {
+      "id": "galarian-zapdos",
+      "name": "Galarian Zapdos",
+      "src": "/packs/swsh6/galarian-zapdos.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH6 Booster Galarian Zapdos copy.jpg"
+    },
+    {
+      "id": "galarian-moltres",
+      "name": "Galarian Moltres",
+      "src": "/packs/swsh6/galarian-moltres.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH6 Booster Galarian Moltres copy.jpg"
+    },
+    {
+      "id": "ice-rider-calyrex",
+      "name": "Ice Rider Calyrex",
+      "src": "/packs/swsh6/ice-rider-calyrex.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH6 Booster Ice Rider Calyrex copy.jpg"
+    },
+    {
+      "id": "shadow-rider-calyrex",
+      "name": "Shadow Rider Calyrex",
+      "src": "/packs/swsh6/shadow-rider-calyrex.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH6 Booster Shadow Rider Calyrex copy.jpg"
+    }
+  ],
+  "swsh7": [
+    {
+      "id": "umbreon",
+      "name": "Umbreon",
+      "src": "/packs/swsh7/umbreon.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH7 Booster Umbreon.jpg"
+    },
+    {
+      "id": "rayquaza",
+      "name": "Rayquaza",
+      "src": "/packs/swsh7/rayquaza.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH7 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "sylveon",
+      "name": "Sylveon",
+      "src": "/packs/swsh7/sylveon.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH7 Booster Sylveon.jpg"
+    },
+    {
+      "id": "gigantamax-duraludon",
+      "name": "Gigantamax Duraludon",
+      "src": "/packs/swsh7/gigantamax-duraludon.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH7 Booster Gigantamax Duraludon.jpg"
+    }
+  ],
+  "swsh8": [
+    {
+      "id": "gigantamax-gengar",
+      "name": "Gigantamax Gengar",
+      "src": "/packs/swsh8/gigantamax-gengar.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH8 Booster Gigantamax Gengar.jpg"
+    },
+    {
+      "id": "mew",
+      "name": "Mew",
+      "src": "/packs/swsh8/mew.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH8 Booster Mew.jpg"
+    },
+    {
+      "id": "genesect",
+      "name": "Genesect",
+      "src": "/packs/swsh8/genesect.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH8 Booster Genesect.jpg"
+    },
+    {
+      "id": "boltund",
+      "name": "Boltund",
+      "src": "/packs/swsh8/boltund.webp",
+      "aspect": 0.546,
+      "source": "File:SWSH8 Booster Boltund.jpg"
+    }
+  ],
+  "swsh9": [
+    {
+      "id": "charizard",
+      "name": "Charizard",
+      "src": "/packs/swsh9/charizard.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH9 Booster Charizard.jpg"
+    },
+    {
+      "id": "shaymin",
+      "name": "Shaymin",
+      "src": "/packs/swsh9/shaymin.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH9 Booster Shaymin.jpg"
+    },
+    {
+      "id": "arceus",
+      "name": "Arceus",
+      "src": "/packs/swsh9/arceus.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH9 Booster Arceus.jpg"
+    },
+    {
+      "id": "whimsicott",
+      "name": "Whimsicott",
+      "src": "/packs/swsh9/whimsicott.webp",
+      "aspect": 0.561,
+      "source": "File:SWSH9 Booster Whimsicott.jpg"
+    }
+  ],
+  "xy1": [
+    {
+      "id": "mega-venusaur",
+      "name": "Mega Venusaur",
+      "src": "/packs/xy1/mega-venusaur.webp",
+      "aspect": 0.526,
+      "source": "File:XY1 Booster Venusaur.jpg"
+    },
+    {
+      "id": "mega-blastoise",
+      "name": "Mega Blastoise",
+      "src": "/packs/xy1/mega-blastoise.webp",
+      "aspect": 0.525,
+      "source": "File:XY1 Booster Blastoise.jpg"
+    },
+    {
+      "id": "xerneas",
+      "name": "Xerneas",
+      "src": "/packs/xy1/xerneas.webp",
+      "aspect": 0.525,
+      "source": "File:XY1 Booster Xerneas.jpg"
+    },
+    {
+      "id": "yveltal",
+      "name": "Yveltal",
+      "src": "/packs/xy1/yveltal.webp",
+      "aspect": 0.526,
+      "source": "File:XY1 Booster Yveltal.jpg"
+    }
+  ],
+  "xy10": [
+    {
+      "id": "mega-alakazam",
+      "name": "Mega Alakazam",
+      "src": "/packs/xy10/mega-alakazam.webp",
+      "aspect": 0.547,
+      "source": "File:XY10 Booster Alakazam.jpg"
+    },
+    {
+      "id": "lugia-break",
+      "name": "Lugia BREAK",
+      "src": "/packs/xy10/lugia-break.webp",
+      "aspect": 0.548,
+      "source": "File:XY10 Booster Lugia.jpg"
+    },
+    {
+      "id": "delphox-break",
+      "name": "Delphox BREAK",
+      "src": "/packs/xy10/delphox-break.webp",
+      "aspect": 0.545,
+      "source": "File:XY10 Booster Delphox.jpg"
+    },
+    {
+      "id": "zygarde",
+      "name": "Zygarde",
+      "src": "/packs/xy10/zygarde.webp",
+      "aspect": 0.544,
+      "source": "File:XY10 Booster Zygarde.jpg"
+    }
+  ],
+  "xy11": [
+    {
+      "id": "mega-gardevoir",
+      "name": "Mega Gardevoir",
+      "src": "/packs/xy11/mega-gardevoir.webp",
+      "aspect": 0.545,
+      "source": "File:XY11 Booster Gardevoir.jpg"
+    },
+    {
+      "id": "xerneas-break",
+      "name": "Xerneas BREAK",
+      "src": "/packs/xy11/xerneas-break.webp",
+      "aspect": 0.545,
+      "source": "File:XY11 Booster Xerneas.jpg"
+    },
+    {
+      "id": "yveltal-break",
+      "name": "Yveltal BREAK",
+      "src": "/packs/xy11/yveltal-break.webp",
+      "aspect": 0.545,
+      "source": "File:XY11 Booster Yveltal.jpg"
+    },
+    {
+      "id": "volcanion",
+      "name": "Volcanion",
+      "src": "/packs/xy11/volcanion.webp",
+      "aspect": 0.545,
+      "source": "File:XY11 Booster Volcanion.jpg"
+    }
+  ],
+  "xy12": [
+    {
+      "id": "mega-venusaur",
+      "name": "Mega Venusaur",
+      "src": "/packs/xy12/mega-venusaur.webp",
+      "aspect": 0.543,
+      "source": "File:XY12 Booster Venusaur.jpg"
+    },
+    {
+      "id": "mega-charizard",
+      "name": "Mega Charizard",
+      "src": "/packs/xy12/mega-charizard.webp",
+      "aspect": 0.543,
+      "source": "File:XY12 Booster Charizard.jpg"
+    },
+    {
+      "id": "mega-blastoise",
+      "name": "Mega Blastoise",
+      "src": "/packs/xy12/mega-blastoise.webp",
+      "aspect": 0.543,
+      "source": "File:XY12 Booster Blastoise.jpg"
+    },
+    {
+      "id": "raichu",
+      "name": "Raichu",
+      "src": "/packs/xy12/raichu.webp",
+      "aspect": 0.543,
+      "source": "File:XY12 Booster Raichu.jpg"
+    }
+  ],
+  "xy2": [
+    {
+      "id": "mega-charizard-x",
+      "name": "Mega Charizard X",
+      "src": "/packs/xy2/mega-charizard-x.webp",
+      "aspect": 0.525,
+      "source": "File:XY2 Booster Charizard X.jpg"
+    },
+    {
+      "id": "mega-charizard-y",
+      "name": "Mega Charizard Y",
+      "src": "/packs/xy2/mega-charizard-y.webp",
+      "aspect": 0.525,
+      "source": "File:XY2 Booster Charizard Y.jpg"
+    },
+    {
+      "id": "mega-kangaskhan",
+      "name": "Mega Kangaskhan",
+      "src": "/packs/xy2/mega-kangaskhan.webp",
+      "aspect": 0.525,
+      "source": "File:XY2 Booster Kangaskhan.jpg"
+    },
+    {
+      "id": "pyroar",
+      "name": "Pyroar",
+      "src": "/packs/xy2/pyroar.webp",
+      "aspect": 0.525,
+      "source": "File:XY2 Booster Pyroar.jpg"
+    }
+  ],
+  "xy3": [
+    {
+      "id": "mega-heracross",
+      "name": "Mega Heracross",
+      "src": "/packs/xy3/mega-heracross.webp",
+      "aspect": 0.545,
+      "source": "File:XY3 Booster Heracross.jpg"
+    },
+    {
+      "id": "mega-lucario",
+      "name": "Mega Lucario",
+      "src": "/packs/xy3/mega-lucario.webp",
+      "aspect": 0.552,
+      "source": "File:XY3 Booster Lucario.jpg"
+    },
+    {
+      "id": "tyrantrum",
+      "name": "Tyrantrum",
+      "src": "/packs/xy3/tyrantrum.webp",
+      "aspect": 0.547,
+      "source": "File:XY3 Booster Tyrantrum.jpg"
+    },
+    {
+      "id": "hawlucha",
+      "name": "Hawlucha",
+      "src": "/packs/xy3/hawlucha.webp",
+      "aspect": 0.558,
+      "source": "File:XY3 Booster Hawlucha.jpg"
+    }
+  ],
+  "xy4": [
+    {
+      "id": "mega-gengar",
+      "name": "Mega Gengar",
+      "src": "/packs/xy4/mega-gengar.webp",
+      "aspect": 0.542,
+      "source": "File:XY4 Booster Gengar.jpg"
+    },
+    {
+      "id": "mega-manectric",
+      "name": "Mega Manectric",
+      "src": "/packs/xy4/mega-manectric.webp",
+      "aspect": 0.542,
+      "source": "File:XY4 Booster Manectric.jpg"
+    },
+    {
+      "id": "aegislash",
+      "name": "Aegislash",
+      "src": "/packs/xy4/aegislash.webp",
+      "aspect": 0.541,
+      "source": "File:XY4 Booster Aegislash.jpg"
+    },
+    {
+      "id": "diancie",
+      "name": "Diancie",
+      "src": "/packs/xy4/diancie.webp",
+      "aspect": 0.542,
+      "source": "File:XY4 Booster Diancie.jpg"
+    }
+  ],
+  "xy5": [
+    {
+      "id": "mega-gardevoir",
+      "name": "Mega Gardevoir",
+      "src": "/packs/xy5/mega-gardevoir.webp",
+      "aspect": 0.538,
+      "source": "File:XY5 Booster Gardevoir.jpg"
+    },
+    {
+      "id": "mega-aggron",
+      "name": "Mega Aggron",
+      "src": "/packs/xy5/mega-aggron.webp",
+      "aspect": 0.539,
+      "source": "File:XY5 Booster Aggron.jpg"
+    },
+    {
+      "id": "primal-kyogre",
+      "name": "Primal Kyogre",
+      "src": "/packs/xy5/primal-kyogre.webp",
+      "aspect": 0.538,
+      "source": "File:XY5 Booster Kyogre.jpg"
+    },
+    {
+      "id": "primal-groudon",
+      "name": "Primal Groudon",
+      "src": "/packs/xy5/primal-groudon.webp",
+      "aspect": 0.538,
+      "source": "File:XY5 Booster Groudon.jpg"
+    }
+  ],
+  "xy6": [
+    {
+      "id": "mega-latios",
+      "name": "Mega Latios",
+      "src": "/packs/xy6/mega-latios.webp",
+      "aspect": 0.525,
+      "source": "File:XY6 Booster Latios.jpg"
+    },
+    {
+      "id": "mega-rayquaza",
+      "name": "Mega Rayquaza",
+      "src": "/packs/xy6/mega-rayquaza.webp",
+      "aspect": 0.534,
+      "source": "File:XY6 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "deoxys",
+      "name": "Deoxys",
+      "src": "/packs/xy6/deoxys.webp",
+      "aspect": 0.529,
+      "source": "File:XY6 Booster Deoxys.jpg"
+    },
+    {
+      "id": "mega-gallade",
+      "name": "Mega Gallade",
+      "src": "/packs/xy6/mega-gallade.webp",
+      "aspect": 0.58,
+      "source": "File:XY6 Booster Gallade.jpg"
+    }
+  ],
+  "xy7": [
+    {
+      "id": "mega-tyranitar",
+      "name": "Mega Tyranitar",
+      "src": "/packs/xy7/mega-tyranitar.webp",
+      "aspect": 0.547,
+      "source": "File:XY7 Booster Tyranitar.jpg"
+    },
+    {
+      "id": "primal-groudon",
+      "name": "Primal Groudon",
+      "src": "/packs/xy7/primal-groudon.webp",
+      "aspect": 0.547,
+      "source": "File:XY7 Booster Groudon.jpg"
+    },
+    {
+      "id": "mega-rayquaza",
+      "name": "Mega Rayquaza",
+      "src": "/packs/xy7/mega-rayquaza.webp",
+      "aspect": 0.547,
+      "source": "File:XY7 Booster Rayquaza.jpg"
+    },
+    {
+      "id": "hoopa-unbound",
+      "name": "Hoopa Unbound",
+      "src": "/packs/xy7/hoopa-unbound.webp",
+      "aspect": 0.547,
+      "source": "File:XY7 Booster Hoopa.jpg"
+    }
+  ],
+  "xy8": [
+    {
+      "id": "mega-mewtwo-x",
+      "name": "Mega Mewtwo X",
+      "src": "/packs/xy8/mega-mewtwo-x.webp",
+      "aspect": 0.552,
+      "source": "File:XY8 Booster Mewtwo X.jpg"
+    },
+    {
+      "id": "mega-mewtwo-y",
+      "name": "Mega Mewtwo Y",
+      "src": "/packs/xy8/mega-mewtwo-y.webp",
+      "aspect": 0.563,
+      "source": "File:XY8 Booster Mewtwo Y.jpg"
+    },
+    {
+      "id": "mega-houndoom",
+      "name": "Mega Houndoom",
+      "src": "/packs/xy8/mega-houndoom.webp",
+      "aspect": 0.547,
+      "source": "File:XY8 Booster Houndoom.jpg"
+    },
+    {
+      "id": "zoroark-break",
+      "name": "Zoroark BREAK",
+      "src": "/packs/xy8/zoroark-break.webp",
+      "aspect": 0.551,
+      "source": "File:XY8 Booster Zoroark.jpg"
+    }
+  ],
+  "xy9": [
+    {
+      "id": "mega-gyarados",
+      "name": "Mega Gyarados",
+      "src": "/packs/xy9/mega-gyarados.webp",
+      "aspect": 0.548,
+      "source": "File:XY9 Booster Gyarados.jpg"
+    },
+    {
+      "id": "mega-scizor",
+      "name": "Mega Scizor",
+      "src": "/packs/xy9/mega-scizor.webp",
+      "aspect": 0.548,
+      "source": "File:XY9 Booster Scizor.jpg"
+    },
+    {
+      "id": "luxray-break",
+      "name": "Luxray BREAK",
+      "src": "/packs/xy9/luxray-break.webp",
+      "aspect": 0.548,
+      "source": "File:XY9 Booster Luxray.jpg"
+    },
+    {
+      "id": "greninja-break",
+      "name": "Greninja BREAK",
+      "src": "/packs/xy9/greninja-break.webp",
+      "aspect": 0.548,
+      "source": "File:XY9 Booster Greninja.jpg"
+    }
+  ]
+}

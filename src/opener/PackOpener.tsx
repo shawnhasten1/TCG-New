@@ -45,6 +45,9 @@ interface Props {
   canOpenAgain?: boolean;
   /** Shares cards (by position in the pack) to the friends feed; returns every position shared so far. Absent for guests. */
   onShare?(slots: number[]): Promise<number[]>;
+  /** A photo of the real sealed pack, worn instead of TCGdex's booster artwork or the generic wrapper (trialled in the pack lab).
+   *  With `aspect` (width / height) the pack takes the photo's shape; without, the photo is cropped to the usual pack shape. */
+  packPhoto?: { src: string; aspect?: number };
 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -56,7 +59,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, onShare }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, onShare, packPhoto }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -328,9 +331,11 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   }
 
   const booster = set.boosters?.find((b) => b.artwork_front);
+  const art = packPhoto ? packPhoto.src : booster && `${booster.artwork_front}.webp`;
   const wrapperStyle = {
     "--h": setHue(set.id),
-    ...(booster ? { "--art": `url(${booster.artwork_front}.webp)` } : {}),
+    ...(art ? { "--art": `url("${art}")` } : {}),
+    ...(packPhoto?.aspect ? { "--pack-aspect": packPhoto.aspect } : {}),
   } as CSSProperties;
 
   return (
@@ -340,9 +345,9 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       {phase === "summary" ? (
         <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} shared={shared} picking={picking} onPick={togglePick} />
       ) : (
-        <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}`} ref={wrapRef} style={wrapperStyle}>
+        <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}${packPhoto?.aspect ? " photo-shape" : ""}`} ref={wrapRef} style={wrapperStyle}>
           <div
-            className={`pack sealed${booster ? " has-art" : ""}`}
+            className={`pack sealed${art ? " has-art" : ""}${packPhoto ? " photo" : ""}`}
             ref={packRef}
             onPointerDown={onPackDown}
             onPointerMove={onPackMove}
@@ -351,7 +356,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
             onPointerLeave={onPackLeave}
           >
             <div className="layer pack-body" ref={bodyRef}>
-              {!booster && (
+              {!art && (
                 <div className="pack-art">
                   <SetLogo logo={set.logo} className="pack-logo" alt={set.name} draggable={false} fallback={<div className="set-name">{set.name}</div>} />
                 </div>
