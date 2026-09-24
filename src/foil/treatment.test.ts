@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { artMask, layoutFor, layouts, reverseMask } from "./layouts";
+import { ART_WINDOWS, artWindow, artWindowMask, cardKind, reverseWindowMask } from "./artWindows";
+import { layoutFor, layouts } from "./layouts";
 import { foilStyle, foilTint, foilTreatment } from "./treatment";
 
 describe("foilTreatment", () => {
@@ -85,18 +86,40 @@ describe("layouts", () => {
     expect(layoutFor("unknown").id).toBe("me");
   });
 
-  it("keeps every art box inside the card border", () => {
+  it("has an art window for every layout and card kind, inside the card border", () => {
     for (const l of layouts) {
-      expect(l.art.x).toBeGreaterThan(l.border.x - 1);
-      expect(l.art.y).toBeGreaterThan(l.border.y - 1);
-      expect(l.art.x + l.art.w).toBeLessThan(100 - l.border.x + 1);
-      expect(l.art.y + l.art.h).toBeLessThan(100);
+      for (const kind of ["basic", "stage", "trainer"] as const) {
+        const { art } = ART_WINDOWS[l.id][kind];
+        expect(art.x0).toBeGreaterThan(l.border.x - 1);
+        expect(art.y0).toBeGreaterThan(l.border.y - 1);
+        expect(art.x1).toBeLessThan(100 - l.border.x + 1);
+        expect(art.y1).toBeLessThan(100);
+        expect(art.x0).toBeLessThan(art.x1);
+        expect(art.y0).toBeLessThan(art.y1);
+      }
     }
   });
 
-  it("builds SVG data-URL masks", () => {
-    const l = layoutFor("sv");
-    expect(artMask(l)).toMatch(/^url\("data:image\/svg\+xml,/);
-    expect(decodeURIComponent(reverseMask(l))).toContain("evenodd");
+  it("puts Trainer art below the name, lower than Pokémon art", () => {
+    for (const l of layouts) expect(ART_WINDOWS[l.id].trainer.art.y0).toBeGreaterThan(ART_WINDOWS[l.id].basic.art.y0);
+  });
+
+  it("tells Trainers, Stage Pokémon and Basics apart", () => {
+    expect(cardKind("Trainer", null)).toBe("trainer");
+    expect(cardKind("Pokemon", "Basic")).toBe("basic");
+    expect(cardKind("Pokemon", "Stage1")).toBe("stage");
+    expect(cardKind("Pokemon", "Stage2")).toBe("stage");
+    expect(cardKind("Pokemon", "VMAX")).toBe("stage");
+    expect(cardKind("Pokemon", null)).toBe("basic");
+    expect(cardKind("Energy", null)).toBe("basic");
+  });
+
+  it("builds SVG data-URL masks that cut the portrait out of Stage windows", () => {
+    const l = layoutFor("xy");
+    const stage = artWindow(l, "stage");
+    expect(artWindowMask(stage)).toMatch(/^url\("data:image\/svg\+xml,/);
+    expect(decodeURIComponent(artWindowMask(stage))).toContain("<ellipse");
+    expect(decodeURIComponent(reverseWindowMask(stage, l))).toContain("<mask");
+    expect(decodeURIComponent(artWindowMask(artWindow(l, "basic")))).not.toContain("<ellipse");
   });
 });

@@ -207,7 +207,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             }}
           >
             <div className={`spin${spun ? " spun" : ""}`}>
-              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} category={card.category} trainerType={card.trainerType} types={card.types} finish={finish} layout={layout} className={owned || initialFinish ? "" : "unowned"} />
+              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} category={card.category} trainerType={card.trainerType} types={card.types} stage={card.stage} finish={finish} layout={layout} className={owned || initialFinish ? "" : "unowned"} />
               <div className="tcg-back" aria-hidden="true" />
             </div>
           </div>

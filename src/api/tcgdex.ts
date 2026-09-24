@@ -25,7 +25,7 @@ import type {
 const REST = "https://api.tcgdex.net/v2/en";
 const GRAPHQL = "https://api.tcgdex.net/v2/graphql";
 const GRAPHQL_PAGE = 100;
-const CACHE_VERSION = 4; // 2: cards gained category / energyType / trainerType. 3: dexId. 4: types
+const CACHE_VERSION = 5; // 2: cards gained category / energyType / trainerType. 3: dexId. 4: types. 5: stage
 
 export type Progress = (done: number, total: number) => void;
 
@@ -107,7 +107,7 @@ async function fetchCardsGraphql(setId: string, onProgress?: Progress, expected 
   const cards: Card[] = [];
   for (let page = 1; ; page++) {
     const query = `{ cards(filters:{ id: ${JSON.stringify(setId + "-")} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
-      id localId name image rarity category energyType trainerType dexId types set { id } variants { normal reverse holo firstEdition } } }`;
+      id localId name image rarity category energyType trainerType dexId types stage set { id } variants { normal reverse holo firstEdition } } }`;
     const pageCards = (await graphql<{ cards: (GqlCard | null)[] }>(query)).cards ?? [];
     for (const c of pageCards) {
       if (c && c.set?.id === setId) {
@@ -133,6 +133,7 @@ interface RestCard {
   trainerType?: string;
   dexId?: number[];
   types?: string[];
+  stage?: string;
 }
 
 function fromRest(c: RestCard): Card {
@@ -147,6 +148,7 @@ function fromRest(c: RestCard): Card {
     trainerType: c.trainerType ?? null,
     dexId: c.dexId ?? null,
     types: c.types ?? null,
+    stage: c.stage ?? null,
     variants: {
       normal: !!c.variants?.normal,
       reverse: !!c.variants?.reverse,
@@ -218,7 +220,7 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
         const cards: CardWithSet[] = [];
         for (let page = 1; ; page++) {
           const query = `{ cards(filters:{ dexId: ${Math.trunc(dexId)} }, pagination:{ page:${page}, count:${GRAPHQL_PAGE} }) {
-            id localId name image rarity category dexId types set { id } variants { normal reverse holo firstEdition } } }`;
+            id localId name image rarity category dexId types stage set { id } variants { normal reverse holo firstEdition } } }`;
           const got = (await graphql<{ cards: (CardWithSet | null)[] }>(query)).cards ?? [];
           // The filter is loose, so keep exact matches only (tag teams list several numbers).
           for (const c of got) if (c?.dexId?.includes(dexId)) cards.push(c);

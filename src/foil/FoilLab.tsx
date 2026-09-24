@@ -8,6 +8,7 @@ import { FoilCard } from "./FoilCard";
 import { layoutFor, layouts, type HoloPattern } from "./layouts";
 import type { CardCategory } from "../api/types";
 import { typeSymbol } from "./reverse";
+import { artWindow, cardKind, type CardKind } from "./artWindows";
 import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
 import "./foil-lab.css";
 
@@ -123,6 +124,24 @@ const REVERSE_GROUPS: { title: string; note: string; samples: Sample[] }[] = [
     ],
   },
 ];
+
+/** Art window fit (lab only): a Basic, a Stage and a Trainer from each era, to check the fitted masks. */
+const FIT_SAMPLES: Record<string, Record<CardKind, string>> = {
+  wotc: { basic: "base/base1/3", stage: "base/base1/1", trainer: "base/base1/70" },
+  ecard: { basic: "ecard/ecard1/19", stage: "ecard/ecard1/1", trainer: "ecard/ecard1/137" },
+  ex: { basic: "ex/ex1/18", stage: "ex/ex1/1", trainer: "ex/ex1/80" },
+  dp: { basic: "dp/dp1/1", stage: "dp/dp1/2", trainer: "dp/dp1/105" },
+  hgss: { basic: "hgss/hgss1/5", stage: "hgss/hgss1/1", trainer: "hgss/hgss1/89" },
+  bw: { basic: "bw/bw1/1", stage: "bw/bw1/3", trainer: "bw/bw1/92" },
+  xy: { basic: "xy/xy1/3", stage: "xy/xy1/4", trainer: "xy/xy1/116" },
+  sm: { basic: "sm/sm1/1", stage: "sm/sm1/2", trainer: "sm/sm1/120" },
+  swsh: { basic: "swsh/swsh1/2", stage: "swsh/swsh1/4", trainer: "swsh/swsh1/157" },
+  sv: { basic: "sv/sv01/001", stage: "sv/sv01/004", trainer: "sv/sv01/166" },
+  me: { basic: "me/me01/001", stage: "me/me01/002", trainer: "me/me01/113" },
+};
+const KINDS: CardKind[] = ["basic", "stage", "trainer"];
+/** A TCGdex stage for each kind, so lab cards pick their window the way real cards do. */
+const KIND_STAGE: Record<CardKind, string | undefined> = { basic: "Basic", stage: "Stage1", trainer: undefined };
 
 const ERA_COLUMNS: { label: string; finish: Finish; treatment: Treatment }[] = [
   { label: "Normal", finish: "normal", treatment: "none" },
@@ -253,6 +272,25 @@ export function FoilLab() {
       </section>
 
       <section>
+        <h2>Art window fit</h2>
+        <p className="muted">
+          A Basic, a Stage and a Trainer from each era, holo and reverse. Each kind has its own art window (artWindows.ts),
+          cutting around the evolution portrait and labels. Turn on "Show art box" to see them.
+        </p>
+        <div className="fit-grid">
+          <div className="col-head" />
+          {KINDS.flatMap((k) => [`${k} · holo`, `${k} · reverse`]).map((h) => (
+            <div key={h} className="col-head">
+              {h}
+            </div>
+          ))}
+          {layouts.map((l) => (
+            <FitRow key={l.id} layoutId={l.id} showArtBox={showArtBox} />
+          ))}
+        </div>
+      </section>
+
+      <section>
         <h2>Reverse holos</h2>
         {REVERSE_GROUPS.map((g) => (
           <div key={g.title} className="rev-group">
@@ -268,21 +306,43 @@ export function FoilLab() {
 
 function EraRow({ layoutId, showArtBox, holoTry }: { layoutId: string; showArtBox: boolean; holoTry: HoloTry }) {
   const layout = layouts.find((l) => l.id === layoutId)!;
+  const art = artWindow(layout, cardKind("Pokemon", layout.sample.stage)).art;
   const holo = holoTry === "era" ? layout.holo : holoTry;
   return (
     <>
       <div className="row-head">
         <strong>{layout.name}</strong>
         <small>
-          {layout.sample.name} · art {layout.art.x}–{+(layout.art.x + layout.art.w).toFixed(1)}% × {layout.art.y}–{+(layout.art.y + layout.art.h).toFixed(1)}%
+          {layout.sample.name} ({layout.sample.stage}) · art {art.x0}–{art.x1}% × {art.y0}–{art.y1}%
         </small>
         <small>Holo: {HOLO_TRIES.find((h) => h.id === holo)?.label}</small>
       </div>
       {ERA_COLUMNS.map((c) => (
         <div key={c.label} className="lab-card">
-          <FoilCard holoPattern={holoTry === "era" ? undefined : holoTry} image={layout.sample.image} rarity={layout.sample.rarity} category="Pokemon" types={layout.sample.types} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
+          <FoilCard holoPattern={holoTry === "era" ? undefined : holoTry} image={layout.sample.image} rarity={layout.sample.rarity} category="Pokemon" stage={layout.sample.stage} types={layout.sample.types} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
         </div>
       ))}
+    </>
+  );
+}
+
+function FitRow({ layoutId, showArtBox }: { layoutId: string; showArtBox: boolean }) {
+  const layout = layouts.find((l) => l.id === layoutId)!;
+  const paths = FIT_SAMPLES[layout.id];
+  if (!paths) return null;
+  return (
+    <>
+      <div className="row-head">
+        <strong>{layout.name}</strong>
+      </div>
+      {KINDS.flatMap((kind) => {
+        const category = kind === "trainer" ? "Trainer" : "Pokemon";
+        return (["holo", "reverse"] as Finish[]).map((finish) => (
+          <div key={kind + finish} className="lab-card">
+            <FoilCard image={img(paths[kind])} rarity="Rare" category={category} stage={KIND_STAGE[kind]} finish={finish} layout={layout} showArtBox={showArtBox} />
+          </div>
+        ));
+      })}
     </>
   );
 }

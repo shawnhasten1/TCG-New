@@ -37,3 +37,9 @@
 /* The lab's sliders set --foil-k, --glitter-k and --glow on the page; cards declare their own defaults,
    so take the page's values instead. */
 .foil-lab .tcg-card { --foil-k: inherit; --glitter-k: inherit; }
+
+/* ---------- Art window fit ---------- */
+.foil-lab .fit-grid {
+  display: grid; grid-template-columns: minmax(120px, 1fr) repeat(6, var(--lab-cw));
+  gap: 20px 12px; align-items: center; overflow-x: auto; padding: 8px 4px 16px;
+}

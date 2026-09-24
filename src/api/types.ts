@@ -89,6 +89,8 @@ export interface Card {
   dexId?: number[] | null;
   /** Pokémon types, e.g. ["Lightning"]. Pokémon cards only. Drives the reverse holo pattern. */
   types?: string[] | null;
+  /** "Basic", "Stage1", "Stage2", "VMAX"… Pokémon cards only. Picks the foil's art window (artWindows.ts). */
+  stage?: string | null;
 }
 
 /** A card from a cross-set query, which also says which set it's from. */
