@@ -17,7 +17,7 @@ export const TIERS: { id: SetTier; name: string; odds: number }[] = [
 
 /** Every Nth pack at the latest is from a set of at least this tier. */
 export const PITY: { tier: SetTier; every: number }[] = [
-  { tier: "legendary", every: 100 },
+  { tier: "legendary", every: 50 },
   { tier: "rare", every: 10 },
 ];
 
@@ -52,7 +52,7 @@ export function pityFloor(history: string[], tierOf: (id: string) => SetTier = s
   return packsUntilGuarantee(history, tierOf).find((g) => g.packs === 1)?.tier;
 }
 
-/** "Rare set guaranteed within 7 packs · Legendary within 83", counting after the given history. */
+/** "Rare set guaranteed within 7 packs · Legendary within 33", counting after the given history. */
 export function guaranteeNote(history: string[], tierOf: (id: string) => SetTier = setTier): string {
   const [first, ...rest] = [...packsUntilGuarantee(history, tierOf)].reverse(); // rare first
   const within = (n: number) => (n === 1 ? "next pack" : `within ${n} packs`);
