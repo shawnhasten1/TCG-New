@@ -24,6 +24,7 @@ import { href } from "../app/router";
 import { OpenerBar } from "./OpenerBar";
 import { Tilt } from "./tilt";
 import "./opener.css";
+import { SetLogo } from "../app/SetLogo";
 
 type Phase = "sealed" | "opening" | "reveal" | "summary";
 
@@ -352,7 +353,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
             <div className="layer pack-body" ref={bodyRef}>
               {!booster && (
                 <div className="pack-art">
-                  {set.logo ? <img className="pack-logo" src={`${set.logo}.webp`} alt={set.name} draggable={false} /> : <div className="set-name">{set.name}</div>}
+                  <SetLogo logo={set.logo} className="pack-logo" alt={set.name} draggable={false} fallback={<div className="set-name">{set.name}</div>} />
                 </div>
               )}
               <div className="crimp" />

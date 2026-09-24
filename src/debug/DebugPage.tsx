@@ -9,6 +9,7 @@ import { preparePack, openPack } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { createRng } from "../engine/rng";
 import type { PulledCard } from "../engine/types";
+import { SetLogo } from "../app/SetLogo";
 
 type Probe = Awaited<ReturnType<typeof probeRestFilter>>;
 
@@ -79,7 +80,7 @@ export function DebugPage({ initialSetId }: { initialSetId?: string }) {
       {data && (
         <>
           <section className="summary">
-            {data.set.logo && <img className="logo" src={`${data.set.logo}.webp`} alt="" />}
+            <SetLogo logo={data.set.logo} className="logo" alt="" />
             <dl>
               <dt>Serie</dt>
               <dd>{data.set.serie.name}</dd>

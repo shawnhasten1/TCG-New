@@ -11,6 +11,7 @@ import { useSettings } from "../app/settings";
 import { ERAS, drawableSets } from "../engine/randomSet";
 import { setTier, tierInfo } from "../engine/setRarity";
 import "./picker.css";
+import { SetLogo } from "../app/SetLogo";
 
 interface Group {
   serie: { id: string; name: string };
@@ -125,15 +126,10 @@ export function SetPicker() {
 }
 
 function SetTileBody({ set, note, tally }: { set: SetSummary; note?: string; tally?: SetTally }) {
-  const [logoFailed, setLogoFailed] = useState(false);
   return (
     <>
       <div className="logo">
-        {set.logo && !logoFailed ? (
-          <img src={`${set.logo}.webp`} alt="" loading="lazy" onError={() => setLogoFailed(true)} />
-        ) : (
-          <span className="logo-text">{set.name}</span>
-        )}
+        <SetLogo logo={set.logo} alt="" loading="lazy" fallback={<span className="logo-text">{set.name}</span>} />
       </div>
       <div className="meta">
         <strong>{set.name}</strong>

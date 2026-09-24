@@ -15,6 +15,7 @@ import { useCollectionSource, whose } from "./source";
 import { clearPulls, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import "./collection.css";
+import { SetLogo } from "../app/SetLogo";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
 
@@ -83,7 +84,7 @@ export function BinderPage({ setId }: { setId: string }) {
       </nav>
 
       <header className="binder-head">
-        {data.set.logo && <img className="set-logo" src={`${data.set.logo}.webp`} alt="" />}
+        <SetLogo logo={data.set.logo} className="set-logo" alt="" />
         <div>
           <h1>{data.set.name}</h1>
           {source.owner && <p className="owner-note">{whose(source)} binder</p>}
