@@ -6,6 +6,7 @@ import { handleCollection } from "./collection";
 import { handleFeed } from "./feed";
 import { handleFriends } from "./friends";
 import { handlePacks } from "./packs";
+import { handleTrades } from "./trades";
 import { HttpError, json, type Ctx } from "./http";
 
 async function route(ctx: Ctx): Promise<Response> {
@@ -16,6 +17,7 @@ async function route(ctx: Ctx): Promise<Response> {
   if (pathname === "/api/collection") return handleCollection(ctx);
   if (pathname.startsWith("/api/packs/")) return handlePacks(ctx);
   if (pathname === "/api/feed" || pathname.startsWith("/api/feed/")) return handleFeed(ctx);
+  if (pathname === "/api/trades" || pathname.startsWith("/api/trades/")) return handleTrades(ctx);
   if (pathname === "/api/friends" || pathname.startsWith("/api/friends/") || pathname === "/api/social/inbox") return handleFriends(ctx);
   throw new HttpError(404, "Not found");
 }

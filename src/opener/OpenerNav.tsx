@@ -10,8 +10,8 @@ import "../social/social.css";
 export function OpenerNav() {
   const { sound } = useSettings();
   const signedIn = isMember(useAccount());
-  const { friendRequests, feedNew } = useInbox();
-  const waiting = friendRequests + feedNew;
+  const { friendRequests, feedNew, tradeOffers } = useInbox();
+  const waiting = friendRequests + feedNew + tradeOffers;
   return (
     <header className="topbar">
       <nav className="topbar-links" aria-label="Main">
@@ -20,7 +20,7 @@ export function OpenerNav() {
       </nav>
       <div className="topbar-tools">
         {signedIn && (
-          <a className="icon-button friends-link" href={href.feed()} aria-label={`Friends and feed${badgeLabel(friendRequests, feedNew)}`} title="Friends and feed">
+          <a className="icon-button friends-link" href={href.feed()} aria-label={`Friends and feed${badgeLabel(friendRequests, feedNew, tradeOffers)}`} title="Friends and feed">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="9" cy="8" r="3.5" />
               <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
@@ -51,8 +51,9 @@ export function OpenerNav() {
   );
 }
 
-/** ", 2 friend requests, 3 new posts" for the button's label. */
-function badgeLabel(requests: number, posts: number): string {
-  const parts = [requests && `${requests} friend request${requests === 1 ? "" : "s"}`, posts && `${posts} new post${posts === 1 ? "" : "s"}`].filter(Boolean);
+/** ", 2 friend requests, 3 new posts, 1 trade offer" for the button's label. */
+function badgeLabel(requests: number, posts: number, offers: number): string {
+  const n = (count: number, word: string) => count && `${count} ${word}${count === 1 ? "" : "s"}`;
+  const parts = [n(requests, "friend request"), n(posts, "new post"), n(offers, "trade offer")].filter(Boolean);
   return parts.length ? `, ${parts.join(", ")}` : "";
 }

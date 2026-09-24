@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CODE_ALPHABET, formatFriendCode, normalizeFriendCode, parseDisplayName, parseSlots } from "./protocol";
+import { CODE_ALPHABET, formatFriendCode, normalizeFriendCode, parseDisplayName, parseSlots, parseTradeSide } from "./protocol";
 
 describe("friend codes", () => {
   it("has 32 unambiguous characters", () => {
@@ -56,5 +56,20 @@ describe("share slots", () => {
     expect(() => parseSlots([-1], 10)).toThrow();
     expect(() => parseSlots([1.5], 10)).toThrow();
     expect(() => parseSlots(["1"], 10)).toThrow();
+  });
+});
+
+describe("trade offers", () => {
+  const isUid = (s: unknown) => typeof s === "string" && s.includes(":");
+
+  it("takes each card once, and treats a missing side as empty", () => {
+    expect(parseTradeSide(["p:1", "p:1", "p:2"], isUid)).toEqual(["p:1", "p:2"]);
+    expect(parseTradeSide(undefined, isUid)).toEqual([]);
+  });
+
+  it("refuses too many cards or things that aren't card ids", () => {
+    expect(() => parseTradeSide(Array.from({ length: 11 }, (_, i) => `p:${i}`), isUid)).toThrow(/up to 10/);
+    expect(() => parseTradeSide(["nope"], isUid)).toThrow();
+    expect(() => parseTradeSide("p:1", isUid)).toThrow();
   });
 });

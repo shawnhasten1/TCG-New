@@ -1,9 +1,10 @@
 // Tiny hash router: #/ (home: a pack from a random set), #/sets (set browser), #/collection, #/binder/<setId>,
 // #/pokedex, #/pokemon/<dexId>, #/cards, #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab).
 // A friend's collection: #/friend/<id> (by set), #/friend/<id>/cards, #/friend/<id>/binder/<setId>.
+// Trades: #/trades, and #/trade/<friendId> to put an offer together.
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "binder"; setId?: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -15,6 +16,8 @@ export function parseRoute(hash: string): Route {
   if (page === "pokedex") return { page: "pokedex" };
   if (page === "cards") return { page: "cards" };
   if (page === "feed") return { page: "feed" };
+  if (page === "trades") return { page: "trades" };
+  if (page === "trade" && id) return { page: "trade", friendId: id };
   if (page === "friends") return { page: "friends", code: id || undefined };
   if (page === "friend" && id) {
     if (sub === "binder" && subId) return { page: "friend", friendId: id, view: "binder", setId: subId };
@@ -36,6 +39,9 @@ export const href = {
   pokedex: () => "#/pokedex",
   cards: () => "#/cards",
   feed: () => "#/feed",
+  trades: () => "#/trades",
+  /** Put together an offer for a friend. */
+  trade: (friendId: string) => `#/trade/${encodeURIComponent(friendId)}`,
   /** A friend's collection, or one of its binders. */
   friend: (friendId: string, setId?: string) => `#/friend/${encodeURIComponent(friendId)}${setId ? `/binder/${encodeURIComponent(setId)}` : ""}`,
   friendCards: (friendId: string) => `#/friend/${encodeURIComponent(friendId)}/cards`,

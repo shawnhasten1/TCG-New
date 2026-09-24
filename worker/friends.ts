@@ -5,6 +5,7 @@
 import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendCollection, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
 import { ownedCards } from "./cards";
 import { feedNew } from "./feed";
+import { tradeOffers } from "./trades";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
 
@@ -34,6 +35,12 @@ const pair = (a: string, b: string): [string, string] => (a < b ? [a, b] : [b, a
 interface FriendshipRow {
   requested_by: string;
   status: "pending" | "accepted";
+}
+
+/** Whether two players are friends (accepted, not just asked). */
+export async function areFriends(db: D1Database, a: string, b: string): Promise<boolean> {
+  const row = await db.prepare("SELECT 1 AS yes FROM friendships WHERE user_a = ? AND user_b = ? AND status = 'accepted'").bind(...pair(a, b)).first();
+  return !!row;
 }
 
 const friendship = (ctx: Ctx, a: string, b: string) =>
@@ -104,7 +111,7 @@ async function inbox(ctx: Ctx, user: UserRow): Promise<Response> {
   const row = await ctx.env.DB.prepare("SELECT COUNT(*) AS n FROM friendships WHERE (user_a = ?1 OR user_b = ?1) AND status = 'pending' AND requested_by != ?1")
     .bind(user.id)
     .first<{ n: number }>();
-  return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user) } satisfies InboxResponse);
+  return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user), tradeOffers: await tradeOffers(ctx, user) } satisfies InboxResponse);
 }
 
 /** A friend's cards, to browse. Only friends can see each other's collections. */
@@ -185,10 +192,13 @@ async function accept(ctx: Ctx, user: UserRow, otherId: string): Promise<Respons
   return list(ctx, user);
 }
 
-/** Declines a request, cancels one you sent, or removes a friend. Already gone is fine. */
+/** Declines a request, cancels one you sent, or removes a friend (calling off any trades between you). Already gone is fine. */
 async function remove(ctx: Ctx, user: UserRow, otherId: string): Promise<Response> {
-  await ctx.env.DB.prepare("DELETE FROM friendships WHERE user_a = ? AND user_b = ?")
-    .bind(...pair(user.id, otherId))
-    .run();
+  await ctx.env.DB.batch([
+    ctx.env.DB.prepare("DELETE FROM friendships WHERE user_a = ? AND user_b = ?").bind(...pair(user.id, otherId)),
+    ctx.env.DB.prepare(
+      "UPDATE trades SET status = 'cancelled', resolved_at = ?3 WHERE status = 'pending' AND ((from_user = ?1 AND to_user = ?2) OR (from_user = ?2 AND to_user = ?1))",
+    ).bind(user.id, otherId, Date.now()),
+  ]);
   return list(ctx, user);
 }

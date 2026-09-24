@@ -10,6 +10,8 @@ import { OpenPage } from "../opener/OpenPage";
 import { SetPicker } from "../picker/SetPicker";
 import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
+import { TradeComposer } from "../social/TradeComposer";
+import { TradesPage } from "../social/TradesPage";
 import { useRoute } from "./router";
 import { SettingsPage } from "./SettingsPage";
 
@@ -32,6 +34,10 @@ export function App() {
           {route.view === "binder" ? <BinderPage key={route.setId} setId={route.setId!} /> : route.view === "cards" ? <CardsPage /> : <CollectionPage />}
         </FriendCollectionProvider>
       );
+    case "trades":
+      return <TradesPage />;
+    case "trade":
+      return <TradeComposer key={route.friendId} friendId={route.friendId} />;
     case "feed":
       return <FeedPage />;
     case "friends":

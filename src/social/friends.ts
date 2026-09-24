@@ -14,7 +14,7 @@ export const removeFriend = (id: string) => api<FriendsResponse>(`/api/friends/$
 
 /* ---------- Inbox ---------- */
 
-const EMPTY: InboxResponse = { friendRequests: 0, feedNew: 0 };
+const EMPTY: InboxResponse = { friendRequests: 0, feedNew: 0, tradeOffers: 0 };
 let inbox = EMPTY;
 const events = new EventTarget();
 
@@ -31,6 +31,9 @@ function seen(res: FriendsResponse): FriendsResponse {
 
 /** Call with a friends list the page loaded itself. */
 export const noteFriends = (res: FriendsResponse) => void seen(res);
+
+/** A fresh trades list says how many offers are waiting. */
+export const noteTrades = (waiting: number) => setInbox({ ...inbox, tradeOffers: waiting });
 
 /** Loading the feed's newest posts marks them seen. */
 export const noteFeedSeen = () => setInbox({ ...inbox, feedNew: 0 });

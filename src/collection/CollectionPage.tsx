@@ -69,6 +69,13 @@ export function CollectionPage() {
         )}
       </nav>
       <h1>{whose(source)} collection</h1>
+      {source.owner && (
+        <p>
+          <a className="button primary" href={href.trade(source.owner.id)}>
+            Propose a trade
+          </a>
+        </p>
+      )}
       {!source.owner && <GuestNotice />}
       <CollectionViewSwitch current="set" />
       {!pulls || !sets ? (

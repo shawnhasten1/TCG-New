@@ -4,7 +4,7 @@
 // they show (from the Worker's TCGdex cache), so reading the feed never needs whole sets. Posts from someone
 // who's no longer a friend simply stop showing.
 
-import type { RemoteCard } from "../src/sync/protocol";
+import { isOpenedPack, type RemoteCard } from "../src/sync/protocol";
 import { parseSlots, type FeedPost, type FeedResponse, type ShareRequest, type SharedCard } from "../src/social/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, json, readJson, type Ctx } from "./http";
@@ -88,6 +88,7 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
   const body = (await readJson<Partial<ShareRequest> | null>(ctx.req)) ?? {};
   const packId = typeof body.packId === "string" && body.packId.length <= 64 ? body.packId : undefined;
   if (!packId) throw new HttpError(400, "Which pack?");
+  if (!isOpenedPack(packId)) throw new HttpError(400, "Only cards you pulled from packs can be shared.");
   const db = ctx.env.DB;
 
   // Sharing straight from the reveal can beat the sync that opens the pack, so open it here too.

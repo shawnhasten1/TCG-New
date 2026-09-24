@@ -13,9 +13,9 @@ export function Avatar({ friend }: { friend: { displayName: string; avatarUrl: s
   );
 }
 
-/** "Feed / Friends" switch at the top of both pages, with waiting friend requests counted on its tab. */
-export function SocialTabs({ current }: { current: "feed" | "friends" }) {
-  const { friendRequests } = useInbox();
+/** "Feed / Friends / Trades" switch at the top of those pages, with what's waiting counted on its tab. */
+export function SocialTabs({ current }: { current: "feed" | "friends" | "trades" }) {
+  const { friendRequests, tradeOffers } = useInbox();
   return (
     <nav className="segmented view-switch" aria-label="Friends">
       <a href={href.feed()} aria-current={current === "feed" ? "page" : undefined}>
@@ -23,6 +23,9 @@ export function SocialTabs({ current }: { current: "feed" | "friends" }) {
       </a>
       <a href={href.friends()} aria-current={current === "friends" ? "page" : undefined}>
         Friends{friendRequests > 0 && <span className="tab-count"> ({friendRequests})</span>}
+      </a>
+      <a href={href.trades()} aria-current={current === "trades" ? "page" : undefined}>
+        Trades{tradeOffers > 0 && <span className="tab-count"> ({tradeOffers})</span>}
       </a>
     </nav>
   );

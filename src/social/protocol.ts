@@ -54,6 +54,8 @@ export interface InboxResponse {
   friendRequests: number;
   /** Friends' posts since you last looked at the feed. */
   feedNew: number;
+  /** Trade offers waiting for you to answer. */
+  tradeOffers: number;
 }
 
 /** A card someone owns, by its identity (see cardUid in sync/protocol.ts). */
@@ -115,4 +117,62 @@ export function parseSlots(v: unknown, packSize: number): number[] {
   const slots = [...new Set(v)].sort((a, b) => a - b);
   if (!slots.every((s) => Number.isInteger(s) && s >= 0 && s < packSize)) throw new Error("Those cards aren't in that pack.");
   return slots;
+}
+
+/* ---------- Trades ---------- */
+
+/** Most cards either side of a trade can hand over. */
+export const MAX_TRADE_CARDS = 10;
+/** Most offers one player can have waiting at once. */
+export const MAX_OPEN_TRADES = 20;
+
+export type TradeStatus = "pending" | "accepted" | "declined" | "cancelled" | "failed";
+
+/** A card in a trade, with what's needed to show it. */
+export interface TradeCard {
+  uid: string;
+  finish: Finish;
+  firstEdition: boolean;
+  card: Card;
+  set: { id: string; name: string; serieId: string; official: number };
+}
+
+export interface Trade {
+  id: string;
+  from: FriendProfile;
+  to: FriendProfile;
+  /** You sent it. */
+  mine: boolean;
+  status: TradeStatus;
+  /** What `from` hands over. */
+  give: TradeCard[];
+  /** What `to` hands over. */
+  get: TradeCard[];
+  createdAt: number;
+  resolvedAt: number | null;
+}
+
+export interface TradesResponse {
+  /** Offers waiting for your answer. */
+  incoming: Trade[];
+  /** Offers you sent that haven't been answered. */
+  outgoing: Trade[];
+  /** Recently finished trades, newest first. */
+  history: Trade[];
+}
+
+export interface TradeRequest {
+  /** The friend the offer goes to. */
+  to: string;
+  /** Your cards you'd hand over. */
+  give: string[];
+  /** Their cards you'd like. */
+  get: string[];
+}
+
+/** Card ids for one side of an offer: each once, each a card id, at most MAX_TRADE_CARDS. Throws on anything else. */
+export function parseTradeSide(v: unknown, isUid: (s: unknown) => boolean): string[] {
+  if (v === undefined) return [];
+  if (!Array.isArray(v) || v.length > MAX_TRADE_CARDS || !v.every(isUid)) throw new Error(`Each side of a trade can have up to ${MAX_TRADE_CARDS} cards.`);
+  return [...new Set(v as string[])];
 }

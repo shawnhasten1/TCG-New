@@ -39,9 +39,10 @@ export function friendPulls(res: FriendCollection): PullRecord[] {
 const recent = new Map<string, { at: number; res: Promise<FriendCollection> }>();
 const KEEP_MS = 60_000;
 
-function fetchFriend(friendId: string): Promise<FriendCollection> {
+/** A friend's collection; `fresh` skips the brief cache (for trading, where it must be current). */
+export function fetchFriend(friendId: string, fresh = false): Promise<FriendCollection> {
   const hit = recent.get(friendId);
-  if (hit && Date.now() - hit.at < KEEP_MS) return hit.res;
+  if (!fresh && hit && Date.now() - hit.at < KEEP_MS) return hit.res;
   const res = api<FriendCollection>(`/api/friends/${friendId}/collection`);
   recent.set(friendId, { at: Date.now(), res });
   res.catch(() => recent.delete(friendId));

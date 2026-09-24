@@ -234,6 +234,9 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
                 <a className="button" href={href.friend(f.id)}>
                   Collection
                 </a>
+                <a className="button" href={href.trade(f.id)}>
+                  Trade
+                </a>
                 <button type="button" className="danger" disabled={!!busy} onClick={() => decline(f, "remove")}>
                   Remove
                 </button>
