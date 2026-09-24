@@ -31,3 +31,5 @@
   .foil-lab .era-grid .col-head:first-child { display: none; }
   .foil-lab .row-head { grid-column: 1 / -1; }
 }
+.foil-lab .rev-group h3 { font: 700 1rem/1.2 "Alegreya Sans", sans-serif; margin: 24px 0 2px; }
+.foil-lab .rev-group .muted { color: var(--muted); margin: 0 0 12px; }

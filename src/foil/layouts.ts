@@ -2,6 +2,8 @@
 // Measured on 600×825 TCGdex scans (2026-09-22). All values are % of the card image.
 // Tune them on the foil lab page (#/foil) with "Show art box" on.
 
+import type { ReversePattern } from "./reverse";
+
 export interface Box {
   x: number;
   y: number;
@@ -20,8 +22,10 @@ export interface FrameLayout {
   art: Box;
   /** Printed outer border (yellow/silver) that reverse foil leaves alone, % of width / height. */
   border: { x: number; y: number };
+  /** The era's reverse holo pattern (see reverse.ts). */
+  reverse: ReversePattern;
   /** A sample holo card from this era, for the foil lab. */
-  sample: { image: string; name: string; rarity: string };
+  sample: { image: string; name: string; rarity: string; types: string[] };
 }
 
 const box = (x0: number, y0: number, x1: number, y1: number, r = 0.6): Box => ({ x: x0, y: y0, w: x1 - x0, h: y1 - y0, r });
@@ -34,7 +38,8 @@ export const layouts: FrameLayout[] = [
     series: ["base", "gym", "neo", "lc", "si"],
     art: box(10.5, 11, 89, 50.5, 0.3),
     border: { x: 5, y: 3.6 },
-    sample: { image: img("base/base1/1"), name: "Alakazam", rarity: "Rare" },
+    reverse: "fireworks",
+    sample: { image: img("base/base1/1"), name: "Alakazam", rarity: "Rare", types: ["Psychic"] },
   },
   {
     id: "ecard",
@@ -43,7 +48,8 @@ export const layouts: FrameLayout[] = [
     art: box(9, 12.5, 96, 49.5, 3),
     // The e-Card art window runs into the right border.
     border: { x: 4, y: 3.6 },
-    sample: { image: img("ecard/ecard1/1"), name: "Alakazam", rarity: "Holo Rare" },
+    reverse: "plain",
+    sample: { image: img("ecard/ecard1/1"), name: "Alakazam", rarity: "Holo Rare", types: ["Psychic"] },
   },
   {
     id: "ex",
@@ -51,7 +57,8 @@ export const layouts: FrameLayout[] = [
     series: ["ex", "pop"],
     art: box(9, 8, 92, 46),
     border: { x: 4.6, y: 3.4 },
-    sample: { image: img("ex/ex1/1"), name: "Aggron", rarity: "Holo Rare" },
+    reverse: "plain",
+    sample: { image: img("ex/ex1/1"), name: "Aggron", rarity: "Holo Rare", types: ["Metal"] },
   },
   {
     id: "dp",
@@ -59,7 +66,8 @@ export const layouts: FrameLayout[] = [
     series: ["dp", "pl"],
     art: box(7, 8.5, 94, 49),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("dp/dp1/1"), name: "Dialga", rarity: "Rare Holo" },
+    reverse: "plain",
+    sample: { image: img("dp/dp1/1"), name: "Dialga", rarity: "Rare Holo", types: ["Metal"] },
   },
   {
     id: "hgss",
@@ -67,7 +75,8 @@ export const layouts: FrameLayout[] = [
     series: ["hgss", "col"],
     art: box(7, 9, 93, 52),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("hgss/hgss1/1"), name: "Arcanine", rarity: "Holo Rare" },
+    reverse: "plain",
+    sample: { image: img("hgss/hgss1/1"), name: "Arcanine", rarity: "Holo Rare", types: ["Fire"] },
   },
   {
     id: "bw",
@@ -75,7 +84,8 @@ export const layouts: FrameLayout[] = [
     series: ["bw"],
     art: box(8, 9.5, 92, 49, 0.4),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("bw/bw1/5"), name: "Serperior", rarity: "Rare" },
+    reverse: "plain",
+    sample: { image: img("bw/bw1/5"), name: "Serperior", rarity: "Rare", types: ["Grass"] },
   },
   {
     id: "xy",
@@ -83,7 +93,8 @@ export const layouts: FrameLayout[] = [
     series: ["xy"],
     art: box(8, 9.5, 92, 49, 0.4),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("xy/xy1/5"), name: "Beedrill", rarity: "Rare" },
+    reverse: "xy",
+    sample: { image: img("xy/xy1/5"), name: "Beedrill", rarity: "Rare", types: ["Grass"] },
   },
   {
     id: "sm",
@@ -91,7 +102,8 @@ export const layouts: FrameLayout[] = [
     series: ["sm"],
     art: box(5.6, 8, 92.2, 47.7),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("sm/sm1/3"), name: "Butterfree", rarity: "Rare" },
+    reverse: "sm",
+    sample: { image: img("sm/sm1/3"), name: "Butterfree", rarity: "Rare", types: ["Grass"] },
   },
   {
     id: "swsh",
@@ -99,15 +111,27 @@ export const layouts: FrameLayout[] = [
     series: ["swsh"],
     art: box(7.5, 9.3, 92.5, 47.7),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("swsh/swsh7/4"), name: "Jumpluff", rarity: "Holo Rare" },
+    reverse: "swsh",
+    sample: { image: img("swsh/swsh7/4"), name: "Jumpluff", rarity: "Holo Rare", types: ["Grass"] },
   },
   {
     id: "sv",
-    name: "Scarlet & Violet / Mega Evolution",
-    series: ["sv", "me"],
+    name: "Scarlet & Violet",
+    series: ["sv"],
     art: box(7.5, 9.3, 92.5, 47.7),
     border: { x: 4.4, y: 3.2 },
-    sample: { image: img("sv/sv01/015"), name: "Meowscarada", rarity: "Rare" },
+    reverse: "sv",
+    sample: { image: img("sv/sv01/015"), name: "Meowscarada", rarity: "Rare", types: ["Grass"] },
+  },
+  {
+    // Same frame as Scarlet & Violet, but reverse holos went back to a plain background.
+    id: "me",
+    name: "Mega Evolution",
+    series: ["me"],
+    art: box(7.5, 9.3, 92.5, 47.7),
+    border: { x: 4.4, y: 3.2 },
+    reverse: "plain",
+    sample: { image: img("me/me01/001"), name: "Bulbasaur", rarity: "Common", types: ["Grass"] },
   },
 ];
 

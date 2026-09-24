@@ -87,6 +87,8 @@ export interface Card {
   trainerType?: string | null;
   /** National Pokédex numbers. Pokémon cards only; tag-team cards list several. */
   dexId?: number[] | null;
+  /** Pokémon types, e.g. ["Lightning"]. Pokémon cards only. Drives the reverse holo pattern. */
+  types?: string[] | null;
 }
 
 /** A card from a cross-set query, which also says which set it's from. */

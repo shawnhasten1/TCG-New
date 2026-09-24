@@ -68,19 +68,37 @@
   mix-blend-mode: hard-light;
 }
 
-/* ---------- Reverse holo: everything but the art box, calmer horizontal bands ---------- */
+/* ---------- Reverse holo: everything but the art box ----------
+   The era's foil pattern (--rev-tex, from reverse.ts: type-symbol tiles, cobblestones…) stays fixed to
+   the card like the printed foil; a pointer glow (soft-light) and a sweeping diagonal (difference) light
+   it up, strongest when the card is near level. A faint rainbow tint rides on top. */
+.tcg-card[data-rev="swsh"] { --rev-size: 100% auto; }
+.tcg-card[data-rev="sv"] { --rev-size: 55% auto; }
+.tcg-card[data-rev="xy"] { --rev-size: 30% auto; }
+.tcg-card[data-rev="sm"] { --rev-size: 100% 100%; }
+.tcg-card[data-rev="fireworks"] { --rev-tex: var(--sparkles); --rev-size: 110px 110px; }
 .tcg-card[data-treatment="reverse"] .foil {
   -webkit-mask-image: var(--rev-mask); mask-image: var(--rev-mask);
   background-image:
-    repeating-linear-gradient(0deg, #0e152e 0%, hsl(200 12% 62%) 5%, hsl(200 30% 72%) 6%, hsl(200 12% 62%) 7%, #0e152e 14%),
-    repeating-linear-gradient(100deg, var(--sun-1) 0%, var(--sun-2) 8%, var(--sun-4) 18%, var(--sun-6) 30%, var(--sun-1) 40%);
-  background-size: 300% 300%, 250% 250%;
-  background-position: calc(50% + (50 - var(--bx)) * 2%) calc(50% + (50 - var(--by)) * 3%), calc(50% - (50 - var(--bx)) * 2%) calc(50% - (50 - var(--by)) * 2%);
-  background-blend-mode: overlay;
-  filter: brightness(calc(.55 + var(--pc) * .3)) contrast(1.5) saturate(1.3);
-  opacity: calc(var(--o) * .5 * var(--foil-k));
+    radial-gradient(circle at var(--mx) var(--my), #fff 5%, #000 50%, #fff 80%),
+    linear-gradient(-45deg, #000 15%, #fff, #000 85%),
+    var(--rev-tex, linear-gradient(hsl(0 0% 55%), hsl(0 0% 55%)));
+  background-blend-mode: soft-light, difference;
+  background-size: 120% 120%, 200% 200%, var(--rev-size, 100% 100%);
+  background-position: center, calc(var(--px) * 1%) calc(var(--py) * 1%), 0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+  filter: brightness(.6) contrast(1.5);
+  opacity: calc(max(0, 1.5 * var(--o) - var(--pc)) * var(--foil-k));
 }
-.tcg-card[data-treatment="reverse"] .foil::after { filter: brightness(.8) contrast(2.5); }
+.tcg-card[data-treatment="reverse"] .foil::before {
+  background: linear-gradient(115deg, var(--sun-1), var(--sun-2), var(--sun-3), var(--sun-4), var(--sun-5), var(--sun-6), var(--sun-1));
+  background-size: 300% 300%;
+  background-position: calc(var(--bx) * 1%) calc(var(--by) * 1%);
+  mix-blend-mode: color;
+  opacity: .45;
+}
+/* The glow above already pools the light, so reverse skips the shared darkening pass. */
+.tcg-card[data-treatment="reverse"] .foil::after { content: none; }
 
 /* ---------- Full art / illustration / rule box, and ultra/secret/hyper (etched) ----------
    Vertical rainbow pillars, hue-shifted through diagonal bars, plus a mirrored copy in ::before

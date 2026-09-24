@@ -80,8 +80,9 @@ describe("layouts", () => {
   it("maps series to frames, defaulting to the modern frame", () => {
     expect(layoutFor("base").id).toBe("wotc");
     expect(layoutFor("pl").id).toBe("dp");
-    expect(layoutFor("me").id).toBe("sv");
-    expect(layoutFor("unknown").id).toBe("sv");
+    expect(layoutFor("sv").id).toBe("sv");
+    expect(layoutFor("me").id).toBe("me");
+    expect(layoutFor("unknown").id).toBe("me");
   });
 
   it("keeps every art box inside the card border", () => {

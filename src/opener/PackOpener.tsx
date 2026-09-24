@@ -348,6 +348,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
                     rarity={pull.card.rarity}
                     category={pull.card.category}
                     trainerType={pull.card.trainerType}
+                    types={pull.card.types}
                     finish={pull.finish}
                     layout={layout}
                     data-tier={pullTier(pull)}

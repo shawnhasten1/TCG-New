@@ -7,6 +7,7 @@ import { Tilt } from "../opener/tilt";
 import { FoilCard } from "./FoilCard";
 import { layoutFor, layouts } from "./layouts";
 import type { CardCategory } from "../api/types";
+import { typeSymbol } from "./reverse";
 import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
 import "./foil-lab.css";
 
@@ -19,6 +20,7 @@ interface Sample {
   serie: string;
   category?: CardCategory;
   trainerType?: string;
+  types?: string[];
 }
 
 /** Real full-art / ultra / hyper cards for the full-card treatments, then one card per rarity style. */
@@ -43,6 +45,71 @@ const STYLE_SAMPLES: Sample[] = [
   { id: "sv04.5-216", image: img("sv/sv04.5/216"), rarity: "Shiny Ultra Rare", serie: "sv", category: "Pokemon" },
   { id: "swsh9-018", image: img("swsh/swsh9/018"), rarity: "Holo Rare VSTAR", serie: "swsh", category: "Pokemon" },
   { id: "sv06.5-058", image: img("sv/sv06.5/058"), rarity: "ACE SPEC Rare", serie: "sv", category: "Trainer", trainerType: "Item" },
+];
+
+/** Reverse holos: each era's foil pattern, with a spread of types (the symbol in the foil follows the type). */
+const poke = (id: string, path: string, type: string, serie: string): Sample => ({ id, image: img(path), rarity: "Common", serie, category: "Pokemon", types: [type] });
+const trainer = (id: string, path: string, serie: string, trainerType = "Item"): Sample => ({ id, image: img(path), rarity: "Uncommon", serie, category: "Trainer", trainerType });
+const REVERSE_GROUPS: { title: string; note: string; samples: Sample[] }[] = [
+  {
+    title: "Sword & Shield",
+    note: "Columns of chevron tiles with the type symbol; Poké Balls on Trainers.",
+    samples: [
+      poke("swsh12-049", "swsh/swsh12/049", "Lightning", "swsh"),
+      poke("swsh12-017", "swsh/swsh12/017", "Fire", "swsh"),
+      poke("swsh12-001", "swsh/swsh12/001", "Grass", "swsh"),
+      poke("swsh12-036", "swsh/swsh12/036", "Water", "swsh"),
+      poke("swsh12-060", "swsh/swsh12/060", "Psychic", "swsh"),
+      poke("swsh12-091", "swsh/swsh12/091", "Fighting", "swsh"),
+      poke("swsh7-93", "swsh/swsh7/93", "Darkness", "swsh"),
+      poke("swsh12-127", "swsh/swsh12/127", "Metal", "swsh"),
+      poke("swsh9-120", "swsh/swsh9/120", "Colorless", "swsh"),
+      trainer("swsh9-150", "swsh/swsh9/150", "swsh"),
+    ],
+  },
+  {
+    title: "Scarlet & Violet",
+    note: "Cobblestone tiles with type symbols of different sizes.",
+    samples: [
+      poke("sv01-063", "sv/sv01/063", "Lightning", "sv"),
+      poke("sv01-030", "sv/sv01/030", "Fire", "sv"),
+      poke("sv01-001", "sv/sv01/001", "Grass", "sv"),
+      poke("sv01-042", "sv/sv01/042", "Water", "sv"),
+      poke("sv01-082", "sv/sv01/082", "Psychic", "sv"),
+      trainer("sv01-196", "sv/sv01/196", "sv"),
+    ],
+  },
+  {
+    title: "XY",
+    note: "Small type symbols repeated across the background.",
+    samples: [
+      poke("xy7-13", "xy/xy7/13", "Fire", "xy"),
+      poke("xy7-19", "xy/xy7/19", "Water", "xy"),
+      poke("xy7-52", "xy/xy7/52", "Fairy", "xy"),
+      poke("xy7-57", "xy/xy7/57", "Dragon", "xy"),
+      trainer("xy7-69", "xy/xy7/69", "xy", "Supporter"),
+    ],
+  },
+  {
+    title: "Sun & Moon",
+    note: "One large type symbol on the left side.",
+    samples: [
+      poke("sm3-18", "sm/sm3/18", "Fire", "sm"),
+      poke("sm3-27", "sm/sm3/27", "Water", "sm"),
+      poke("sm3-40", "sm/sm3/40", "Lightning", "sm"),
+      poke("sm3-48", "sm/sm3/48", "Psychic", "sm"),
+    ],
+  },
+  {
+    title: "Plain eras and Legendary Collection",
+    note: "EX, DP–BW and Mega Evolution have a plain foil background; Legendary Collection has fireworks.",
+    samples: [
+      poke("ex1-7", "ex/ex1/7", "Psychic", "ex"),
+      poke("dp1-5", "dp/dp1/5", "Fire", "dp"),
+      poke("me01-019", "me/me01/019", "Fire", "me"),
+      poke("lc-3", "lc/lc/3", "Fire", "lc"),
+    ],
+  },
 ];
 
 const ERA_COLUMNS: { label: string; finish: Finish; treatment: Treatment }[] = [
@@ -157,6 +224,17 @@ export function FoilLab() {
         <h2>Rarity styles</h2>
         <div className="full-grid">{STYLE_SAMPLES.map((s) => sampleFigure(s, showArtBox))}</div>
       </section>
+
+      <section>
+        <h2>Reverse holos</h2>
+        {REVERSE_GROUPS.map((g) => (
+          <div key={g.title} className="rev-group">
+            <h3>{g.title}</h3>
+            <p className="muted">{g.note}</p>
+            <div className="full-grid">{g.samples.map((s) => sampleFigure(s, showArtBox, "reverse"))}</div>
+          </div>
+        ))}
+      </section>
     </main>
   );
 }
@@ -173,23 +251,27 @@ function EraRow({ layoutId, showArtBox }: { layoutId: string; showArtBox: boolea
       </div>
       {ERA_COLUMNS.map((c) => (
         <div key={c.label} className="lab-card">
-          <FoilCard image={layout.sample.image} rarity={layout.sample.rarity} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
+          <FoilCard image={layout.sample.image} rarity={layout.sample.rarity} category="Pokemon" types={layout.sample.types} finish={c.finish} treatment={c.treatment} layout={layout} showArtBox={showArtBox} />
         </div>
       ))}
     </>
   );
 }
 
-function sampleFigure(s: Sample, showArtBox: boolean) {
+function sampleFigure(s: Sample, showArtBox: boolean, finish: Finish = "holo") {
   const kind = { category: s.category, trainerType: s.trainerType };
-  const label = [foilTreatment("holo", s.rarity), foilStyle("holo", s.rarity, kind), foilTint(s.rarity, kind) === "gold" && "gold"].filter(Boolean).join(" · ");
+  const layout = layoutFor(s.serie);
+  const label =
+    finish === "reverse"
+      ? `${layout.reverse} · ${typeSymbol(s.category, s.types)}`
+      : [foilTreatment("holo", s.rarity), foilStyle("holo", s.rarity, kind), foilTint(s.rarity, kind) === "gold" && "gold"].filter(Boolean).join(" · ");
   return (
     <figure key={s.id}>
       <div className="lab-card">
-        <FoilCard image={s.image} rarity={s.rarity} category={s.category} trainerType={s.trainerType} finish="holo" layout={layoutFor(s.serie)} showArtBox={showArtBox} />
+        <FoilCard image={s.image} rarity={s.rarity} category={s.category} trainerType={s.trainerType} types={s.types} finish={finish} layout={layout} showArtBox={showArtBox} />
       </div>
       <figcaption>
-        {s.rarity}
+        {finish === "reverse" ? (s.types?.[0] ?? s.trainerType ?? s.category) : s.rarity}
         <small>
           {s.id} · {label}
         </small>

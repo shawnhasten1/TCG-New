@@ -5,6 +5,7 @@ import { useEffect, useState, type CSSProperties, type HTMLAttributes, type Ref 
 import type { CardCategory } from "../api/types";
 import type { Finish } from "../engine/types";
 import { artMask, reverseMask, type FrameLayout } from "./layouts";
+import { reverseTexture, typeSymbol, type ReversePattern } from "./reverse";
 import { ensureSparkles } from "./sparkles";
 import { foilStyle, foilTint, foilTreatment, type Style, type Treatment } from "./treatment";
 import "./foil.css";
@@ -18,6 +19,10 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   /** Tells gold secret rares (Items, Tools, Stadiums, Energy) from rainbow ones. */
   category?: CardCategory;
   trainerType?: string | null;
+  /** Pokémon types: reverse holos from XY on show the first one's symbol in the foil. */
+  types?: string[] | null;
+  /** Overrides the era's reverse holo pattern (foil lab). */
+  reversePattern?: ReversePattern;
   /** Overrides the treatment derived from finish + rarity (foil lab). */
   treatment?: Treatment;
   /** Overrides the style derived from finish + rarity; null turns it off (foil lab). */
@@ -35,10 +40,16 @@ function maskVars(layout: FrameLayout): CSSProperties {
   return vars;
 }
 
-export function FoilCard({ image, rarity, finish, layout, category, trainerType, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
+function reverseVars(pattern: ReversePattern, category?: CardCategory, types?: string[] | null): CSSProperties {
+  const tex = reverseTexture(pattern, typeSymbol(category, types));
+  return (tex ? { "--rev-tex": tex } : {}) as CSSProperties;
+}
+
+export function FoilCard({ image, rarity, finish, layout, category, trainerType, types, reversePattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
   const t = treatment ?? foilTreatment(finish, rarity);
   const kind = { category, trainerType };
   const look = styleOverride === undefined ? foilStyle(finish, rarity, kind) : (styleOverride ?? undefined);
+  const rev = t === "reverse" ? (reversePattern ?? layout.reverse) : undefined;
   const [src, setSrc] = useState(image && `${image}/${quality}.webp`);
   useEffect(() => setSrc(image && `${image}/${quality}.webp`), [image, quality]);
   useEffect(ensureSparkles, []);
@@ -51,7 +62,8 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
       data-treatment={t}
       data-tint={foilTint(rarity, kind)}
       data-style={t === "none" ? undefined : look}
-      style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout) : undefined), ...style }}
+      data-rev={rev}
+      style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout) : undefined), ...(rev ? reverseVars(rev, category, types) : undefined), ...style }}
     >
       <div className="face">
         {src && <img src={src} alt="" draggable={false} onError={() => quality === "high" && image && setSrc(`${image}/low.webp`)} />}
