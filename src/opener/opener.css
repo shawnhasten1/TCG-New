@@ -32,6 +32,11 @@
 .opener .sound-toggle[aria-pressed="false"] { color: var(--muted); }
 .opener .topbar a:hover, .opener .topbar button:hover { border-color: var(--focus); }
 .opener .topbar a:focus-visible, .opener .topbar button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.opener .topbar { flex-wrap: wrap; }
+/* Guest reminder: a second row under the buttons, with the page pushed down to make room for it. */
+.opener .topbar .guest-note { flex-basis: 100%; margin: 0; text-align: center; font-size: .85rem; line-height: 1.3; color: var(--muted); text-wrap: balance; }
+.opener .topbar .guest-note a { display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; color: var(--focus); font: inherit; font-weight: 700; text-decoration: underline; }
+.opener:has(.guest-note) { padding-top: calc(106px + env(safe-area-inset-top, 0px)); }
 
 .opener .hint { margin: 0; min-height: 1.4em; max-width: 36ch; color: var(--muted); font-size: 1rem; text-align: center; text-wrap: balance; }
 .opener .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; min-height: 46px; }

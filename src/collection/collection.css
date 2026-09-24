@@ -9,6 +9,8 @@
 .collection .muted { color: var(--muted); }
 .collection .error { color: #c0392b; }
 .collection .empty { padding: 32px 0; }
+.collection .guest-note { margin: 0 0 12px; color: var(--muted); }
+.collection .guest-note a { font-weight: 700; }
 .collection .crumbs { display: flex; flex-wrap: wrap; gap: 0 20px; }
 .collection .crumbs a { display: inline-block; padding: 10px 0; font-weight: 600; } /* thumb-sized */
 .collection button, .collection a.button {

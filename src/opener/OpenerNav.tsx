@@ -1,5 +1,6 @@
 // The opener's top bar: the opener is home, so this is the way to everything else.
 
+import { GuestNotice } from "../account/GuestNotice";
 import { href } from "../app/router";
 import { updateSettings, useSettings } from "../app/settings";
 
@@ -25,6 +26,7 @@ export function OpenerNav() {
           </svg>
         </button>
       </div>
+      <GuestNotice />
     </header>
   );
 }

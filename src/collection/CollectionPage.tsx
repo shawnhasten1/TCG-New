@@ -1,6 +1,7 @@
 // Every set you've opened, with progress, most recent first.
 
 import { useEffect, useMemo, useState } from "react";
+import { GuestNotice } from "../account/GuestNotice";
 import type { SetSummary } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
@@ -50,6 +51,7 @@ export function CollectionPage() {
         <a href={href.settings()}>Settings &amp; backup</a>
       </nav>
       <h1>Your collection</h1>
+      <GuestNotice />
       <CollectionViewSwitch current="set" />
       {!pulls || !sets ? (
         <p className="muted" role="status">
