@@ -78,7 +78,7 @@ export function BinderPage({ setId }: { setId: string }) {
           <>
             <a href={href.collection()}>← Collection</a>
             <a href={href.picker()}>All sets</a>
-            <a href={href.pokedex()}>By Pokémon</a>
+            <a href={href.pokedex()}>Pokédex</a>
           </>
         )}
       </nav>

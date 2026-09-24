@@ -1,4 +1,4 @@
-// "By set / By Pokémon / By rarity" switch shared by the collection pages. A friend's collection has no Pokédex view.
+// "By set / Pokédex / By rarity" switch shared by the collection pages. A friend's collection has no Pokédex view.
 
 import { href } from "../app/router";
 import { useCollectionSource } from "./source";
@@ -12,7 +12,7 @@ export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" |
       </a>
       {!owner && (
         <a href={href.pokedex()} aria-current={current === "pokemon" ? "page" : undefined}>
-          By Pokémon
+          Pokédex
         </a>
       )}
       <a href={links.cards()} aria-current={current === "cards" ? "page" : undefined}>

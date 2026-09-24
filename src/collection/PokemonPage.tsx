@@ -82,7 +82,7 @@ export function PokemonPage({ dexId }: { dexId: number }) {
   return (
     <main className="collection pokemon-page">
       <nav className="crumbs">
-        <a href={href.pokedex()}>← Your Pokémon</a>
+        <a href={href.pokedex()}>← Pokédex</a>
         <span className="dex-nav">
           {dexId > 1 && <a href={href.pokemon(dexId - 1)}>‹ #{pad(dexId - 1)}</a>}
           <a href={href.pokemon(dexId + 1)}>#{pad(dexId + 1)} ›</a>

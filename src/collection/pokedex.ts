@@ -165,6 +165,61 @@ export interface SpeciesEntry {
   lastPulledAt: string;
 }
 
+/* ---------- The full Pokédex, by region ---------- */
+
+export interface Region {
+  id: string;
+  name: string;
+  /** First National Pokédex number introduced in this region. */
+  first: number;
+}
+
+/** Regions in National Pokédex order. Each runs up to the next region's first number; the last is open-ended. */
+export const REGIONS: Region[] = [
+  { id: "kanto", name: "Kanto", first: 1 },
+  { id: "johto", name: "Johto", first: 152 },
+  { id: "hoenn", name: "Hoenn", first: 252 },
+  { id: "sinnoh", name: "Sinnoh", first: 387 },
+  { id: "unova", name: "Unova", first: 494 },
+  { id: "kalos", name: "Kalos", first: 650 },
+  { id: "alola", name: "Alola", first: 722 },
+  { id: "galar", name: "Galar", first: 810 },
+  { id: "hisui", name: "Hisui", first: 899 },
+  { id: "paldea", name: "Paldea", first: 906 },
+];
+
+export function regionOf(dexId: number): Region {
+  return REGIONS.findLast((r) => r.first <= dexId) ?? REGIONS[0];
+}
+
+export interface DexEntry {
+  dexId: number;
+  name: string;
+  /** Set when you own at least one card of this Pokémon. */
+  caught?: SpeciesEntry;
+}
+
+export interface RegionDex {
+  region: Region;
+  entries: DexEntry[];
+  caught: number;
+}
+
+/** Every Pokémon from #1 up, split by region, with the ones you've caught filled in. */
+export function fullDex(species: SpeciesEntry[]): RegionDex[] {
+  const caught = new Map(species.map((s) => [s.dexId, s]));
+  // Cards can name Pokémon newer than the bundled list; stretch the last region to cover them.
+  const last = Math.max(...Object.keys(NAMES).map(Number), ...caught.keys());
+  const out = REGIONS.map((region) => ({ region, entries: [] as DexEntry[], caught: 0 }));
+  for (let dexId = 1; dexId <= last; dexId++) {
+    const s = caught.get(dexId);
+    const group = out[REGIONS.indexOf(regionOf(dexId))];
+    group.entries.push({ dexId, name: s?.name ?? pokemonName(dexId), caught: s });
+    if (s) group.caught++;
+  }
+  return out;
+}
+
 /** Owned Pokémon cards grouped by species. Tag-team cards count toward each Pokémon on them. */
 export function ownedSpecies(ownedCards: Card[], owned: Map<string, Ownership>): SpeciesEntry[] {
   const by = new Map<number, SpeciesEntry>();

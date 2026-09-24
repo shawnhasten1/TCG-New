@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Card, CardWithSet, SetSummary } from "../api/types";
 import { profiles } from "../engine/profiles";
-import { buildPrintings, groupByEra, obtainableFinishes, ownedSpecies, pokemonName, pokemonProgress, searchPokemon } from "./pokedex";
+import { buildPrintings, fullDex, groupByEra, obtainableFinishes, ownedSpecies, pokemonName, pokemonProgress, regionOf, searchPokemon } from "./pokedex";
 import type { Ownership } from "./progress";
 
 const profile = (id: string) => profiles.find((p) => p.id === id)!;
@@ -130,5 +130,34 @@ describe("ownedSpecies", () => {
     expect(pikachu.best.id).toBe("sv03.5-173");
     expect(species.find((s) => s.dexId === 644)?.name).toBe("Zekrom");
     expect(species).toHaveLength(2);
+  });
+});
+
+describe("fullDex", () => {
+  it("places Pokémon in the region they were introduced in", () => {
+    expect(regionOf(1).name).toBe("Kanto");
+    expect(regionOf(151).name).toBe("Kanto");
+    expect(regionOf(152).name).toBe("Johto");
+    expect(regionOf(899).name).toBe("Hisui");
+    expect(regionOf(1025).name).toBe("Paldea");
+  });
+
+  it("lists every Pokémon by region, with caught ones filled in", () => {
+    const pika = card("sv03.5-025", "Common", { normal: true });
+    const tag = card("sm9-33", "Ultra Rare", { holo: true }, { name: "Pikachu & Zekrom GX", dexId: [25, 644] });
+    const dex = fullDex(ownedSpecies([pika, tag], new Map([own(pika.id, { normal: 1 }), own(tag.id, { holo: 1 })])));
+    expect(dex.map((r) => r.entries.length)).toEqual([151, 100, 135, 107, 156, 72, 88, 89, 7, 120]);
+    const kanto = dex[0];
+    expect(kanto).toMatchObject({ caught: 1 });
+    expect(kanto.entries[24]).toMatchObject({ dexId: 25, name: "Pikachu", caught: { printings: 2 } });
+    expect(kanto.entries[0]).toEqual({ dexId: 1, name: "Bulbasaur", caught: undefined });
+    expect(dex.find((r) => r.region.id === "unova")!.caught).toBe(1);
+  });
+
+  it("stretches the last region to Pokémon newer than the bundled names", () => {
+    const newmon = card("me09-1", "Common", { normal: true }, { name: "Newmon", dexId: [1030] });
+    const paldea = fullDex(ownedSpecies([newmon], new Map([own(newmon.id, { normal: 1 })]))).at(-1)!;
+    expect(paldea.entries.at(-1)).toMatchObject({ dexId: 1030, name: "Newmon" });
+    expect(paldea.entries).toHaveLength(125);
   });
 });
