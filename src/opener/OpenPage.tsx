@@ -179,6 +179,8 @@ export function OpenPage() {
   const next = () => {
     const up = upcoming.current;
     upcoming.current = undefined;
+    // The summary can run long; start the new pack at the top of the page.
+    window.scrollTo(0, 0);
     void show(up);
   };
 
