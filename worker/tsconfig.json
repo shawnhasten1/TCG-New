@@ -12,6 +12,6 @@
     "noEmit": true,
     "types": []
   },
-  "include": ["./**/*.ts", "../src/sync/protocol.ts"],
+  "include": ["./**/*.ts", "../src/sync/protocol.ts", "../src/social/protocol.ts"],
   "exclude": ["./**/*.test.ts"]
 }

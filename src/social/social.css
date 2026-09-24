@@ -1,0 +1,53 @@
+/* ---------- Friends ---------- */
+.friends { max-width: 760px; }
+.friends section { margin-top: 24px; }
+.friends .friends-card {
+  padding: 16px; border-radius: 14px; background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.friends .friends-card h2 { font-size: 1.3rem; margin-bottom: 8px; }
+.friends p { margin: 6px 0; }
+.friends .ink { color: var(--ink); }
+.friends .ok { color: var(--ink); font-weight: 600; }
+.friends .error { font-weight: 600; }
+.friends .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; }
+.friends button:disabled { opacity: .5; cursor: default; }
+.friends button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+.friends button.link { background: none; border: 0; padding: 6px 2px; color: var(--focus); text-decoration: underline; }
+
+.friends .friend-code {
+  margin: 4px 0; font: 700 clamp(1.8rem, 8vw, 2.4rem)/1.1 ui-monospace, "Cascadia Mono", Menlo, monospace;
+  letter-spacing: .08em; user-select: all;
+}
+
+.friends .inline-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 8px 0; }
+.friends .inline-form input {
+  flex: 1 1 180px; min-width: 0; font: 400 1rem/1.2 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); background: var(--btn);
+  padding: 10px 12px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.friends .inline-form input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.friends .inline-form .code-input { font-family: ui-monospace, "Cascadia Mono", Menlo, monospace; text-transform: uppercase; letter-spacing: .08em; }
+
+.friends .friend-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.friends .friend-list li {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 10px 12px; border-radius: 12px;
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.friends .who-text { flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; }
+.friends .who-text strong { overflow-wrap: anywhere; }
+.friends .who-text .muted { font-size: .9rem; }
+.friends .actions { display: flex; gap: 8px; margin-left: auto; }
+
+.avatar {
+  width: 40px; height: 40px; flex: none; border-radius: 50%; object-fit: cover;
+  display: inline-grid; place-items: center; font-weight: 700;
+  background: color-mix(in srgb, var(--focus) 22%, var(--surface)); color: var(--ink);
+}
+
+/* ---------- Top bar: friends button and its badge ---------- */
+.opener .topbar .friends-link { position: relative; }
+.opener .topbar .badge {
+  position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px;
+  display: grid; place-items: center; font: 700 .75rem/1 "Alegreya Sans", system-ui, sans-serif;
+  background: var(--primary); color: var(--primary-ink); border: 2px solid var(--bg);
+}

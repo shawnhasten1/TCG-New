@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { ApiError, getAccount, onAccountChange, refreshAccount, signOutOfServer, api } from "../account/account";
+import { refreshInbox } from "../social/friends";
 import { applyRemote, dropOutbox, getSyncMeta, linkAccount, onLocalWrite, outboxSize, peekOutbox, unlinkAccount } from "../collection/store";
 import { MAX_PUSH_PACKS, type ChangesResponse, type PushRequest } from "./protocol";
 
@@ -77,6 +78,7 @@ export function syncNow(): Promise<void> {
         // One tab at a time, where the browser supports it; running twice is harmless anyway.
         await (navigator.locks ? navigator.locks.request("tcg-sync", syncOnce) : syncOnce());
         setStatus({ state: "idle", lastSynced: new Date() });
+        void refreshInbox();
       } catch (err) {
         const offline = err instanceof ApiError && err.status === 0;
         if (!offline) console.warn("Sync failed", err);

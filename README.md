@@ -6,7 +6,7 @@ Opens virtual Pokémon TCG booster packs using real card data and scans from [TC
 
 ```sh
 npm install
-npm run dev                          # app at http://localhost:5173 (#/ opens packs; #/sets, #/collection, #/pokedex, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
+npm run dev                          # app at http://localhost:5173 (#/ opens packs; #/sets, #/collection, #/pokedex, #/friends, #/settings, debug: #/debug/sv03.5, foil lab: #/foil)
 npm run pokedex                      # regenerate src/collection/pokedex.json (Pokémon names) from PokéAPI
 npm test                             # unit tests (offline)
 npm run deploy                       # build, apply D1 migrations, deploy to Cloudflare
@@ -51,6 +51,7 @@ Players can sign in with Google or with an email and password, and their collect
 - **D1** (`migrations/`): `users`, `sessions` (hashed tokens in an HttpOnly cookie, 30 days, extended when used) and `packs` (one row per pack; deletes stay as tombstones so every device hears about them).
 - **App**: IndexedDB is still what the app reads. Each change also goes into an outbox (`src/collection/store.ts`), and `src/sync/sync.ts` pushes it and then pulls the account's changes: at startup, after a change, when the tab comes back, when back online, and every 5 minutes. Signing in adds this device's packs to the account; signing out clears the device.
 - **Google and password accounts** match on email. Password sign-ups aren't email-verified, so if Google signs in to an unverified account with the same email, the account is linked, its password removed and other sessions ended. The owner can add a new password in Settings.
+- **Friends** (`worker/friends.ts`, `src/social/`): `#/friends` shows your friend code (8 characters without 0/O/1/I, like `K7QX-3M9P`) with copy and invite-link buttons (`#/friends/<code>` fills in the code). Friends see a display name you pick there, never your email. Requests wait for the other person to accept; if they'd already asked you, sending one back makes you friends straight away. Declining, cancelling and removing all just delete the pair's row (`friendships`, migration 0002). Requests are rate-limited per account (`FRIEND_LIMITER`) so codes can't be guessed by trying them all. A badge on the top bar's friends button counts waiting requests; it refreshes from `/api/social/inbox` after every sync.
 - **Not yet**: "forgot password" (needs an email sender) and account deletion.
 
 ## Deploying

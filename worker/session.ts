@@ -18,6 +18,8 @@ export interface UserRow {
   password_hash: string | null;
   google_sub: string | null;
   created_at: number;
+  display_name: string | null;
+  friend_code: string | null;
 }
 
 export const publicUser = (u: UserRow): PublicUser => ({

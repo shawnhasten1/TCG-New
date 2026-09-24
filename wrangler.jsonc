@@ -30,6 +30,15 @@
 				"limit": 10,
 				"period": 60
 			}
+		},
+		// Friend requests per account, so friend codes can't be guessed by trying them all.
+		{
+			"name": "FRIEND_LIMITER",
+			"namespace_id": "1002",
+			"simple": {
+				"limit": 20,
+				"period": 60
+			}
 		}
 	]
 	// GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are secrets (`npx wrangler secret put ...`, or .dev.vars locally).
