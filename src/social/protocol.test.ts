@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CODE_ALPHABET, formatFriendCode, normalizeFriendCode, parseDisplayName } from "./protocol";
+import { CODE_ALPHABET, formatFriendCode, normalizeFriendCode, parseDisplayName, parseSlots } from "./protocol";
 
 describe("friend codes", () => {
   it("has 32 unambiguous characters", () => {
@@ -40,5 +40,21 @@ describe("display names", () => {
     expect(() => parseDisplayName("   ")).toThrow();
     expect(() => parseDisplayName(undefined)).toThrow();
     expect(() => parseDisplayName("x".repeat(25))).toThrow(/24/);
+  });
+});
+
+describe("share slots", () => {
+  it("sorts and de-duplicates positions in the pack", () => {
+    expect(parseSlots([9, 0, 9, 3], 10)).toEqual([0, 3, 9]);
+  });
+
+  it("refuses nothing, too many, or positions outside the pack", () => {
+    expect(() => parseSlots([], 10)).toThrow();
+    expect(() => parseSlots(undefined, 10)).toThrow();
+    expect(() => parseSlots(Array.from({ length: 21 }, (_, i) => i), 30)).toThrow();
+    expect(() => parseSlots([10], 10)).toThrow(/aren't in that pack/);
+    expect(() => parseSlots([-1], 10)).toThrow();
+    expect(() => parseSlots([1.5], 10)).toThrow();
+    expect(() => parseSlots(["1"], 10)).toThrow();
   });
 });

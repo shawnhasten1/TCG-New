@@ -51,3 +51,43 @@
   display: grid; place-items: center; font: 700 .75rem/1 "Alegreya Sans", system-ui, sans-serif;
   background: var(--primary); color: var(--primary-ink); border: 2px solid var(--bg);
 }
+
+/* ---------- Tabs ---------- */
+.friends .view-switch { margin: 4px 0 8px; }
+
+/* ---------- Feed ---------- */
+.feed .feed-list { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 14px; }
+.feed .feed-post {
+  padding: 14px; border-radius: 14px; background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.feed .feed-post header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.feed .feed-post header .link { margin-left: auto; }
+.feed .feed-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(120px, 28vw), 1fr)); gap: 12px; }
+.feed .feed-cards figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.feed .feed-cards figure > button { all: unset; display: block; cursor: zoom-in; border-radius: 4.5% / 3.2%; }
+.feed .feed-cards figure > button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.feed .feed-cards img { display: block; width: 100%; aspect-ratio: 245 / 337; border-radius: 4.5% / 3.2%; box-shadow: 0 6px 16px -6px #0007; background: var(--bg); }
+.feed .feed-cards figure[data-finish="holo"] img { box-shadow: 0 0 0 2px #e9d27a, 0 6px 16px -6px #0007; }
+.feed .feed-cards figure[data-finish="reverse"] img { box-shadow: 0 0 0 2px #c8d0dc, 0 6px 16px -6px #0007; }
+.feed .feed-cards figure[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 22px #ffd66b99; }
+.feed .feed-cards figcaption { font-weight: 700; line-height: 1.25; font-size: .9rem; overflow-wrap: anywhere; }
+.feed .feed-cards small { display: block; font-weight: 500; color: var(--muted); }
+
+/* ---------- Sharing from the opener ---------- */
+.opener .share-note { margin: 0; text-align: center; font-weight: 600; }
+.opener .share-note.error { color: var(--danger); }
+.opener .share-note a { color: var(--focus); }
+.opener .summary-grid figure { position: relative; }
+.opener .summary-grid.picking figure > button { cursor: pointer; }
+.opener .summary-grid.picking figure > button:disabled { cursor: default; opacity: .45; }
+.opener .summary-grid figure[data-picked] img { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Top left, since the "New" badge sits top right. */
+.opener .summary-grid .pick-check {
+  position: absolute; top: 6px; left: 6px; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 800; background: var(--focus); color: #fff; box-shadow: 0 2px 6px #0006;
+}
+.opener .summary-grid .shared-chip {
+  position: absolute; top: 6px; left: 6px; padding: 2px 8px; border-radius: 999px; font-size: .75rem; font-weight: 700;
+  background: color-mix(in srgb, var(--bg) 85%, transparent); color: var(--ink);
+}

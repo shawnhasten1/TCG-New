@@ -10,7 +10,8 @@ import "../social/social.css";
 export function OpenerNav() {
   const { sound } = useSettings();
   const signedIn = isMember(useAccount());
-  const { friendRequests } = useInbox();
+  const { friendRequests, feedNew } = useInbox();
+  const waiting = friendRequests + feedNew;
   return (
     <header className="topbar">
       <nav className="topbar-links" aria-label="Main">
@@ -19,15 +20,15 @@ export function OpenerNav() {
       </nav>
       <div className="topbar-tools">
         {signedIn && (
-          <a className="icon-button friends-link" href={href.friends()} aria-label={friendRequests ? `Friends, ${friendRequests} new request${friendRequests === 1 ? "" : "s"}` : "Friends"} title="Friends">
+          <a className="icon-button friends-link" href={href.feed()} aria-label={`Friends and feed${badgeLabel(friendRequests, feedNew)}`} title="Friends and feed">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="9" cy="8" r="3.5" />
               <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
               <path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8M17.5 14a6.5 6.5 0 0 1 4 6" />
             </svg>
-            {friendRequests > 0 && (
+            {waiting > 0 && (
               <span className="badge" aria-hidden="true">
-                {friendRequests > 9 ? "9+" : friendRequests}
+                {waiting > 9 ? "9+" : waiting}
               </span>
             )}
           </a>
@@ -48,4 +49,10 @@ export function OpenerNav() {
       <GuestNotice />
     </header>
   );
+}
+
+/** ", 2 friend requests, 3 new posts" for the button's label. */
+function badgeLabel(requests: number, posts: number): string {
+  const parts = [requests && `${requests} friend request${requests === 1 ? "" : "s"}`, posts && `${posts} new post${posts === 1 ? "" : "s"}`].filter(Boolean);
+  return parts.length ? `, ${parts.join(", ")}` : "";
 }

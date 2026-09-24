@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { isMember, useAccount } from "../account/account";
 import { href } from "../app/router";
+import { Avatar, day, SocialTabs } from "./common";
 import { acceptFriend, loadFriends, noteFriends, removeFriend, sendFriendRequest, setDisplayName } from "./friends";
 import { formatFriendCode, NAME_MAX, normalizeFriendCode, type FriendEntry, type FriendsResponse } from "./protocol";
 import "../collection/collection.css";
@@ -41,6 +42,7 @@ export function FriendsPage({ inviteCode }: { inviteCode?: string }) {
         <a href={href.collection()}>Your collection</a>
       </nav>
       <h1>Friends</h1>
+      {signedIn && <SocialTabs current="friends" />}
       {!signedIn ? (
         <p className="muted empty">
           {inviteCode ? "Someone invited you to be friends. " : ""}Friends need an account. <a href={href.settings()}>Sign up or sign in</a>
@@ -208,7 +210,7 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
           <h3>Requests for you</h3>
           <ul className="friend-list">
             {data.incoming.map((f) => (
-              <FriendRow key={f.id} friend={f} note={`Asked ${when(f.since)}`}>
+              <FriendRow key={f.id} friend={f} note={`Asked ${day(f.since)}`}>
                 <button type="button" className="primary" disabled={!!busy} onClick={() => void run(`accept:${f.id}`, () => acceptFriend(f.id))}>
                   Accept
                 </button>
@@ -228,7 +230,7 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
         ) : (
           <ul className="friend-list">
             {data.friends.map((f) => (
-              <FriendRow key={f.id} friend={f} note={`Friends since ${when(f.since)}`}>
+              <FriendRow key={f.id} friend={f} note={`Friends since ${day(f.since)}`}>
                 <button type="button" className="danger" disabled={!!busy} onClick={() => decline(f, "remove")}>
                   Remove
                 </button>
@@ -243,7 +245,7 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
           <h3>Waiting for them</h3>
           <ul className="friend-list">
             {data.outgoing.map((f) => (
-              <FriendRow key={f.id} friend={f} note={`Sent ${when(f.since)}`}>
+              <FriendRow key={f.id} friend={f} note={`Sent ${day(f.since)}`}>
                 <button type="button" disabled={!!busy} onClick={() => decline(f, "cancel")}>
                   Cancel
                 </button>
@@ -308,22 +310,4 @@ function FriendRow({ friend, note, children }: { friend: FriendEntry; note: stri
       <div className="actions">{children}</div>
     </li>
   );
-}
-
-export function Avatar({ friend }: { friend: { displayName: string; avatarUrl: string | null } }) {
-  return friend.avatarUrl ? (
-    <img className="avatar" src={friend.avatarUrl} alt="" referrerPolicy="no-referrer" loading="lazy" />
-  ) : (
-    <span className="avatar" aria-hidden="true">
-      {[...friend.displayName][0]?.toUpperCase()}
-    </span>
-  );
-}
-
-function when(ms: number): string {
-  const d = new Date(ms);
-  const days = Math.floor((Date.now() - ms) / 86_400_000);
-  if (days < 1) return "today";
-  if (days < 2) return "yesterday";
-  return d.toLocaleDateString([], { month: "short", day: "numeric", ...(d.getFullYear() !== new Date().getFullYear() && { year: "numeric" }) });
 }

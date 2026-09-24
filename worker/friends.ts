@@ -3,6 +3,7 @@
 // Every change answers with the whole updated list, so the page just shows what comes back.
 
 import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
+import { feedNew } from "./feed";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
 
@@ -100,7 +101,7 @@ async function inbox(ctx: Ctx, user: UserRow): Promise<Response> {
   const row = await ctx.env.DB.prepare("SELECT COUNT(*) AS n FROM friendships WHERE (user_a = ?1 OR user_b = ?1) AND status = 'pending' AND requested_by != ?1")
     .bind(user.id)
     .first<{ n: number }>();
-  return json({ friendRequests: row?.n ?? 0 } satisfies InboxResponse);
+  return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user) } satisfies InboxResponse);
 }
 
 /* ---------- Changes ---------- */

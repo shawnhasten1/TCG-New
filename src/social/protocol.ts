@@ -1,4 +1,7 @@
-// Friends, shared by the app and the Worker (worker/friends.ts).
+// Friends and the feed, shared by the app and the Worker (worker/friends.ts, worker/feed.ts).
+
+import type { Card } from "../api/types";
+import type { Finish } from "../engine/types";
 
 /** Friend code characters: digits and capitals without 0/O and 1/I, so codes survive being read aloud. 32 of them. */
 export const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -46,7 +49,52 @@ export interface FriendsResponse {
   outgoing: FriendEntry[];
 }
 
-/** Counts behind the badge in the top bar. Trades and the feed will add to this. */
+/** Counts behind the badge in the top bar. */
 export interface InboxResponse {
   friendRequests: number;
+  /** Friends' posts since you last looked at the feed. */
+  feedNew: number;
+}
+
+/* ---------- Feed ---------- */
+
+/** Most cards one post shows (a whole pack is at most this). */
+export const MAX_SHARED = 20;
+
+export interface ShareRequest {
+  /** A pack you opened (a dealt pack just torn is opened first). */
+  packId: string;
+  /** Positions of the cards in the pack, from 0. */
+  slots: number[];
+}
+
+export interface SharedCard {
+  slot: number;
+  finish: Finish;
+  firstEdition: boolean;
+  card: Card;
+}
+
+export interface FeedPost {
+  id: string;
+  author: FriendProfile;
+  /** Your own post, which you can take down. */
+  mine: boolean;
+  set: { id: string; name: string; serieId: string; official: number };
+  cards: SharedCard[];
+  createdAt: number;
+}
+
+export interface FeedResponse {
+  posts: FeedPost[];
+  /** Pass back as `before` for older posts; null at the end. */
+  cursor: string | null;
+}
+
+/** Slots from a share request: whole numbers, each once, in order. Throws on anything else. */
+export function parseSlots(v: unknown, packSize: number): number[] {
+  if (!Array.isArray(v) || !v.length || v.length > MAX_SHARED) throw new Error("Pick the cards to share.");
+  const slots = [...new Set(v)].sort((a, b) => a - b);
+  if (!slots.every((s) => Number.isInteger(s) && s >= 0 && s < packSize)) throw new Error("Those cards aren't in that pack.");
+  return slots;
 }

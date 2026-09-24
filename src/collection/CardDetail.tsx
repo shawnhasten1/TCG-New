@@ -32,7 +32,10 @@ interface Props {
   official: number;
   owned?: Ownership;
   layout: FrameLayout;
-  /** Finish to show first, e.g. the one just pulled; defaults to the most special one owned. */
+  /**
+   * Finish to show first, e.g. the one just pulled (or a friend pulled, which is offered even if you don't own it);
+   * defaults to the most special one owned.
+   */
   finish?: Finish;
   onClose(): void;
 }
@@ -44,6 +47,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const ownedFinishes = (["holo", "reverse", "normal"] as Finish[]).filter((f) => (owned?.byFinish[f] ?? 0) > 0);
   const finishes = owned ? ownedFinishes : printings(card);
+  if (initialFinish && !finishes.includes(initialFinish)) finishes.unshift(initialFinish);
   const [finish, setFinish] = useState<Finish>(initialFinish && finishes.includes(initialFinish) ? initialFinish : finishes[0]);
   const [pricing, setPricing] = useState<CardPricing | null | "loading" | "error">("loading");
   const slotRef = useRef<HTMLDivElement>(null);
@@ -203,7 +207,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             }}
           >
             <div className={`spin${spun ? " spun" : ""}`}>
-              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} category={card.category} trainerType={card.trainerType} types={card.types} finish={finish} layout={layout} className={owned ? "" : "unowned"} />
+              <FoilCard ref={cardRef} image={card.image} rarity={card.rarity} category={card.category} trainerType={card.trainerType} types={card.types} finish={finish} layout={layout} className={owned || initialFinish ? "" : "unowned"} />
               <div className="tcg-back" aria-hidden="true" />
             </div>
           </div>

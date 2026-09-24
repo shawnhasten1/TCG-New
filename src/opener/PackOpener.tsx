@@ -20,6 +20,7 @@ import { FoilCard } from "../foil/FoilCard";
 import { layoutFor, type FrameLayout } from "../foil/layouts";
 import { useSettings } from "../app/settings";
 import { followMotion, recenterMotion } from "./motion";
+import { href } from "../app/router";
 import { OpenerNav } from "./OpenerNav";
 import { Tilt } from "./tilt";
 import "./opener.css";
@@ -41,6 +42,8 @@ interface Props {
   pityNote?: string;
   /** False when the daily limit is used up. */
   canOpenAgain?: boolean;
+  /** Shares cards (by position in the pack) to the friends feed; returns every position shared so far. Absent for guests. */
+  onShare?(slots: number[]): Promise<number[]>;
 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -52,7 +55,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, onShare }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -78,6 +81,35 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const focusOnReveal = useRef(false);
   const tear = useRef({ pts: [] as Point[], progress: 0, dir: 1, dirLocked: false, tearing: false, startX: 0, base: 0 });
   const downAt = useRef<[number, number] | null>(null);
+
+  /* ---------- Sharing to the feed ---------- */
+  const [shared, setShared] = useState<Set<number>>(new Set());
+  const [sharing, setSharing] = useState(false);
+  const [shareNote, setShareNote] = useState<{ kind: "ok" | "error"; text: string }>();
+  /** Cards picked in the summary to share, or undefined when not picking. */
+  const [picking, setPicking] = useState<Set<number>>();
+
+  const share = async (slots: number[]) => {
+    if (!onShare || sharing || !slots.length) return;
+    setSharing(true);
+    setShareNote(undefined);
+    try {
+      setShared(new Set(await onShare(slots)));
+      setPicking(undefined);
+      setShareNote({ kind: "ok", text: slots.length === 1 ? "Shared to your feed." : `Shared ${slots.length} cards to your feed.` });
+    } catch (err) {
+      setShareNote({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setSharing(false);
+    }
+  };
+  const togglePick = (i: number) =>
+    setPicking((p) => {
+      const next = new Set(p);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
 
   const parts = (): TearParts => ({ packTop: topRef.current!, packBody: bodyRef.current!, guide: guideRef.current!, rip: ripRef.current! });
   const go = (p: Phase) => {
@@ -158,6 +190,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   const next = () => {
     if (phaseRef.current !== "reveal") return;
     focusOnReveal.current = !!stackRef.current?.contains(document.activeElement);
+    setShareNote(undefined);
     if (idx < pulls.length - 1) setIdx(idx + 1);
     else {
       tilt.setActive(null, 0);
@@ -304,7 +337,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       <OpenerNav />
 
       {phase === "summary" ? (
-        <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} />
+        <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} shared={shared} picking={picking} onPick={togglePick} />
       ) : (
         <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}`} ref={wrapRef} style={wrapperStyle}>
           <div
@@ -400,8 +433,43 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       </p>
       {limitNote && (phase === "sealed" || phase === "summary" || (phase === "reveal" && isLast)) && <p className="limit-note">{limitNote}</p>}
       {pityNote && (phase === "sealed" || phase === "summary") && <p className="limit-note">{pityNote}</p>}
-      {(phase === "reveal" || phase === "summary") && (
+      {shareNote && (
+        <p className={`share-note ${shareNote.kind}`} role={shareNote.kind === "error" ? "alert" : "status"}>
+          {shareNote.text}
+          {shareNote.kind === "ok" && (
+            <>
+              {" "}
+              <a href={href.feed()}>See the feed</a>
+            </>
+          )}
+        </p>
+      )}
+      {phase === "reveal" && (
         <div className="controls">
+          {onShare && (
+            <button type="button" className="share-button" onClick={() => void share([idx])} disabled={sharing || shared.has(idx)}>
+              {shared.has(idx) ? "Shared" : sharing ? "Sharing…" : "Share"}
+            </button>
+          )}
+        </div>
+      )}
+      {phase === "summary" && picking && (
+        <div className="controls">
+          <button type="button" className="primary" onClick={() => void share([...picking])} disabled={sharing || picking.size === 0}>
+            {sharing ? "Sharing…" : picking.size ? `Share ${picking.size} ${picking.size === 1 ? "card" : "cards"}` : "Pick cards to share"}
+          </button>
+          <button type="button" onClick={() => (setPicking(undefined), setShareNote(undefined))}>
+            Cancel
+          </button>
+        </div>
+      )}
+      {phase === "summary" && !picking && (
+        <div className="controls">
+          {phase === "summary" && onShare && shared.size < pulls.length && (
+            <button type="button" onClick={() => (setPicking(new Set()), setShareNote(undefined))}>
+              Share cards…
+            </button>
+          )}
           {canOpenAgain && phase === "summary" && (
             <button type="button" className="primary" onClick={onAgain} autoFocus={phase === "summary"}>
               Open another pack
@@ -423,7 +491,19 @@ function cardLabel(p: PulledCard): string {
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
-function PackSummary({ pulls, newIds, official, layout }: { pulls: PulledCard[]; newIds?: Set<string>; official: number; layout: FrameLayout }) {
+interface SummaryProps {
+  pulls: PulledCard[];
+  newIds?: Set<string>;
+  official: number;
+  layout: FrameLayout;
+  /** Positions already shared to the feed. */
+  shared: Set<number>;
+  /** Positions picked to share, while picking; tapping a card then picks it instead of opening it. */
+  picking?: Set<number>;
+  onPick(i: number): void;
+}
+
+function PackSummary({ pulls, newIds, official, layout, shared, picking, onPick }: SummaryProps) {
   const [selected, setSelected] = useState<PulledCard>();
   // The pack is saved when it's torn open, so the collection already counts these cards.
   const [owned, setOwned] = useState<Map<string, Ownership>>();
@@ -436,13 +516,25 @@ function PackSummary({ pulls, newIds, official, layout }: { pulls: PulledCard[];
   }, [pulls]);
 
   return (
-    <section className="summary-grid" aria-label="Pack summary">
+    <section className={`summary-grid${picking ? " picking" : ""}`} aria-label="Pack summary">
       {pulls.map((p, i) => (
-        <figure key={i} data-tier={pullTier(p)} data-finish={p.finish}>
-          <button type="button" aria-label={`Look closer at ${p.card.name}`} onClick={() => setSelected(p)}>
-            <img src={cardImage(p.card, "low")} alt="" />
-          </button>
+        <figure key={i} data-tier={pullTier(p)} data-finish={p.finish} data-picked={picking?.has(i) || undefined}>
+          {picking ? (
+            <button type="button" aria-pressed={picking.has(i)} disabled={shared.has(i)} aria-label={shared.has(i) ? `${p.card.name}, already shared` : `Share ${p.card.name}`} onClick={() => onPick(i)}>
+              <img src={cardImage(p.card, "low")} alt="" />
+            </button>
+          ) : (
+            <button type="button" aria-label={`Look closer at ${p.card.name}`} onClick={() => setSelected(p)}>
+              <img src={cardImage(p.card, "low")} alt="" />
+            </button>
+          )}
           {newIds?.has(p.card.id) && <span className="new-badge">New</span>}
+          {picking?.has(i) && (
+            <span className="pick-check" aria-hidden="true">
+              ✓
+            </span>
+          )}
+          {shared.has(i) && <span className="shared-chip">Shared</span>}
           <figcaption>
             {p.card.name}
             <small>

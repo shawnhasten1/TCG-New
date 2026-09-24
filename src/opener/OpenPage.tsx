@@ -4,6 +4,7 @@
 // Set rarity pity is enforced by the server too; the note here counts from the saved packs.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isMember, useAccount } from "../account/account";
 import type { SetData } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
@@ -14,6 +15,7 @@ import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
 import { dealPack } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
+import { shareCards } from "../social/feed";
 import { OpenerNav } from "./OpenerNav";
 import { PackOpener } from "./PackOpener";
 import "./opener.css";
@@ -70,6 +72,7 @@ function toPulls(pack: DealtPack, data: SetData): PulledCard[] | undefined {
 
 export function OpenPage() {
   const { eras } = useSettings();
+  const member = isMember(useAccount());
   const [stage, setStage] = useState<Stage>({ state: "starting" });
   /** From the last deal: counted before its pack was torn. */
   const [allowance, setAllowance] = useState<Allowance>();
@@ -239,6 +242,7 @@ export function OpenPage() {
       pityNote={guaranteeNote(torn ? history.current : [...history.current, ready.pack.setId])}
       limitNote={available === 0 ? `Next pack in ${countdown}` : `${available} of ${limit} ${limit === 1 ? "pack" : "packs"} left${nextAt ? ` · next in ${countdown}` : ""}`}
       canOpenAgain={available > 0}
+      onShare={member ? (slots) => shareCards(ready.pack.dealId, slots) : undefined}
     />
   );
 }

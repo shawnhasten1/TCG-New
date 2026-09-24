@@ -7,6 +7,7 @@ import { DebugPage } from "../debug/DebugPage";
 import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
 import { SetPicker } from "../picker/SetPicker";
+import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
 import { useRoute } from "./router";
 import { SettingsPage } from "./SettingsPage";
@@ -24,6 +25,8 @@ export function App() {
       return <CardsPage />;
     case "pokemon":
       return <PokemonPage key={route.dexId} dexId={route.dexId} />;
+    case "feed":
+      return <FeedPage />;
     case "friends":
       return <FriendsPage key={route.code} inviteCode={route.code} />;
     case "collection":

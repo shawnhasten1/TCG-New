@@ -1,8 +1,8 @@
 // Tiny hash router: #/ (home: a pack from a random set), #/sets (set browser), #/collection, #/binder/<setId>,
-// #/pokedex, #/pokemon/<dexId>, #/cards, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab).
+// #/pokedex, #/pokemon/<dexId>, #/cards, #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" };
 
 export function parseRoute(hash: string): Route {
   const [page, id] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -13,6 +13,7 @@ export function parseRoute(hash: string): Route {
   if (page === "settings") return { page: "settings" };
   if (page === "pokedex") return { page: "pokedex" };
   if (page === "cards") return { page: "cards" };
+  if (page === "feed") return { page: "feed" };
   if (page === "friends") return { page: "friends", code: id || undefined };
   if (page === "pokemon" && /^\d+$/.test(id ?? "")) return { page: "pokemon", dexId: Number(id) };
   if (page === "binder" && id) return { page: "binder", setId: id };
@@ -29,6 +30,7 @@ export const href = {
   settings: () => "#/settings",
   pokedex: () => "#/pokedex",
   cards: () => "#/cards",
+  feed: () => "#/feed",
   friends: (code?: string) => (code ? `#/friends/${encodeURIComponent(code)}` : "#/friends"),
   pokemon: (dexId: number) => `#/pokemon/${dexId}`,
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
