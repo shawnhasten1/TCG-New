@@ -1,5 +1,5 @@
-// #/market/shop: buy a pack from a set of your choice with coins. Sets are grouped by how scarce they are, cheapest
-// tier first; the pack's wrapper is still random, as with any pack.
+// #/market/shop: buy a pack from a set of your choice with coins. Sets are grouped by how scarce they are, and cheapest
+// first within each group; the pack's wrapper is still random, as with any pack.
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
@@ -90,7 +90,7 @@ export function ShopTab() {
             label="How the shop works"
             lines={[
               "Pick a set and buy a pack from it. Which wrapper you get is luck.",
-              "Scarcer sets cost more, and a few cost extra because their cards are worth more.",
+              "Prices follow what a set's cards are worth, so sets with pricier cards cost more.",
               "A pack costs more than its cards usually sell for, so the shop is for chasing a set, not making coins.",
             ]}
           />

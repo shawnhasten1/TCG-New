@@ -1,7 +1,7 @@
 // Writes src/market/packPrices.json: what a pack from each set costs in the shop (src/market/shop.ts).
 // For each openable set it opens PACKS packs with the real engine, prices every card that came out in the finish it
 // came out in (as the market values cards to buy them, src/market/protocol.ts), and averages that per pack. The price
-// is that marked up, with a minimum per set tier.
+// is that marked up (packPrice in src/market/shop.ts).
 // Usage: npm run pack-prices   (re-run now and then; prices are cached per day in .cache)
 //        npm run pack-prices -- --reprice   (just re-apply shop.ts's pricing to the values already worked out)
 import { readFile, writeFile } from "node:fs/promises";
@@ -14,7 +14,7 @@ import { profileFor } from "../src/engine/profiles";
 import { createRng } from "../src/engine/rng";
 import { setTier, TIERS } from "../src/engine/setRarity";
 import { coinValue } from "../src/market/protocol";
-import { packPrice, TIER_FLOOR, type ShopEntry } from "../src/market/shop";
+import { packPrice, type ShopEntry } from "../src/market/shop";
 import { fileCache } from "./fileCache";
 
 const PACKS = 3000;
@@ -26,7 +26,7 @@ const OUT = "src/market/packPrices.json";
 
 if (process.argv.includes("--reprice")) {
   const file = JSON.parse(await readFile(OUT, "utf8")) as { sets: Record<string, ShopEntry> };
-  for (const [id, e] of Object.entries(file.sets)) e.price = packPrice(e.value, setTier(id));
+  for (const e of Object.values(file.sets)) e.price = packPrice(e.value);
   await writeFile(OUT, JSON.stringify(file, null, 1) + "\n");
   summarize(file.sets);
   process.exit(0);
@@ -88,7 +88,7 @@ const rows = await mapLimit(sets, 2, async (set): Promise<[string, ShopEntry] | 
     for (const p of pulls.values()) total += p.n * coinValue(priceFor(pricing.get(p.cardId), p.finish, p.firstEdition), p.rarity).coins;
     const value = Math.round(total / PACKS);
     const tier = setTier(set.id);
-    const price = packPrice(value, tier);
+    const price = packPrice(value);
     console.log(`${set.id.padEnd(10)} ${set.name.slice(0, 28).padEnd(28)} ${tier.padEnd(9)} value ${String(value).padStart(6)}  price ${String(price).padStart(6)}`);
     return [set.id, { value, price }];
   } catch (err) {
@@ -108,7 +108,6 @@ function summarize(sets: Record<string, ShopEntry>) {
       .filter(([id]) => setTier(id) === t.id)
       .map(([, e]) => e.price)
       .sort((a, b) => a - b);
-    const dearer = prices.filter((p) => p > TIER_FLOOR[t.id]).length;
-    if (prices.length) console.log(`${t.name}: ${prices.length} sets at ${TIER_FLOOR[t.id]} coins${dearer ? `, ${dearer} dearer for their cards' value (up to ${prices[prices.length - 1]})` : ""}`);
+    if (prices.length) console.log(`${t.name}: ${prices.length} sets, ${prices[0]}–${prices[prices.length - 1]} coins (median ${prices[prices.length >> 1]})`);
   }
 }

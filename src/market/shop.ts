@@ -1,28 +1,27 @@
 // The pack shop: players spend coins on a pack from a set they choose (its pack art is still random). Shared by the
 // app and the Worker, which charges these prices.
 //
-// Packs cost a set price per set tier, so buying one is a treat rather than routine. A few sets' cards are worth nearly
-// that much or more, and buying their packs to sell the cards would make coins, so a pack never costs less than the
-// average value of its cards marked up (from scripts/packPrices.ts, which opens thousands of each set with the real
-// engine and prices every card). Sets missing from packPrices.json (e.g. released
+// A pack costs the average value of its cards marked up, so its price follows what the set is worth and buying packs to
+// sell the cards loses coins on average. The average comes from scripts/packPrices.ts, which opens thousands of each
+// set with the real engine and prices every card. Most packs are worth well under the average (it's the chase cards
+// that make it), so a typical pack is worth much less than its price; that's the gamble, as with real boosters. Sets missing from packPrices.json (e.g. released
 // since the script last ran) aren't sold: without a value, their price could be less than their packs are worth.
 
-import type { SetTier } from "../engine/setRarity";
 import prices from "./packPrices.json";
 
 /** Bought packs' ids start with this, before and after they're opened. */
 export const SHOP_PACK_PREFIX = "s-";
 
-/** A pack's price by how scarce its set is. */
-export const TIER_FLOOR: Record<SetTier, number> = { common: 2500, uncommon: 7500, rare: 20000, legendary: 50000 };
-/** A pack never costs less than this many times the average value of its cards. */
+/** A pack costs this many times the average value of its cards. */
 export const PACK_MARKUP = 1.4;
+/** The least a pack costs, so a set of very cheap cards isn't nearly free. */
+export const MIN_PACK_PRICE = 100;
 /** Packs bought but not opened yet that a player can hold. */
 export const MAX_UNOPENED = 50;
 
-/** A pack's price: its tier's, or its cards' average value (coins) marked up if that's more, rounded up to 50 coins. */
-export function packPrice(value: number, tier: SetTier): number {
-  const raw = Math.max(TIER_FLOOR[tier], value * PACK_MARKUP);
+/** A pack's price from the average value of its cards (coins), marked up and rounded up to 50 coins. */
+export function packPrice(value: number): number {
+  const raw = Math.max(MIN_PACK_PRICE, value * PACK_MARKUP);
   return Math.ceil(raw / 50) * 50;
 }
 
