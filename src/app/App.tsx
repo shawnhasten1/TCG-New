@@ -7,6 +7,8 @@ import { PokedexPage } from "../collection/PokedexPage";
 import { PokemonPage } from "../collection/PokemonPage";
 import { PacksPage } from "../collection/PacksPage";
 import { DebugPage } from "../debug/DebugPage";
+import { MarketPage } from "../market/MarketPage";
+import { SellPicker } from "../market/SellPicker";
 import { FoilLab } from "../foil/FoilLab";
 import { OpenPage } from "../opener/OpenPage";
 import { PackLab } from "../opener/PackLab";
@@ -54,6 +56,10 @@ function Page({ route }: { route: Route }) {
       return <TradesPage />;
     case "trade":
       return <TradeComposer key={route.friendId} friendId={route.friendId} />;
+    case "market":
+      return <MarketPage tab={route.tab} />;
+    case "marketPick":
+      return <SellPicker />;
     case "feed":
       return <FeedPage />;
     case "friends":

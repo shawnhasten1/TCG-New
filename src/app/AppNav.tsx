@@ -29,6 +29,13 @@ const ICONS: Record<NavSection, ReactNode> = {
       <path d="m3 12 9 4.5 9-4.5M3 16.5 12 21l9-4.5" />
     </>
   ),
+  // A coin.
+  market: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M14.8 9.2A3 3 0 0 0 12 8h-.5a2 2 0 0 0 0 4h1a2 2 0 0 1 0 4H12a3 3 0 0 1-2.8-1.2M12 6v2M12 16v2" />
+    </>
+  ),
   social: (
     <>
       <circle cx="9" cy="8" r="3.5" />
@@ -48,6 +55,7 @@ const ITEMS: { id: NavSection; label: string; href: string }[] = [
   { id: "open", label: "Open", href: href.open() },
   { id: "collection", label: "Collection", href: href.collection() },
   { id: "sets", label: "Sets", href: href.picker() },
+  { id: "market", label: "Market", href: href.market() },
   { id: "social", label: "Friends", href: href.feed() },
   { id: "settings", label: "Settings", href: href.settings() },
 ];

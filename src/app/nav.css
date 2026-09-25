@@ -16,7 +16,7 @@ body:has(.app-nav) { padding-bottom: var(--nav-bottom); }
   padding: 0 max(4px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(4px, env(safe-area-inset-left, 0px));
 }
 .app-nav .brand { display: none; }
-.app-nav ul { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); max-width: 520px; }
+.app-nav ul { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); max-width: 580px; }
 .app-nav li a {
   height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   color: var(--muted); text-decoration: none; font: 600 .75rem/1 "Alegreya Sans", system-ui, sans-serif;

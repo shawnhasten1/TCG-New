@@ -1,0 +1,40 @@
+/* ---------- Market (MarketPage, SellPicker) ----------
+   Builds on the friends pages' buttons, notes and tabs (social.css) and the shared card picker (.pick-page). */
+.market .balance { margin: 0; font-size: 1.1rem; }
+.market .balance strong { font-size: 1.35rem; }
+.market .market-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin: 12px 0 4px; }
+.market a.button.primary { display: inline-flex; align-items: center; }
+.market .bulk { margin: 14px 0; }
+
+.market .listing-list, .market .ledger { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.market .listing {
+  display: grid; grid-template-columns: 72px 1fr auto; gap: 12px 14px; align-items: center;
+  padding: 12px; border-radius: 14px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.market .listing .thumb { all: unset; display: block; cursor: zoom-in; border-radius: 4.5% / 3.2%; }
+.market .listing .thumb:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.market .listing img { display: block; width: 100%; aspect-ratio: 245 / 337; border-radius: 4.5% / 3.2%; box-shadow: 0 4px 10px -4px #0007; background: var(--bg); }
+.market .listing[data-finish="holo"] img { box-shadow: 0 0 0 2px #e9d27a, 0 4px 10px -4px #0007; }
+.market .listing[data-finish="reverse"] img { box-shadow: 0 0 0 2px #c8d0dc, 0 4px 10px -4px #0007; }
+.market .listing[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 16px #ffd66b99; }
+.market .listing-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
+.market .listing-body .name { font-size: 1.05rem; }
+.market .offer { margin: 6px 0 0; }
+.market .offer-coins { font-size: 1.25rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.market .listing small { font-variant-numeric: tabular-nums; }
+.market .listing-actions { display: flex; flex-direction: column; gap: 8px; }
+/* Phones: the buttons go under the card and its offer. */
+@media (max-width: 519.98px) {
+  .market .listing { grid-template-columns: 64px 1fr; }
+  .market .listing-actions { grid-column: 1 / -1; flex-direction: row; }
+  .market .listing-actions button { flex: 1; }
+}
+
+.market .ledger li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.market .ledger small { display: block; }
+.market .ledger-note { min-width: 0; overflow-wrap: anywhere; }
+.market .ledger-amount { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.market .ledger-amount small { font-weight: 500; }

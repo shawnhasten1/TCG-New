@@ -2,9 +2,10 @@
 // #/pokedex, #/pokemon/<dexId>, #/cards, #/all (every card, sortable), #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab), #/pack-lab (pack photo lab), #/packs (collected pack wrappers).
 // A friend's collection: #/friend/<id> (by set), #/friend/<id>/cards, #/friend/<id>/all, #/friend/<id>/binder/<setId>.
 // Trades: #/trades, and #/trade/<friendId> to put an offer together.
+// Market: #/market (your listings), #/market/pick (choose cards to sell), #/market/wallet (coins).
 import { useEffect, useState } from "react";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: "sell" | "wallet" } | { page: "marketPick" };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -20,6 +21,7 @@ export function parseRoute(hash: string): Route {
   if (page === "all") return { page: "all" };
   if (page === "feed") return { page: "feed" };
   if (page === "trades") return { page: "trades" };
+  if (page === "market") return id === "pick" ? { page: "marketPick" } : { page: "market", tab: id === "wallet" ? "wallet" : "sell" };
   if (page === "trade" && id) return { page: "trade", friendId: id };
   if (page === "friends") return { page: "friends", code: id || undefined };
   if (page === "friend" && id) {
@@ -46,6 +48,9 @@ export const href = {
   all: () => "#/all",
   feed: () => "#/feed",
   trades: () => "#/trades",
+  market: () => "#/market",
+  marketPick: () => "#/market/pick",
+  wallet: () => "#/market/wallet",
   /** Put together an offer for a friend. */
   trade: (friendId: string) => `#/trade/${encodeURIComponent(friendId)}`,
   /** A friend's collection, or one of its binders. */
@@ -58,7 +63,7 @@ export const href = {
 };
 
 /** The main menu's sections. */
-export type NavSection = "open" | "collection" | "sets" | "social" | "settings";
+export type NavSection = "open" | "collection" | "sets" | "market" | "social" | "settings";
 
 /** Which section of the main menu a page belongs to (none for the dev tools). */
 export function navSection(route: Route): NavSection | undefined {
@@ -75,6 +80,9 @@ export function navSection(route: Route): NavSection | undefined {
       return "collection";
     case "picker":
       return "sets";
+    case "market":
+    case "marketPick":
+      return "market";
     case "feed":
     case "friends":
     case "trades":

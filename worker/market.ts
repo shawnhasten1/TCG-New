@@ -1,0 +1,214 @@
+// The market: players list cards, the market makes offers for them, and players sell or keep them. How offers work is
+// in src/market/protocol.ts; this is where they're checked and paid.
+//
+// Selling works like accepting a trade: one D1 batch (one transaction) that starts with a check per card, written to
+// sale_checks, whose CHECK constraint fails if the listing was answered or the card traded, deleted or sold in the
+// meantime, and that rolls everything back. A sold card stays in its pack marked `gone` ("sale:<listing>"), with a
+// new seq so sync drops it on every device, and the coins land in the same batch.
+
+import { MAX_LISTED, OFFER_EVERY_MS, offerEnds, offerFor, offerNumber, offerOpen, OFFERS, parseIds, RELIST_AFTER_MS, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
+import type { TradeCard } from "../src/social/protocol";
+import { cardUid, parseCardUid, type RemoteCard } from "../src/sync/protocol";
+import { pruneDailyEntries } from "./cache";
+import { ownedCards, withCardData } from "./cards";
+import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
+import { requireMember } from "./session";
+import { valueCards, walletStatements } from "./wallet";
+
+const isId = (s: string) => /^[0-9a-f-]{36}$/.test(s);
+/** How long a listing has offers for. */
+const LIFETIME = OFFERS * OFFER_EVERY_MS;
+const NEXT_SEQ = (param: number) => `(SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?${param})`;
+
+export async function handleMarket(ctx: Ctx): Promise<Response> {
+  const user = await requireMember(ctx);
+  const route = `${ctx.req.method} ${ctx.url.pathname}`;
+  if (route === "GET /api/market") return json(await market(ctx, user.id));
+  if (route === "POST /api/market/list") return list(ctx, user.id);
+  if (route === "POST /api/market/sell") return sell(ctx, user.id);
+  if (route === "POST /api/market/keep") return keep(ctx, user.id);
+  throw new HttpError(404, "Not found");
+}
+
+/* ---------- Reading ---------- */
+
+interface ListingRow {
+  id: string;
+  pack_id: string;
+  slot: number;
+  card: string;
+  value: number;
+  priced: number;
+  seed: string;
+  listed_at: number;
+}
+
+const LISTING_COLUMNS = "id, pack_id, slot, card, value, priced, seed, listed_at";
+
+function toListing(r: ListingRow, now: number): Listing {
+  const n = Math.min(offerNumber(r.listed_at, now), OFFERS - 1);
+  return {
+    id: r.id,
+    card: JSON.parse(r.card) as TradeCard,
+    value: r.value,
+    priced: !!r.priced,
+    listedAt: r.listed_at,
+    offer: { n, coins: offerFor(r.value, r.seed, n), until: offerEnds(r.listed_at, n), last: n === OFFERS - 1 },
+  };
+}
+
+async function market(ctx: Ctx, userId: string): Promise<MarketResponse> {
+  const db = ctx.env.DB;
+  const now = Date.now();
+  const [balance, open, recent] = await Promise.all([
+    db.prepare("SELECT coins FROM users WHERE id = ?").bind(userId).first<{ coins: number }>(),
+    db
+      .prepare(`SELECT ${LISTING_COLUMNS} FROM listings WHERE user_id = ? AND status = 'open' AND listed_at > ? ORDER BY listed_at, rowid`)
+      .bind(userId, now - LIFETIME)
+      .all<ListingRow>(),
+    db
+      .prepare("SELECT pack_id, slot, MAX(listed_at) AS listed_at FROM listings WHERE user_id = ? AND listed_at > ? GROUP BY pack_id, slot")
+      .bind(userId, now - RELIST_AFTER_MS)
+      .all<{ pack_id: string; slot: number; listed_at: number }>(),
+  ]);
+  const listings = open.results.map((r) => toListing(r, now));
+  const listed = new Set(listings.map((l) => l.card.uid));
+  return {
+    coins: balance?.coins ?? 0,
+    listings,
+    resting: recent.results.map((r) => ({ uid: cardUid(r.pack_id, r.slot), until: r.listed_at + RELIST_AFTER_MS })).filter((r) => !listed.has(r.uid)),
+    now,
+  };
+}
+
+/* ---------- Listing ---------- */
+
+async function list(ctx: Ctx, userId: string): Promise<Response> {
+  const body = (await readJson<Partial<ListRequest> | null>(ctx.req)) ?? {};
+  let uids: string[];
+  try {
+    uids = parseIds(body.uids, (s) => !!parseCardUid(s), "card");
+  } catch (err) {
+    throw new HttpError(400, err instanceof Error ? err.message : String(err));
+  }
+  const db = ctx.env.DB;
+  const current = await market(ctx, userId);
+  if (current.listings.length + uids.length > MAX_LISTED) throw new HttpError(429, `You can have up to ${MAX_LISTED} cards listed at once. Sell or keep some first.`);
+  const busy = new Set([...current.listings.map((l) => l.card.uid), ...current.resting.map((r) => r.uid)]);
+  if (uids.some((u) => busy.has(u))) throw new HttpError(409, "Some of those cards are listed already, or were listed in the last day.");
+
+  const owned = new Map((await ownedCards(db, userId)).map((c) => [c.uid, c]));
+  const picked = uids.map((u) => owned.get(u));
+  if (picked.some((c) => !c)) throw new HttpError(409, "Some of those cards aren't in your collection any more.");
+  const cards = await withCardData(ctx, picked as NonNullable<(typeof picked)[number]>[]);
+  const values = await valueCards(ctx, cards);
+
+  const now = Date.now();
+  await db.batch(
+    cards.map((c, i) => {
+      const { packId, slot } = parseCardUid(c.uid)!;
+      return db
+        .prepare("INSERT INTO listings (id, user_id, pack_id, slot, card, value, priced, seed, listed_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'open')")
+        .bind(crypto.randomUUID(), userId, packId, slot, JSON.stringify(c), values[i].coins, values[i].priced ? 1 : 0, randomToken(16), now);
+    }),
+  );
+  // Pricing the cards cached today's prices; tidy away past days' while we're here.
+  await pruneDailyEntries(db);
+  return json(await market(ctx, userId));
+}
+
+/* ---------- Answering ---------- */
+
+function parseOffers(v: unknown): SellRequest["offers"] {
+  const offers = Array.isArray(v) ? v : [];
+  const ids = parseIds(
+    offers.map((o: unknown) => (o && typeof o === "object" && Number.isInteger((o as { n?: unknown }).n) ? (o as { id?: unknown }).id : undefined)),
+    isId,
+    "offer",
+  );
+  const n = new Map(offers.map((o: { id: string; n: number }) => [o.id, o.n]));
+  return ids.map((id) => ({ id, n: n.get(id)! }));
+}
+
+async function sell(ctx: Ctx, userId: string): Promise<Response> {
+  const body = (await readJson<Partial<SellRequest> | null>(ctx.req)) ?? {};
+  let offers: SellRequest["offers"];
+  try {
+    offers = parseOffers(body.offers);
+  } catch (err) {
+    throw new HttpError(400, err instanceof Error ? err.message : String(err));
+  }
+  const db = ctx.env.DB;
+  const now = Date.now();
+  const { results: rows } = await db
+    .prepare(`SELECT ${LISTING_COLUMNS} FROM listings WHERE user_id = ? AND status = 'open' AND id IN (SELECT value FROM json_each(?))`)
+    .bind(userId, JSON.stringify(offers.map((o) => o.id)))
+    .all<ListingRow>();
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  // Offers still up, at the price the player saw.
+  const takes = offers.flatMap((o) => {
+    const row = byId.get(o.id);
+    return row && offerOpen(row.listed_at, o.n, now) ? [{ row, coins: offerFor(row.value, row.seed, o.n), card: JSON.parse(row.card) as TradeCard }] : [];
+  });
+
+  // Cards traded or deleted since they were listed can't be sold; the rest still can.
+  const { results: packRows } = await db
+    .prepare("SELECT pack_id, cards FROM packs WHERE user_id = ? AND deleted = 0 AND pack_id IN (SELECT value FROM json_each(?))")
+    .bind(userId, JSON.stringify([...new Set(takes.map((t) => t.row.pack_id))]))
+    .all<{ pack_id: string; cards: string }>();
+  const packs = new Map(packRows.map((p) => [p.pack_id, JSON.parse(p.cards) as RemoteCard[]]));
+  const there = (t: (typeof takes)[number]) => {
+    const card = packs.get(t.row.pack_id)?.[t.row.slot];
+    return !!card && !card.gone;
+  };
+  const gone = takes.filter((t) => !there(t));
+  const selling = takes.filter(there);
+  if (gone.length) {
+    await db.batch(gone.map((t) => db.prepare("UPDATE listings SET status = 'failed', resolved_at = ? WHERE id = ? AND status = 'open'").bind(now, t.row.id)));
+  }
+
+  const earned = selling.reduce((sum, t) => sum + t.coins, 0);
+  if (selling.length) {
+    const saleId = crypto.randomUUID();
+    const best = [...selling].sort((a, b) => b.coins - a.coins)[0].card.card.name;
+    const statements: D1PreparedStatement[] = [
+      // Every listing still open and its card still there.
+      ...selling.map((t, n) =>
+        db
+          .prepare(
+            `INSERT INTO sale_checks (sale_id, n, ok) VALUES (?1, ?2,
+               EXISTS (SELECT 1 FROM listings WHERE id = ?3 AND status = 'open') AND
+               EXISTS (SELECT 1 FROM packs WHERE user_id = ?4 AND pack_id = ?5 AND deleted = 0 AND json_extract(cards, ?6) IS NOT NULL AND json_extract(cards, ?7) IS NULL))`,
+          )
+          .bind(saleId, n, t.row.id, userId, t.row.pack_id, `$[${t.row.slot}]`, `$[${t.row.slot}].gone`),
+      ),
+      ...selling.map((t) =>
+        db.prepare(`UPDATE packs SET cards = json_set(cards, ?3, ?4), seq = ${NEXT_SEQ(1)} WHERE user_id = ?1 AND pack_id = ?2`).bind(userId, t.row.pack_id, `$[${t.row.slot}].gone`, `sale:${t.row.id}`),
+      ),
+      ...selling.map((t) => db.prepare("UPDATE listings SET status = 'sold', sold_for = ?, resolved_at = ? WHERE id = ?").bind(t.coins, now, t.row.id)),
+      ...walletStatements(db, userId, { kind: "sale", amount: earned, ref: saleId, note: selling.length === 1 ? `Sold ${best}` : `Sold ${best} and ${selling.length - 1} more` }),
+      db.prepare("DELETE FROM sale_checks WHERE sale_id = ?").bind(saleId),
+    ];
+    try {
+      await db.batch(statements);
+    } catch (err) {
+      if (!String(err).includes("CHECK constraint failed")) throw err;
+      throw new HttpError(409, "Something changed while selling, so nothing was sold. Try again.");
+    }
+  }
+  return json({ ...(await market(ctx, userId)), sold: selling.length, earned, missed: offers.length - selling.length } satisfies SellResponse);
+}
+
+async function keep(ctx: Ctx, userId: string): Promise<Response> {
+  const body = (await readJson<Partial<KeepRequest> | null>(ctx.req)) ?? {};
+  let ids: string[];
+  try {
+    ids = parseIds(body.ids, isId, "listing");
+  } catch (err) {
+    throw new HttpError(400, err instanceof Error ? err.message : String(err));
+  }
+  await ctx.env.DB.prepare("UPDATE listings SET status = 'kept', resolved_at = ? WHERE user_id = ? AND status = 'open' AND id IN (SELECT value FROM json_each(?))")
+    .bind(Date.now(), userId, JSON.stringify(ids))
+    .run();
+  return json(await market(ctx, userId));
+}
