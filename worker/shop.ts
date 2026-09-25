@@ -5,7 +5,10 @@
 // cover it, its CHECK fails and neither happens.
 
 import { formatCoins } from "../src/market/protocol";
-import { MAX_UNOPENED, SHOP_PACK_PREFIX, shopPrice, type BuyRequest, type BuyResponse } from "../src/market/shop";
+import { MAX_UNOPENED, SHOP_PACK_PREFIX, shopPrice, type BuyRequest, type BuyResponse, type UnopenedPack, type UnopenedResponse } from "../src/market/shop";
+import type { DealtCard, DealtPack } from "../src/packs/protocol";
+import type { SyncCard } from "../src/sync/protocol";
+import { tcgdex } from "./cache";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { rollSet } from "./packs";
 import { isOverdrawn, walletStatements } from "./wallet";
@@ -44,4 +47,41 @@ export async function buy(ctx: Ctx, userId: string): Promise<Response> {
   }
   const after = (await db.prepare("SELECT coins FROM users WHERE id = ?").bind(userId).first<{ coins: number }>())?.coins ?? 0;
   return json({ coins: after, pack: { id, setId, art: row.art }, unopened: await unopenedCount(db, userId) } satisfies BuyResponse);
+}
+
+/* ---------- Unopened packs ---------- */
+
+interface InventoryRow {
+  id: string;
+  set_id: string;
+  cards: string;
+  reveal: string;
+  art: string | null;
+  price: number;
+  bought_at: number;
+}
+
+export async function listUnopened(ctx: Ctx, userId: string): Promise<Response> {
+  const { results } = await ctx.env.DB.prepare("SELECT id, set_id, art, price, bought_at FROM pack_inventory WHERE user_id = ? ORDER BY bought_at DESC, rowid DESC")
+    .bind(userId)
+    .all<Omit<InventoryRow, "cards" | "reveal">>();
+  // Names and logos from the Worker's cached set list, so the app needn't fetch it just to label packs.
+  const sets = new Map(
+    (
+      await tcgdex(ctx.env)
+        .client.listSetSummaries()
+        .catch((err) => (console.error("Couldn't load the set list", err), []))
+    ).map((s) => [s.id, s]),
+  );
+  const packs = results.map((r): UnopenedPack => ({ id: r.id, setId: r.set_id, setName: sets.get(r.set_id)?.name, logo: sets.get(r.set_id)?.logo, art: r.art, price: r.price, boughtAt: r.bought_at }));
+  return json({ packs } satisfies UnopenedResponse);
+}
+
+/** One unopened pack with its cards, as a dealt pack, for the opener. Opening it goes through sync, like a dealt pack. */
+export async function getUnopened(ctx: Ctx, userId: string, id: string): Promise<Response> {
+  const r = await ctx.env.DB.prepare("SELECT id, set_id, cards, reveal, art FROM pack_inventory WHERE user_id = ? AND id = ?").bind(userId, id).first<InventoryRow>();
+  if (!r) throw new HttpError(404, "That pack isn't waiting to be opened. It may have been opened already.");
+  const cards = JSON.parse(r.cards) as SyncCard[];
+  const reveal = JSON.parse(r.reveal) as Pick<DealtCard, "slot" | "outcome">[];
+  return json({ dealId: r.id, setId: r.set_id, art: r.art, cards: cards.map((c, i) => ({ ...c, ...reveal[i] })) } satisfies DealtPack);
 }

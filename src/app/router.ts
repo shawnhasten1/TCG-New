@@ -2,12 +2,13 @@
 // #/pokedex, #/pokemon/<dexId>, #/cards, #/all (every card, sortable), #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab), #/pack-lab (pack photo lab), #/packs (collected pack wrappers).
 // A friend's collection: #/friend/<id> (by set), #/friend/<id>/cards, #/friend/<id>/all, #/friend/<id>/binder/<setId>.
 // Trades: #/trades, and #/trade/<friendId> to put an offer together.
-// Market: #/market (your listings), #/market/pick (choose cards to sell), #/market/shop (buy packs), #/market/wallet (coins).
+// Market: #/market (your listings), #/market/pick (choose cards to sell), #/market/shop (buy packs), #/market/unopened (packs
+// bought and not opened yet), #/market/open/<packId> (open one), #/market/wallet (coins).
 import { useEffect, useState } from "react";
 
-export type MarketTab = "sell" | "shop" | "wallet";
+export type MarketTab = "sell" | "shop" | "unopened" | "wallet";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" } | { page: "openBought"; packId: string };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -23,7 +24,11 @@ export function parseRoute(hash: string): Route {
   if (page === "all") return { page: "all" };
   if (page === "feed") return { page: "feed" };
   if (page === "trades") return { page: "trades" };
-  if (page === "market") return id === "pick" ? { page: "marketPick" } : { page: "market", tab: id === "wallet" || id === "shop" ? id : "sell" };
+  if (page === "market") {
+    if (id === "pick") return { page: "marketPick" };
+    if (id === "open" && sub) return { page: "openBought", packId: sub };
+    return { page: "market", tab: id === "wallet" || id === "shop" || id === "unopened" ? id : "sell" };
+  }
   if (page === "trade" && id) return { page: "trade", friendId: id };
   if (page === "friends") return { page: "friends", code: id || undefined };
   if (page === "friend" && id) {
@@ -53,6 +58,9 @@ export const href = {
   market: () => "#/market",
   marketPick: () => "#/market/pick",
   shop: () => "#/market/shop",
+  unopened: () => "#/market/unopened",
+  /** Open a bought pack. */
+  openBought: (packId: string) => `#/market/open/${encodeURIComponent(packId)}`,
   wallet: () => "#/market/wallet",
   /** Put together an offer for a friend. */
   trade: (friendId: string) => `#/trade/${encodeURIComponent(friendId)}`,
@@ -85,6 +93,7 @@ export function navSection(route: Route): NavSection | undefined {
       return "sets";
     case "market":
     case "marketPick":
+    case "openBought":
       return "market";
     case "feed":
     case "friends":

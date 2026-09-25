@@ -52,3 +52,24 @@ export interface BuyResponse {
   /** Bought packs waiting to be opened, this one included. */
   unopened: number;
 }
+
+/** A bought pack waiting to be opened. */
+export interface UnopenedPack {
+  id: string;
+  setId: string;
+  /** The set's name and logo, when the Worker's set list has them. */
+  setName?: string;
+  logo?: string | null;
+  /** Which photo of the real pack it comes in (see packs/art.ts), or null. */
+  art: string | null;
+  price: number;
+  boughtAt: number;
+}
+
+export interface UnopenedResponse {
+  /** Newest first. */
+  packs: UnopenedPack[];
+}
+
+/** Whether a pack id is a bought pack's. */
+export const isBoughtPack = (packId: string) => packId.startsWith(SHOP_PACK_PREFIX);

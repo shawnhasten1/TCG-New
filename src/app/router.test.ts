@@ -17,6 +17,7 @@ describe("navSection", () => {
     expect(section("#/market")).toBe("market");
     expect(section("#/market/pick")).toBe("market");
     expect(section("#/market/wallet")).toBe("market");
+    expect(section("#/market/open/s-abc")).toBe("market");
     expect(section("#/feed")).toBe("social");
     expect(section("#/friends/abc")).toBe("social");
     expect(section("#/trades")).toBe("social");
@@ -29,6 +30,9 @@ describe("navSection", () => {
     expect(parseRoute("#/market")).toEqual({ page: "market", tab: "sell" });
     expect(parseRoute("#/market/wallet")).toEqual({ page: "market", tab: "wallet" });
     expect(parseRoute("#/market/shop")).toEqual({ page: "market", tab: "shop" });
+    expect(parseRoute("#/market/unopened")).toEqual({ page: "market", tab: "unopened" });
+    expect(parseRoute("#/market/open/s-abc")).toEqual({ page: "openBought", packId: "s-abc" });
+    expect(parseRoute("#/market/open")).toEqual({ page: "market", tab: "sell" });
     expect(parseRoute("#/market/pick")).toEqual({ page: "marketPick" });
   });
 

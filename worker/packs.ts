@@ -9,6 +9,7 @@ import { profileFor } from "../src/engine/profiles";
 import { drawableSets, ERAS, pickRandomSet } from "../src/engine/randomSet";
 import { createRng } from "../src/engine/rng";
 import { pityFloor, PITY } from "../src/engine/setRarity";
+import { SHOP_PACK_PREFIX } from "../src/market/shop";
 import { pickPackArt } from "../src/packs/art";
 import { ALLOWANCE_WINDOW_MS, packAllowance, type DealRequest, type DealResponse, type DealtCard, type DealtPack } from "../src/packs/protocol";
 import type { SyncCard } from "../src/sync/protocol";
@@ -28,8 +29,24 @@ export async function handlePacks(ctx: Ctx): Promise<Response> {
   throw new HttpError(404, "Not found");
 }
 
-/** Statements that open a dealt pack: it joins the collection with the next seq. Nothing happens if it isn't dealt. */
+/**
+ * Statements that open a pack: it joins the collection with the next seq. A dealt pack comes from dealt_packs, a
+ * bought one ("s-") from pack_inventory. Nothing happens if there's no such pack waiting.
+ */
 export function openStatements(db: D1Database, userId: string, dealId: string): D1PreparedStatement[] {
+  if (dealId.startsWith(SHOP_PACK_PREFIX)) {
+    return [
+      db
+        .prepare(
+          `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq)
+           SELECT user_id, id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1)
+           FROM pack_inventory WHERE user_id = ?1 AND id = ?2
+           ON CONFLICT (user_id, pack_id) DO NOTHING`,
+        )
+        .bind(userId, dealId, new Date().toISOString()),
+      db.prepare("DELETE FROM pack_inventory WHERE user_id = ? AND id = ?").bind(userId, dealId),
+    ];
+  }
   return [
     db
       .prepare(
@@ -62,9 +79,9 @@ const dealtPack = (ctx: Ctx, userId: string) =>
 
 async function allowanceFor(ctx: Ctx, userId: string) {
   const now = Date.now();
-  // Deleted packs count too: throwing cards away doesn't give packs back.
-  const { results } = await ctx.env.DB.prepare("SELECT opened_at FROM packs WHERE user_id = ? AND opened_at >= ?")
-    .bind(userId, new Date(now - ALLOWANCE_WINDOW_MS).toISOString())
+  // Deleted packs count too: throwing cards away doesn't give packs back. Bought packs don't: they cost coins instead.
+  const { results } = await ctx.env.DB.prepare("SELECT opened_at FROM packs WHERE user_id = ? AND opened_at >= ? AND pack_id NOT LIKE ?")
+    .bind(userId, new Date(now - ALLOWANCE_WINDOW_MS).toISOString(), `${SHOP_PACK_PREFIX}%`)
     .all<{ opened_at: string }>();
   return packAllowance(results.map((r) => Date.parse(r.opened_at)), now);
 }
@@ -86,7 +103,11 @@ async function deal(ctx: Ctx, userId: string): Promise<Response> {
   if (waiting) return json({ pack: toPack(waiting), allowance } satisfies DealResponse);
   if (allowance.left === 0) return json({ pack: null, allowance } satisfies DealResponse);
 
-  const { results } = await db.prepare("SELECT set_id FROM packs WHERE user_id = ? ORDER BY opened_at DESC LIMIT ?").bind(userId, HISTORY).all<{ set_id: string }>();
+  // Pity counts dealt packs only: buying a pack from a set you chose doesn't use up a guarantee.
+  const { results } = await db
+    .prepare("SELECT set_id FROM packs WHERE user_id = ? AND pack_id NOT LIKE ? ORDER BY opened_at DESC LIMIT ?")
+    .bind(userId, `${SHOP_PACK_PREFIX}%`, HISTORY)
+    .all<{ set_id: string }>();
   const history = results.map((r) => r.set_id).reverse();
   const row = await roll(ctx, eras, history);
 

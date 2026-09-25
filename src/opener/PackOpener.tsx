@@ -44,6 +44,8 @@ interface Props {
   pityNote?: string;
   /** False when the daily limit is used up. */
   canOpenAgain?: boolean;
+  /** The label on the button for the next pack. */
+  againLabel?: string;
   /** Shares cards (by position in the pack) to the friends feed; returns every position shared so far. Absent for guests. */
   onShare?(slots: number[]): Promise<number[]>;
   /** A photo of the real sealed pack, worn instead of TCGdex's booster artwork or the generic wrapper (trialled in the pack lab).
@@ -63,7 +65,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, onShare, packPhoto }: Props) {
+export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, againLabel = "Open another pack", onShare, packPhoto }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -490,7 +492,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
           )}
           {canOpenAgain && phase === "summary" && (
             <button type="button" className="primary" onClick={onAgain} autoFocus={phase === "summary"}>
-              Open another pack
+              {againLabel}
             </button>
           )}
           {phase === "summary" && binderHref && (

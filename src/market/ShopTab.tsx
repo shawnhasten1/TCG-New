@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
 import { client } from "../app/client";
+import { href } from "../app/router";
 import { SetLogo } from "../app/SetLogo";
 import { setTier, TIERS, type SetTier } from "../engine/setRarity";
 import { packArts } from "../packs/art";
@@ -23,7 +24,8 @@ export function ShopTab() {
   const [sets, setSets] = useState<SetSummary[]>();
   const [coins, setCoins] = useState<number>();
   const [error, setError] = useState<string>();
-  const [note, setNote] = useState<string>();
+  /** The pack just bought, to open now or keep. */
+  const [bought, setBought] = useState<{ id: string; name: string; unopened: number }>();
   const [busy, setBusy] = useState<string>();
   const [query, setQuery] = useState("");
 
@@ -57,11 +59,11 @@ export function ShopTab() {
     if (!confirm(`Buy a ${set.name} pack for ${formatCoins(entry.price)}?`)) return;
     setBusy(set.id);
     setError(undefined);
-    setNote(undefined);
+    setBought(undefined);
     try {
       const res = await buyPack(set.id);
       setCoins(res.coins);
-      setNote(`Bought a ${set.name} pack. It's waiting with your unopened packs (${res.unopened}).`);
+      setBought({ id: res.pack.id, name: set.name, unopened: res.unopened });
     } catch (err) {
       setError(message(err));
     } finally {
@@ -88,10 +90,21 @@ export function ShopTab() {
           {error}
         </p>
       )}
-      {note && (
-        <p className="ok" role="status">
-          {note}
-        </p>
+      {bought && (
+        <div className="bought" role="status">
+          <p className="ok">Bought a {bought.name} pack. Open it now, or keep it for later with your unopened packs.</p>
+          <div className="row">
+            <a className="button primary" href={href.openBought(bought.id)}>
+              Open now
+            </a>
+            <button type="button" onClick={() => setBought(undefined)}>
+              Keep for later
+            </button>
+            <a href={href.unopened()}>
+              Unopened packs ({bought.unopened})
+            </a>
+          </div>
+        </div>
       )}
       {!sets ? (
         !error && (

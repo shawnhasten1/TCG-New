@@ -81,3 +81,7 @@
 .market .shop-grid .name { line-height: 1.2; overflow-wrap: anywhere; }
 .market .shop-grid .price { margin-top: auto; padding-top: 6px; font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .market .shop-grid button { margin-top: 6px; }
+.market .shop-grid a.button { margin-top: 6px; justify-content: center; text-align: center; }
+.market .bought { margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.market .bought .ok { margin: 0; }
+.market .bought .row { margin: 10px 0 0; }

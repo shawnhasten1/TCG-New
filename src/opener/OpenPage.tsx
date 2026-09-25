@@ -14,9 +14,10 @@ import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
 import { packArt } from "../packs/art";
-import { dealPack } from "../packs/deal";
+import { dealPack, toPulls } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
+import { isBoughtPack } from "../market/shop";
 import { isOpenedPack } from "../sync/protocol";
 import { OpenerBar } from "./OpenerBar";
 import { PackOpener } from "./PackOpener";
@@ -57,21 +58,11 @@ function useNow(on: boolean): number {
   return now;
 }
 
-/** The set of each saved pack, oldest first. */
+/** The set of each dealt pack opened, oldest first. Bought packs don't count toward pity. */
 function packHistory(pulls: PullRecord[]): string[] {
   const packs = new Map<string, Pick<PullRecord, "setId" | "openedAt">>();
-  for (const p of pulls) if (isOpenedPack(p.packId) && !packs.has(p.packId)) packs.set(p.packId, p);
+  for (const p of pulls) if (isOpenedPack(p.packId) && !isBoughtPack(p.packId) && !packs.has(p.packId)) packs.set(p.packId, p);
   return [...packs.values()].sort((a, b) => a.openedAt.localeCompare(b.openedAt)).map((p) => p.setId);
-}
-
-/** Matches the dealt cards to the set's card data for the reveal. */
-function toPulls(pack: DealtPack, data: SetData): PulledCard[] | undefined {
-  const byId = new Map(data.cards.map((c) => [c.id, c]));
-  const pulls = pack.cards.map((c) => {
-    const card = byId.get(c.cardId);
-    return card && { card, finish: c.finish, firstEdition: c.firstEdition, slot: c.slot, outcome: c.outcome };
-  });
-  return pulls.every(Boolean) ? (pulls as PulledCard[]) : undefined;
 }
 
 export function OpenPage() {

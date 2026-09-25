@@ -1,5 +1,5 @@
 // #/market: cards you've listed and the offers trainers have made for them, #/market/shop: buy packs (ShopTab),
-// and #/market/wallet: your coins.
+// #/market/unopened: packs bought and kept (UnopenedTab), and #/market/wallet: your coins.
 // Each listing shows every offer so far with the best picked out, and counts down to the next; when one's due, the
 // page asks again. Selling takes the best offer.
 
@@ -16,6 +16,7 @@ import type { TradeCard } from "../social/protocol";
 import { keepListings, loadMarket, loadWallet, sellListings } from "./market";
 import { bestOffer, formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
 import { ShopTab } from "./ShopTab";
+import { UnopenedTab } from "./UnopenedTab";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
@@ -40,6 +41,9 @@ export function MarketTabs({ current }: { current: MarketTab }) {
       <a href={href.shop()} aria-current={current === "shop" ? "page" : undefined}>
         Shop
       </a>
+      <a href={href.unopened()} aria-current={current === "unopened" ? "page" : undefined}>
+        Unopened
+      </a>
       <a href={href.wallet()} aria-current={current === "wallet" ? "page" : undefined}>
         Wallet
       </a>
@@ -59,7 +63,7 @@ export function MarketPage({ tab }: { tab: MarketTab }) {
       ) : (
         <>
           <MarketTabs current={tab} />
-          {tab === "wallet" ? <Wallet /> : tab === "shop" ? <ShopTab /> : <SellBoard />}
+          {tab === "wallet" ? <Wallet /> : tab === "shop" ? <ShopTab /> : tab === "unopened" ? <UnopenedTab /> : <SellBoard />}
         </>
       )}
     </main>
