@@ -17,6 +17,8 @@ export interface Pickable {
   firstEdition: boolean;
   uids: string[];
   tier: number;
+  /** When the newest copy was pulled. */
+  lastPulledAt: string;
 }
 
 export function pickables(pulls: PullRecord[], cards: Map<string, { card: Card; set: SetDetail }>): Pickable[] {
@@ -28,9 +30,10 @@ export function pickables(pulls: PullRecord[], cards: Map<string, { card: Card; 
     let g = groups.get(key);
     if (!g) {
       const tier = pullTier({ card: found.card, finish: p.finish, firstEdition: p.firstEdition, slot: "", outcome: "" });
-      groups.set(key, (g = { key, ...found, finish: p.finish, firstEdition: p.firstEdition, uids: [], tier }));
+      groups.set(key, (g = { key, ...found, finish: p.finish, firstEdition: p.firstEdition, uids: [], tier, lastPulledAt: p.openedAt }));
     }
     g.uids.push(pullUid(p));
+    if (p.openedAt > g.lastPulledAt) g.lastPulledAt = p.openedAt;
   }
   // Best cards first, then by set and number.
   return [...groups.values()].sort((a, b) => b.tier - a.tier || a.set.name.localeCompare(b.set.name) || a.card.localId.localeCompare(b.card.localId, undefined, { numeric: true }));

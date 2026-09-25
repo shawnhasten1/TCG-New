@@ -39,4 +39,21 @@ describe("sortCards", () => {
     sortCards(all, "name");
     expect(ids(all)).toEqual(["Pikachu", "Potion", "Bulbasaur", "Basic Grass Energy"]);
   });
+
+  it("sorts by rarity, rarest first, then by value", () => {
+    const rare = { ...pikachu, card: { ...pikachu.card, rarity: "Rare Holo" } };
+    const chase = { ...potion, card: { ...potion.card, rarity: "Special Illustration Rare" } };
+    const value = new Map([["sv1-4", 5]]);
+    expect(ids(sortCards([bulbasaur, rare, energy, chase], "rarity", (e) => value.get(e.card.id)))).toEqual(["Potion", "Pikachu", "Basic Grass Energy", "Bulbasaur"]);
+  });
+
+  it("sorts by set, newest set first in card-number order", () => {
+    const older = { ...pikachu, set: { ...set, releaseDate: "2020-01-01" } };
+    expect(ids(sortCards([energy, older, bulbasaur, potion], "set"))).toEqual(["Potion", "Bulbasaur", "Basic Grass Energy", "Pikachu"]);
+  });
+
+  it("sorts cards that carry their own last-pulled time, as the sell picker's do", () => {
+    const loose = all.map(({ card, set, owned }) => ({ card, set, lastPulledAt: owned.lastPulledAt }));
+    expect(sortCards(loose, "recent").map((e) => e.card.name)).toEqual(["Potion", "Pikachu", "Basic Grass Energy", "Bulbasaur"]);
+  });
 });

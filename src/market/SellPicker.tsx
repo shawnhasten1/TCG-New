@@ -7,6 +7,7 @@ import { Help } from "../app/Help";
 import { href } from "../app/router";
 import { cyclePick, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
+import { CARD_SORT_LABEL, sortCards, type CardSort } from "../collection/cardSort";
 import { priceFor } from "../collection/prices";
 import { useCardPrices } from "../collection/usePrices";
 import { useOpenedSets } from "../collection/useOpenedSets";
@@ -18,6 +19,7 @@ import "./market.css";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 const plural = (n: number) => `${n} ${n === 1 ? "card" : "cards"}`;
+const SORTS: CardSort[] = ["rarity", "value", "recent", "dex", "name", "set"];
 
 export function SellPicker() {
   const member = isMember(useAccount());
@@ -26,6 +28,7 @@ export function SellPicker() {
   const [error, setError] = useState<string>();
   const [search, setSearch] = useState("");
   const [dupesOnly, setDupesOnly] = useState(false);
+  const [sort, setSort] = useState<CardSort>("rarity");
   const [picked, setPicked] = useState<Picked>(new Map());
   const [sending, setSending] = useState(false);
 
@@ -88,7 +91,11 @@ export function SellPicker() {
   };
 
   const q = search.trim().toLowerCase();
-  const shown = items.filter((p) => (!q || p.card.name.toLowerCase().includes(q) || p.set.name.toLowerCase().includes(q)) && (!dupesOnly || p.uids.length > 1));
+  const shown = sortCards(
+    items.filter((p) => (!q || p.card.name.toLowerCase().includes(q) || p.set.name.toLowerCase().includes(q)) && (!dupesOnly || p.uids.length > 1)),
+    sort,
+    (p) => valueOf(p)?.coins,
+  );
 
   return (
     <main className="collection friends pick-page market">
@@ -129,6 +136,16 @@ export function SellPicker() {
           </div>
           <div className="pick-toolbar">
             <input type="search" placeholder="Search by card or set" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search cards" />
+            <label>
+              Sort by{" "}
+              <select value={sort} onChange={(e) => setSort(e.target.value as CardSort)}>
+                {SORTS.map((s) => (
+                  <option key={s} value={s}>
+                    {CARD_SORT_LABEL[s]}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               <input type="checkbox" checked={dupesOnly} onChange={(e) => setDupesOnly(e.target.checked)} /> Duplicates only
             </label>
