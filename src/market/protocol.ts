@@ -52,20 +52,23 @@ export interface WalletResponse {
 
 /* ---------- Selling ----------
  * Listing a card gets an offer straight away, usually a low one, and another comes in every minute, up to OFFERS.
- * Every offer stays on the table until the listing closes, a minute after the last, so the player can take the best
- * so far or wait for a better one. Each offer (and the trainer making it) is worked out from the listing's seed and
- * its number, so the Worker needn't store them and reloading can't reroll one; the app is only told offers that have
- * come in. A card can be listed once a day, so listing it again can't start a fresh run of offers either. */
+ * Every offer stays on the table until the player sells to one or keeps the card; they have DECIDE_MS after the last
+ * offer comes in. Nothing is sold or kept for them: if they leave it, the listing lapses and the card simply stays
+ * in their collection. A kept or lapsed card can be listed again straight away, for a fresh run of offers.
+ * Each offer (and the trainer making it) is worked out from the listing's seed and its number, so the Worker needn't
+ * store them and reloading can't reroll one; the app is only told offers that have come in. */
 
-/** Cards in one listing request, and listed at once. Each may need a price lookup, which the Worker limits. */
-export const MAX_LISTED = 30;
+/** Cards listed in one go. Each may need a price lookup, which the Worker limits. */
+export const MAX_LIST_AT_ONCE = 30;
+/** Cards on the market at once. */
+export const MAX_LISTED = 100;
 export const OFFER_EVERY_MS = 60 * 1000;
 /** Offers per listing, the first included. */
 export const OFFERS = 10;
-/** How long offers can still be taken after the listing closes, for a tap that crossed the minute. */
+/** How long the player has to sell or keep after the last offer comes in. */
+export const DECIDE_MS = 12 * 60 * 60 * 1000;
+/** How long offers can still be taken after the listing closes, for a tap that crossed the line. */
 export const OFFER_GRACE_MS = 5 * 1000;
-/** A card can be listed again this long after it last was. */
-export const RELIST_AFTER_MS = 24 * 60 * 60 * 1000;
 /** Offers as a share of the card's value: the first, then the rest. Middling shares are the likeliest. */
 export const FIRST_OFFER: [number, number] = [0.65, 0.9];
 export const LATER_OFFERS: [number, number] = [0.8, 1.03];
@@ -109,8 +112,8 @@ export const offersIn = (listedAt: number, now: number) => Math.min(OFFERS, Math
 /** When offer `n` comes in. */
 export const offerAt = (listedAt: number, n: number) => listedAt + n * OFFER_EVERY_MS;
 
-/** When the listing closes and its offers are withdrawn: a minute after the last comes in. */
-export const listingCloses = (listedAt: number) => listedAt + OFFERS * OFFER_EVERY_MS;
+/** When the listing lapses and its offers are withdrawn, if the player hasn't sold or kept the card. */
+export const listingCloses = (listedAt: number) => offerAt(listedAt, OFFERS - 1) + DECIDE_MS;
 
 /** Whether offer `n` can be taken at `now`: it's come in and the listing hasn't closed. */
 export const offerOpen = (listedAt: number, n: number, now: number) =>
@@ -138,8 +141,6 @@ export interface MarketResponse {
   coins: number;
   /** Open listings, oldest first. */
   listings: Listing[];
-  /** Cards listed lately that can't be listed again yet, with when they can. */
-  resting: { uid: string; until: number }[];
   /** The Worker's clock (ms), so countdowns can allow for a device's clock being off. */
   now: number;
 }
@@ -156,7 +157,7 @@ export interface SellRequest {
 export interface SellResponse extends MarketResponse {
   sold: number;
   earned: number;
-  /** Cards that couldn't be sold: gone from the collection, or the listing closed. */
+  /** Cards that couldn't be sold: gone from the collection, or the listing lapsed. */
   missed: number;
 }
 
@@ -165,9 +166,9 @@ export interface KeepRequest {
 }
 
 /** The listing ids or card uids in a request, or throws an Error saying what's wrong. */
-export function parseIds(v: unknown, ok: (s: string) => boolean, what: string): string[] {
+export function parseIds(v: unknown, ok: (s: string) => boolean, what: string, max: number): string[] {
   if (!Array.isArray(v) || !v.length) throw new Error(`Pick at least one ${what}.`);
-  if (v.length > MAX_LISTED) throw new Error(`That's more than ${MAX_LISTED} at once.`);
+  if (v.length > max) throw new Error(`That's more than ${max} at once.`);
   if (!v.every((s): s is string => typeof s === "string" && ok(s))) throw new Error(`That isn't a ${what}.`);
   return [...new Set(v)];
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bestOffer, coinValue, FIRST_OFFER, formatCoins, LATER_OFFERS, listingCloses, OFFER_EVERY_MS, OFFER_GRACE_MS, offerFor, offerOpen, OFFERS, offersIn, parseIds, TRAINERS, UNPRICED_COINS } from "./protocol";
+import { bestOffer, coinValue, DECIDE_MS, FIRST_OFFER, formatCoins, LATER_OFFERS, listingCloses, OFFER_EVERY_MS, OFFER_GRACE_MS, offerFor, offerOpen, OFFERS, offersIn, parseIds, TRAINERS, UNPRICED_COINS } from "./protocol";
 
 describe("coinValue", () => {
   it("counts a US cent as a coin", () => {
@@ -82,7 +82,12 @@ describe("offer timing", () => {
     expect(offersIn(at, at - 5000)).toBe(1);
   });
 
-  it("keeps every offer that's come in open until the listing closes, and a moment after", () => {
+  it("gives 12 hours after the last offer to decide", () => {
+    expect(listingCloses(at)).toBe(at + (OFFERS - 1) * OFFER_EVERY_MS + DECIDE_MS);
+    expect(DECIDE_MS).toBe(12 * 60 * 60 * 1000);
+  });
+
+  it("keeps every offer that's come in open until the listing lapses, and a moment after", () => {
     const closes = listingCloses(at);
     expect(offerOpen(at, 0, at)).toBe(true);
     expect(offerOpen(at, 0, closes - 1)).toBe(true);
@@ -112,13 +117,13 @@ describe("parseIds", () => {
   const ok = (s: string) => s.length > 0;
 
   it("drops repeats", () => {
-    expect(parseIds(["a", "b", "a"], ok, "card")).toEqual(["a", "b"]);
+    expect(parseIds(["a", "b", "a"], ok, "card", 30)).toEqual(["a", "b"]);
   });
 
   it("refuses nothing, too many, or junk", () => {
-    expect(() => parseIds([], ok, "card")).toThrow(/at least one/);
-    expect(() => parseIds(Array.from({ length: 31 }, (_, i) => `c${i}`), ok, "card")).toThrow(/more than/);
-    expect(() => parseIds(["a", 3], ok, "card")).toThrow(/isn't a card/);
-    expect(() => parseIds("a", ok, "card")).toThrow();
+    expect(() => parseIds([], ok, "card", 30)).toThrow(/at least one/);
+    expect(() => parseIds(Array.from({ length: 31 }, (_, i) => `c${i}`), ok, "card", 30)).toThrow(/more than/);
+    expect(() => parseIds(["a", 3], ok, "card", 30)).toThrow(/isn't a card/);
+    expect(() => parseIds("a", ok, "card", 30)).toThrow();
   });
 });

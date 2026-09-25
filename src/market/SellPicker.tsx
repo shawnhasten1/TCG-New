@@ -1,5 +1,4 @@
-// #/market/pick: choose cards to list on the market. Cards listed now or in the last day are left out, since the
-// market won't take them again yet.
+// #/market/pick: choose cards to list on the market. Cards already listed are left out.
 
 import { useEffect, useMemo, useState } from "react";
 import type { Card, SetDetail } from "../api/types";
@@ -9,7 +8,7 @@ import { cyclePick, PickGrid, pickables, pickedCount, pickedUids, type Pickable,
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
 import { useOpenedSets } from "../collection/useOpenedSets";
 import { listCards, loadMarket } from "./market";
-import { MAX_LISTED, type MarketResponse } from "./protocol";
+import { MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
@@ -49,11 +48,10 @@ export function SellPicker() {
     for (const d of sets ?? []) for (const card of d.cards) m.set(card.id, { card, set: d.set });
     return m;
   }, [sets]);
-  const unavailable = useMemo(() => new Set([...(market?.listings.map((l) => l.card.uid) ?? []), ...(market?.resting.map((r) => r.uid) ?? [])]), [market]);
-  const items = useMemo(() => pickables((pulls ?? []).filter((p) => !unavailable.has(pullUid(p))), cards), [pulls, cards, unavailable]);
-  const resting = useMemo(() => (pulls ?? []).filter((p) => unavailable.has(pullUid(p))).length, [pulls, unavailable]);
+  const listed = useMemo(() => new Set(market?.listings.map((l) => l.card.uid)), [market]);
+  const items = useMemo(() => pickables((pulls ?? []).filter((p) => !listed.has(pullUid(p))), cards), [pulls, cards, listed]);
 
-  const room = Math.max(0, MAX_LISTED - (market?.listings.length ?? 0));
+  const room = Math.min(MAX_LIST_AT_ONCE, Math.max(0, MAX_LISTED - (market?.listings.length ?? 0)));
   const count = pickedCount(picked);
   const pick = (p: Pickable) => setPicked((cur) => cyclePick(cur, p, room));
   /** Every copy but one of each card, as far as there's room. */
@@ -109,7 +107,7 @@ export function SellPicker() {
         <>
           <p className="muted">
             Pick up to {plural(room)}. The market makes an offer for each as soon as they're listed, and you choose whether to sell.
-            {resting > 0 && ` ${plural(resting)} listed in the last day ${resting === 1 ? "isn't" : "aren't"} shown.`}
+            {listed.size > 0 && ` ${plural(listed.size)} you've listed already ${listed.size === 1 ? "isn't" : "aren't"} shown.`}
           </p>
           <div className="pick-toolbar">
             <input type="search" placeholder="Search by card or set" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search cards" />

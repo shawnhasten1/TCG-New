@@ -6,9 +6,9 @@
 // meantime, and that rolls everything back. A sold card stays in its pack marked `gone` ("sale:<listing>"), with a
 // new seq so sync drops it on every device, and the coins land in the same batch.
 
-import { listingCloses, MAX_LISTED, OFFER_EVERY_MS, offerAt, offerFor, offerOpen, OFFERS, offersIn, parseIds, RELIST_AFTER_MS, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
+import { listingCloses, MAX_LIST_AT_ONCE, MAX_LISTED, offerAt, offerFor, offerOpen, OFFERS, offersIn, parseIds, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
 import type { TradeCard } from "../src/social/protocol";
-import { cardUid, parseCardUid, type RemoteCard } from "../src/sync/protocol";
+import { parseCardUid, type RemoteCard } from "../src/sync/protocol";
 import { pruneDailyEntries } from "./cache";
 import { ownedCards, withCardData } from "./cards";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
@@ -16,8 +16,8 @@ import { requireMember } from "./session";
 import { valueCards, walletStatements } from "./wallet";
 
 const isId = (s: string) => /^[0-9a-f-]{36}$/.test(s);
-/** How long a listing has offers for. */
-const LIFETIME = OFFERS * OFFER_EVERY_MS;
+/** How long a listing is open for, if the player doesn't sell or keep the card. */
+const LIFETIME = listingCloses(0);
 const NEXT_SEQ = (param: number) => `(SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?${param})`;
 
 export async function handleMarket(ctx: Ctx): Promise<Response> {
@@ -62,25 +62,14 @@ function toListing(r: ListingRow, now: number): Listing {
 async function market(ctx: Ctx, userId: string): Promise<MarketResponse> {
   const db = ctx.env.DB;
   const now = Date.now();
-  const [balance, open, recent] = await Promise.all([
+  const [balance, open] = await Promise.all([
     db.prepare("SELECT coins FROM users WHERE id = ?").bind(userId).first<{ coins: number }>(),
     db
       .prepare(`SELECT ${LISTING_COLUMNS} FROM listings WHERE user_id = ? AND status = 'open' AND listed_at > ? ORDER BY listed_at, rowid`)
       .bind(userId, now - LIFETIME)
       .all<ListingRow>(),
-    db
-      .prepare("SELECT pack_id, slot, MAX(listed_at) AS listed_at FROM listings WHERE user_id = ? AND listed_at > ? GROUP BY pack_id, slot")
-      .bind(userId, now - RELIST_AFTER_MS)
-      .all<{ pack_id: string; slot: number; listed_at: number }>(),
   ]);
-  const listings = open.results.map((r) => toListing(r, now));
-  const listed = new Set(listings.map((l) => l.card.uid));
-  return {
-    coins: balance?.coins ?? 0,
-    listings,
-    resting: recent.results.map((r) => ({ uid: cardUid(r.pack_id, r.slot), until: r.listed_at + RELIST_AFTER_MS })).filter((r) => !listed.has(r.uid)),
-    now,
-  };
+  return { coins: balance?.coins ?? 0, listings: open.results.map((r) => toListing(r, now)), now };
 }
 
 /* ---------- Listing ---------- */
@@ -89,15 +78,15 @@ async function list(ctx: Ctx, userId: string): Promise<Response> {
   const body = (await readJson<Partial<ListRequest> | null>(ctx.req)) ?? {};
   let uids: string[];
   try {
-    uids = parseIds(body.uids, (s) => !!parseCardUid(s), "card");
+    uids = parseIds(body.uids, (s) => !!parseCardUid(s), "card", MAX_LIST_AT_ONCE);
   } catch (err) {
     throw new HttpError(400, err instanceof Error ? err.message : String(err));
   }
   const db = ctx.env.DB;
   const current = await market(ctx, userId);
   if (current.listings.length + uids.length > MAX_LISTED) throw new HttpError(429, `You can have up to ${MAX_LISTED} cards listed at once. Sell or keep some first.`);
-  const busy = new Set([...current.listings.map((l) => l.card.uid), ...current.resting.map((r) => r.uid)]);
-  if (uids.some((u) => busy.has(u))) throw new HttpError(409, "Some of those cards are listed already, or were listed in the last day.");
+  const listed = new Set(current.listings.map((l) => l.card.uid));
+  if (uids.some((u) => listed.has(u))) throw new HttpError(409, "Some of those cards are listed already.");
 
   const owned = new Map((await ownedCards(db, userId)).map((c) => [c.uid, c]));
   const picked = uids.map((u) => owned.get(u));
@@ -127,6 +116,7 @@ function parseOffers(v: unknown): SellRequest["offers"] {
     offers.map((o: unknown) => (o && typeof o === "object" && Number.isInteger((o as { n?: unknown }).n) ? (o as { id?: unknown }).id : undefined)),
     isId,
     "offer",
+    MAX_LISTED,
   );
   const n = new Map(offers.map((o: { id: string; n: number }) => [o.id, o.n]));
   return ids.map((id) => ({ id, n: n.get(id)! }));
@@ -205,7 +195,7 @@ async function keep(ctx: Ctx, userId: string): Promise<Response> {
   const body = (await readJson<Partial<KeepRequest> | null>(ctx.req)) ?? {};
   let ids: string[];
   try {
-    ids = parseIds(body.ids, isId, "listing");
+    ids = parseIds(body.ids, isId, "listing", MAX_LISTED);
   } catch (err) {
     throw new HttpError(400, err instanceof Error ? err.message : String(err));
   }

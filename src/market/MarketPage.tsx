@@ -7,6 +7,7 @@ import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
 import { href } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
+import { formatCountdown } from "../collection/daily";
 import { pullTier } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { ago } from "../social/common";
@@ -101,7 +102,7 @@ function SellBoard() {
     };
   }, [refresh]);
 
-  // Ask again when an offer is due in, or a listing closes.
+  // Ask again when an offer is due in, or a listing lapses.
   const serverNow = now + skew;
   const stale = !!data?.listings.some((l) => (l.nextAt ?? l.closesAt) <= serverNow);
   useEffect(() => {
@@ -119,7 +120,7 @@ function SellBoard() {
       show(res);
       const parts = [];
       if (res.sold) parts.push(listings.length === 1 ? `Sold to ${best(listings[0]).from} for ${formatCoins(res.earned)}.` : `Sold ${plural(res.sold)} for ${formatCoins(res.earned)}.`);
-      if (res.missed) parts.push(`${plural(res.missed)} couldn't be sold: the listing closed, or the card isn't in your collection any more.`);
+      if (res.missed) parts.push(`${plural(res.missed)} couldn't be sold: the offers were withdrawn, or the card isn't in your collection any more.`);
       setNote(parts.join(" "));
     } catch (err) {
       setError(message(err));
@@ -135,7 +136,7 @@ function SellBoard() {
     setNote(undefined);
     try {
       show(await keepListings(listings.map((l) => l.id)));
-      setNote(`Kept ${plural(listings.length)}. ${listings.length === 1 ? "It" : "They"} can be listed again tomorrow.`);
+      setNote(`Kept ${plural(listings.length)}. You can put ${listings.length === 1 ? "it" : "them"} back on the market whenever you like.`);
     } catch (err) {
       setError(message(err));
     } finally {
@@ -143,7 +144,7 @@ function SellBoard() {
     }
   };
 
-  // A listing that's just closed is on its way out; only show open ones.
+  // A listing that's just lapsed is on its way out; only show open ones.
   const live = data?.listings.filter((l) => l.closesAt > serverNow) ?? [];
   const total = live.reduce((sum, l) => sum + best(l).coins, 0);
 
@@ -158,8 +159,9 @@ function SellBoard() {
         </a>
       </div>
       <p className="muted">
-        List cards and trainers start making offers: the first straight away, usually a low one, then another every minute, up to {OFFERS}. Sell to the
-        best offer whenever you like, until a minute after the last comes in. Then the market loses interest in the card until tomorrow.
+        List cards and trainers start making offers: the first straight away, usually a low one, then another every minute, up to {OFFERS}. Nothing
+        sells until you say so. You have 12 hours after the last offer to sell to the best one or keep the card, and a kept card can go straight back on
+        the market.
       </p>
       {error && (
         <p className="error" role="alert">
@@ -255,7 +257,7 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
           ))}
         </ol>
         <small className="muted countdown">
-          {l.nextAt !== null ? `${l.offers.length} of ${OFFERS} offers · next in ${clock(l.nextAt - now)}` : `All ${OFFERS} offers in · closes in ${clock(l.closesAt - now)}`}
+          {l.nextAt !== null ? `${l.offers.length} of ${OFFERS} offers · next in ${clock(l.nextAt - now)}` : `All ${OFFERS} offers in · sell or keep within ${formatCountdown(l.closesAt - now)}`}
         </small>
       </div>
     </li>
