@@ -18,7 +18,7 @@ export async function sellListings(offers: SellRequest["offers"]): Promise<SellR
   return res;
 }
 
-export const buyPack = (setId: string) => api<BuyResponse>("/api/market/buy", { body: { setId } satisfies BuyRequest });
+export const buyPacks = (setId: string, quantity: number) => api<BuyResponse>("/api/market/buy", { body: { setId, quantity } satisfies BuyRequest });
 export const loadUnopened = () => api<UnopenedResponse>("/api/market/packs");
 export const loadBoughtPack = (id: string) => api<DealtPack>(`/api/market/packs/${encodeURIComponent(id)}`);
 /** Posts a sale to the friends feed. Only when the player asks. */

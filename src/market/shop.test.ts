@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MIN_PACK_PRICE, PACK_MARKUP, packPrice, shopPrice } from "./shop";
+import { MAX_BUY_AT_ONCE, MAX_UNOPENED, maxQuantity, MIN_PACK_PRICE, PACK_MARKUP, packPrice, parseQuantity, shopPrice } from "./shop";
 
 describe("packPrice", () => {
   it("marks the average value of a pack's cards up, so buying to resell loses coins", () => {
@@ -28,5 +28,33 @@ describe("shopPrice", () => {
     expect(shopPrice("no-such-set")).toBeUndefined();
     expect(shopPrice("constructor")).toBeUndefined();
     expect(shopPrice("__proto__")).toBeUndefined();
+  });
+});
+
+describe("maxQuantity", () => {
+  it("is what you can afford", () => {
+    expect(maxQuantity(1250, 5000, 0)).toBe(4);
+    expect(maxQuantity(1250, 1249, 0)).toBe(0);
+  });
+
+  it("is capped by room for unopened packs, and per purchase", () => {
+    expect(maxQuantity(100, 1_000_000, MAX_UNOPENED - 3)).toBe(3);
+    expect(maxQuantity(100, 1_000_000, MAX_UNOPENED)).toBe(0);
+    expect(maxQuantity(100, 1_000_000, 0)).toBe(MAX_BUY_AT_ONCE);
+  });
+});
+
+describe("parseQuantity", () => {
+  it("defaults to one pack", () => {
+    expect(parseQuantity(undefined)).toBe(1);
+  });
+
+  it("takes whole numbers from 1 to the per-purchase cap", () => {
+    expect(parseQuantity(3)).toBe(3);
+    expect(parseQuantity(MAX_BUY_AT_ONCE)).toBe(MAX_BUY_AT_ONCE);
+  });
+
+  it("refuses anything else", () => {
+    for (const v of [0, -1, 2.5, MAX_BUY_AT_ONCE + 1, "3", null, NaN]) expect(parseQuantity(v)).toBeUndefined();
   });
 });

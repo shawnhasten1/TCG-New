@@ -9,9 +9,10 @@ import { Help } from "../app/Help";
 import { SetLogo } from "../app/SetLogo";
 import { setTier, TIERS, type SetTier } from "../engine/setRarity";
 import { packArts } from "../packs/art";
-import { buyPack, loadWallet } from "./market";
+import { buyPacks, loadUnopened, loadWallet } from "./market";
 import { formatCoins } from "./protocol";
-import { shopSets, type ShopEntry } from "./shop";
+import { QuantityStepper } from "./QuantityStepper";
+import { MAX_UNOPENED, maxQuantity, shopSets, type ShopEntry } from "./shop";
 import { ask } from "../app/Confirm";
 import { RetryImg } from "../app/RetryImg";
 
@@ -27,8 +28,12 @@ export function ShopTab() {
   const [sets, setSets] = useState<SetSummary[]>();
   const [coins, setCoins] = useState<number>();
   const [error, setError] = useState<string>();
-  /** The pack just bought, to open now or keep. */
-  const [bought, setBought] = useState<{ id: string; name: string; unopened: number }>();
+  /** The packs just bought, to open now or keep. */
+  const [bought, setBought] = useState<{ id: string; name: string; count: number; unopened: number }>();
+  /** Unopened packs held, which limits how many more can be bought. */
+  const [unopened, setUnopened] = useState(0);
+  /** How many of each set's packs to buy, where it isn't 1. */
+  const [quantities, setQuantities] = useState<Map<string, number>>(new Map());
   const [busy, setBusy] = useState<string>();
   const [query, setQuery] = useState("");
 
@@ -41,6 +46,10 @@ export function ShopTab() {
     loadWallet().then(
       (w) => live && setCoins(w.coins),
       (err) => live && setError(message(err)),
+    );
+    loadUnopened().then(
+      (u) => live && setUnopened(u.packs.length),
+      () => undefined, // the server still enforces the limit
     );
     return () => {
       live = false;
@@ -58,20 +67,32 @@ export function ShopTab() {
       .filter((g) => g.items.length);
   }, [sets, query]);
 
-  const buy = async ({ set, entry }: Item) => {
+  /** The most of a set's packs that can be bought now, and how many are chosen (never more than that). */
+  const limits = (item: Item) => {
+    const max = coins === undefined ? 1 : maxQuantity(item.entry.price, coins, unopened);
+    return { max, quantity: Math.min(quantities.get(item.set.id) ?? 1, Math.max(1, max)) };
+  };
+  const setQuantity = (setId: string, n: number) => setQuantities((m) => new Map(m).set(setId, n));
+
+  const buy = async (item: Item) => {
+    const { set, entry } = item;
+    const { quantity } = limits(item);
+    const total = entry.price * quantity;
     const ok = await ask({
-      title: `Buy a ${set.name} pack?`,
-      body: coins === undefined ? undefined : `You'll have ${formatCoins(coins - entry.price)} left.`,
-      confirm: `Buy for ${formatCoins(entry.price)}`,
+      title: quantity === 1 ? `Buy a ${set.name} pack?` : `Buy ${quantity} ${set.name} packs?`,
+      body: coins === undefined ? undefined : `You'll have ${formatCoins(coins - total)} left.`,
+      confirm: `Buy for ${formatCoins(total)}`,
     });
     if (!ok) return;
     setBusy(set.id);
     setError(undefined);
     setBought(undefined);
     try {
-      const res = await buyPack(set.id);
+      const res = await buyPacks(set.id, quantity);
       setCoins(res.coins);
-      setBought({ id: res.pack.id, name: set.name, unopened: res.unopened });
+      setUnopened(res.unopened);
+      setBought({ id: res.packs[0].id, name: set.name, count: res.packs.length, unopened: res.unopened });
+      setQuantity(set.id, 1);
     } catch (err) {
       setError(message(err));
     } finally {
@@ -106,10 +127,10 @@ export function ShopTab() {
       )}
       {bought && (
         <div className="bought" role="status">
-          <p className="ok">Bought a {bought.name} pack.</p>
+          <p className="ok">{bought.count === 1 ? `Bought a ${bought.name} pack.` : `Bought ${bought.count} ${bought.name} packs.`}</p>
           <div className="row">
             <a className="button primary" href={href.openBought(bought.id)}>
-              Open now
+              {bought.count === 1 ? "Open now" : "Open them now"}
             </a>
             <button type="button" onClick={() => setBought(undefined)}>
               Keep for later
@@ -136,6 +157,8 @@ export function ShopTab() {
               {g.items.map((item) => {
                 const art = packArts(item.set.id)[0];
                 const short = coins !== undefined && coins < item.entry.price;
+                const full = unopened >= MAX_UNOPENED;
+                const { max, quantity } = limits(item);
                 return (
                   <li key={item.set.id} data-tier={item.tier}>
                     <div className="shop-pack">
@@ -146,8 +169,19 @@ export function ShopTab() {
                       {item.set.serie.name} · {item.set.releaseDate.slice(0, 4)}
                     </small>
                     <span className="price">{formatCoins(item.entry.price)}</span>
-                    <button type="button" className="primary" disabled={!!busy || short} onClick={() => void buy(item)}>
-                      {busy === item.set.id ? "Buying…" : short ? `Need ${formatCoins(item.entry.price - coins!)} more` : "Buy"}
+                    {!short && !full && max > 1 && (
+                      <QuantityStepper value={quantity} max={max} onChange={(n) => setQuantity(item.set.id, n)} label={`How many ${item.set.name} packs`} disabled={!!busy} />
+                    )}
+                    <button type="button" className="primary" disabled={!!busy || short || full} onClick={() => void buy(item)}>
+                      {busy === item.set.id
+                        ? "Buying…"
+                        : full
+                          ? "No room for more"
+                          : short
+                            ? `Need ${formatCoins(item.entry.price - coins!)} more`
+                            : quantity > 1
+                              ? `Buy ${quantity} for ${(item.entry.price * quantity).toLocaleString()}`
+                              : "Buy"}
                     </button>
                   </li>
                 );

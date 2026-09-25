@@ -1,11 +1,12 @@
-// The pack shop: members spend coins on a pack from a set they choose. Prices are in src/market/shop.ts.
+// The pack shop: members spend coins on packs from a set they choose, one or several at a time. Prices are in
+// src/market/shop.ts.
 //
 // A bought pack is rolled when it's bought, like a dealt pack, and waits in pack_inventory until it's opened, so
-// holding on to one can't reroll it. The coins come off and the pack goes in in one D1 batch: if the balance can't
-// cover it, its CHECK fails and neither happens.
+// holding on to one can't reroll it. The coins come off and the packs go in in one D1 batch: if the balance can't
+// cover them all, its CHECK fails and none of it happens.
 
 import { formatCoins } from "../src/market/protocol";
-import { MAX_UNOPENED, SHOP_PACK_PREFIX, shopPrice, type BuyRequest, type BuyResponse, type UnopenedPack, type UnopenedResponse } from "../src/market/shop";
+import { MAX_BUY_AT_ONCE, MAX_UNOPENED, parseQuantity, SHOP_PACK_PREFIX, shopPrice, type BuyRequest, type BuyResponse, type UnopenedPack, type UnopenedResponse } from "../src/market/shop";
 import type { DealtCard, DealtPack } from "../src/packs/protocol";
 import type { SyncCard } from "../src/sync/protocol";
 import { tcgdex } from "./cache";
@@ -21,32 +22,45 @@ export async function buy(ctx: Ctx, userId: string): Promise<Response> {
   const setId = typeof body.setId === "string" ? body.setId : "";
   const price = shopPrice(setId);
   if (!price) throw new HttpError(404, "The shop doesn't sell packs from that set.");
+  const quantity = parseQuantity(body.quantity);
+  if (!quantity) throw new HttpError(400, `You can buy from 1 to ${MAX_BUY_AT_ONCE} packs at once.`);
+  const total = price * quantity;
+  const packsWord = quantity === 1 ? "pack" : "packs";
 
   const db = ctx.env.DB;
-  if ((await unopenedCount(db, userId)) >= MAX_UNOPENED) throw new HttpError(429, `You have ${MAX_UNOPENED} unopened packs. Open some before buying more.`);
+  const room = MAX_UNOPENED - (await unopenedCount(db, userId));
+  if (quantity > room) throw new HttpError(429, room > 0 ? `You have room for ${room} more unopened ${room === 1 ? "pack" : "packs"}.` : `You have ${MAX_UNOPENED} unopened packs. Open some before buying more.`);
   const coins = (await db.prepare("SELECT coins FROM users WHERE id = ?").bind(userId).first<{ coins: number }>())?.coins ?? 0;
-  if (coins < price) throw new HttpError(402, `That pack costs ${formatCoins(price)}. You have ${formatCoins(coins)}.`);
+  if (coins < total) throw new HttpError(402, `${quantity === 1 ? "That pack costs" : `${quantity} packs cost`} ${formatCoins(total)}. You have ${formatCoins(coins)}.`);
 
-  const rolled = await rollSet(ctx, setId);
-  if (!("row" in rolled)) {
-    console.error(`The shop sells ${setId}, but it can't fill a pack: ${rolled.unopenable}`);
-    throw new HttpError(503, "Packs from that set can't be opened right now. Try another set.");
+  // Each pack is rolled on its own, with its own wrapper. The set's cards are cached after the first.
+  const rows = [];
+  let setName = setId;
+  for (let i = 0; i < quantity; i++) {
+    const rolled = await rollSet(ctx, setId);
+    if (!("row" in rolled)) {
+      console.error(`The shop sells ${setId}, but it can't fill a pack: ${rolled.unopenable}`);
+      throw new HttpError(503, "Packs from that set can't be opened right now. Try another set.");
+    }
+    rows.push({ ...rolled.row, id: `${SHOP_PACK_PREFIX}${rolled.row.deal_id}` });
+    setName = rolled.setName;
   }
-  const { row, setName } = rolled;
-  const id = `${SHOP_PACK_PREFIX}${row.deal_id}`;
+  const now = Date.now();
   try {
     await db.batch([
-      ...walletStatements(db, userId, { kind: "purchase", amount: -price, ref: id, note: `Bought a ${setName} pack` }),
-      db
-        .prepare("INSERT INTO pack_inventory (id, user_id, set_id, cards, reveal, art, price, bought_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-        .bind(id, userId, setId, row.cards, row.reveal, row.art, price, Date.now()),
+      ...walletStatements(db, userId, { kind: "purchase", amount: -total, ref: rows[0].id, note: quantity === 1 ? `Bought a ${setName} pack` : `Bought ${quantity} ${setName} packs` }),
+      ...rows.map((row) =>
+        db
+          .prepare("INSERT INTO pack_inventory (id, user_id, set_id, cards, reveal, art, price, bought_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+          .bind(row.id, userId, setId, row.cards, row.reveal, row.art, price, now),
+      ),
     ]);
   } catch (err) {
-    if (isOverdrawn(err)) throw new HttpError(402, `That pack costs ${formatCoins(price)}, more than you have.`);
+    if (isOverdrawn(err)) throw new HttpError(402, `Those ${packsWord} cost ${formatCoins(total)}, more than you have.`);
     throw err;
   }
   const after = (await db.prepare("SELECT coins FROM users WHERE id = ?").bind(userId).first<{ coins: number }>())?.coins ?? 0;
-  return json({ coins: after, pack: { id, setId, art: row.art }, unopened: await unopenedCount(db, userId) } satisfies BuyResponse);
+  return json({ coins: after, packs: rows.map((r) => ({ id: r.id, setId, art: r.art })), unopened: await unopenedCount(db, userId) } satisfies BuyResponse);
 }
 
 /* ---------- Unopened packs ---------- */

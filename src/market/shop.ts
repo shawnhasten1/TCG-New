@@ -18,6 +18,18 @@ export const PACK_MARKUP = 1.4;
 export const MIN_PACK_PRICE = 100;
 /** Packs bought but not opened yet that a player can hold. */
 export const MAX_UNOPENED = 50;
+/** Packs bought in one go. */
+export const MAX_BUY_AT_ONCE = 20;
+
+/** The most packs a player can buy at once: what they can afford and have room for, capped at MAX_BUY_AT_ONCE. */
+export const maxQuantity = (price: number, coins: number, unopened: number) =>
+  Math.max(0, Math.min(MAX_BUY_AT_ONCE, MAX_UNOPENED - unopened, Math.floor(coins / price)));
+
+/** A quantity from a request (1 if left out), or undefined if it isn't a whole number from 1 to MAX_BUY_AT_ONCE. */
+export function parseQuantity(v: unknown): number | undefined {
+  if (v === undefined) return 1;
+  return Number.isInteger(v) && (v as number) >= 1 && (v as number) <= MAX_BUY_AT_ONCE ? (v as number) : undefined;
+}
 
 /** A pack's price from the average value of its cards (coins), marked up and rounded up to 50 coins. */
 export function packPrice(value: number): number {
@@ -39,16 +51,18 @@ export const shopPrice = (setId: string): number | undefined => (Object.hasOwn(t
 /** Every set the shop sells, by id. */
 export const shopSets = (): Record<string, ShopEntry> => table;
 
-/** Buying a pack. */
+/** Buying packs from a set. */
 export interface BuyRequest {
   setId: string;
+  /** How many; 1 if left out. */
+  quantity?: number;
 }
 
 export interface BuyResponse {
   coins: number;
-  /** The pack, unopened; its id starts "s-". */
-  pack: { id: string; setId: string; art: string | null };
-  /** Bought packs waiting to be opened, this one included. */
+  /** The packs, unopened; their ids start "s-". */
+  packs: { id: string; setId: string; art: string | null }[];
+  /** Bought packs waiting to be opened, these included. */
   unopened: number;
 }
 

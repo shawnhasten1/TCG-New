@@ -87,6 +87,16 @@
 .market .shop-grid .name { line-height: 1.2; overflow-wrap: anywhere; }
 .market .shop-grid .price { margin-top: auto; padding-top: 6px; font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .market .shop-grid button { margin-top: 6px; }
+/* Quantity: − [ n ] + across the card. */
+.market .stepper { display: grid; grid-template-columns: 38px 1fr 38px; margin-top: 8px; border-radius: 999px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); background: var(--btn); }
+.market .stepper button { all: unset; display: grid; place-items: center; height: 36px; cursor: pointer; font: 700 1.2rem/1 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); }
+.market .stepper button:disabled { color: color-mix(in srgb, var(--ink) 30%, transparent); cursor: default; }
+.market .stepper button:focus-visible, .market .stepper input:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+.market .stepper input {
+  min-width: 0; width: 100%; border: 0; border-inline: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); background: transparent; color: var(--ink);
+  text-align: center; font: 700 1rem/1 "Alegreya Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield;
+}
+.market .stepper input::-webkit-outer-spin-button, .market .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .market .shop-grid a.button { margin-top: 6px; justify-content: center; text-align: center; }
 .market .bought { margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
 .market .bought .ok { margin: 0; }
