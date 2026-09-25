@@ -215,10 +215,19 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ---------- View switch ---------- */
-.collection .view-switch { display: inline-flex; margin: 4px 0 16px; border-radius: 999px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
-.collection .view-switch a { padding: 9px 16px; text-decoration: none; color: var(--ink); font-weight: 600; }
+.collection .view-switch { display: inline-flex; max-width: 100%; margin: 4px 0 16px; border-radius: 999px; overflow-x: auto; scrollbar-width: none; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.collection .view-switch::-webkit-scrollbar { display: none; }
+.collection .view-switch a { padding: 9px 16px; text-decoration: none; color: var(--ink); font-weight: 600; white-space: nowrap; text-align: center; }
 .collection .view-switch a + a { border-left: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
 .collection .view-switch a[aria-current="page"] { background: var(--btn-on); color: var(--btn-on-ink); }
+/* Phones: one row across the full width, tabs sharing the space; it scrolls sideways only if even that won't fit. */
+@media (max-width: 560px) {
+  .collection .view-switch { display: flex; width: 100%; }
+  .collection .view-switch a { flex: 1 0 auto; padding: 9px 8px; font-size: .92rem; }
+}
+@media (max-width: 360px) {
+  .collection .view-switch a { padding: 9px 5px; font-size: .85rem; }
+}
 
 /* ---------- Pokédex ---------- */
 .pokedex .dex-search { position: relative; max-width: 440px; margin-bottom: 20px; }
