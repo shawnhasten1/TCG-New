@@ -76,8 +76,8 @@ describe("trade offers", () => {
 
 describe("reactions", () => {
   it("knows the reactions on offer", () => {
-    for (const k of ["like", "dislike", "fire", "wow", "laugh"]) expect(isReaction(k)).toBe(true);
-    for (const k of ["love", "", null, 1]) expect(isReaction(k)).toBe(false);
+    for (const k of ["like", "dislike", "wow", "laugh"]) expect(isReaction(k)).toBe(true);
+    for (const k of ["fire", "love", "", null, 1]) expect(isReaction(k)).toBe(false);
   });
 });
 

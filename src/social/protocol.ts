@@ -125,7 +125,6 @@ export interface FeedResponse {
 export const REACTIONS = [
   { kind: "like", emoji: "👍", label: "Like" },
   { kind: "dislike", emoji: "👎", label: "Dislike" },
-  { kind: "fire", emoji: "🔥", label: "Fire" },
   { kind: "wow", emoji: "😮", label: "Wow" },
   { kind: "laugh", emoji: "😂", label: "Haha" },
 ] as const;

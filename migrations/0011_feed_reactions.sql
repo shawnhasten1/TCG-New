@@ -5,7 +5,7 @@
 CREATE TABLE post_reactions (
   post_id TEXT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  kind TEXT NOT NULL CHECK (kind IN ('like', 'dislike', 'fire', 'wow', 'laugh')),
+  kind TEXT NOT NULL CHECK (kind IN ('like', 'dislike', 'wow', 'laugh')),
   created_at INTEGER NOT NULL,
   PRIMARY KEY (post_id, user_id)
 );
