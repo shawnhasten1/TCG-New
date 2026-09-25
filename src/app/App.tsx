@@ -19,6 +19,7 @@ import { FriendsPage } from "../social/FriendsPage";
 import { TradeComposer } from "../social/TradeComposer";
 import { TradesPage } from "../social/TradesPage";
 import { AppNav } from "./AppNav";
+import { ConfirmHost } from "./Confirm";
 import { navSection, useRoute, type Route } from "./router";
 import { SettingsPage } from "./SettingsPage";
 
@@ -29,6 +30,7 @@ export function App() {
     <>
       {section && <AppNav current={section} />}
       <Page route={route} />
+      <ConfirmHost />
     </>
   );
 }

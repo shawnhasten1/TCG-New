@@ -14,6 +14,7 @@ import { isMainSet, ownership, setProgress } from "./progress";
 import { useCollectionSource, whose } from "./source";
 import { clearPulls, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
+import { ask } from "../app/Confirm";
 import "./collection.css";
 import { SetLogo } from "../app/SetLogo";
 
@@ -63,7 +64,8 @@ export function BinderPage({ setId }: { setId: string }) {
   const layout = layoutFor(data.set.serie.id);
 
   const reset = async () => {
-    if (confirm(`Remove all ${progress.pulls} pulled cards from ${data.set.name}? This can't be undone.`)) await clearPulls(setId);
+    const ok = await ask({ title: `Clear ${data.set.name}?`, body: `This removes all ${progress.pulls} cards you've pulled from this set. It can't be undone.`, confirm: "Remove cards", danger: true });
+    if (ok) await clearPulls(setId);
   };
 
   return (

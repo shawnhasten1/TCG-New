@@ -6,6 +6,7 @@ import { href } from "../app/router";
 import { Avatar, day, SocialTabs } from "./common";
 import { acceptFriend, loadFriends, noteFriends, removeFriend, sendFriendRequest, setDisplayName } from "./friends";
 import { formatFriendCode, NAME_MAX, normalizeFriendCode, type FriendEntry, type FriendsResponse } from "./protocol";
+import { ask } from "../app/Confirm";
 import "../collection/collection.css";
 import "./social.css";
 
@@ -146,8 +147,12 @@ function Friends({ data, onChange, inviteCode }: { data: FriendsResponse; onChan
     }
   };
 
-  const decline = (f: FriendEntry, what: "decline" | "cancel" | "remove") => {
-    if (what === "remove" && !confirm(`Remove ${f.displayName} from your friends?`)) return;
+  const decline = async (f: FriendEntry, what: "decline" | "cancel" | "remove") => {
+    if (
+      what === "remove" &&
+      !(await ask({ title: `Remove ${f.displayName}?`, body: "You'll stop seeing each other's posts, and any trades between you are called off.", confirm: "Remove friend", danger: true }))
+    )
+      return;
     void run(`${what}:${f.id}`, () => removeFriend(f.id));
   };
 

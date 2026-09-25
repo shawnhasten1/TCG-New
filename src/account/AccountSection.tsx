@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { outboxSize } from "../collection/store";
 import { signOut, syncNow, useSyncStatus } from "../sync/sync";
 import { changePassword, GOOGLE_SIGN_IN, isMember, register, signIn, useAccount } from "./account";
+import { ask } from "../app/Confirm";
 
 const MIN_PASSWORD = 8;
 
@@ -153,7 +154,11 @@ function SignedIn({ onError }: { onError: (e?: string) => void }) {
     onError(undefined);
     try {
       await syncNow();
-      if ((await outboxSize()) && !confirm("Some changes on this device haven't reached your account yet, and signing out removes them from this device. Sign out anyway?")) return;
+      if (
+        (await outboxSize()) &&
+        !(await ask({ title: "Sign out anyway?", body: "Some changes on this device haven't reached your account yet, and signing out removes them from this device.", confirm: "Sign out", danger: true }))
+      )
+        return;
       await signOut();
     } catch (err) {
       onError(err instanceof Error ? err.message : String(err));

@@ -48,6 +48,33 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 syste
 .help[data-open] .help-bubble { display: block; }
 @media (hover: hover) { .help:hover .help-bubble { display: block; } }
 
+/* ---------- Confirmations (app/Confirm.tsx) ---------- */
+.confirm-dialog {
+  width: min(420px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 18px;
+  color: var(--ink); background: var(--bg); box-shadow: 0 24px 60px -12px #0008;
+  font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+}
+.confirm-dialog::backdrop { background: #0008; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.confirm-dialog[open] { animation: confirm-in .18s ease-out; }
+@keyframes confirm-in { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .confirm-dialog[open] { animation: none; } }
+.confirm-body { padding: 22px 22px 18px; }
+.confirm-body h2 { margin: 0 0 8px; font: italic 800 1.45rem/1.15 "Alegreya", Georgia, serif; }
+.confirm-body p { margin: 0; color: var(--muted); line-height: 1.45; }
+.confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.confirm-actions button {
+  font: 700 1rem/1 "Alegreya Sans", system-ui, sans-serif; cursor: pointer; padding: 11px 20px; border-radius: 999px;
+  color: var(--ink); background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.confirm-actions button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+.confirm-actions button.danger { background: var(--danger); color: var(--bg); border-color: transparent; }
+.confirm-actions button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Phones: full-width buttons, the one that goes ahead on top where the thumb is. */
+@media (max-width: 479.98px) {
+  .confirm-actions { flex-direction: column-reverse; }
+  .confirm-actions button { width: 100%; padding: 13px 20px; }
+}
+
 /* ---------- Debug page ---------- */
 .debug { min-height: 100vh; padding: 16px; background: var(--d-bg); }
 .debug > * { max-width: 1100px; margin-inline: auto; }

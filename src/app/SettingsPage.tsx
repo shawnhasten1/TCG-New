@@ -9,6 +9,7 @@ import { countPacks } from "../collection/progress";
 import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
 import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
+import { ask } from "./Confirm";
 import "../collection/collection.css";
 import { type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
@@ -66,7 +67,13 @@ export function SettingsPage() {
   };
 
   const resetAll = async () => {
-    if (confirm(`Delete your whole collection (${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")})${signedIn ? ", on every device you're signed in on" : ""}? Export it first to keep a record, but you can't bring it back from the file.`)) {
+    const ok = await ask({
+      title: "Delete your whole collection?",
+      body: `${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")}${signedIn ? ", on every device you're signed in on" : ""}. Export it first to keep a record, but you can't bring it back from the file.`,
+      confirm: "Delete collection",
+      danger: true,
+    });
+    if (ok) {
       await clearPulls();
       setMessage({ kind: "ok", text: "Collection cleared." });
     }

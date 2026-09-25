@@ -10,6 +10,7 @@ import { layoutFor } from "../foil/layouts";
 import { Avatar, ago, SocialTabs } from "./common";
 import type { Trade, TradeCard, TradesResponse, TradeStatus } from "./protocol";
 import { acceptTrade, cancelTrade, declineTrade, loadTrades } from "./trades";
+import { ask } from "../app/Confirm";
 import "../collection/collection.css";
 import "./social.css";
 
@@ -48,7 +49,8 @@ export function TradesPage() {
   }, [member, account.user?.id, refresh]);
 
   const run = async (t: Trade, what: "accept" | "decline" | "cancel") => {
-    if (what === "accept" && !confirm(`Trade ${plural(t.get.length)} for ${plural(t.give.length)} with ${t.from.displayName}?`)) return;
+    // An offer for you: they give `give`, you give `get`.
+    if (what === "accept" && !(await ask({ title: `Trade with ${t.from.displayName}?`, body: `You get ${plural(t.give.length)} and give ${plural(t.get.length)}.`, confirm: "Trade" }))) return;
     setBusy(t.id);
     setError(undefined);
     setNote(undefined);
