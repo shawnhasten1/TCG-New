@@ -53,6 +53,21 @@ export function cyclePick(picked: Picked, p: Pickable, max: number): Picked {
   return next;
 }
 
+/**
+ * Every copy but one of each tile, as far as `room` allows. A tile is one card in one finish (and edition), so this
+ * never picks a card's only holo, reverse holo or 1st Edition copy just because there are normal copies of it.
+ */
+export function duplicatePicks(items: Pickable[], room: number): Picked {
+  const picked: Picked = new Map();
+  let left = room;
+  for (const p of items) {
+    const n = Math.min(p.uids.length - 1, left);
+    if (n > 0) picked.set(p.key, n);
+    left -= Math.max(0, n);
+  }
+  return picked;
+}
+
 /** The card uids picked, taking copies in the order they're listed. */
 export const pickedUids = (items: Pickable[], picked: Picked) => items.flatMap((p) => p.uids.slice(0, picked.get(p.key) ?? 0));
 

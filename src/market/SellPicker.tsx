@@ -5,7 +5,7 @@ import type { Card, SetDetail } from "../api/types";
 import { isMember, useAccount } from "../account/account";
 import { Help } from "../app/Help";
 import { href } from "../app/router";
-import { cyclePick, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
+import { cyclePick, duplicatePicks, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
 import { CARD_SORT_LABEL, sortCards, type CardSort } from "../collection/cardSort";
 import { priceFor } from "../collection/prices";
@@ -66,17 +66,7 @@ export function SellPicker() {
   const room = Math.min(MAX_LIST_AT_ONCE, Math.max(0, MAX_LISTED - (market?.listings.length ?? 0)));
   const count = pickedCount(picked);
   const pick = (p: Pickable) => setPicked((cur) => cyclePick(cur, p, room));
-  /** Every copy but one of each card, as far as there's room. */
-  const pickDuplicates = () => {
-    const next = new Map<string, number>();
-    let left = room;
-    for (const p of items) {
-      const n = Math.min(p.uids.length - 1, left);
-      if (n > 0) next.set(p.key, n);
-      left -= Math.max(0, n);
-    }
-    setPicked(next);
-  };
+  const pickDuplicates = () => setPicked(duplicatePicks(items, room));
 
   const list = async () => {
     setSending(true);
