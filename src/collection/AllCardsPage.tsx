@@ -16,6 +16,7 @@ import { useOpenedSets } from "./useOpenedSets";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { RetryImg } from "../app/RetryImg";
 
 const SORTS: CardSort[] = ["value", "recent", "dex", "name"];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -118,7 +119,7 @@ export function AllCardsPage() {
                     onClick={() => setSelected(e)}
                     aria-label={`${e.card.name}, ${e.set.name} #${e.card.localId}, ${e.card.rarity}, ×${e.owned.total}`}
                   >
-                    {e.card.image ? <img src={cardImage(e.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
+                    {e.card.image ? <RetryImg src={cardImage(e.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
                     {e.owned.total > 1 && <span className="count">×{e.owned.total}</span>}
                   </button>
                   <span className="set-label">

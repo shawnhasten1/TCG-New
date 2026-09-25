@@ -17,6 +17,7 @@ import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from
 import { ask } from "../app/Confirm";
 import "./collection.css";
 import { SetLogo } from "../app/SetLogo";
+import { RetryImg } from "../app/RetryImg";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
 
@@ -169,7 +170,7 @@ export function BinderPage({ setId }: { setId: string }) {
                   onClick={() => setSelected(c)}
                   aria-label={`${c.name}, #${c.localId}, ${state === "owned" ? `owned ×${o!.total}` : state === "missing" ? "missing" : "not in packs"}`}
                 >
-                  <img src={cardImage(c, "low")} alt="" loading="lazy" />
+                  <RetryImg src={cardImage(c, "low")} alt="" loading="lazy" />
                   {o && o.total > 1 && <span className="count">×{o.total}</span>}
                   {o && (
                     <span className="finishes">

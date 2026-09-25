@@ -13,6 +13,7 @@ import { buyPack, loadWallet } from "./market";
 import { formatCoins } from "./protocol";
 import { shopSets, type ShopEntry } from "./shop";
 import { ask } from "../app/Confirm";
+import { RetryImg } from "../app/RetryImg";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -138,7 +139,7 @@ export function ShopTab() {
                 return (
                   <li key={item.set.id} data-tier={item.tier}>
                     <div className="shop-pack">
-                      {art ? <img src={art.src} alt="" loading="lazy" /> : <SetLogo logo={item.set.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{item.set.name}</span>} />}
+                      {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <SetLogo logo={item.set.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{item.set.name}</span>} />}
                     </div>
                     <strong className="name">{item.set.name}</strong>
                     <small className="muted">

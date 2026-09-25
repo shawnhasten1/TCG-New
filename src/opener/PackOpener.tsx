@@ -26,6 +26,7 @@ import { OpenerBar } from "./OpenerBar";
 import { Tilt } from "./tilt";
 import "./opener.css";
 import { SetLogo } from "../app/SetLogo";
+import { RetryImg, useRetriedCssSrc } from "../app/RetryImg";
 
 type Phase = "sealed" | "opening" | "reveal" | "summary";
 
@@ -344,7 +345,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
   }
 
   const booster = set.boosters?.find((b) => b.artwork_front);
-  const art = packPhoto ? packPhoto.src : booster && `${booster.artwork_front}.webp`;
+  const art = useRetriedCssSrc(packPhoto ? packPhoto.src : booster && `${booster.artwork_front}.webp`);
   const wrapperStyle = {
     "--h": setHue(set.id),
     ...(art ? { "--art": `url("${art}")` } : {}),
@@ -541,11 +542,11 @@ function PackSummary({ pulls, newIds, official, layout, shared, picking, onPick 
         <figure key={i} data-tier={pullTier(p)} data-finish={p.finish} data-picked={picking?.has(i) || undefined}>
           {picking ? (
             <button type="button" aria-pressed={picking.has(i)} disabled={shared.has(i)} aria-label={shared.has(i) ? `${p.card.name}, already shared` : `Share ${p.card.name}`} onClick={() => onPick(i)}>
-              <img src={cardImage(p.card, "low")} alt="" />
+              <RetryImg src={cardImage(p.card, "low")} alt="" />
             </button>
           ) : (
             <button type="button" aria-label={`Look closer at ${p.card.name}`} onClick={() => setSelected(p)}>
-              <img src={cardImage(p.card, "low")} alt="" />
+              <RetryImg src={cardImage(p.card, "low")} alt="" />
             </button>
           )}
           {newIds?.has(p.card.id) && <span className="new-badge">New</span>}

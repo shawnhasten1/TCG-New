@@ -10,6 +10,7 @@ import { profileFor } from "../engine/profiles";
 import { createRng } from "../engine/rng";
 import type { PulledCard } from "../engine/types";
 import { SetLogo } from "../app/SetLogo";
+import { RetryImg } from "../app/RetryImg";
 
 type Probe = Awaited<ReturnType<typeof probeRestFilter>>;
 
@@ -166,7 +167,7 @@ export function DebugPage({ initialSetId }: { initialSetId?: string }) {
                 <ol className="pack">
                   {pack.map((p, i) => (
                     <li key={i} className={`finish-${p.finish}`}>
-                      <img src={cardImage(p.card, "low")} alt={p.card.name} loading="lazy" />
+                      <RetryImg src={cardImage(p.card, "low")} alt={p.card.name} loading="lazy" />
                       <span>
                         {p.card.name}
                         <small>

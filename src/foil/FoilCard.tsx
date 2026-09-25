@@ -1,8 +1,9 @@
 // A card scan with tilt-driven foil. Tilt writes --rx/--ry/--px/--py/--o onto the root element
 // (see opener/tilt.ts); the layers below read them.
 
-import { useEffect, useState, type CSSProperties, type HTMLAttributes, type Ref } from "react";
+import { useEffect, type CSSProperties, type HTMLAttributes, type Ref } from "react";
 import type { CardCategory } from "../api/types";
+import { RetryImg } from "../app/RetryImg";
 import type { Finish } from "../engine/types";
 import { artWindow, artWindowMask, cardKind, reverseWindowMask, windowOutline, type CardKind } from "./artWindows";
 import type { FrameLayout, HoloPattern } from "./layouts";
@@ -62,8 +63,6 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
   const rev = t === "reverse" ? (reversePattern ?? layout.reverse) : undefined;
   // Rarity styles (e.g. promo cosmos) bring their own pattern; plain holo rares get the era's.
   const holo = t === "holo" && !look ? (holoPattern ?? layout.holo) : undefined;
-  const [src, setSrc] = useState(image && `${image}/${quality}.webp`);
-  useEffect(() => setSrc(image && `${image}/${quality}.webp`), [image, quality]);
   useEffect(ensureSparkles, []);
 
   return (
@@ -79,7 +78,7 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
       style={{ ...(t === "holo" || t === "reverse" ? maskVars(layout, artKind) : undefined), ...(rev ? reverseVars(rev, category, types) : undefined), ...style }}
     >
       <div className="face">
-        {src && <img src={src} alt="" draggable={false} onError={() => quality === "high" && image && setSrc(`${image}/low.webp`)} />}
+        {image && <RetryImg src={quality === "high" ? [`${image}/high.webp`, `${image}/low.webp`] : `${image}/low.webp`} alt="" draggable={false} />}
         {t !== "none" && <div className="foil" />}
         {t === "etched" && <div className="etch" />}
         {(t === "fullart" || t === "etched") && <div className="glitter" />}

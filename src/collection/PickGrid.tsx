@@ -7,6 +7,7 @@ import type { Card, SetDetail } from "../api/types";
 import { pullTier } from "../engine/tiers";
 import type { Finish } from "../engine/types";
 import { pullUid, type PullRecord } from "./store";
+import { RetryImg } from "../app/RetryImg";
 
 /** Copies of one card in one finish that someone owns. */
 export interface Pickable {
@@ -80,7 +81,7 @@ export function PickGrid({ items, picked, onPick, warnLastCopy, note }: { items:
         return (
           <li key={p.key} data-finish={p.finish} data-tier={p.tier} data-picked={n > 0 || undefined}>
             <button type="button" aria-pressed={n > 0} aria-label={`${p.card.name}, ${p.set.name}${p.finish !== "normal" ? `, ${p.finish}` : ""}, ${p.uids.length} owned${n ? `, ${n} picked` : ""}`} onClick={() => onPick(p)}>
-              <img src={cardImage(p.card, "low")} alt="" loading="lazy" />
+              <RetryImg src={cardImage(p.card, "low")} alt="" loading="lazy" />
               {p.uids.length > 1 && <span className="count">×{p.uids.length}</span>}
               {n > 0 && <span className="pick-check">{p.uids.length > 1 ? n : "✓"}</span>}
             </button>

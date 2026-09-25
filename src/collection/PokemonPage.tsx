@@ -15,6 +15,7 @@ import { getPulls, onCollectionChange, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { RetryImg } from "../app/RetryImg";
 
 type Show = "all" | "owned" | "missing";
 const pad = (n: number) => String(n).padStart(4, "0");
@@ -175,7 +176,7 @@ export function PokemonPage({ dexId }: { dexId: number }) {
                           onClick={() => setSelected(p)}
                           aria-label={`${p.card.name}, ${s.set?.name ?? s.setId} #${p.card.localId}, ${p.card.rarity}, ${p.owned ? `owned ×${p.owned}` : p.pullable ? "missing" : p.reason}`}
                         >
-                          {p.card.image ? <img src={cardImage(p.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
+                          {p.card.image ? <RetryImg src={cardImage(p.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
                           {p.owned > 1 && <span className="count">×{p.owned}</span>}
                           {!p.pullable && p.owned === 0 && <span className="note">{p.reason}</span>}
                         </button>

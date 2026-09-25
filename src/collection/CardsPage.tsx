@@ -15,6 +15,7 @@ import { useOpenedSets } from "./useOpenedSets";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { RetryImg } from "../app/RetryImg";
 
 type Sort = "recent" | "set" | "copies" | "price";
 const FINISH_HEADING: Record<FinishKey, string> = { firstEdition: "1st Edition", holo: "Holo", reverse: "Reverse holo", normal: "Normal" };
@@ -171,7 +172,7 @@ export function CardsPage() {
                         onClick={() => setSelected(t)}
                         aria-label={`${t.card.name}, ${t.set.name} #${t.card.localId}, ${t.card.rarity}, ×${t.count}`}
                       >
-                        {t.card.image ? <img src={cardImage(t.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
+                        {t.card.image ? <RetryImg src={cardImage(t.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
                         {t.count > 1 && <span className="count">×{t.count}</span>}
                       </button>
                       <span className="set-label">

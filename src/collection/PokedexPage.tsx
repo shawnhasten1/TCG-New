@@ -10,6 +10,7 @@ import { useOpenedSets } from "./useOpenedSets";
 import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { RetryImg } from "../app/RetryImg";
 
 type Show = "all" | "caught" | "missing";
 type Sort = "dex" | "copies" | "recent";
@@ -163,7 +164,7 @@ export function PokedexPage() {
                   <li key={dexId}>
                     {s ? (
                       <a href={href.pokemon(dexId)} aria-label={`#${dexId} ${name}, ${s.printings} different cards`}>
-                        <img src={cardImage(s.best, "low")} alt="" loading="lazy" />
+                        <RetryImg src={cardImage(s.best, "low")} alt="" loading="lazy" />
                         <span className="dex-no">#{pad(dexId)}</span>
                         <strong>{name}</strong>
                         <span className="muted">

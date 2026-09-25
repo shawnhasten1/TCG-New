@@ -13,6 +13,7 @@ import { acceptTrade, cancelTrade, declineTrade, loadTrades } from "./trades";
 import { ask } from "../app/Confirm";
 import "../collection/collection.css";
 import "./social.css";
+import { RetryImg } from "../app/RetryImg";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -189,7 +190,7 @@ function TradeSide({ title, cards, onSelect }: { title: string; cards: TradeCard
           {cards.map((c) => (
             <figure key={c.uid} data-finish={c.finish} data-tier={pullTier({ card: c.card, finish: c.finish, firstEdition: c.firstEdition, slot: "", outcome: "" })}>
               <button type="button" aria-label={`Look closer at ${c.card.name}`} onClick={() => onSelect(c)}>
-                <img src={cardImage(c.card, "low")} alt="" loading="lazy" />
+                <RetryImg src={cardImage(c.card, "low")} alt="" loading="lazy" />
               </button>
               <figcaption>
                 {c.card.name}

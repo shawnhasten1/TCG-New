@@ -9,6 +9,7 @@ import { packArt, packArts } from "../packs/art";
 import { ago } from "../social/common";
 import { loadUnopened } from "./market";
 import { MAX_UNOPENED, type UnopenedPack } from "./shop";
+import { RetryImg } from "../app/RetryImg";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -64,7 +65,7 @@ export function UnopenedTab() {
             return (
               <li key={p.id}>
                 <div className="shop-pack">
-                  {art ? <img src={art.src} alt="" loading="lazy" /> : <SetLogo logo={p.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{p.setName ?? p.setId}</span>} />}
+                  {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <SetLogo logo={p.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{p.setName ?? p.setId}</span>} />}
                 </div>
                 <strong className="name">{p.setName ?? p.setId}</strong>
                 <small className="muted">Bought {ago(p.boughtAt)}</small>

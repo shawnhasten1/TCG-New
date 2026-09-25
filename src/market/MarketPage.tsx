@@ -22,6 +22,7 @@ import { ask } from "../app/Confirm";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
+import { RetryImg } from "../app/RetryImg";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 const plural = (n: number) => `${n} ${n === 1 ? "card" : "cards"}`;
@@ -264,7 +265,7 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
   return (
     <li className="listing" data-finish={c.finish} data-tier={pullTier({ card: c.card, finish: c.finish, firstEdition: c.firstEdition, slot: "", outcome: "" })}>
       <button type="button" className="thumb" aria-label={`Look closer at ${c.card.name}`} onClick={onLook}>
-        <img src={cardImage(c.card, "low")} alt="" loading="lazy" />
+        <RetryImg src={cardImage(c.card, "low")} alt="" loading="lazy" />
       </button>
       <div className="listing-body">
         <strong className="name">{c.card.name}</strong>

@@ -2,6 +2,7 @@
 // --rx/--ry/--px/--py/--o onto the root element (see opener/tilt.ts); foil.css does the rest.
 
 import { useEffect, type CSSProperties, type HTMLAttributes, type Ref } from "react";
+import { useRetriedSrc } from "../app/RetryImg";
 import { ensureSparkles } from "./sparkles";
 import "./foil.css";
 
@@ -23,11 +24,13 @@ export function PackShine() {
   );
 }
 
-export function FoilPack({ src, className, style, ref, ...rest }: FoilPackProps) {
+export function FoilPack({ src: photo, className, style, ref, ...rest }: FoilPackProps) {
+  // The mask needs the photo too, so both use the one URL that's being retried.
+  const { src, failed } = useRetriedSrc(photo);
   return (
     <div {...rest} ref={ref} className={`foil-pack${className ? " " + className : ""}`} style={{ "--art": `url("${src}")`, ...style } as CSSProperties}>
       <div className="face">
-        <img src={src} alt="" draggable={false} />
+        <img src={src} alt="" draggable={false} onError={failed} />
         <PackShine />
       </div>
     </div>

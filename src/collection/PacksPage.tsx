@@ -13,6 +13,7 @@ import { PackDetail } from "./PackDetail";
 import { getWrappers, onCollectionChange, type WrapperRecord } from "./store";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { RetryImg } from "../app/RetryImg";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -107,12 +108,12 @@ export function PacksPage() {
                       <li key={a.id} data-found={count > 0 || undefined}>
                         {count ? (
                           <button type="button" className="wrapper-img" aria-label={`Look closer at the ${name} ${a.name} pack`} onClick={() => setSelected({ group: g, art: a })}>
-                            <img src={a.src} alt="" loading="lazy" />
+                            <RetryImg src={a.src} alt="" loading="lazy" />
                             {count > 1 && <span className="count">×{count}</span>}
                           </button>
                         ) : (
                           <div className="wrapper-img">
-                            <img src={a.src} alt={`${name} pack not found yet`} loading="lazy" />
+                            <RetryImg src={a.src} alt={`${name} pack not found yet`} loading="lazy" />
                           </div>
                         )}
                         <span className={count ? undefined : "muted"}>{count ? a.name : "Not found yet"}</span>
