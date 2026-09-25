@@ -3,7 +3,8 @@
 // came out in (as the market values cards to buy them, src/market/protocol.ts), and averages that per pack. The price
 // is that marked up, with a minimum per set tier.
 // Usage: npm run pack-prices   (re-run now and then; prices are cached per day in .cache)
-import { writeFile } from "node:fs/promises";
+//        npm run pack-prices -- --reprice   (just re-apply shop.ts's pricing to the values already worked out)
+import { readFile, writeFile } from "node:fs/promises";
 import type { CardPricing } from "../src/api/tcgdex";
 import { createClient } from "../src/api/tcgdex";
 import { priceFor } from "../src/collection/prices";
@@ -13,7 +14,7 @@ import { profileFor } from "../src/engine/profiles";
 import { createRng } from "../src/engine/rng";
 import { setTier, TIERS } from "../src/engine/setRarity";
 import { coinValue } from "../src/market/protocol";
-import { packPrice, type ShopEntry } from "../src/market/shop";
+import { packPrice, TIER_FLOOR, type ShopEntry } from "../src/market/shop";
 import { fileCache } from "./fileCache";
 
 const PACKS = 3000;
@@ -21,6 +22,15 @@ const PACKS = 3000;
 const MAX_FAILED = 0.05;
 
 const client = createClient(fileCache());
+const OUT = "src/market/packPrices.json";
+
+if (process.argv.includes("--reprice")) {
+  const file = JSON.parse(await readFile(OUT, "utf8")) as { sets: Record<string, ShopEntry> };
+  for (const [id, e] of Object.entries(file.sets)) e.price = packPrice(e.value, setTier(id));
+  await writeFile(OUT, JSON.stringify(file, null, 1) + "\n");
+  summarize(file.sets);
+  process.exit(0);
+}
 
 async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length);
@@ -88,12 +98,17 @@ const rows = await mapLimit(sets, 2, async (set): Promise<[string, ShopEntry] | 
 });
 
 const priced = Object.fromEntries(rows.filter((r): r is [string, ShopEntry] => !!r).sort((a, b) => a[0].localeCompare(b[0])));
-await writeFile("src/market/packPrices.json", JSON.stringify({ generated: new Date().toISOString().slice(0, 10), packs: PACKS, sets: priced }, null, 1) + "\n");
+await writeFile(OUT, JSON.stringify({ generated: new Date().toISOString().slice(0, 10), packs: PACKS, sets: priced }, null, 1) + "\n");
 console.log(`\nWrote ${Object.keys(priced).length} sets.`);
-for (const t of TIERS) {
-  const prices = Object.entries(priced)
-    .filter(([id]) => setTier(id) === t.id)
-    .map(([, e]) => e.price)
-    .sort((a, b) => a - b);
-  if (prices.length) console.log(`${t.name}: ${prices.length} sets, ${prices[0]}–${prices[prices.length - 1]} coins (median ${prices[prices.length >> 1]})`);
+summarize(priced);
+
+function summarize(sets: Record<string, ShopEntry>) {
+  for (const t of TIERS) {
+    const prices = Object.entries(sets)
+      .filter(([id]) => setTier(id) === t.id)
+      .map(([, e]) => e.price)
+      .sort((a, b) => a - b);
+    const dearer = prices.filter((p) => p > TIER_FLOOR[t.id]).length;
+    if (prices.length) console.log(`${t.name}: ${prices.length} sets at ${TIER_FLOOR[t.id]} coins${dearer ? `, ${dearer} dearer for their cards' value (up to ${prices[prices.length - 1]})` : ""}`);
+  }
 }
