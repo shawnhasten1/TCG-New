@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { hiddenReason } from "./openable";
-import { rarityKind, rarityTier } from "./tiers";
+import { rarityKind, rarityTier, tagKind } from "./tiers";
 
 describe("rarityKind", () => {
   it.each([
@@ -10,6 +10,16 @@ describe("rarityKind", () => {
     ["Double rare", "ultra"],
     ["Special illustration rare", "chase"],
   ] as const)("%s → %s", (rarity, kind) => expect(rarityKind(rarity)).toBe(kind));
+});
+
+describe("tagKind", () => {
+  it.each([
+    ["Shiny rare", "shiny"],
+    ["Shiny rare VMAX", "shiny"],
+    ["Shiny Ultra Rare", "shiny"],
+    ["Rare Holo", "rare"],
+    ["Special illustration rare", "chase"],
+  ] as const)("%s → %s", (rarity, kind) => expect(tagKind(rarity)).toBe(kind));
 });
 
 describe("rarityTier", () => {

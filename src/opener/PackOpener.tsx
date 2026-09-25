@@ -12,7 +12,7 @@ import { setTier, tierInfo, type SetTier } from "../engine/setRarity";
 
 /** The sealed pack wears a set-rarity tag in the same colours as the card rarity tag. */
 const PACK_TAG_KIND: Record<SetTier, RarityKind> = { common: "common", uncommon: "uncommon", rare: "rare", legendary: "chase" };
-import { pullTier, rarityKind, type RarityKind } from "../engine/tiers";
+import { isShiny, pullTier, tagKind, type RarityKind } from "../engine/tiers";
 import type { PulledCard } from "../engine/types";
 import { preloadPack, withTimeout } from "./preload";
 import { buildTear, setRipDirection, setTearProgress, type Point, type TearParts } from "./tear";
@@ -192,6 +192,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
     burst.classList.remove("go");
     if (tier > 0 && !reduced) {
       burst.dataset.tier = String(tier);
+      burst.toggleAttribute("data-shiny", isShiny(pulls[idx].card.rarity));
       void burst.offsetWidth; // restart the animation
       burst.classList.add("go");
     }
@@ -411,7 +412,8 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
                   />
                   {newIds?.has(pull.card.id) && phase === "reveal" && i === idx && <span className="new-badge">New</span>}
                   {phase === "reveal" && i === idx && pull.card.rarity && pull.card.rarity !== "None" && (
-                    <span className="rarity-tag" data-kind={rarityKind(pull.card.rarity)} aria-hidden="true">
+                    <span className="rarity-tag" data-kind={tagKind(pull.card.rarity)} aria-hidden="true">
+                      {isShiny(pull.card.rarity) && "✦ "}
                       {pull.card.rarity}
                     </span>
                   )}
@@ -539,7 +541,7 @@ function PackSummary({ pulls, newIds, official, layout, shared, picking, onPick 
   return (
     <section className={`summary-grid${picking ? " picking" : ""}`} aria-label="Pack summary">
       {pulls.map((p, i) => (
-        <figure key={i} data-tier={pullTier(p)} data-finish={p.finish} data-picked={picking?.has(i) || undefined}>
+        <figure key={i} data-tier={pullTier(p)} data-finish={p.finish} data-shiny={isShiny(p.card.rarity) || undefined} data-picked={picking?.has(i) || undefined}>
           {picking ? (
             <button type="button" aria-pressed={picking.has(i)} disabled={shared.has(i)} aria-label={shared.has(i) ? `${p.card.name}, already shared` : `Share ${p.card.name}`} onClick={() => onPick(i)}>
               <RetryImg src={cardImage(p.card, "low")} alt="" />

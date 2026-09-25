@@ -26,6 +26,16 @@ export function rarityKind(rarity: string): RarityKind {
   return /uncommon/i.test(rarity) ? "uncommon" : "common";
 }
 
+/** Shiny Pokémon, from vault shinies to Shiny Ultra Rares. Celebrated on reveal whatever their tier. */
+export function isShiny(rarity: string): boolean {
+  return /shiny/i.test(rarity);
+}
+
+/** Look of the rarity tag on a revealed card: shinies get their own, otherwise the rarity's colour family. */
+export function tagKind(rarity: string): RarityKind | "shiny" {
+  return isShiny(rarity) ? "shiny" : rarityKind(rarity);
+}
+
 /** Tier of a pull: a holo common or uncommon counts as a small hit. */
 export function pullTier(pull: PulledCard): Tier {
   const t = rarityTier(pull.card.rarity);

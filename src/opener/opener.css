@@ -175,6 +175,12 @@
     radial-gradient(circle, #fffbe0 0%, #ffd66b88 25%, transparent 60%),
     repeating-conic-gradient(from 0deg, #fff3b0aa 0deg 4deg, transparent 4deg 12deg);
 }
+/* Shinies throw silver and pastel sparkle whatever their tier. */
+.opener .burst[data-shiny] {
+  background:
+    radial-gradient(circle, #ffffff 0%, #d9f1ff99 22%, #ffd6f555 40%, transparent 60%),
+    repeating-conic-gradient(from 0deg, #ffffffbb 0deg 2deg, transparent 2deg 9deg, #c9ecffaa 9deg 11deg, transparent 11deg 18deg, #ffd3f4aa 18deg 20deg, transparent 20deg 27deg);
+}
 .opener .burst.go { animation: burst 1.4s ease-out forwards; }
 .opener .burst.go[data-tier="3"] { animation-duration: 2.2s; }
 @keyframes burst {
@@ -205,6 +211,7 @@
 .opener .summary-grid img { width: 100%; aspect-ratio: 245 / 337; border-radius: 4.5% / 3.2%; box-shadow: 0 6px 16px -6px #0007; background: var(--surface); }
 .opener .summary-grid figure[data-finish="holo"] img { box-shadow: 0 0 0 2px #e9d27a, 0 6px 16px -6px #0007; }
 .opener .summary-grid figure[data-finish="reverse"] img { box-shadow: 0 0 0 2px #c8d0dc, 0 6px 16px -6px #0007; }
+.opener .summary-grid figure[data-shiny] img { box-shadow: 0 0 0 2px #eef8ff, 0 0 10px 1px #9fdcffcc, 0 0 20px 2px #ffb8ee88, 0 6px 16px -6px #0007; }
 .opener .summary-grid figure[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 22px #ffd66b99; }
 .opener .summary-grid figcaption { font-weight: 700; line-height: 1.25; font-size: .9rem; overflow-wrap: anywhere; }
 .opener .summary-grid small { display: block; font-weight: 500; color: var(--muted); }
@@ -253,6 +260,13 @@
   background: linear-gradient(100deg, #ffe07a, #ffc53d 40%, #fff1b8 55%, #ffb72b);
   box-shadow: 0 0 0 2px #fff8, 0 0 16px #ffd66baa, 0 4px 12px -4px #0008;
 }
+.opener .rarity-tag[data-kind="shiny"] {
+  --tag-ink: #3b2a5c;
+  background: linear-gradient(100deg, #e9f7ff, #bfe6ff 25%, #fff 45%, #ffd3f1 65%, #d8ccff 85%, #e9f7ff) 0 0 / 250% 100%;
+  box-shadow: 0 0 0 2px #fffb, 0 0 18px #b9e4ffcc, 0 0 30px #ffc4efaa, 0 4px 12px -4px #0008;
+  animation: newPop .35s cubic-bezier(.2,.9,.25,1.4) .1s both, shinySweep 2.4s linear .45s infinite;
+}
+@keyframes shinySweep { to { background-position: 250% 0; } }
 @media (prefers-reduced-motion: reduce) { .opener .rarity-tag { animation: none; } }
 
 /* ---------- Daily limit ---------- */
