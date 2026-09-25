@@ -1,5 +1,5 @@
 // Where the collection pages get their cards: your own collection (IndexedDB), or a friend's, fetched from the
-// server and read-only. The same "By set", binder and "By rarity" pages show either.
+// server and read-only. The same "By set", binder, "By rarity" and "All cards" pages show either.
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "../account/account";
@@ -14,13 +14,13 @@ export interface CollectionSource {
   getPulls(setId?: string): Promise<PullRecord[]>;
   /** Calls `fn` when the collection changes. Returns an unsubscribe function. */
   onChange(fn: () => void): () => void;
-  links: { collection(): string; binder(setId: string): string; cards(): string };
+  links: { collection(): string; binder(setId: string): string; cards(): string; all(): string };
 }
 
 const own: CollectionSource = {
   getPulls,
   onChange: onCollectionChange,
-  links: { collection: href.collection, binder: href.binder, cards: href.cards },
+  links: { collection: href.collection, binder: href.binder, cards: href.cards, all: href.all },
 };
 
 const Source = createContext<CollectionSource>(own);
@@ -64,7 +64,7 @@ export function FriendCollectionProvider({ friendId, children }: { friendId: str
           owner: res.owner,
           getPulls: async (setId) => (setId ? pulls.filter((p) => p.setId === setId) : pulls),
           onChange: () => () => undefined,
-          links: { collection: () => href.friend(friendId), binder: (setId) => href.friend(friendId, setId), cards: () => href.friendCards(friendId) },
+          links: { collection: () => href.friend(friendId), binder: (setId) => href.friend(friendId, setId), cards: () => href.friendCards(friendId), all: () => href.friendAll(friendId) },
         });
       },
       (err) => live && setError(err instanceof Error ? err.message : String(err)),

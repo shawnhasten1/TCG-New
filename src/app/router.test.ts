@@ -11,6 +11,7 @@ describe("navSection", () => {
     expect(section("#/pokedex")).toBe("collection");
     expect(section("#/pokemon/25")).toBe("collection");
     expect(section("#/cards")).toBe("collection");
+    expect(section("#/all")).toBe("collection");
     expect(section("#/packs")).toBe("collection");
     expect(section("#/sets")).toBe("sets");
     expect(section("#/feed")).toBe("social");

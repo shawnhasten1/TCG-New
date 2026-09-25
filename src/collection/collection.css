@@ -296,6 +296,7 @@ html:has(.card-detail[open]) { overflow: hidden; }
 :is(.pokemon-page, .cards-page) .finish-chips li[data-f="reverse"] { background: linear-gradient(120deg, #e3e8f0, #ffffff, #cfd6e2); }
 :is(.pokemon-page, .cards-page) .finish-chips li[data-f="firstEdition"] { background: #1c1b22; color: #fff; }
 .cards-page .summary { margin: 6px 0 0; }
+.all-cards .binder-grid { margin-top: 18px; }
 .cards-page .set-label { font-weight: 600; }
 .pokemon-page .footnote { margin-top: 28px; font-size: .9rem; max-width: 75ch; }
 .card-detail .species-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; }

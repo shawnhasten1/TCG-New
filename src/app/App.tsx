@@ -1,3 +1,4 @@
+import { AllCardsPage } from "../collection/AllCardsPage";
 import { BinderPage } from "../collection/BinderPage";
 import { CardsPage } from "../collection/CardsPage";
 import { CollectionPage } from "../collection/CollectionPage";
@@ -39,12 +40,14 @@ function Page({ route }: { route: Route }) {
       return <PokedexPage />;
     case "cards":
       return <CardsPage />;
+    case "all":
+      return <AllCardsPage />;
     case "pokemon":
       return <PokemonPage key={route.dexId} dexId={route.dexId} />;
     case "friend":
       return (
         <FriendCollectionProvider key={route.friendId} friendId={route.friendId}>
-          {route.view === "binder" ? <BinderPage key={route.setId} setId={route.setId!} /> : route.view === "cards" ? <CardsPage /> : <CollectionPage />}
+          {route.view === "binder" ? <BinderPage key={route.setId} setId={route.setId!} /> : route.view === "cards" ? <CardsPage /> : route.view === "all" ? <AllCardsPage /> : <CollectionPage />}
         </FriendCollectionProvider>
       );
     case "trades":
