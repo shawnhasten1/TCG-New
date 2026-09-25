@@ -25,7 +25,18 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { min-height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+/* Feels like an app, not a page: text doesn't select on a long press or drag (dragging a selection auto-scrolled
+   hidden overflow sideways, and phones zoomed toward it), and double-tap doesn't zoom. Pinch zoom still works.
+   clip, unlike hidden, can't be scrolled at all. */
+html { touch-action: manipulation; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, sans-serif; overflow-x: hidden; overflow-x: clip;
+  -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+img { -webkit-user-drag: none; }
+/* Phones zoom in on a focused field whose text is under 16px. */
+@media (pointer: coarse) { input, textarea, select { font-size: max(16px, 1em); } }
 [hidden] { display: none !important; }
 
 /* ---------- Help (app/Help.tsx) ----------

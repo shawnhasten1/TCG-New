@@ -9,7 +9,7 @@
   min-height: calc(100dvh - var(--nav-top) - var(--nav-bottom));
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 14px; padding: calc(68px + env(safe-area-inset-top, 0px)) 16px 24px; /* the menu below has the bottom safe area */
-  overflow-x: hidden;
+  overflow-x: hidden; overflow-x: clip;
   background: radial-gradient(ellipse at 50% 45%, var(--bg-glow), var(--stage) 75%);
   color: var(--ink);
   font-family: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
