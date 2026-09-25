@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { coinValue, FIRST_OFFER, formatCoins, LATER_OFFERS, OFFER_EVERY_MS, OFFER_GRACE_MS, offerFor, offerNumber, offerOpen, OFFERS, parseIds, UNPRICED_COINS } from "./protocol";
+import { bestOffer, coinValue, FIRST_OFFER, formatCoins, LATER_OFFERS, listingCloses, OFFER_EVERY_MS, OFFER_GRACE_MS, offerFor, offerOpen, OFFERS, offersIn, parseIds, TRAINERS, UNPRICED_COINS } from "./protocol";
 
 describe("coinValue", () => {
   it("counts a US cent as a coin", () => {
@@ -31,12 +31,13 @@ describe("formatCoins", () => {
 });
 
 describe("offerFor", () => {
-  const shares = (n: number) => Array.from({ length: 2000 }, (_, i) => offerFor(10_000, `seed-${i}`, n) / 10_000);
+  const offers = (n: number) => Array.from({ length: 2000 }, (_, i) => offerFor(10_000, `seed-${i}`, n));
+  const shares = (n: number) => offers(n).map((o) => o.coins / 10_000);
   const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
   it("is the same every time for a listing and offer number", () => {
-    expect(offerFor(1234, "abc", 3)).toBe(offerFor(1234, "abc", 3));
-    const run = Array.from({ length: OFFERS }, (_, n) => offerFor(1234, "abc", n));
+    expect(offerFor(1234, "abc", 3)).toEqual(offerFor(1234, "abc", 3));
+    const run = Array.from({ length: OFFERS }, (_, n) => offerFor(1234, "abc", n).coins);
     expect(new Set(run).size).toBeGreaterThan(OFFERS / 2);
   });
 
@@ -51,32 +52,59 @@ describe("offerFor", () => {
     expect(mean(later)).toBeCloseTo(0.915, 1);
   });
 
+  it("has a trainer to match the offer: lowballs from youngsters, top offers from collectors", () => {
+    const classOf = (from: string) => TRAINERS.find((t) => t.classes.some((c) => from.startsWith(`${c} `)));
+    for (const o of [...offers(0), ...offers(1)]) {
+      const group = classOf(o.from)!;
+      expect(group).toBeDefined();
+      const share = o.coins / 10_000;
+      // Rounding to whole coins can put a share a hair either side of a group's cutoff.
+      expect(share).toBeGreaterThanOrEqual(group.from - 0.0001);
+      const better = TRAINERS[TRAINERS.indexOf(group) - 1];
+      if (better) expect(share).toBeLessThan(better.from + 0.0001);
+    }
+    expect(new Set(offers(1).map((o) => o.from)).size).toBeGreaterThan(50);
+  });
+
   it("never offers nothing", () => {
-    expect(offerFor(1, "abc", 0)).toBe(1);
+    expect(offerFor(1, "abc", 0).coins).toBe(1);
   });
 });
 
 describe("offer timing", () => {
   const at = 1_000_000;
 
-  it("counts offers by the minute", () => {
-    expect(offerNumber(at, at)).toBe(0);
-    expect(offerNumber(at, at + OFFER_EVERY_MS - 1)).toBe(0);
-    expect(offerNumber(at, at + OFFER_EVERY_MS)).toBe(1);
-    expect(offerNumber(at, at - 5000)).toBe(0);
+  it("brings in an offer at listing and one a minute after, up to the last", () => {
+    expect(offersIn(at, at)).toBe(1);
+    expect(offersIn(at, at + OFFER_EVERY_MS - 1)).toBe(1);
+    expect(offersIn(at, at + OFFER_EVERY_MS)).toBe(2);
+    expect(offersIn(at, at + 60 * OFFER_EVERY_MS)).toBe(OFFERS);
+    expect(offersIn(at, at - 5000)).toBe(1);
   });
 
-  it("takes the offer that's up, or the last one just after it's replaced", () => {
+  it("keeps every offer that's come in open until the listing closes, and a moment after", () => {
+    const closes = listingCloses(at);
     expect(offerOpen(at, 0, at)).toBe(true);
-    expect(offerOpen(at, 0, at + OFFER_EVERY_MS + OFFER_GRACE_MS - 1)).toBe(true);
-    expect(offerOpen(at, 0, at + OFFER_EVERY_MS + OFFER_GRACE_MS)).toBe(false);
+    expect(offerOpen(at, 0, closes - 1)).toBe(true);
+    expect(offerOpen(at, 3, closes + OFFER_GRACE_MS - 1)).toBe(true);
+    expect(offerOpen(at, 3, closes + OFFER_GRACE_MS)).toBe(false);
   });
 
-  it("refuses offers that haven't come yet, or past the last", () => {
+  it("refuses offers that haven't come in, or aren't offers", () => {
     expect(offerOpen(at, 1, at)).toBe(false);
-    expect(offerOpen(at, OFFERS, at + OFFERS * OFFER_EVERY_MS)).toBe(false);
-    expect(offerOpen(at, OFFERS - 1, at + OFFERS * OFFER_EVERY_MS + OFFER_GRACE_MS)).toBe(false);
+    expect(offerOpen(at, OFFERS, listingCloses(at) - 1)).toBe(false);
+    expect(offerOpen(at, -1, at)).toBe(false);
     expect(offerOpen(at, 0.5, at)).toBe(false);
+  });
+});
+
+describe("bestOffer", () => {
+  it("takes the most coins, and the earliest of equals", () => {
+    const a = { n: 0, coins: 10 };
+    const b = { n: 1, coins: 12 };
+    const c = { n: 2, coins: 12 };
+    expect(bestOffer([a, b, c])).toBe(b);
+    expect(bestOffer([])).toBeUndefined();
   });
 });
 

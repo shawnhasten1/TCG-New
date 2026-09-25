@@ -6,7 +6,7 @@
 // meantime, and that rolls everything back. A sold card stays in its pack marked `gone` ("sale:<listing>"), with a
 // new seq so sync drops it on every device, and the coins land in the same batch.
 
-import { MAX_LISTED, OFFER_EVERY_MS, offerEnds, offerFor, offerNumber, offerOpen, OFFERS, parseIds, RELIST_AFTER_MS, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
+import { listingCloses, MAX_LISTED, OFFER_EVERY_MS, offerAt, offerFor, offerOpen, OFFERS, offersIn, parseIds, RELIST_AFTER_MS, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
 import type { TradeCard } from "../src/social/protocol";
 import { cardUid, parseCardUid, type RemoteCard } from "../src/sync/protocol";
 import { pruneDailyEntries } from "./cache";
@@ -46,14 +46,16 @@ interface ListingRow {
 const LISTING_COLUMNS = "id, pack_id, slot, card, value, priced, seed, listed_at";
 
 function toListing(r: ListingRow, now: number): Listing {
-  const n = Math.min(offerNumber(r.listed_at, now), OFFERS - 1);
+  const count = offersIn(r.listed_at, now);
   return {
     id: r.id,
     card: JSON.parse(r.card) as TradeCard,
     value: r.value,
     priced: !!r.priced,
     listedAt: r.listed_at,
-    offer: { n, coins: offerFor(r.value, r.seed, n), until: offerEnds(r.listed_at, n), last: n === OFFERS - 1 },
+    offers: Array.from({ length: count }, (_, n) => offerFor(r.value, r.seed, n)),
+    nextAt: count < OFFERS ? offerAt(r.listed_at, count) : null,
+    closesAt: listingCloses(r.listed_at),
   };
 }
 
@@ -145,10 +147,10 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
     .bind(userId, JSON.stringify(offers.map((o) => o.id)))
     .all<ListingRow>();
   const byId = new Map(rows.map((r) => [r.id, r]));
-  // Offers still up, at the price the player saw.
+  // Offers that have come in, while their listing's open.
   const takes = offers.flatMap((o) => {
     const row = byId.get(o.id);
-    return row && offerOpen(row.listed_at, o.n, now) ? [{ row, coins: offerFor(row.value, row.seed, o.n), card: JSON.parse(row.card) as TradeCard }] : [];
+    return row && offerOpen(row.listed_at, o.n, now) ? [{ row, ...offerFor(row.value, row.seed, o.n), card: JSON.parse(row.card) as TradeCard }] : [];
   });
 
   // Cards traded or deleted since they were listed can't be sold; the rest still can.
@@ -170,7 +172,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
   const earned = selling.reduce((sum, t) => sum + t.coins, 0);
   if (selling.length) {
     const saleId = crypto.randomUUID();
-    const best = [...selling].sort((a, b) => b.coins - a.coins)[0].card.card.name;
+    const top = [...selling].sort((a, b) => b.coins - a.coins)[0];
     const statements: D1PreparedStatement[] = [
       // Every listing still open and its card still there.
       ...selling.map((t, n) =>
@@ -186,7 +188,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
         db.prepare(`UPDATE packs SET cards = json_set(cards, ?3, ?4), seq = ${NEXT_SEQ(1)} WHERE user_id = ?1 AND pack_id = ?2`).bind(userId, t.row.pack_id, `$[${t.row.slot}].gone`, `sale:${t.row.id}`),
       ),
       ...selling.map((t) => db.prepare("UPDATE listings SET status = 'sold', sold_for = ?, resolved_at = ? WHERE id = ?").bind(t.coins, now, t.row.id)),
-      ...walletStatements(db, userId, { kind: "sale", amount: earned, ref: saleId, note: selling.length === 1 ? `Sold ${best}` : `Sold ${best} and ${selling.length - 1} more` }),
+      ...walletStatements(db, userId, { kind: "sale", amount: earned, ref: saleId, note: selling.length === 1 ? `Sold ${top.card.card.name} to ${top.from}` : `Sold ${top.card.card.name} and ${selling.length - 1} more` }),
       db.prepare("DELETE FROM sale_checks WHERE sale_id = ?").bind(saleId),
     ];
     try {

@@ -1,5 +1,6 @@
-// #/market: cards you've listed and what the market offers for them, and #/market/wallet: your coins.
-// Each listing shows the offer that's up now and counts down to the next; when it changes the page asks again.
+// #/market: cards you've listed and the offers trainers have made for them, and #/market/wallet: your coins.
+// Each listing shows every offer so far with the best picked out, and counts down to the next; when one's due, the
+// page asks again. Selling takes the best offer.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cardImage } from "../api/tcgdex";
@@ -11,13 +12,15 @@ import { layoutFor } from "../foil/layouts";
 import { ago } from "../social/common";
 import type { TradeCard } from "../social/protocol";
 import { keepListings, loadMarket, loadWallet, sellListings } from "./market";
-import { formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
+import { bestOffer, formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 const plural = (n: number) => `${n} ${n === 1 ? "card" : "cards"}`;
+/** A listing always has its first offer. */
+const best = (l: Listing) => bestOffer(l.offers)!;
 
 /** "0:42". */
 const clock = (ms: number) => {
@@ -98,25 +101,25 @@ function SellBoard() {
     };
   }, [refresh]);
 
-  // Ask again once an offer on screen has been replaced.
+  // Ask again when an offer is due in, or a listing closes.
   const serverNow = now + skew;
-  const stale = !!data?.listings.some((l) => l.offer.until <= serverNow);
+  const stale = !!data?.listings.some((l) => (l.nextAt ?? l.closesAt) <= serverNow);
   useEffect(() => {
     if (stale) void refresh();
   }, [stale, refresh]);
 
   const sell = async (listings: Listing[]) => {
-    const total = listings.reduce((sum, l) => sum + l.offer.coins, 0);
+    const total = listings.reduce((sum, l) => sum + best(l).coins, 0);
     if (listings.length > 1 && !confirm(`Sell ${plural(listings.length)} for ${formatCoins(total)}?`)) return;
     setBusy(true);
     setError(undefined);
     setNote(undefined);
     try {
-      const res = await sellListings(listings.map((l) => ({ id: l.id, n: l.offer.n })));
+      const res = await sellListings(listings.map((l) => ({ id: l.id, n: best(l).n })));
       show(res);
       const parts = [];
-      if (res.sold) parts.push(`Sold ${plural(res.sold)} for ${formatCoins(res.earned)}.`);
-      if (res.missed) parts.push(`${plural(res.missed)} couldn't be sold: the offer ran out, or the card isn't in your collection any more.`);
+      if (res.sold) parts.push(listings.length === 1 ? `Sold to ${best(listings[0]).from} for ${formatCoins(res.earned)}.` : `Sold ${plural(res.sold)} for ${formatCoins(res.earned)}.`);
+      if (res.missed) parts.push(`${plural(res.missed)} couldn't be sold: the listing closed, or the card isn't in your collection any more.`);
       setNote(parts.join(" "));
     } catch (err) {
       setError(message(err));
@@ -140,9 +143,9 @@ function SellBoard() {
     }
   };
 
-  // Offers that have just been replaced are on their way; only show what's still up.
-  const live = data?.listings.filter((l) => l.offer.until > serverNow) ?? [];
-  const total = live.reduce((sum, l) => sum + l.offer.coins, 0);
+  // A listing that's just closed is on its way out; only show open ones.
+  const live = data?.listings.filter((l) => l.closesAt > serverNow) ?? [];
+  const total = live.reduce((sum, l) => sum + best(l).coins, 0);
 
   return (
     <>
@@ -155,8 +158,8 @@ function SellBoard() {
         </a>
       </div>
       <p className="muted">
-        List cards and the market makes an offer straight away. The first is usually low: wait and a new one replaces it every minute, up to {OFFERS}. Then
-        the market loses interest until tomorrow.
+        List cards and trainers start making offers: the first straight away, usually a low one, then another every minute, up to {OFFERS}. Sell to the
+        best offer whenever you like, until a minute after the last comes in. Then the market loses interest in the card until tomorrow.
       </p>
       {error && (
         <p className="error" role="alert">
@@ -204,8 +207,12 @@ function SellBoard() {
 
 function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing: Listing; now: number; busy: boolean; onSell(): void; onKeep(): void; onLook(): void }) {
   const c = l.card;
-  const share = Math.round((l.offer.coins / l.value) * 100);
-  const left = clock(l.offer.until - now);
+  const top = best(l);
+  const pct = (coins: number) => `${Math.round((coins / l.value) * 100)}%`;
+  // Offers that come in while the page is open flash as they arrive; the ones there on first load don't.
+  const seen = useRef<number | null>(null);
+  seen.current ??= l.offers.length;
+  const arrived = (n: number) => n >= seen.current!;
   return (
     <li className="listing" data-finish={c.finish} data-tier={pullTier({ card: c.card, finish: c.finish, firstEdition: c.firstEdition, slot: "", outcome: "" })}>
       <button type="button" className="thumb" aria-label={`Look closer at ${c.card.name}`} onClick={onLook}>
@@ -223,11 +230,9 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
           {!l.priced && " (no market price, so an estimate for its rarity)"}
         </small>
         <p className="offer">
-          <span className="offer-coins">{formatCoins(l.offer.coins)}</span> <span className="muted">({share}%)</span>
+          <span className="offer-coins">{formatCoins(top.coins)}</span> <span className="muted">({pct(top.coins)})</span>
+          <small className="muted">Best offer, from {top.from}</small>
         </p>
-        <small className="muted" aria-live="off">
-          {l.offer.last ? `Last offer · withdrawn in ${left}` : `Offer ${l.offer.n + 1} of ${OFFERS} · next in ${left}`}
-        </small>
       </div>
       <div className="listing-actions">
         <button type="button" className="primary" disabled={busy} onClick={onSell}>
@@ -236,6 +241,22 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
         <button type="button" disabled={busy} onClick={onKeep}>
           Keep
         </button>
+      </div>
+      <div className="offers">
+        <ol reversed aria-label={`Offers for ${c.card.name}`}>
+          {[...l.offers].reverse().map((o) => (
+            <li key={o.n} data-best={o === top || undefined} data-new={arrived(o.n) || undefined}>
+              <span className="who">{o.from}</span>
+              <span className="coins">
+                {formatCoins(o.coins)} <small className="muted">{pct(o.coins)}</small>
+              </span>
+              {o === top && <span className="best-chip">Best</span>}
+            </li>
+          ))}
+        </ol>
+        <small className="muted countdown">
+          {l.nextAt !== null ? `${l.offers.length} of ${OFFERS} offers · next in ${clock(l.nextAt - now)}` : `All ${OFFERS} offers in · closes in ${clock(l.closesAt - now)}`}
+        </small>
       </div>
     </li>
   );

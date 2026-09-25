@@ -19,14 +19,38 @@
 .market .listing[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 16px #ffd66b99; }
 .market .listing-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow-wrap: anywhere; line-height: 1.25; }
 .market .listing-body .name { font-size: 1.05rem; }
-.market .offer { margin: 6px 0 0; }
+.market .offer { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; }
+.market .offer small { flex-basis: 100%; }
 .market .offer-coins { font-size: 1.25rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .market .listing small { font-variant-numeric: tabular-nums; }
 .market .listing-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* Every offer so far, newest first, under the card. */
+.market .offers { grid-column: 2 / -1; min-width: 0; }
+.market .offers ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.market .offers li {
+  display: flex; align-items: center; gap: 8px 12px; padding: 6px 10px; border-radius: 10px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent); font-size: .92rem;
+}
+.market .offers .who { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.market .offers .coins { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.market .offers li[data-best] { background: color-mix(in srgb, var(--primary) 14%, var(--bg)); box-shadow: inset 0 0 0 2px var(--primary); }
+.market .best-chip {
+  padding: 1px 8px; border-radius: 999px; font-size: .75rem; font-weight: 800;
+  background: var(--primary); color: var(--primary-ink);
+}
+.market .offers .countdown { display: block; margin-top: 6px; }
+/* A new offer flashes in. */
+.market .offers li[data-new] { animation: offer-in .6s ease-out; }
+@keyframes offer-in {
+  from { transform: translateY(-6px); opacity: 0; background: color-mix(in srgb, var(--focus) 30%, var(--bg)); }
+}
+@media (prefers-reduced-motion: reduce) { .market .offers li[data-new] { animation: none; } }
 /* Phones: the buttons go under the card and its offer. */
 @media (max-width: 519.98px) {
   .market .listing { grid-template-columns: 64px 1fr; }
-  .market .listing-actions { grid-column: 1 / -1; flex-direction: row; }
+  .market .listing-actions, .market .offers { grid-column: 1 / -1; }
+  .market .listing-actions { flex-direction: row; }
   .market .listing-actions button { flex: 1; }
 }
 

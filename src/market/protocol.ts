@@ -51,17 +51,18 @@ export interface WalletResponse {
 }
 
 /* ---------- Selling ----------
- * Listing a card gets an offer straight away, usually a low one. A new offer replaces it every minute, and after
- * OFFERS of them the market loses interest. Each offer is worked out from the listing's seed and its number, so the
- * Worker needn't store them and reloading can't reroll one; the app is only ever told the offer that's up now.
- * A card can be listed once a day, so listing it again can't start a fresh run of offers either. */
+ * Listing a card gets an offer straight away, usually a low one, and another comes in every minute, up to OFFERS.
+ * Every offer stays on the table until the listing closes, a minute after the last, so the player can take the best
+ * so far or wait for a better one. Each offer (and the trainer making it) is worked out from the listing's seed and
+ * its number, so the Worker needn't store them and reloading can't reroll one; the app is only told offers that have
+ * come in. A card can be listed once a day, so listing it again can't start a fresh run of offers either. */
 
 /** Cards in one listing request, and listed at once. Each may need a price lookup, which the Worker limits. */
 export const MAX_LISTED = 30;
 export const OFFER_EVERY_MS = 60 * 1000;
 /** Offers per listing, the first included. */
 export const OFFERS = 10;
-/** How long an offer can still be taken after the next replaces it, for a tap that crossed the minute. */
+/** How long offers can still be taken after the listing closes, for a tap that crossed the minute. */
 export const OFFER_GRACE_MS = 5 * 1000;
 /** A card can be listed again this long after it last was. */
 export const RELIST_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -69,32 +70,54 @@ export const RELIST_AFTER_MS = 24 * 60 * 60 * 1000;
 export const FIRST_OFFER: [number, number] = [0.65, 0.9];
 export const LATER_OFFERS: [number, number] = [0.8, 1.03];
 
+/**
+ * Who makes offers, by how good an offer is: the least a share of the value must be for each group. Youngsters
+ * lowball; collectors pay up.
+ */
+export const TRAINERS: { from: number; classes: string[] }[] = [
+  { from: 0.98, classes: ["Collector", "Gentleman", "Rich Boy", "Lady", "Socialite", "Veteran"] },
+  { from: 0.9, classes: ["Ace Trainer", "Pokémon Breeder", "Scientist", "Super Nerd", "Black Belt", "Psychic", "Pokémon Ranger", "Pokéfan"] },
+  { from: 0.78, classes: ["Hiker", "Fisherman", "Swimmer", "Bird Keeper", "Sailor", "Backpacker", "Kindler", "Juggler"] },
+  { from: 0, classes: ["Youngster", "Bug Catcher", "Lass", "Tuber", "Camper", "Picnicker"] },
+];
+export const TRAINER_NAMES = [
+  "Tom", "Sam", "Joey", "Ana", "Mia", "Leo", "Kai", "Ben", "Zoe", "Max", "Ivy", "Eli", "Ray", "Jin", "Nia",
+  "Otto", "Rosa", "Dale", "Gus", "Tess", "Wes", "Hana", "Omar", "Lou", "Pip", "Remy", "Vera", "Cal", "Dot", "Finn",
+];
+
+export interface MarketOffer {
+  n: number;
+  coins: number;
+  /** The trainer making it, e.g. "Hiker Tom". */
+  from: string;
+}
+
 /** Offer number `n` (from 0) for a card worth `value` coins. */
-export function offerFor(value: number, seed: string, n: number): number {
+export function offerFor(value: number, seed: string, n: number): MarketOffer {
   const rng = createRng(`${seed}:${n}`);
   const [lo, hi] = n === 0 ? FIRST_OFFER : LATER_OFFERS;
   // The mean of two draws leans to the middle of the range.
   const share = lo + ((rng() + rng()) / 2) * (hi - lo);
-  return Math.max(1, Math.round(value * share));
+  const classes = TRAINERS.find((t) => share >= t.from)!.classes;
+  const from = `${classes[Math.floor(rng() * classes.length)]} ${TRAINER_NAMES[Math.floor(rng() * TRAINER_NAMES.length)]}`;
+  return { n, coins: Math.max(1, Math.round(value * share)), from };
 }
 
-/** Which offer is up at `now`: OFFERS or more once they've all passed. */
-export const offerNumber = (listedAt: number, now: number) => Math.max(0, Math.floor((now - listedAt) / OFFER_EVERY_MS));
+/** Offers in so far at `now`: at least the first, and OFFERS once they all are. */
+export const offersIn = (listedAt: number, now: number) => Math.min(OFFERS, Math.max(1, Math.floor((now - listedAt) / OFFER_EVERY_MS) + 1));
 
-/** When offer `n` is replaced (or, for the last, withdrawn). */
-export const offerEnds = (listedAt: number, n: number) => listedAt + (n + 1) * OFFER_EVERY_MS;
+/** When offer `n` comes in. */
+export const offerAt = (listedAt: number, n: number) => listedAt + n * OFFER_EVERY_MS;
 
-/** Whether offer `n` can still be taken at `now`. */
+/** When the listing closes and its offers are withdrawn: a minute after the last comes in. */
+export const listingCloses = (listedAt: number) => listedAt + OFFERS * OFFER_EVERY_MS;
+
+/** Whether offer `n` can be taken at `now`: it's come in and the listing hasn't closed. */
 export const offerOpen = (listedAt: number, n: number, now: number) =>
-  Number.isInteger(n) && n >= 0 && n < OFFERS && now >= listedAt + n * OFFER_EVERY_MS && now < offerEnds(listedAt, n) + OFFER_GRACE_MS;
+  Number.isInteger(n) && n >= 0 && n < OFFERS && now >= offerAt(listedAt, n) && now < listingCloses(listedAt) + OFFER_GRACE_MS;
 
-export interface Offer {
-  n: number;
-  coins: number;
-  /** When it's replaced, or withdrawn if it's the last (ms). */
-  until: number;
-  last: boolean;
-}
+/** The best of some offers; the earliest, if two are as good. */
+export const bestOffer = <T extends Pick<MarketOffer, "coins">>(offers: T[]): T | undefined => offers.reduce<T | undefined>((best, o) => (!best || o.coins > best.coins ? o : best), undefined);
 
 export interface Listing {
   id: string;
@@ -104,12 +127,16 @@ export interface Listing {
   value: number;
   priced: boolean;
   listedAt: number;
-  offer: Offer;
+  /** Offers in so far, oldest first; any can be taken. */
+  offers: MarketOffer[];
+  /** When the next offer comes in, or null after the last. */
+  nextAt: number | null;
+  closesAt: number;
 }
 
 export interface MarketResponse {
   coins: number;
-  /** Listings with an offer up, oldest first. */
+  /** Open listings, oldest first. */
   listings: Listing[];
   /** Cards listed lately that can't be listed again yet, with when they can. */
   resting: { uid: string; until: number }[];
@@ -121,7 +148,7 @@ export interface ListRequest {
   uids: string[];
 }
 
-/** The offers to take: which listing, and which offer the player saw. */
+/** The offers to take: which listing, and which of its offers. */
 export interface SellRequest {
   offers: { id: string; n: number }[];
 }
@@ -129,7 +156,7 @@ export interface SellRequest {
 export interface SellResponse extends MarketResponse {
   sold: number;
   earned: number;
-  /** Cards that couldn't be sold: gone from the collection, or the offer ran out. */
+  /** Cards that couldn't be sold: gone from the collection, or the listing closed. */
   missed: number;
 }
 
