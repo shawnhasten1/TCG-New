@@ -1,4 +1,5 @@
-// #/feed: cards you and your friends shared from packs, newest first. Tap a card for a closer look.
+// #/feed: cards you and your friends shared from packs, newest first. Tap a card for a closer look; react and comment
+// under each post.
 
 import { useCallback, useEffect, useState } from "react";
 import { cardImage } from "../api/tcgdex";
@@ -11,6 +12,7 @@ import { pullTier } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { Avatar, ago, SocialTabs } from "./common";
 import { loadFeed, takeDownPost } from "./feed";
+import { PostSocial } from "./PostSocial";
 import type { FeedPost, SharedCard } from "./protocol";
 import { ask } from "../app/Confirm";
 import { formatCoins } from "../market/protocol";
@@ -150,6 +152,7 @@ export function FeedPage() {
                         </figure>
                       ))}
                     </div>
+                    <PostSocial post={post} onChange={(patch) => setPosts((p) => p?.map((x) => (x.id === post.id ? { ...x, ...patch } : x)))} />
                   </li>
                 ))}
               </ul>

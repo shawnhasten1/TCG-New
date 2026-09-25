@@ -67,6 +67,35 @@
 .feed .feed-cards small { display: block; font-weight: 500; color: var(--muted); }
 .feed .feed-cards small.sale { color: var(--ink); font-weight: 700; }
 
+/* Reactions and comments under a post */
+.feed .post-social { margin-top: 14px; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); }
+.feed .reactions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.feed .reactions .reaction {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 4px 10px; border-radius: 999px;
+  font: 600 .95rem/1 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); cursor: pointer;
+  background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+}
+.feed .reactions .reaction[aria-pressed="true"] { background: color-mix(in srgb, var(--focus) 18%, var(--btn)); border-color: var(--focus); }
+.feed .reactions .reaction:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.feed .reactions .reaction .n { font-variant-numeric: tabular-nums; }
+.feed .reactions .who { margin-left: auto; }
+.feed .reactors { list-style: none; margin: 8px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--bg); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.feed .more-comments { display: block; margin-top: 8px; }
+.feed .comments { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.feed .comments li { display: flex; gap: 10px; align-items: flex-start; }
+.feed .comments .avatar { width: 30px; height: 30px; font-size: .85rem; }
+.feed .comment-body { min-width: 0; }
+.feed .comment-body p { margin: 0; line-height: 1.35; overflow-wrap: anywhere; }
+.feed .comment-body .muted { font-size: .85rem; }
+.feed .comment-body button.link { padding: 0; font-size: .85rem; }
+.feed .comment-form { display: flex; gap: 8px; margin-top: 10px; }
+.feed .comment-form input {
+  flex: 1 1 auto; min-width: 0; font: 400 1rem/1.2 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); background: var(--btn);
+  padding: 9px 12px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.feed .comment-form input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.feed .post-social .error { margin: 8px 0 0; }
+
 /* ---------- Sharing from the opener ---------- */
 .opener .share-note { margin: 0; text-align: center; font-weight: 600; }
 .opener .share-note.error { color: var(--danger); }

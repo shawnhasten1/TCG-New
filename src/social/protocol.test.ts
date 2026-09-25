@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CODE_ALPHABET, formatFriendCode, normalizeFriendCode, parseDisplayName, parseSlots, parseTradeSide } from "./protocol";
+import { CODE_ALPHABET, formatFriendCode, isReaction, MAX_COMMENT, normalizeFriendCode, parseCommentText, parseDisplayName, parseSlots, parseTradeSide } from "./protocol";
 
 describe("friend codes", () => {
   it("has 32 unambiguous characters", () => {
@@ -71,5 +71,31 @@ describe("trade offers", () => {
     expect(() => parseTradeSide(Array.from({ length: 11 }, (_, i) => `p:${i}`), isUid)).toThrow(/up to 10/);
     expect(() => parseTradeSide(["nope"], isUid)).toThrow();
     expect(() => parseTradeSide("p:1", isUid)).toThrow();
+  });
+});
+
+describe("reactions", () => {
+  it("knows the reactions on offer", () => {
+    for (const k of ["like", "dislike", "fire", "wow", "laugh"]) expect(isReaction(k)).toBe(true);
+    for (const k of ["love", "", null, 1]) expect(isReaction(k)).toBe(false);
+  });
+});
+
+describe("comments", () => {
+  it("tidies whitespace and control characters", () => {
+    expect(parseCommentText("  nice   pull!\n\nwow ")).toBe("nice pull! wow");
+    expect(parseCommentText("a\u0007b‮c")).toBe("a b c");
+  });
+
+  it("keeps emoji whole", () => {
+    const family = "\u{1F468}‍\u{1F469}‍\u{1F467}";
+    expect(parseCommentText(`${family} \u{1F525}`)).toBe(`${family} \u{1F525}`);
+  });
+
+  it("rejects empty and overlong comments", () => {
+    expect(() => parseCommentText("   ")).toThrow();
+    expect(() => parseCommentText(42)).toThrow();
+    expect(parseCommentText("\u{1F525}".repeat(MAX_COMMENT))).toHaveLength(MAX_COMMENT * 2);
+    expect(() => parseCommentText("a".repeat(MAX_COMMENT + 1))).toThrow();
   });
 });

@@ -52,7 +52,7 @@ export interface FriendsResponse {
 /** Counts behind the badge in the top bar. */
 export interface InboxResponse {
   friendRequests: number;
-  /** Friends' posts since you last looked at the feed. */
+  /** Friends' posts, and reactions and comments on your posts or ones you commented on, since you last looked at the feed. */
   feedNew: number;
   /** Trade offers waiting for you to answer. */
   tradeOffers: number;
@@ -105,12 +105,81 @@ export interface FeedPost {
   createdAt: number;
   /** Set when the post is a card sold on the market: what it sold for and to which trainer. */
   sale?: { coins: number; to: string };
+  /** How many of each reaction it has; kinds nobody picked are left out. */
+  reactions: ReactionCounts;
+  myReaction: ReactionKind | null;
+  commentCount: number;
+  /** The latest few comments, oldest first; the rest load on request. */
+  comments: FeedComment[];
 }
 
 export interface FeedResponse {
   posts: FeedPost[];
   /** Pass back as `before` for older posts; null at the end. */
   cursor: string | null;
+}
+
+/* ---------- Reactions and comments ---------- */
+
+/** The reactions a post can get, in the order they're offered. */
+export const REACTIONS = [
+  { kind: "like", emoji: "👍", label: "Like" },
+  { kind: "dislike", emoji: "👎", label: "Dislike" },
+  { kind: "fire", emoji: "🔥", label: "Fire" },
+  { kind: "wow", emoji: "😮", label: "Wow" },
+  { kind: "laugh", emoji: "😂", label: "Haha" },
+] as const;
+
+export type ReactionKind = (typeof REACTIONS)[number]["kind"];
+export type ReactionCounts = Partial<Record<ReactionKind, number>>;
+
+export const isReaction = (v: unknown): v is ReactionKind => REACTIONS.some((r) => r.kind === v);
+
+/** Longest comment, in characters. */
+export const MAX_COMMENT = 280;
+/** Latest comments sent with each post in the feed. */
+export const COMMENTS_SHOWN = 2;
+/** Most comments one post can collect. */
+export const MAX_COMMENTS_PER_POST = 200;
+
+export interface FeedComment {
+  id: string;
+  author: FriendProfile;
+  text: string;
+  createdAt: number;
+  /** You wrote it. */
+  mine: boolean;
+  /** You wrote it, or it's on your post. */
+  canDelete: boolean;
+}
+
+export interface ReactionResponse {
+  reactions: ReactionCounts;
+  myReaction: ReactionKind | null;
+}
+
+/** Who reacted to a post, newest first. */
+export interface ReactorsResponse {
+  reactors: { user: FriendProfile; kind: ReactionKind }[];
+}
+
+export interface CommentsResponse {
+  /** Every comment, oldest first. */
+  comments: FeedComment[];
+}
+
+export interface CommentResponse {
+  comment: FeedComment;
+  commentCount: number;
+}
+
+/** Tidies a comment, or throws an Error saying what's wrong with it. */
+export function parseCommentText(v: unknown): string {
+  // Control characters and bidi overrides out (zero-width joiners stay, emoji need them), whitespace collapsed.
+  const text = typeof v === "string" ? v.replace(/[\p{Cc}\u202a-\u202e\u2066-\u2069]/gu, " ").replace(/\s+/g, " ").trim() : "";
+  if (!text) throw new Error("Write something first.");
+  if ([...text].length > MAX_COMMENT) throw new Error(`Keep comments to ${MAX_COMMENT} characters.`);
+  return text;
 }
 
 /** Slots from a share request: whole numbers, each once, in order. Throws on anything else. */
