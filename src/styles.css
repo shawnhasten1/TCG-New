@@ -26,9 +26,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { min-height: 100%; }
 /* Feels like an app, not a page: text doesn't select on a long press or drag (dragging a selection auto-scrolled
-   hidden overflow sideways, and phones zoomed toward it), and double-tap doesn't zoom. Pinch zoom still works.
+   hidden overflow sideways, and phones zoomed toward it), and neither double-tap nor pinch zooms (see app/noZoom.ts).
    clip, unlike hidden, can't be scrolled at all. */
-html { touch-action: manipulation; }
+html { touch-action: pan-x pan-y; }
 body {
   margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, sans-serif; overflow-x: hidden; overflow-x: clip;
   -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
