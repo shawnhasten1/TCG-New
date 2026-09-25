@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Card, SetDetail } from "../api/types";
 import { isMember, useAccount } from "../account/account";
+import { Help } from "../app/Help";
 import { href } from "../app/router";
 import { cyclePick, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
@@ -105,10 +106,19 @@ export function SellPicker() {
         </p>
       ) : (
         <>
-          <p className="muted">
-            Pick up to {plural(room)}. The market makes an offer for each as soon as they're listed, and you choose whether to sell.
-            {listed.size > 0 && ` ${plural(listed.size)} you've listed already ${listed.size === 1 ? "isn't" : "aren't"} shown.`}
-          </p>
+          <div className="market-head">
+            <div className="head-info">
+              <p className="muted">Pick up to {plural(room)}.</p>
+              <Help
+                label="About listing cards"
+                lines={[
+                  "Each card gets an offer as soon as it's listed, and you choose whether to sell.",
+                  `Up to ${MAX_LISTED} cards can be on the market at once.`,
+                  ...(listed.size ? [`${plural(listed.size)} you've listed already ${listed.size === 1 ? "isn't" : "aren't"} shown here.`] : []),
+                ]}
+              />
+            </div>
+          </div>
           <div className="pick-toolbar">
             <input type="search" placeholder="Search by card or set" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search cards" />
             <label>

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
+import { Help } from "../app/Help";
 import { SetLogo } from "../app/SetLogo";
 import { setTier, TIERS, type SetTier } from "../engine/setRarity";
 import { packArts } from "../packs/art";
@@ -74,14 +75,20 @@ export function ShopTab() {
   return (
     <>
       <div className="market-head">
-        <p className="balance">
-          <span className="muted">Balance</span> <strong>{coins === undefined ? "…" : formatCoins(coins)}</strong>
-        </p>
+        <div className="head-info">
+          <p className="balance">
+            <span className="muted">Balance</span> <strong>{coins === undefined ? "…" : formatCoins(coins)}</strong>
+          </p>
+          <Help
+            label="How the shop works"
+            lines={[
+              "Pick a set and buy a pack from it. Which wrapper you get is luck.",
+              "Scarcer sets cost more, and a few cost extra because their cards are worth more.",
+              "A pack costs more than its cards usually sell for, so the shop is for chasing a set, not making coins.",
+            ]}
+          />
+        </div>
       </div>
-      <p className="muted">
-        Pick the set you want a pack from. Which wrapper it comes in is still down to luck. Scarcer sets cost more, and a pack always costs more than its
-        cards would sell for, so the shop is for chasing a set, not for making coins.
-      </p>
       <div className="pick-toolbar">
         <input type="search" placeholder="Search sets" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
       </div>
@@ -92,7 +99,7 @@ export function ShopTab() {
       )}
       {bought && (
         <div className="bought" role="status">
-          <p className="ok">Bought a {bought.name} pack. Open it now, or keep it for later with your unopened packs.</p>
+          <p className="ok">Bought a {bought.name} pack.</p>
           <div className="row">
             <a className="button primary" href={href.openBought(bought.id)}>
               Open now

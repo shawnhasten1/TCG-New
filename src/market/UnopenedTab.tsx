@@ -1,6 +1,7 @@
 // #/market/unopened: packs bought in the shop and kept for later, newest first, each ready to open.
 
 import { useEffect, useState } from "react";
+import { Help } from "../app/Help";
 import { href } from "../app/router";
 import { SetLogo } from "../app/SetLogo";
 import { getPulls } from "../collection/store";
@@ -44,9 +45,14 @@ export function UnopenedTab() {
     );
   return (
     <>
-      <p className="muted">
-        Packs you've bought and kept for later. You can hold up to {MAX_UNOPENED}.
-      </p>
+      <div className="market-head">
+        <div className="head-info">
+          <p className="balance">
+            <span className="muted">Waiting</span> <strong>{packs.length === 1 ? "1 pack" : `${packs.length} packs`}</strong>
+          </p>
+          <Help label="About unopened packs" lines={["Packs you bought and kept for later. Open them whenever you like.", `You can hold up to ${MAX_UNOPENED}.`]} />
+        </div>
+      </div>
       {packs.length === 0 ? (
         <p className="muted empty">
           No unopened packs. <a href={href.shop()}>Buy one in the shop</a>.

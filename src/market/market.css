@@ -2,7 +2,10 @@
    Builds on the friends pages' buttons, notes and tabs (social.css) and the shared card picker (.pick-page). */
 .market .balance { margin: 0; font-size: 1.1rem; }
 .market .balance strong { font-size: 1.35rem; }
-.market .market-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin: 12px 0 4px; }
+/* position: relative so a Help bubble spans the row. */
+.market .market-head { position: relative; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin: 12px 0 4px; }
+.market .head-info { display: flex; align-items: center; gap: 8px; }
+.market .head-info p { margin: 0; }
 .market a.button.primary { display: inline-flex; align-items: center; }
 .market .bulk { margin: 14px 0; }
 

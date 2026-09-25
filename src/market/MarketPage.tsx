@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
+import { Help } from "../app/Help";
 import { href, type MarketTab } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
 import { formatCountdown } from "../collection/daily";
@@ -160,18 +161,23 @@ function SellBoard() {
   return (
     <>
       <div className="market-head">
-        <p className="balance">
-          <span className="muted">Balance</span> <strong>{data ? formatCoins(data.coins) : "…"}</strong>
-        </p>
+        <div className="head-info">
+          <p className="balance">
+            <span className="muted">Balance</span> <strong>{data ? formatCoins(data.coins) : "…"}</strong>
+          </p>
+          <Help
+            label="How selling works"
+            lines={[
+              `List cards and trainers make offers: one straight away, usually low, then one a minute, up to ${OFFERS}.`,
+              "Sell to the best offer whenever you like. Nothing sells until you tap Sell.",
+              "You have 12 hours after the last offer to sell or keep. Kept cards can go straight back on the market.",
+            ]}
+          />
+        </div>
         <a className="button primary" href={href.marketPick()}>
           Choose cards to sell
         </a>
       </div>
-      <p className="muted">
-        List cards and trainers start making offers: the first straight away, usually a low one, then another every minute, up to {OFFERS}. Nothing
-        sells until you say so. You have 12 hours after the last offer to sell to the best one or keep the card, and a kept card can go straight back on
-        the market.
-      </p>
       {error && (
         <p className="error" role="alert">
           {error}
@@ -236,9 +242,9 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
           {c.finish !== "normal" ? ` · ${c.finish}` : ""}
           {c.firstEdition ? " · 1st Ed" : ""}
         </small>
-        <small className="muted">
+        <small className="muted" title={l.priced ? undefined : "No market price, so this is an estimate for its rarity"}>
           Worth {formatCoins(l.value)}
-          {!l.priced && " (no market price, so an estimate for its rarity)"}
+          {!l.priced && " (estimate)"}
         </small>
         <p className="offer">
           <span className="offer-coins">{formatCoins(top.coins)}</span> <span className="muted">({pct(top.coins)})</span>
