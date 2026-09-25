@@ -25,7 +25,7 @@ import type {
 const REST = "https://api.tcgdex.net/v2/en";
 const GRAPHQL = "https://api.tcgdex.net/v2/graphql";
 const GRAPHQL_PAGE = 100;
-const CACHE_VERSION = 5; // 2: cards gained category / energyType / trainerType. 3: dexId. 4: types. 5: stage
+const CACHE_VERSION = 6; // 2: cards gained category / energyType / trainerType. 3: dexId. 4: types. 5: stage. 6: SH shinies
 
 export type Progress = (done: number, total: number) => void;
 
@@ -85,6 +85,14 @@ export interface CardPricing {
   cardmarket?: { unit?: string; updated?: string } & Record<string, unknown>;
 }
 
+/**
+ * Corrects rarities TCGdex gets wrong. The DP/Platinum-era shinies (Stormfront to Arceus, numbered
+ * SH1-SH12) come through as "Rare" or "Rare Holo LV.X", so they'd reveal and price as ordinary rares.
+ */
+export function fixRarity<T extends Card>(card: T): T {
+  return /^SH\d+$/.test(card.localId) && card.rarity !== "Shiny rare" ? { ...card, rarity: "Shiny rare" } : card;
+}
+
 export function groupByRarity(cards: Card[]): Record<string, Card[]> {
   const out: Record<string, Card[]> = {};
   for (const c of cards) (out[c.rarity] ??= []).push(c);
@@ -114,7 +122,7 @@ async function fetchCardsGraphql(setId: string, onProgress?: Progress, expected 
     for (const c of pageCards) {
       if (c && c.set?.id === setId) {
         const { set: _set, ...card } = c;
-        cards.push(card);
+        cards.push(fixRarity(card));
       }
     }
     onProgress?.(cards.length, Math.max(expected, cards.length));
@@ -207,7 +215,7 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
           if (cards.length === 0) source = "rest-full";
           let done = cards.length;
           const extra = await mapLimit(missing, 8, async (b) => {
-            const c = fromRest(await getJson<RestCard>(`${REST}/cards/${encodeURIComponent(b.id)}`));
+            const c = fixRarity(fromRest(await getJson<RestCard>(`${REST}/cards/${encodeURIComponent(b.id)}`)));
             onProgress?.(++done, total);
             return c;
           });
@@ -228,7 +236,7 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
             id localId name image rarity category dexId types stage set { id } variants { normal reverse holo firstEdition } } }`;
           const got = (await graphql<{ cards: (CardWithSet | null)[] }>(query)).cards ?? [];
           // The filter is loose, so keep exact matches only (tag teams list several numbers).
-          for (const c of got) if (c?.dexId?.includes(dexId)) cards.push(c);
+          for (const c of got) if (c?.dexId?.includes(dexId)) cards.push(fixRarity(c));
           if (got.length < GRAPHQL_PAGE) break;
         }
         return cards;
