@@ -11,8 +11,7 @@
 
 import { parseCardUid, TRADE_PACK_PREFIX, type RemoteCard, type SyncCard } from "../src/sync/protocol";
 import { MAX_OPEN_TRADES, parseTradeSide, type OwnedCard, type Trade, type TradeCard, type TradeRequest, type TradesResponse, type TradeStatus } from "../src/social/protocol";
-import { tcgdex } from "./cache";
-import { ownedCards } from "./cards";
+import { ownedCards, withCardData } from "./cards";
 import { areFriends } from "./friends";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
@@ -90,35 +89,6 @@ async function trades(ctx: Ctx, user: UserRow): Promise<TradesResponse> {
 const list = async (ctx: Ctx, user: UserRow) => json(await trades(ctx, user));
 
 /* ---------- Offering ---------- */
-
-/** Card data for each card, from the Worker's TCGdex cache (one set download per set involved, usually cached). */
-async function withCardData(ctx: Ctx, cards: OwnedCard[]): Promise<TradeCard[]> {
-  const { client } = tcgdex(ctx.env);
-  const sets = new Map(
-    await Promise.all(
-      [...new Set(cards.map((c) => c.setId))].map(async (id) => {
-        try {
-          return [id, await client.getSetCards(id)] as const;
-        } catch (err) {
-          console.error(`Couldn't load ${id} for a trade`, err);
-          throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
-        }
-      }),
-    ),
-  );
-  return cards.map((c) => {
-    const data = sets.get(c.setId)!;
-    const card = data.cards.find((x) => x.id === c.cardId);
-    if (!card) throw new HttpError(503, "Couldn't find one of those cards in the card database. Try again in a while.");
-    return {
-      uid: c.uid,
-      finish: c.finish,
-      firstEdition: c.firstEdition,
-      card,
-      set: { id: data.set.id, name: data.set.name, serieId: data.set.serie.id, official: data.set.cardCount.official },
-    };
-  });
-}
 
 /** Picks `uids` out of a player's cards, or says which side has cards it doesn't own. */
 async function pick(ctx: Ctx, userId: string, uids: string[], whose: "your" | "their"): Promise<OwnedCard[]> {
