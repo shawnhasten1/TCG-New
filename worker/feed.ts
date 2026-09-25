@@ -1,6 +1,7 @@
 // The friends feed: players share cards from packs they opened, and see their friends' and their own shares.
 //
-// A post is one pack. Sharing more cards from the same pack adds them to its post. Posts carry the card data
+// A post is one pack. Sharing more cards from the same pack adds them to its post. A post can also be a card sold on
+// the market (worker/market.ts), shared when the player asks, with what it sold for. Posts carry the card data
 // they show (from the Worker's TCGdex cache), so reading the feed never needs whole sets. Posts from someone
 // who's no longer a friend simply stop showing.
 
@@ -35,6 +36,7 @@ interface PostRow {
   set_info: string;
   cards: string;
   created_at: number;
+  sale: string | null;
   display_name: string | null;
   avatar_url: string | null;
 }
@@ -46,6 +48,7 @@ const toPost = (r: PostRow, me: string): FeedPost => ({
   set: JSON.parse(r.set_info),
   cards: JSON.parse(r.cards),
   createdAt: r.created_at,
+  ...(r.sale && { sale: JSON.parse(r.sale) }),
 });
 
 /** Cursor: "<created_at>:<id>" of the last post sent; the id breaks ties. */
@@ -60,7 +63,7 @@ function parseCursor(v: string | null): [number, string] | undefined {
 async function feed(ctx: Ctx, user: UserRow): Promise<Response> {
   const before = parseCursor(ctx.url.searchParams.get("before"));
   const { results } = await ctx.env.DB.prepare(
-    `SELECT p.id, p.user_id, p.set_info, p.cards, p.created_at, u.display_name, u.avatar_url
+    `SELECT p.id, p.user_id, p.set_info, p.cards, p.created_at, p.sale, u.display_name, u.avatar_url
      FROM posts p JOIN users u ON u.id = p.user_id
      WHERE (p.user_id = ?1 OR p.user_id IN (${FRIEND_IDS})) AND (?2 IS NULL OR (p.created_at, p.id) < (?2, ?3))
      ORDER BY p.created_at DESC, p.id DESC LIMIT ?4`,

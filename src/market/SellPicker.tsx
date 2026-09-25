@@ -7,9 +7,11 @@ import { Help } from "../app/Help";
 import { href } from "../app/router";
 import { cyclePick, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
+import { priceFor } from "../collection/prices";
+import { useCardPrices } from "../collection/usePrices";
 import { useOpenedSets } from "../collection/useOpenedSets";
 import { listCards, loadMarket } from "./market";
-import { MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
+import { coinValue, formatCoins, MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
@@ -51,6 +53,12 @@ export function SellPicker() {
   }, [sets]);
   const listed = useMemo(() => new Set(market?.listings.map((l) => l.card.uid)), [market]);
   const items = useMemo(() => pickables((pulls ?? []).filter((p) => !listed.has(pullUid(p))), cards), [pulls, cards, listed]);
+
+  // What the market counts each card as, the same way the Worker does (prices are cached per day on the device).
+  const { prices } = useCardPrices(useMemo(() => items.map((p) => p.card.id), [items]), true);
+  const valueOf = (p: Pickable) => (prices.has(p.card.id) ? coinValue(priceFor(prices.get(p.card.id), p.finish, p.firstEdition), p.card.rarity) : undefined);
+  const pickedValue = items.reduce((sum, p) => sum + (picked.get(p.key) ?? 0) * (valueOf(p)?.coins ?? 0), 0);
+  const pickedPriced = items.every((p) => !picked.get(p.key) || prices.has(p.card.id));
 
   const room = Math.min(MAX_LIST_AT_ONCE, Math.max(0, MAX_LISTED - (market?.listings.length ?? 0)));
   const count = pickedCount(picked);
@@ -131,11 +139,25 @@ export function SellPicker() {
           {shown.length === 0 ? (
             <p className="muted empty">{items.length ? "No cards match." : "No cards to sell yet."}</p>
           ) : (
-            <PickGrid items={shown} picked={picked} onPick={pick} warnLastCopy />
+            <PickGrid
+              items={shown}
+              picked={picked}
+              onPick={pick}
+              warnLastCopy
+              note={(p) => {
+                const v = valueOf(p);
+                return (
+                  <small className="value" title={v && !v.priced ? "No market price, so this is an estimate for its rarity" : undefined}>
+                    {v ? `${formatCoins(v.coins)}${v.priced ? "" : " (est.)"}` : "…"}
+                  </small>
+                );
+              }}
+            />
           )}
           <div className="offer-bar">
             <span>
               <strong>{plural(count)}</strong> picked
+              {count > 0 && <> · worth {pickedPriced ? "" : "at least "}<strong>{formatCoins(pickedValue)}</strong></>}
             </span>
             {count > 0 && (
               <button type="button" onClick={() => setPicked(new Map())}>

@@ -6,15 +6,15 @@
 // meantime, and that rolls everything back. A sold card stays in its pack marked `gone` ("sale:<listing>"), with a
 // new seq so sync drops it on every device, and the coins land in the same batch.
 
-import { listingCloses, MAX_LIST_AT_ONCE, MAX_LISTED, offerAt, offerFor, offerOpen, OFFERS, offersIn, parseIds, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse } from "../src/market/protocol";
-import type { TradeCard } from "../src/social/protocol";
+import { listingCloses, MAX_LIST_AT_ONCE, MAX_LISTED, offerAt, offerFor, offerOpen, OFFERS, offersIn, parseIds, type Listing, type ListRequest, type KeepRequest, type MarketResponse, type SellRequest, type SellResponse, type ShareSaleRequest } from "../src/market/protocol";
+import type { SharedCard, TradeCard } from "../src/social/protocol";
 import { parseCardUid, type RemoteCard } from "../src/sync/protocol";
 import { pruneDailyEntries } from "./cache";
 import { ownedCards, withCardData } from "./cards";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
 import { requireMember } from "./session";
 import { buy, getUnopened, listUnopened } from "./shop";
-import { valueCards, walletStatements } from "./wallet";
+import { valueCards, walletStatements, welcome } from "./wallet";
 
 const isId = (s: string) => /^[0-9a-f-]{36}$/.test(s);
 /** How long a listing is open for, if the player doesn't sell or keep the card. */
@@ -23,11 +23,13 @@ const NEXT_SEQ = (param: number) => `(SELECT COALESCE(MAX(seq), 0) + 1 FROM pack
 
 export async function handleMarket(ctx: Ctx): Promise<Response> {
   const user = await requireMember(ctx);
+  await welcome(ctx.env.DB, user);
   const route = `${ctx.req.method} ${ctx.url.pathname}`;
   if (route === "GET /api/market") return json(await market(ctx, user.id));
   if (route === "POST /api/market/list") return list(ctx, user.id);
   if (route === "POST /api/market/sell") return sell(ctx, user.id);
   if (route === "POST /api/market/keep") return keep(ctx, user.id);
+  if (route === "POST /api/market/share") return shareSale(ctx, user.id);
   if (route === "POST /api/market/buy") return buy(ctx, user.id);
   if (route === "GET /api/market/packs") return listUnopened(ctx, user.id);
   const pack = route.match(/^GET \/api\/market\/packs\/(s-[0-9a-f-]{36})$/);
@@ -182,7 +184,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
       ...selling.map((t) =>
         db.prepare(`UPDATE packs SET cards = json_set(cards, ?3, ?4), seq = ${NEXT_SEQ(1)} WHERE user_id = ?1 AND pack_id = ?2`).bind(userId, t.row.pack_id, `$[${t.row.slot}].gone`, `sale:${t.row.id}`),
       ),
-      ...selling.map((t) => db.prepare("UPDATE listings SET status = 'sold', sold_for = ?, resolved_at = ? WHERE id = ?").bind(t.coins, now, t.row.id)),
+      ...selling.map((t) => db.prepare("UPDATE listings SET status = 'sold', sold_for = ?, sold_to = ?, resolved_at = ? WHERE id = ?").bind(t.coins, t.from, now, t.row.id)),
       ...walletStatements(db, userId, { kind: "sale", amount: earned, ref: saleId, note: selling.length === 1 ? `Sold ${top.card.card.name} to ${top.from}` : `Sold ${top.card.card.name} and ${selling.length - 1} more` }),
       db.prepare("DELETE FROM sale_checks WHERE sale_id = ?").bind(saleId),
     ];
@@ -193,7 +195,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
       throw new HttpError(409, "Something changed while selling, so nothing was sold. Try again.");
     }
   }
-  return json({ ...(await market(ctx, userId)), sold: selling.length, earned, missed: offers.length - selling.length } satisfies SellResponse);
+  return json({ ...(await market(ctx, userId)), sold: selling.length, soldIds: selling.map((t) => t.row.id), earned, missed: offers.length - selling.length } satisfies SellResponse);
 }
 
 async function keep(ctx: Ctx, userId: string): Promise<Response> {
@@ -208,4 +210,23 @@ async function keep(ctx: Ctx, userId: string): Promise<Response> {
     .bind(Date.now(), userId, JSON.stringify(ids))
     .run();
   return json(await market(ctx, userId));
+}
+
+/* ---------- Sharing a sale ---------- */
+
+/** Posts a sold card to the friends feed, with what it sold for. Sharing it again does nothing. */
+async function shareSale(ctx: Ctx, userId: string): Promise<Response> {
+  const body = (await readJson<Partial<ShareSaleRequest> | null>(ctx.req)) ?? {};
+  const id = typeof body.id === "string" && isId(body.id) ? body.id : undefined;
+  if (!id) throw new HttpError(400, "Which sale?");
+  const db = ctx.env.DB;
+  const row = await db.prepare("SELECT card, sold_for, sold_to FROM listings WHERE id = ? AND user_id = ? AND status = 'sold'").bind(id, userId).first<{ card: string; sold_for: number; sold_to: string | null }>();
+  if (!row) throw new HttpError(404, "Only cards you've sold can be shared.");
+  const c = JSON.parse(row.card) as TradeCard;
+  const shared: SharedCard = { slot: parseCardUid(c.uid)?.slot ?? 0, finish: c.finish, firstEdition: c.firstEdition, card: c.card };
+  await db
+    .prepare("INSERT INTO posts (id, user_id, pack_id, set_info, cards, created_at, sale) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (user_id, pack_id) DO NOTHING")
+    .bind(crypto.randomUUID(), userId, `sale:${id}`, JSON.stringify(c.set), JSON.stringify([shared]), Date.now(), JSON.stringify({ coins: row.sold_for, to: row.sold_to ?? "a trainer" }))
+    .run();
+  return json({ ok: true });
 }

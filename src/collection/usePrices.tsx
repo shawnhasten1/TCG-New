@@ -22,9 +22,9 @@ async function loadPrices(ids: string[], onPrice: (id: string, p: CardPricing | 
   await Promise.all([worker(), worker(), worker()]);
 }
 
-/** Pricing for `ids` while prices are switched on; `loading` until every one has answered. */
-export function useCardPrices(ids: string[]) {
-  const { showPrices } = useSettings();
+/** Pricing for `ids` while prices are switched on (or `always`); `loading` until every one has answered. */
+export function useCardPrices(ids: string[], always = false) {
+  const showPrices = useSettings().showPrices || always;
   const [prices, setPrices] = useState<Map<string, CardPricing | null>>(new Map());
   const key = useMemo(() => [...new Set(ids)].sort().join(","), [ids]);
 

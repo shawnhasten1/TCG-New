@@ -22,6 +22,8 @@ export interface UserRow {
   friend_code: string | null;
   /** 1 for a silent guest account, whose email is a "guest-<id>" placeholder. */
   guest: number;
+  /** 1 once they've had their welcome coins (see worker/wallet.ts). */
+  welcomed: number;
 }
 
 export const publicUser = (u: UserRow): PublicUser => ({

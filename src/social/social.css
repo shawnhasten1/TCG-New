@@ -65,6 +65,7 @@
 .feed .feed-cards figure[data-tier="3"] img { box-shadow: 0 0 0 2px #ffd66b, 0 0 22px #ffd66b99; }
 .feed .feed-cards figcaption { font-weight: 700; line-height: 1.25; font-size: .9rem; overflow-wrap: anywhere; }
 .feed .feed-cards small { display: block; font-weight: 500; color: var(--muted); }
+.feed .feed-cards small.sale { color: var(--ink); font-weight: 700; }
 
 /* ---------- Sharing from the opener ---------- */
 .opener .share-note { margin: 0; text-align: center; font-weight: 600; }

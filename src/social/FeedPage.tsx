@@ -12,6 +12,8 @@ import { layoutFor } from "../foil/layouts";
 import { Avatar, ago, SocialTabs } from "./common";
 import { loadFeed, takeDownPost } from "./feed";
 import type { FeedPost, SharedCard } from "./protocol";
+import { ask } from "../app/Confirm";
+import { formatCoins } from "../market/protocol";
 import "../collection/collection.css";
 import "./social.css";
 
@@ -73,7 +75,7 @@ export function FeedPage() {
   };
 
   const remove = async (post: FeedPost) => {
-    if (!confirm("Take this post off the feed?")) return;
+    if (!(await ask({ title: "Remove this post?", body: "It comes off the feed for you and your friends.", confirm: "Remove", danger: true }))) return;
     try {
       await takeDownPost(post.id);
       setPosts((p) => p?.filter((x) => x.id !== post.id));
@@ -117,7 +119,7 @@ export function FeedPage() {
                       <div className="who-text">
                         <strong>{post.mine ? "You" : <a href={href.friend(post.author.id)}>{post.author.displayName}</a>}</strong>
                         <span className="muted">
-                          {post.set.name} · {ago(post.createdAt)}
+                          {post.sale ? "Sold on the market" : post.set.name} · {ago(post.createdAt)}
                         </span>
                       </div>
                       {post.mine && (
@@ -134,6 +136,11 @@ export function FeedPage() {
                           </button>
                           <figcaption>
                             {c.card.name}
+                            {post.sale && (
+                              <small className="sale">
+                                Sold to {post.sale.to} for {formatCoins(post.sale.coins)}
+                              </small>
+                            )}
                             <small>
                               {c.card.rarity}
                               {c.finish !== "normal" ? ` · ${c.finish}` : ""}

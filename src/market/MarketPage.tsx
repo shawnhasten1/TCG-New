@@ -14,10 +14,11 @@ import { pullTier } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { ago } from "../social/common";
 import type { TradeCard } from "../social/protocol";
-import { keepListings, loadMarket, loadWallet, sellListings } from "./market";
+import { keepListings, loadMarket, loadWallet, sellListings, shareSale } from "./market";
 import { bestOffer, formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
 import { ShopTab } from "./ShopTab";
 import { UnopenedTab } from "./UnopenedTab";
+import { ask } from "../app/Confirm";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
@@ -82,6 +83,8 @@ function SellBoard() {
   const [note, setNote] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<TradeCard>();
+  /** The sale just made that the player can share to the feed (the best one, if several sold). */
+  const [shareable, setShareable] = useState<{ id: string; name: string; many: boolean; state: "ready" | "sharing" | "shared" }>();
   const loading = useRef(false);
 
   const show = useCallback((res: MarketResponse) => {
@@ -121,13 +124,16 @@ function SellBoard() {
 
   const sell = async (listings: Listing[]) => {
     const total = listings.reduce((sum, l) => sum + best(l).coins, 0);
-    if (listings.length > 1 && !confirm(`Sell ${plural(listings.length)} for ${formatCoins(total)}?`)) return;
+    if (listings.length > 1 && !(await ask({ title: `Sell ${plural(listings.length)}?`, body: "Each goes to its best offer.", confirm: `Sell for ${formatCoins(total)}` }))) return;
     setBusy(true);
     setError(undefined);
     setNote(undefined);
+    setShareable(undefined);
     try {
       const res = await sellListings(listings.map((l) => ({ id: l.id, n: best(l).n })));
       show(res);
+      const top = listings.filter((l) => res.soldIds.includes(l.id)).sort((a, b) => best(b).coins - best(a).coins)[0];
+      setShareable(top && { id: top.id, name: top.card.card.name, many: res.sold > 1, state: "ready" });
       const parts = [];
       if (res.sold) parts.push(listings.length === 1 ? `Sold to ${best(listings[0]).from} for ${formatCoins(res.earned)}.` : `Sold ${plural(res.sold)} for ${formatCoins(res.earned)}.`);
       if (res.missed) parts.push(`${plural(res.missed)} couldn't be sold: the offers were withdrawn, or the card isn't in your collection any more.`);
@@ -151,6 +157,18 @@ function SellBoard() {
       setError(message(err));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const share = async () => {
+    if (!shareable) return;
+    setShareable({ ...shareable, state: "sharing" });
+    try {
+      await shareSale(shareable.id);
+      setShareable({ ...shareable, state: "shared" });
+    } catch (err) {
+      setError(message(err));
+      setShareable({ ...shareable, state: "ready" });
     }
   };
 
@@ -187,6 +205,19 @@ function SellBoard() {
         <p className="ok" role="status">
           {note}
         </p>
+      )}
+      {shareable && (
+        <div className="row share-sale">
+          {shareable.state === "shared" ? (
+            <span className="ok">
+              Shared to your feed. <a href={href.feed()}>See the feed</a>
+            </span>
+          ) : (
+            <button type="button" disabled={shareable.state === "sharing"} onClick={() => void share()}>
+              {shareable.state === "sharing" ? "Sharing…" : shareable.many ? `Share your best sale: ${shareable.name}` : "Share this sale"}
+            </button>
+          )}
+        </div>
       )}
       {!data ? (
         !error && (

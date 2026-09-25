@@ -6,7 +6,7 @@
 
 import type { CardPricing } from "../src/api/tcgdex";
 import { priceFor } from "../src/collection/prices";
-import { coinValue, type CoinValue, type LedgerEntry, type LedgerKind, type WalletResponse } from "../src/market/protocol";
+import { coinValue, WELCOME_COINS, type CoinValue, type LedgerEntry, type LedgerKind, type WalletResponse } from "../src/market/protocol";
 import type { TradeCard } from "../src/social/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, json, type Ctx } from "./http";
@@ -19,6 +19,7 @@ const PRICE_CONCURRENCY = 6;
 
 export async function handleWallet(ctx: Ctx): Promise<Response> {
   const user = await requireMember(ctx);
+  await welcome(ctx.env.DB, user);
   if (ctx.req.method === "GET" && ctx.url.pathname === "/api/wallet") return json(await wallet(ctx, user));
   throw new HttpError(404, "Not found");
 }
@@ -42,6 +43,26 @@ export async function wallet(ctx: Ctx, user: UserRow): Promise<WalletResponse> {
     coins: balance?.coins ?? 0,
     history: history.results.map((r): LedgerEntry => ({ id: r.id, kind: r.kind, amount: r.amount, balance: r.balance, note: r.note, at: r.created_at })),
   };
+}
+
+/**
+ * Gives a member their welcome coins if they haven't had them: on their first visit to the market, whenever their
+ * account was made. Both statements share the same condition in one transaction, and the history row's id is fixed
+ * per player, so it can only ever happen once.
+ */
+export async function welcome(db: D1Database, user: UserRow): Promise<void> {
+  if (user.welcomed || user.guest) return;
+  await db.batch([
+    db
+      .prepare(
+        `INSERT INTO wallet_ledger (id, user_id, kind, amount, balance, ref, note, created_at)
+         SELECT 'welcome-' || id, id, 'grant', ?1, coins + ?1, 'welcome', 'Welcome coins', ?2 FROM users WHERE id = ?3 AND guest = 0 AND welcomed = 0
+         ON CONFLICT (id) DO NOTHING`,
+      )
+      .bind(WELCOME_COINS, Date.now(), user.id),
+    db.prepare("UPDATE users SET coins = coins + ?, welcomed = 1 WHERE id = ? AND guest = 0 AND welcomed = 0").bind(WELCOME_COINS, user.id),
+  ]);
+  user.welcomed = 1;
 }
 
 export interface WalletChange {

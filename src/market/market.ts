@@ -2,7 +2,7 @@
 
 import { api } from "../account/account";
 import { syncNow } from "../sync/sync";
-import type { KeepRequest, ListRequest, MarketResponse, SellRequest, SellResponse, WalletResponse } from "./protocol";
+import type { KeepRequest, ListRequest, MarketResponse, SellRequest, SellResponse, ShareSaleRequest, WalletResponse } from "./protocol";
 import type { DealtPack } from "../packs/protocol";
 import type { BuyRequest, BuyResponse, UnopenedResponse } from "./shop";
 
@@ -21,3 +21,5 @@ export async function sellListings(offers: SellRequest["offers"]): Promise<SellR
 export const buyPack = (setId: string) => api<BuyResponse>("/api/market/buy", { body: { setId } satisfies BuyRequest });
 export const loadUnopened = () => api<UnopenedResponse>("/api/market/packs");
 export const loadBoughtPack = (id: string) => api<DealtPack>(`/api/market/packs/${encodeURIComponent(id)}`);
+/** Posts a sale to the friends feed. Only when the player asks. */
+export const shareSale = (id: string) => api<{ ok: true }>("/api/market/share", { body: { id } satisfies ShareSaleRequest });

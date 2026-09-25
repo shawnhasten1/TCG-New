@@ -10,6 +10,8 @@ import { rarityKind, type RarityKind } from "../engine/tiers";
 import type { TradeCard } from "../social/protocol";
 
 export const COINS_PER_USD = 100;
+/** Coins every member starts with, given once. */
+export const WELCOME_COINS = 5000;
 /** Cardmarket prices are in euros. A fixed rate keeps a card's value from moving with the exchange rate. */
 export const USD_PER_EUR = 1.1;
 /** What the market counts a card as when there's no price for it. */
@@ -156,6 +158,8 @@ export interface SellRequest {
 
 export interface SellResponse extends MarketResponse {
   sold: number;
+  /** The listings sold, which can then be shared to the feed. */
+  soldIds: string[];
   earned: number;
   /** Cards that couldn't be sold: gone from the collection, or the listing lapsed. */
   missed: number;
@@ -163,6 +167,11 @@ export interface SellResponse extends MarketResponse {
 
 export interface KeepRequest {
   ids: string[];
+}
+
+/** Sharing a sale to the friends feed. Only ever done when the player asks. */
+export interface ShareSaleRequest {
+  id: string;
 }
 
 /** The listing ids or card uids in a request, or throws an Error saying what's wrong. */

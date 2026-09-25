@@ -12,6 +12,7 @@ import { packArts } from "../packs/art";
 import { buyPack, loadWallet } from "./market";
 import { formatCoins } from "./protocol";
 import { shopSets, type ShopEntry } from "./shop";
+import { ask } from "../app/Confirm";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -57,7 +58,12 @@ export function ShopTab() {
   }, [sets, query]);
 
   const buy = async ({ set, entry }: Item) => {
-    if (!confirm(`Buy a ${set.name} pack for ${formatCoins(entry.price)}?`)) return;
+    const ok = await ask({
+      title: `Buy a ${set.name} pack?`,
+      body: coins === undefined ? undefined : `You'll have ${formatCoins(coins - entry.price)} left.`,
+      confirm: `Buy for ${formatCoins(entry.price)}`,
+    });
+    if (!ok) return;
     setBusy(set.id);
     setError(undefined);
     setBought(undefined);

@@ -1,6 +1,7 @@
 // Picking cards out of a collection, for a trade or to sell. Copies of the same card (same finish) share a tile;
 // tapping it adds another copy until they're all picked, then clears. Styles are in social.css (.pick-page).
 
+import type { ReactNode } from "react";
 import { cardImage } from "../api/tcgdex";
 import type { Card, SetDetail } from "../api/types";
 import { pullTier } from "../engine/tiers";
@@ -52,7 +53,7 @@ export function cyclePick(picked: Picked, p: Pickable, max: number): Picked {
 /** The card uids picked, taking copies in the order they're listed. */
 export const pickedUids = (items: Pickable[], picked: Picked) => items.flatMap((p) => p.uids.slice(0, picked.get(p.key) ?? 0));
 
-export function PickGrid({ items, picked, onPick, warnLastCopy }: { items: Pickable[]; picked: Picked; onPick(p: Pickable): void; warnLastCopy?: boolean }) {
+export function PickGrid({ items, picked, onPick, warnLastCopy, note }: { items: Pickable[]; picked: Picked; onPick(p: Pickable): void; warnLastCopy?: boolean; note?(p: Pickable): ReactNode }) {
   return (
     <ul className="pick-grid">
       {items.map((p) => {
@@ -72,6 +73,7 @@ export function PickGrid({ items, picked, onPick, warnLastCopy }: { items: Picka
                 {p.finish !== "normal" ? ` · ${p.finish}` : ""}
                 {p.firstEdition ? " · 1st Ed" : ""}
               </small>
+              {note?.(p)}
               {lastCopy && <small className="warn">Your last copy</small>}
             </span>
           </li>

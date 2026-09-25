@@ -103,6 +103,8 @@ export interface FeedPost {
   set: { id: string; name: string; serieId: string; official: number };
   cards: SharedCard[];
   createdAt: number;
+  /** Set when the post is a card sold on the market: what it sold for and to which trainer. */
+  sale?: { coins: number; to: string };
 }
 
 export interface FeedResponse {

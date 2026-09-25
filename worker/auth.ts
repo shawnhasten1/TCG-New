@@ -76,6 +76,7 @@ async function guest(ctx: Ctx): Promise<Response> {
     display_name: null,
     friend_code: null,
     guest: 1,
+    welcomed: 0,
   };
   await ctx.env.DB.prepare("INSERT INTO users (id, email, email_verified, created_at, guest) VALUES (?, ?, 0, ?, 1)").bind(user.id, user.email, user.created_at).run();
   await startSession(ctx, user.id);
@@ -135,6 +136,7 @@ async function register(ctx: Ctx): Promise<Response> {
     display_name: null,
     friend_code: null,
     guest: 0,
+    welcomed: 0,
   };
   await ctx.env.DB.prepare("INSERT INTO users (id, email, email_verified, name, avatar_url, password_hash, google_sub, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
     .bind(user.id, user.email, user.email_verified, user.name, user.avatar_url, user.password_hash, user.google_sub, user.created_at)
