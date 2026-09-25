@@ -62,3 +62,22 @@
 .market .ledger-note { min-width: 0; overflow-wrap: anywhere; }
 .market .ledger-amount { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .market .ledger-amount small { font-weight: 500; }
+
+/* ---------- Shop (ShopTab) ---------- */
+.market .pick-toolbar { margin: 12px 0 4px; }
+.market .shop-tier h3 { margin: 22px 0 10px; }
+.market .shop-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 42vw), 1fr)); gap: 14px; }
+.market .shop-grid li {
+  display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 12px; border-radius: 14px;
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.market .shop-grid li[data-tier="rare"] { border-color: color-mix(in srgb, #c8d0dc 80%, transparent); }
+.market .shop-grid li[data-tier="legendary"] { border-color: #e9d27a; box-shadow: 0 0 14px -4px #ffd66b99; }
+/* Pack photos differ in shape; they share a box and sit at its foot. */
+.market .shop-pack { height: 170px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 8px; }
+.market .shop-pack img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 6px 8px #0005); }
+.market .shop-pack .logo { max-height: 70px; align-self: center; filter: none; }
+.market .shop-pack .logo-fallback { align-self: center; text-align: center; font-weight: 700; color: var(--muted); }
+.market .shop-grid .name { line-height: 1.2; overflow-wrap: anywhere; }
+.market .shop-grid .price { margin-top: auto; padding-top: 6px; font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.market .shop-grid button { margin-top: 6px; }

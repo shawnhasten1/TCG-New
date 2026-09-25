@@ -3,6 +3,7 @@
 import { api } from "../account/account";
 import { syncNow } from "../sync/sync";
 import type { KeepRequest, ListRequest, MarketResponse, SellRequest, SellResponse, WalletResponse } from "./protocol";
+import type { BuyRequest, BuyResponse } from "./shop";
 
 export const loadMarket = () => api<MarketResponse>("/api/market");
 export const loadWallet = () => api<WalletResponse>("/api/wallet");
@@ -15,3 +16,5 @@ export async function sellListings(offers: SellRequest["offers"]): Promise<SellR
   if (res.sold) void syncNow();
   return res;
 }
+
+export const buyPack = (setId: string) => api<BuyResponse>("/api/market/buy", { body: { setId } satisfies BuyRequest });

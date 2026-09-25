@@ -1,11 +1,12 @@
-// #/market: cards you've listed and the offers trainers have made for them, and #/market/wallet: your coins.
+// #/market: cards you've listed and the offers trainers have made for them, #/market/shop: buy packs (ShopTab),
+// and #/market/wallet: your coins.
 // Each listing shows every offer so far with the best picked out, and counts down to the next; when one's due, the
 // page asks again. Selling takes the best offer.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
-import { href } from "../app/router";
+import { href, type MarketTab } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
 import { formatCountdown } from "../collection/daily";
 import { pullTier } from "../engine/tiers";
@@ -14,6 +15,7 @@ import { ago } from "../social/common";
 import type { TradeCard } from "../social/protocol";
 import { keepListings, loadMarket, loadWallet, sellListings } from "./market";
 import { bestOffer, formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
+import { ShopTab } from "./ShopTab";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
@@ -29,11 +31,14 @@ const clock = (ms: number) => {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 };
 
-export function MarketTabs({ current }: { current: "sell" | "wallet" }) {
+export function MarketTabs({ current }: { current: MarketTab }) {
   return (
     <nav className="segmented view-switch" aria-label="Market">
       <a href={href.market()} aria-current={current === "sell" ? "page" : undefined}>
         Sell
+      </a>
+      <a href={href.shop()} aria-current={current === "shop" ? "page" : undefined}>
+        Shop
       </a>
       <a href={href.wallet()} aria-current={current === "wallet" ? "page" : undefined}>
         Wallet
@@ -42,7 +47,7 @@ export function MarketTabs({ current }: { current: "sell" | "wallet" }) {
   );
 }
 
-export function MarketPage({ tab }: { tab: "sell" | "wallet" }) {
+export function MarketPage({ tab }: { tab: MarketTab }) {
   const member = isMember(useAccount());
   return (
     <main className="collection friends feed market">
@@ -54,7 +59,7 @@ export function MarketPage({ tab }: { tab: "sell" | "wallet" }) {
       ) : (
         <>
           <MarketTabs current={tab} />
-          {tab === "wallet" ? <Wallet /> : <SellBoard />}
+          {tab === "wallet" ? <Wallet /> : tab === "shop" ? <ShopTab /> : <SellBoard />}
         </>
       )}
     </main>

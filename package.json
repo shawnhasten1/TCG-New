@@ -17,7 +17,8 @@
     "pokedex": "tsx scripts/pokedex.ts",
     "set-rarity": "tsx scripts/setRarity.ts",
     "deploy": "npm run build && wrangler d1 migrations apply tcg --remote && wrangler deploy",
-    "pack-art": "tsx scripts/packArt.ts"
+    "pack-art": "tsx scripts/packArt.ts",
+    "pack-prices": "tsx scripts/packPrices.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

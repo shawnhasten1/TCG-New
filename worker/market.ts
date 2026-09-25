@@ -13,6 +13,7 @@ import { pruneDailyEntries } from "./cache";
 import { ownedCards, withCardData } from "./cards";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
 import { requireMember } from "./session";
+import { buy } from "./shop";
 import { valueCards, walletStatements } from "./wallet";
 
 const isId = (s: string) => /^[0-9a-f-]{36}$/.test(s);
@@ -27,6 +28,7 @@ export async function handleMarket(ctx: Ctx): Promise<Response> {
   if (route === "POST /api/market/list") return list(ctx, user.id);
   if (route === "POST /api/market/sell") return sell(ctx, user.id);
   if (route === "POST /api/market/keep") return keep(ctx, user.id);
+  if (route === "POST /api/market/buy") return buy(ctx, user.id);
   throw new HttpError(404, "Not found");
 }
 

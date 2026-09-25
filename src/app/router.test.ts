@@ -28,6 +28,7 @@ describe("navSection", () => {
   it("tells the market's pages apart", () => {
     expect(parseRoute("#/market")).toEqual({ page: "market", tab: "sell" });
     expect(parseRoute("#/market/wallet")).toEqual({ page: "market", tab: "wallet" });
+    expect(parseRoute("#/market/shop")).toEqual({ page: "market", tab: "shop" });
     expect(parseRoute("#/market/pick")).toEqual({ page: "marketPick" });
   });
 

@@ -43,7 +43,7 @@ export function openStatements(db: D1Database, userId: string, dealId: string): 
   ];
 }
 
-interface DealtRow {
+export interface DealtRow {
   deal_id: string;
   set_id: string;
   cards: string;
@@ -116,29 +116,37 @@ async function roll(ctx: Ctx, eras: string[], history: string[]): Promise<DealtR
   for (let attempt = 0; attempt <= MAX_REDRAWS; attempt++) {
     const set = pickRandomSet(drawableSets(sets, { unopenable, eras }), Math.random, { avoid, floor });
     if (!set) break;
-    let data;
-    try {
-      data = await client.getSetCards(set.id);
-    } catch (err) {
-      console.error(`Couldn't load ${set.id}`, err);
-      throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
-    }
-    const profile = profileFor(data.set);
-    const reason = profile ? whyNotOpenable(data, profile) : "No pack profile for this series";
-    if (!profile || reason) {
-      unopenable[set.id] = reason ?? "Unopenable";
-      await cache.set(UNOPENABLE_KEY, unopenable);
-      avoid = set.id;
-      continue;
-    }
-    const pulls = openPack(data, profile, createRng(randomToken(16)));
-    return {
-      deal_id: crypto.randomUUID(),
-      set_id: set.id,
-      cards: JSON.stringify(pulls.map((p): SyncCard => ({ cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition }))),
-      reveal: JSON.stringify(pulls.map((p) => ({ slot: p.slot, outcome: p.outcome }))),
-      art: pickPackArt(set.id),
-    };
+    const rolled = await rollSet(ctx, set.id);
+    if ("row" in rolled) return rolled.row;
+    unopenable[set.id] = rolled.unopenable;
+    await cache.set(UNOPENABLE_KEY, unopenable);
+    avoid = set.id;
   }
   throw new HttpError(503, "No set could be opened. Check the era filter in Settings.");
+}
+
+/** Rolls a pack from one set, with a random pack art, or says why the set can't fill a pack. */
+export async function rollSet(ctx: Ctx, setId: string): Promise<{ row: DealtRow; setName: string } | { unopenable: string }> {
+  const { client } = tcgdex(ctx.env);
+  let data;
+  try {
+    data = await client.getSetCards(setId);
+  } catch (err) {
+    console.error(`Couldn't load ${setId}`, err);
+    throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
+  }
+  const profile = profileFor(data.set);
+  const reason = profile ? whyNotOpenable(data, profile) : "No pack profile for this series";
+  if (!profile || reason) return { unopenable: reason ?? "Unopenable" };
+  const pulls = openPack(data, profile, createRng(randomToken(16)));
+  return {
+    setName: data.set.name,
+    row: {
+      deal_id: crypto.randomUUID(),
+      set_id: setId,
+      cards: JSON.stringify(pulls.map((p): SyncCard => ({ cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition }))),
+      reveal: JSON.stringify(pulls.map((p) => ({ slot: p.slot, outcome: p.outcome }))),
+      art: pickPackArt(setId),
+    },
+  };
 }

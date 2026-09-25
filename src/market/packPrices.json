@@ -1,0 +1,466 @@
+{
+ "generated": "2026-09-25",
+ "packs": 3000,
+ "sets": {
+  "base1": {
+   "value": 6404,
+   "price": 9000
+  },
+  "base2": {
+   "value": 3804,
+   "price": 5350
+  },
+  "base3": {
+   "value": 3785,
+   "price": 5300
+  },
+  "base4": {
+   "value": 4203,
+   "price": 5900
+  },
+  "base5": {
+   "value": 6190,
+   "price": 8700
+  },
+  "bw1": {
+   "value": 2713,
+   "price": 3800
+  },
+  "bw10": {
+   "value": 853,
+   "price": 1200
+  },
+  "bw11": {
+   "value": 7257,
+   "price": 10200
+  },
+  "bw2": {
+   "value": 931,
+   "price": 1350
+  },
+  "bw3": {
+   "value": 2055,
+   "price": 2900
+  },
+  "bw4": {
+   "value": 1768,
+   "price": 2500
+  },
+  "bw6": {
+   "value": 1446,
+   "price": 2050
+  },
+  "bw7": {
+   "value": 2939,
+   "price": 4150
+  },
+  "bw8": {
+   "value": 2586,
+   "price": 3650
+  },
+  "bw9": {
+   "value": 3202,
+   "price": 4500
+  },
+  "col1": {
+   "value": 10476,
+   "price": 14700
+  },
+  "dp1": {
+   "value": 3826,
+   "price": 5400
+  },
+  "dp2": {
+   "value": 3908,
+   "price": 5500
+  },
+  "dp3": {
+   "value": 4980,
+   "price": 7000
+  },
+  "dp4": {
+   "value": 4190,
+   "price": 5900
+  },
+  "dp5": {
+   "value": 7011,
+   "price": 9850
+  },
+  "dp6": {
+   "value": 4965,
+   "price": 7000
+  },
+  "dp7": {
+   "value": 6830,
+   "price": 9600
+  },
+  "ecard1": {
+   "value": 29094,
+   "price": 40750
+  },
+  "ecard2": {
+   "value": 35865,
+   "price": 50250
+  },
+  "ecard3": {
+   "value": 60206,
+   "price": 84300
+  },
+  "ex1": {
+   "value": 8553,
+   "price": 12000
+  },
+  "ex10": {
+   "value": 27950,
+   "price": 39150
+  },
+  "ex2": {
+   "value": 13147,
+   "price": 18450
+  },
+  "ex3": {
+   "value": 16728,
+   "price": 23450
+  },
+  "ex4": {
+   "value": 17577,
+   "price": 24650
+  },
+  "ex5": {
+   "value": 13390,
+   "price": 18750
+  },
+  "ex6": {
+   "value": 19809,
+   "price": 27750
+  },
+  "ex7": {
+   "value": 29457,
+   "price": 41250
+  },
+  "ex8": {
+   "value": 21129,
+   "price": 29600
+  },
+  "ex9": {
+   "value": 18611,
+   "price": 26100
+  },
+  "g1": {
+   "value": 2989,
+   "price": 4200
+  },
+  "gym1": {
+   "value": 5776,
+   "price": 8100
+  },
+  "gym2": {
+   "value": 8644,
+   "price": 12150
+  },
+  "hgss1": {
+   "value": 8023,
+   "price": 11250
+  },
+  "hgss2": {
+   "value": 4193,
+   "price": 5900
+  },
+  "hgss3": {
+   "value": 7976,
+   "price": 11200
+  },
+  "hgss4": {
+   "value": 5192,
+   "price": 7300
+  },
+  "lc": {
+   "value": 33057,
+   "price": 46300
+  },
+  "me01": {
+   "value": 626,
+   "price": 880
+  },
+  "me02": {
+   "value": 657,
+   "price": 920
+  },
+  "me02.5": {
+   "value": 872,
+   "price": 1250
+  },
+  "me03": {
+   "value": 381,
+   "price": 540
+  },
+  "me04": {
+   "value": 424,
+   "price": 600
+  },
+  "me05": {
+   "value": 399,
+   "price": 560
+  },
+  "neo1": {
+   "value": 5764,
+   "price": 8100
+  },
+  "neo2": {
+   "value": 6948,
+   "price": 9750
+  },
+  "neo3": {
+   "value": 9685,
+   "price": 13600
+  },
+  "neo4": {
+   "value": 22390,
+   "price": 31350
+  },
+  "pl1": {
+   "value": 5486,
+   "price": 7700
+  },
+  "pl2": {
+   "value": 7405,
+   "price": 10400
+  },
+  "pl3": {
+   "value": 7717,
+   "price": 10850
+  },
+  "pl4": {
+   "value": 5979,
+   "price": 8400
+  },
+  "sm1": {
+   "value": 469,
+   "price": 660
+  },
+  "sm10": {
+   "value": 1185,
+   "price": 1700
+  },
+  "sm11": {
+   "value": 1343,
+   "price": 1900
+  },
+  "sm115": {
+   "value": 776,
+   "price": 1100
+  },
+  "sm12": {
+   "value": 2253,
+   "price": 3200
+  },
+  "sm2": {
+   "value": 618,
+   "price": 870
+  },
+  "sm3": {
+   "value": 588,
+   "price": 830
+  },
+  "sm4": {
+   "value": 642,
+   "price": 900
+  },
+  "sm5": {
+   "value": 1717,
+   "price": 2450
+  },
+  "sm6": {
+   "value": 1282,
+   "price": 1800
+  },
+  "sm7": {
+   "value": 1378,
+   "price": 1950
+  },
+  "sm8": {
+   "value": 1601,
+   "price": 2250
+  },
+  "sm9": {
+   "value": 3661,
+   "price": 5150
+  },
+  "sv01": {
+   "value": 402,
+   "price": 570
+  },
+  "sv02": {
+   "value": 607,
+   "price": 850
+  },
+  "sv03": {
+   "value": 429,
+   "price": 610
+  },
+  "sv03.5": {
+   "value": 1363,
+   "price": 1950
+  },
+  "sv04": {
+   "value": 428,
+   "price": 600
+  },
+  "sv04.5": {
+   "value": 999,
+   "price": 1400
+  },
+  "sv05": {
+   "value": 642,
+   "price": 900
+  },
+  "sv06": {
+   "value": 640,
+   "price": 900
+  },
+  "sv06.5": {
+   "value": 633,
+   "price": 890
+  },
+  "sv07": {
+   "value": 518,
+   "price": 730
+  },
+  "sv08": {
+   "value": 452,
+   "price": 640
+  },
+  "sv08.5": {
+   "value": 844,
+   "price": 1200
+  },
+  "sv09": {
+   "value": 429,
+   "price": 610
+  },
+  "sv10": {
+   "value": 681,
+   "price": 960
+  },
+  "sv10.5b": {
+   "value": 1178,
+   "price": 1650
+  },
+  "sv10.5w": {
+   "value": 972,
+   "price": 1400
+  },
+  "swsh1": {
+   "value": 428,
+   "price": 600
+  },
+  "swsh10": {
+   "value": 374,
+   "price": 530
+  },
+  "swsh10.5": {
+   "value": 683,
+   "price": 960
+  },
+  "swsh11": {
+   "value": 504,
+   "price": 710
+  },
+  "swsh12": {
+   "value": 364,
+   "price": 510
+  },
+  "swsh12.5": {
+   "value": 467,
+   "price": 660
+  },
+  "swsh2": {
+   "value": 393,
+   "price": 560
+  },
+  "swsh3": {
+   "value": 278,
+   "price": 390
+  },
+  "swsh3.5": {
+   "value": 661,
+   "price": 930
+  },
+  "swsh4": {
+   "value": 340,
+   "price": 480
+  },
+  "swsh4.5": {
+   "value": 208,
+   "price": 300
+  },
+  "swsh5": {
+   "value": 383,
+   "price": 540
+  },
+  "swsh6": {
+   "value": 470,
+   "price": 660
+  },
+  "swsh7": {
+   "value": 1161,
+   "price": 1650
+  },
+  "swsh8": {
+   "value": 678,
+   "price": 950
+  },
+  "swsh9": {
+   "value": 415,
+   "price": 590
+  },
+  "xy1": {
+   "value": 1280,
+   "price": 1800
+  },
+  "xy10": {
+   "value": 1286,
+   "price": 1850
+  },
+  "xy11": {
+   "value": 740,
+   "price": 1050
+  },
+  "xy12": {
+   "value": 1703,
+   "price": 2400
+  },
+  "xy2": {
+   "value": 3232,
+   "price": 4550
+  },
+  "xy3": {
+   "value": 1653,
+   "price": 2350
+  },
+  "xy4": {
+   "value": 3759,
+   "price": 5300
+  },
+  "xy5": {
+   "value": 1607,
+   "price": 2250
+  },
+  "xy6": {
+   "value": 1664,
+   "price": 2350
+  },
+  "xy7": {
+   "value": 2415,
+   "price": 3400
+  },
+  "xy8": {
+   "value": 1859,
+   "price": 2650
+  },
+  "xy9": {
+   "value": 1619,
+   "price": 2300
+  }
+ }
+}
