@@ -49,10 +49,14 @@ export function AllCardsPage() {
 
   const cardIds = useMemo(() => entries.map((e) => e.card.id), [entries]);
   const { showPrices, prices, loading } = useCardPrices(cardIds);
-  const priceOf = (e: OwnedCard) => (showPrices ? ownedPrice(prices.get(e.card.id), e.owned) : undefined);
+  const priceById = useMemo(
+    () => new Map(showPrices ? entries.map((e) => [e.card.id, ownedPrice(prices.get(e.card.id), e.owned)]) : []),
+    [entries, prices, showPrices],
+  );
+  const priceOf = (e: OwnedCard) => priceById.get(e.card.id);
   // Sorting by value needs prices; if they're switched off, fall back to recently pulled.
   const order = sort === "value" && !showPrices ? "recent" : sort;
-  const shown = sortCards(entries, order, (e) => priceOf(e)?.amount);
+  const shown = useMemo(() => sortCards(entries, order, (e) => priceById.get(e.card.id)?.amount), [entries, order, priceById]);
   const copies = entries.reduce((n, e) => n + e.owned.total, 0);
 
   const chooseSort = (s: CardSort) => {

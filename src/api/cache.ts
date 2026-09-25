@@ -3,6 +3,8 @@
 
 export interface Cache {
   get<T>(key: string): Promise<T | undefined>;
+  /** Several keys at once, in order; cheaper than one get each where the store supports it. */
+  getMany?<T>(keys: string[]): Promise<(T | undefined)[]>;
   set<T>(key: string, value: T): Promise<void>;
   delete(key: string): Promise<void>;
 }

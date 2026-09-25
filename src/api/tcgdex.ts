@@ -42,6 +42,8 @@ export interface TcgdexClient {
   getPokemonCards(dexId: number): Promise<CardWithSet[]>;
   /** Market prices for one card (REST only; GraphQL has no pricing). Cached per day. */
   getCardPricing(id: string): Promise<CardPricing | null>;
+  /** Today's prices already in the cache for any of `ids`, without fetching the rest. */
+  cachedCardPricing(ids: string[]): Promise<Map<string, CardPricing | null>>;
 }
 
 const RETRYABLE = new Set([429, 500, 502, 503, 504]);
@@ -159,8 +161,11 @@ function fromRest(c: RestCard): Card {
 }
 
 export function createClient(cache: Cache = memoryCache()): TcgdexClient {
+  const cacheKey = (key: string) => `v${CACHE_VERSION}:${key}`;
+  const pricingKey = (id: string) => `pricing:${id}:${new Date().toISOString().slice(0, 10)}`;
+
   async function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
-    const k = `v${CACHE_VERSION}:${key}`;
+    const k = cacheKey(key);
     const hit = await cache.get<T>(k);
     if (hit !== undefined) return hit;
     const value = await load();
@@ -230,10 +235,18 @@ export function createClient(cache: Cache = memoryCache()): TcgdexClient {
       }),
 
     getCardPricing: (id) =>
-      cached(`pricing:${id}:${new Date().toISOString().slice(0, 10)}`, async () => {
+      cached(pricingKey(id), async () => {
         const card = await getJson<{ pricing?: CardPricing }>(`${REST}/cards/${encodeURIComponent(id)}`);
         return card.pricing ?? null;
       }),
+
+    cachedCardPricing: async (ids) => {
+      const keys = ids.map((id) => cacheKey(pricingKey(id)));
+      const hits = await (cache.getMany ? cache.getMany<CardPricing | null>(keys) : Promise.all(keys.map((k) => cache.get<CardPricing | null>(k))));
+      const out = new Map<string, CardPricing | null>();
+      hits.forEach((hit, i) => hit !== undefined && out.set(ids[i], hit));
+      return out;
+    },
   };
   return client;
 }

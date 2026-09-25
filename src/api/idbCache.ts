@@ -36,6 +36,23 @@ export function idbCache(): Cache {
         return fallback.get<T>(key);
       }
     },
+    async getMany<T>(keys: string[]) {
+      try {
+        const store = (await db()).transaction(STORE, "readonly").objectStore(STORE);
+        return await Promise.all(
+          keys.map(
+            (key) =>
+              new Promise<T | undefined>((resolve, reject) => {
+                const req = store.get(key);
+                req.onsuccess = () => resolve(req.result as T | undefined);
+                req.onerror = () => reject(req.error);
+              }),
+          ),
+        );
+      } catch {
+        return Promise.all(keys.map((key) => fallback.get<T>(key)));
+      }
+    },
     async set(key, value) {
       try {
         await run(await db(), "readwrite", (s) => s.put(value, key));
