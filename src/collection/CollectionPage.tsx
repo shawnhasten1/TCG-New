@@ -13,6 +13,7 @@ import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrice
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 import { SetLogo } from "../app/SetLogo";
+import { Spinner } from "../app/Spinner";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -96,7 +97,8 @@ export function CollectionPage() {
       {!source.owner && <GuestNotice />}
       <CollectionViewSwitch current="set" />
       {!pulls || !sets ? (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           Loading…
         </p>
       ) : tallies.length === 0 ? (

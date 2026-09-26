@@ -1,6 +1,6 @@
 // Every card you own (Pokémon, Trainers and Energy) in one list, sorted by value, recently pulled, Pokédex number or name.
 
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import { href } from "../app/router";
 import { updateSettings } from "../app/settings";
@@ -20,6 +20,8 @@ import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
+import { useIncremental } from "./useIncremental";
 
 const SORTS: CardSort[] = ["value", "recent", "dex", "name"];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -53,8 +55,10 @@ export function AllCardsPage() {
   }, [sets, owned]);
 
   const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
-  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, owned: e.owned, favorites })), [entries, filter, favorites]);
-  const filtering = isFiltering(filter);
+  // Typing and menu changes update the controls at once; the (slower) card list catches up behind them.
+  const view = useDeferredValue(filter);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, view, { setName: e.set.name, owned: e.owned, favorites })), [entries, view, favorites]);
+  const filtering = isFiltering(view);
   const matchingIds = useMemo(() => new Set(matching.map((e) => e.card.id)), [matching]);
 
   const cardIds = useMemo(() => entries.map((e) => e.card.id), [entries]);
@@ -66,7 +70,11 @@ export function AllCardsPage() {
   const priceOf = (e: OwnedCard) => priceById.get(e.card.id);
   // Sorting by value needs prices; if they're switched off, fall back to recently pulled.
   const order = sort === "value" && !showPrices ? "recent" : sort;
-  const shown = useMemo(() => sortCards(matching, order, (e) => priceById.get(e.card.id)?.amount), [matching, order, priceById]);
+  const viewOrder = useDeferredValue(order);
+  const pending = view !== filter || viewOrder !== order;
+  const shown = useMemo(() => sortCards(matching, viewOrder, (e) => priceById.get(e.card.id)?.amount), [matching, viewOrder, priceById]);
+  // Back to the first batch on a new search or sort, but not when prices arrive.
+  const { limit, more, sentinel } = useIncremental(shown.length, `${JSON.stringify(view)}|${viewOrder}`);
   const copies = matching.reduce((n, e) => n + e.owned.total, 0);
 
   const chooseSort = (s: CardSort) => {
@@ -85,7 +93,8 @@ export function AllCardsPage() {
       <CollectionViewSwitch current="all" />
 
       {!pulls || !sets ? (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           {progress[1] ? `Loading ${source.owner ? "their" : "your"} sets… ${progress[0]} of ${progress[1]}` : "Loading…"}
         </p>
       ) : entries.length === 0 ? (
@@ -114,15 +123,20 @@ export function AllCardsPage() {
             <PriceToggle />
           </CardFilterBar>
 
-          <p className="muted summary">
+          <p className="muted summary" role="status">
+            {pending && (
+              <span className="updating">
+                <Spinner /> Updating…{" "}
+              </span>
+            )}
             {filtering ? `${matching.length} of ${plural(entries.length, "card")}` : plural(entries.length, "card")} · {copies} {copies === 1 ? "copy" : "copies"}
-            {showPrices && ` · worth ${formatTotals(pullsValue(filtering ? pulls.filter((p) => matchingIds.has(p.cardId) && (filter.finish === "any" || pullHasFinish(p, filter.finish))) : pulls, prices))}`}
-            {showPrices && loading && (order === "value" ? " (loading prices, order may shift…)" : " (loading…)")}
+            {showPrices && ` · worth ${formatTotals(pullsValue(filtering ? pulls.filter((p) => matchingIds.has(p.cardId) && (view.finish === "any" || pullHasFinish(p, view.finish))) : pulls, prices))}`}
+            {showPrices && loading && (viewOrder === "value" ? " (loading prices, order may shift…)" : " (loading…)")}
           </p>
 
-          {shown.length === 0 && <p className="muted empty">No cards match these filters.</p>}
-          <ol className="binder-grid">
-            {shown.map((e) => {
+          {shown.length === 0 && !pending && <p className="muted empty">No cards match these filters.</p>}
+          <ol className="binder-grid" aria-busy={pending}>
+            {shown.slice(0, limit).map((e) => {
               const price = priceOf(e);
               const dex = dexNumber(e);
               return (
@@ -144,14 +158,19 @@ export function AllCardsPage() {
                   </span>
                   <span className="caption">
                     #{e.card.localId}
-                    {order === "dex" && dex !== undefined && ` · Dex ${pad(dex)}`}
-                    {order !== "dex" && ` · ${e.card.rarity}`}
+                    {viewOrder === "dex" && dex !== undefined && ` · Dex ${pad(dex)}`}
+                    {viewOrder !== "dex" && ` · ${e.card.rarity}`}
                     {price && <span className="price"> · {formatPrice(price)}</span>}
                   </span>
                 </li>
               );
             })}
           </ol>
+          {more && (
+            <p className="muted loading-line more-cards" ref={sentinel}>
+              <Spinner /> Loading more cards…
+            </p>
+          )}
         </>
       )}
 

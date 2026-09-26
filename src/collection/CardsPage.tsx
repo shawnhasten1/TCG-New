@@ -1,6 +1,6 @@
 // Collection by rarity or finish: every card you own across all sets, grouped rarest first.
 
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import { href } from "../app/router";
 import { layoutFor } from "../foil/layouts";
@@ -18,6 +18,8 @@ import { useOpenedSets } from "./useOpenedSets";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
+import { Spinner } from "../app/Spinner";
+import { useIncremental } from "./useIncremental";
 import { RetryImg } from "../app/RetryImg";
 
 type Sort = "recent" | "set" | "copies" | "price";
@@ -55,9 +57,14 @@ export function CardsPage() {
     return out;
   }, [sets, owned]);
   const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
-  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, favorites })), [entries, filter, favorites]);
+  // The controls change at once; the (slower) card list catches up with these deferred copies.
+  const view = useDeferredValue(filter);
+  const viewGroupBy = useDeferredValue(groupBy);
+  const viewFinish = useDeferredValue(finish);
+  const viewRarity = useDeferredValue(rarity);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, view, { setName: e.set.name, favorites })), [entries, view, favorites]);
   const rarities = useMemo(() => sortRarities(entries.map((e) => e.card.rarity)), [entries]);
-  const groups = useMemo(() => groupCards(matching, { groupBy, finish, rarity }), [matching, groupBy, finish, rarity]);
+  const groups = useMemo(() => groupCards(matching, { groupBy: viewGroupBy, finish: viewFinish, rarity: viewRarity }), [matching, viewGroupBy, viewFinish, viewRarity]);
 
   // Prices only for the cards on screen, so filters keep the fetching down.
   const visibleIds = useMemo(() => groups.flatMap((g) => g.tiles.map((t) => t.card.id)), [groups]);
@@ -79,10 +86,22 @@ export function CardsPage() {
     price: (a, b) => (tilePrice(b)?.amount ?? -1) - (tilePrice(a)?.amount ?? -1),
   };
   const order = sort === "price" && !showPrices ? "recent" : sort;
-  const shown = groups.map((g) => ({ ...g, tiles: [...g.tiles].sort((a, b) => compare[order](a, b) || compare.recent(a, b)) }));
+  const viewOrder = useDeferredValue(order);
+  const pending = view !== filter || viewGroupBy !== groupBy || viewFinish !== finish || viewRarity !== rarity || viewOrder !== order;
+  const shown = groups.map((g) => ({ ...g, tiles: [...g.tiles].sort((a, b) => compare[viewOrder](a, b) || compare.recent(a, b)) }));
+  // Draw a batch of tiles at a time across the groups, back to the first batch on a new search, filter or sort.
+  const { limit, more, sentinel } = useIncremental(visibleIds.length, `${JSON.stringify(view)}|${viewGroupBy}|${viewFinish}|${viewRarity}|${viewOrder}`);
+  let budget = limit;
+  const drawn = shown
+    .map((g) => {
+      const tiles = g.tiles.slice(0, Math.max(0, budget));
+      budget -= tiles.length;
+      return { ...g, all: g.tiles, tiles };
+    })
+    .filter((g) => g.tiles.length);
   const cardCount = new Set(visibleIds).size;
   // In finish groups a 1st Edition copy is also a holo or normal one; count it once.
-  const counted = groupBy === "finish" && finish === "any" ? groups.filter((g) => g.key !== "firstEdition") : groups;
+  const counted = viewGroupBy === "finish" && viewFinish === "any" ? groups.filter((g) => g.key !== "firstEdition") : groups;
   const copies = counted.reduce((n, g) => n + g.tiles.reduce((m, t) => m + t.count, 0), 0);
 
   return (
@@ -96,7 +115,8 @@ export function CardsPage() {
       <CollectionViewSwitch current="cards" />
 
       {!pulls || !sets ? (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           {progress[1] ? `Loading ${source.owner ? "their" : "your"} sets… ${progress[0]} of ${progress[1]}` : "Loading…"}
         </p>
       ) : entries.length === 0 ? (
@@ -155,19 +175,24 @@ export function CardsPage() {
             </label>
           </CardFilterBar>
 
-          <p className="muted summary">
+          <p className="muted summary" role="status">
+            {pending && (
+              <span className="updating">
+                <Spinner /> Updating…{" "}
+              </span>
+            )}
             {plural(cardCount, "card")} · {copies} {copies === 1 ? "copy" : "copies"}
-            {showPrices && ` · worth ${value(groups.flatMap((g) => g.tiles), finish)}${loading ? " (loading…)" : ""}`}
+            {showPrices && ` · worth ${value(groups.flatMap((g) => g.tiles), viewFinish)}${loading ? " (loading…)" : ""}`}
           </p>
 
-          {shown.length === 0 && <p className="muted empty">No cards match these filters.</p>}
-          {shown.map((g) => (
-            <section key={g.key}>
+          {shown.length === 0 && !pending && <p className="muted empty">No cards match these filters.</p>}
+          {drawn.map((g) => (
+            <section key={g.key} aria-busy={pending}>
               <h2>
-                {groupBy === "finish" ? FINISH_HEADING[g.key as FinishKey] : g.key}{" "}
+                {viewGroupBy === "finish" ? FINISH_HEADING[g.key as FinishKey] : g.key}{" "}
                 <span className="muted">
-                  · {plural(g.tiles.length, "card")}
-                  {showPrices && ` · ${value(g.tiles, groupBy === "finish" ? (g.key as FinishKey) : finish)}`}
+                  · {plural(g.all.length, "card")}
+                  {showPrices && ` · ${value(g.all, viewGroupBy === "finish" ? (g.key as FinishKey) : viewFinish)}`}
                 </span>
               </h2>
               <ol className="binder-grid">
@@ -192,10 +217,10 @@ export function CardsPage() {
                       </span>
                       <span className="caption">
                         #{t.card.localId}
-                        {groupBy === "finish" ? ` · ${t.card.rarity}` : ""}
+                        {viewGroupBy === "finish" ? ` · ${t.card.rarity}` : ""}
                         {price && <span className="price"> · {formatPrice(price)}</span>}
                       </span>
-                      {groupBy === "rarity" && (
+                      {viewGroupBy === "rarity" && (
                         <ul className="finish-chips" aria-label="Finishes">
                           {FINISH_ORDER.filter((f) => finishCount(t.owned, f) > 0).map((f) => (
                             <li key={f} data-f={f} data-owned="true">
@@ -210,6 +235,11 @@ export function CardsPage() {
               </ol>
             </section>
           ))}
+          {more && (
+            <p className="muted loading-line more-cards" ref={sentinel}>
+              <Spinner /> Loading more cards…
+            </p>
+          )}
         </>
       )}
 

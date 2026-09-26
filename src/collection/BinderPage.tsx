@@ -1,6 +1,6 @@
 // A set's binder: every card in number order, missing ones faded, with copies and completion.
 
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import type { Card, SetData } from "../api/types";
 import { client } from "../app/client";
@@ -21,6 +21,7 @@ import { ask } from "../app/Confirm";
 import "./collection.css";
 import { SetLogo } from "../app/SetLogo";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
 
@@ -33,6 +34,10 @@ export function BinderPage({ setId }: { setId: string }) {
   const [search, setSearch] = useState<CardFilter>(NO_FILTER);
   const [selected, setSelected] = useState<Card>();
   const favorites = useFavorites().ids;
+  // The search box and buttons change at once; the card grid catches up with these deferred copies.
+  const view = useDeferredValue(search);
+  const viewFilter = useDeferredValue(filter);
+  const pending = view !== search || viewFilter !== filter;
 
   useEffect(() => {
     let live = true;
@@ -58,14 +63,14 @@ export function BinderPage({ setId }: { setId: string }) {
   const value = useMemo(() => (showPrices && pulls ? pullsValue(pulls, prices) : undefined), [showPrices, pulls, prices]);
 
   if (error) return <main className="collection"><p className="error">Couldn't load this set. {error}</p></main>;
-  if (!data || !pulls || !progress) return <main className="collection"><p className="muted" role="status">Loading binder…</p></main>;
+  if (!data || !pulls || !progress) return <main className="collection"><p className="muted loading-line" role="status"><Spinner /> Loading binder…</p></main>;
 
   const visible = data.cards.filter((c) => {
     const o = owned.get(c.id);
-    if (!matchesCard(c, search, { setName: data.set.name, owned: o, favorites })) return false;
-    if (filter === "owned") return !!o;
-    if (filter === "missing") return !o && pullable.has(c.id);
-    if (filter === "duplicates") return (o?.total ?? 0) > 1;
+    if (!matchesCard(c, view, { setName: data.set.name, owned: o, favorites })) return false;
+    if (viewFilter === "owned") return !!o;
+    if (viewFilter === "missing") return !o && pullable.has(c.id);
+    if (viewFilter === "duplicates") return (o?.total ?? 0) > 1;
     return true;
   });
   const layout = layoutFor(data.set.serie.id);
@@ -162,10 +167,10 @@ export function BinderPage({ setId }: { setId: string }) {
 
       {visible.length === 0 ? (
         <p className="muted empty">
-          {isFiltering(search) ? "No cards match these filters." : filter === "all" ? "This set has no cards." : `No ${filter} cards.`}
+          {isFiltering(view) ? "No cards match these filters." : viewFilter === "all" ? "This set has no cards." : `No ${viewFilter} cards.`}
         </p>
       ) : (
-        <ol className="binder-grid">
+        <ol className="binder-grid" aria-busy={pending}>
           {visible.map((c) => {
             const o = owned.get(c.id);
             const state = o ? "owned" : pullable.has(c.id) ? "missing" : "unpullable";

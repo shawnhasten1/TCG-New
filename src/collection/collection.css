@@ -384,3 +384,8 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .collection .sets-toolbar { display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: center; justify-content: space-between; margin: 12px 0; }
 .collection .sets-toolbar p { margin: 0; }
 .collection .sets-toolbar label { display: flex; gap: 6px; align-items: center; color: var(--muted); cursor: pointer; }
+
+/* ---------- Loading and updating ---------- */
+.collection .updating { display: inline-flex; gap: 6px; align-items: center; color: var(--ink); }
+.collection [aria-busy="true"] { opacity: .55; transition: opacity .15s .1s; }
+.collection .more-cards { justify-content: center; padding: 24px 0; }

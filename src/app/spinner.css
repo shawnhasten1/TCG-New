@@ -1,0 +1,10 @@
+.spinner {
+  display: inline-block; flex: none; vertical-align: -0.15em; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 22%, transparent); border-top-color: currentColor;
+  animation: spinner-turn .75s linear infinite;
+}
+@keyframes spinner-turn { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+
+/* A status line with a spinner in front: "⟳ Loading your sets… 3 of 9". */
+.loading-line { display: flex; gap: 10px; align-items: center; }

@@ -14,6 +14,7 @@ import { getWrappers, onCollectionChange, type WrapperRecord } from "./store";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -74,7 +75,8 @@ export function PacksPage() {
       <GuestNotice />
       <CollectionViewSwitch current="packs" />
       {!wrappers ? (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           Loading…
         </p>
       ) : (

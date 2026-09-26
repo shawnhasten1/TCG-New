@@ -16,6 +16,7 @@ import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
 
 type Show = "all" | "owned" | "missing";
 const pad = (n: number) => String(n).padStart(4, "0");
@@ -112,7 +113,8 @@ export function PokemonPage({ dexId }: { dexId: number }) {
 
       {error && <p className="error">Couldn't load {name}'s cards. {error}</p>}
       {!error && (!cards || !sets || !pulls) && (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           Loading every {name} card…
         </p>
       )}

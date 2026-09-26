@@ -11,6 +11,7 @@ import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrice
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
 
 type Show = "all" | "caught" | "missing";
 type Sort = "dex" | "copies" | "recent";
@@ -94,7 +95,8 @@ export function PokedexPage() {
       </div>
 
       {!pulls || !cards ? (
-        <p className="muted" role="status">
+        <p className="muted loading-line" role="status">
+          <Spinner />
           {progress[1] ? `Loading your sets… ${progress[0]} of ${progress[1]}` : "Loading…"}
         </p>
       ) : (
