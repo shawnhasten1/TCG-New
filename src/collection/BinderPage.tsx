@@ -11,6 +11,7 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { isFiltering, matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
 import { CardFilterBar } from "./CardFilterBar";
+import { useFavorites } from "./favorites";
 import { formatPrice } from "./prices";
 import { isMainSet, ownership, setProgress } from "./progress";
 import { useCollectionSource, whose } from "./source";
@@ -31,6 +32,7 @@ export function BinderPage({ setId }: { setId: string }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState<CardFilter>(NO_FILTER);
   const [selected, setSelected] = useState<Card>();
+  const favorites = useFavorites().ids;
 
   useEffect(() => {
     let live = true;
@@ -60,7 +62,7 @@ export function BinderPage({ setId }: { setId: string }) {
 
   const visible = data.cards.filter((c) => {
     const o = owned.get(c.id);
-    if (!matchesCard(c, search, { setName: data.set.name, owned: o })) return false;
+    if (!matchesCard(c, search, { setName: data.set.name, owned: o, favorites })) return false;
     if (filter === "owned") return !!o;
     if (filter === "missing") return !o && pullable.has(c.id);
     if (filter === "duplicates") return (o?.total ?? 0) > 1;
@@ -176,10 +178,11 @@ export function BinderPage({ setId }: { setId: string }) {
                   className="binder-slot"
                   data-state={state}
                   onClick={() => setSelected(c)}
-                  aria-label={`${c.name}, #${c.localId}, ${state === "owned" ? `owned ×${o!.total}` : state === "missing" ? "missing" : "not in packs"}`}
+                  aria-label={`${c.name}, #${c.localId}, ${state === "owned" ? `owned ×${o!.total}` : state === "missing" ? "missing" : "not in packs"}${favorites.has(c.id) ? ", favorite" : ""}`}
                 >
                   <RetryImg src={cardImage(c, "low")} alt="" loading="lazy" />
                   {o && o.total > 1 && <span className="count">×{o.total}</span>}
+                  {favorites.has(c.id) && <span className="fav" aria-hidden="true">★</span>}
                   {o && (
                     <span className="finishes">
                       {o.byFinish.holo > 0 && <span data-f="holo">Holo</span>}

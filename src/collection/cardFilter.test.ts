@@ -43,6 +43,15 @@ describe("matchesCard", () => {
     expect(match(pikachu, { finish: "holo" }, { owned: owned(0) })).toBe(false);
     expect(match(pikachu, { finish: "holo" })).toBe(false);
   });
+
+  it("keeps only favorites when asked", () => {
+    const favorites = new Set([pikachu.id]);
+    expect(match(pikachu, { favorites: true }, { favorites })).toBe(true);
+    expect(match(flabebe, { favorites: true }, { favorites })).toBe(false);
+    expect(match(pikachu, { favorites: true })).toBe(false);
+    expect(match(flabebe, {}, { favorites })).toBe(true);
+    expect(match(pikachu, { favorites: true, query: "pika" }, { favorites })).toBe(true);
+  });
 });
 
 describe("filterOptions", () => {

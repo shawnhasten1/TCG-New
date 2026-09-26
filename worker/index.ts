@@ -3,6 +3,7 @@
 
 import { handleAuth } from "./auth";
 import { handleCollection } from "./collection";
+import { handleFavorites } from "./favorites";
 import { handleFeed } from "./feed";
 import { handleFriends } from "./friends";
 import { handleMarket } from "./market";
@@ -21,6 +22,7 @@ async function route(ctx: Ctx): Promise<Response> {
   if (pathname === "/api/feed" || pathname.startsWith("/api/feed/")) return handleFeed(ctx);
   if (pathname === "/api/trades" || pathname.startsWith("/api/trades/")) return handleTrades(ctx);
   if (pathname === "/api/wallet") return handleWallet(ctx);
+  if (pathname === "/api/favorites" || pathname.startsWith("/api/favorites/")) return handleFavorites(ctx);
   if (pathname === "/api/market" || pathname.startsWith("/api/market/")) return handleMarket(ctx);
   if (pathname === "/api/friends" || pathname.startsWith("/api/friends/") || pathname === "/api/social/inbox") return handleFriends(ctx);
   throw new HttpError(404, "Not found");

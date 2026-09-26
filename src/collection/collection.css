@@ -296,6 +296,11 @@ html:has(.card-detail[open]) { overflow: hidden; }
 :is(.pokemon-page, .cards-page) .binder-slot .no-scan { display: grid; place-items: center; height: 100%; border-radius: inherit; border: 1px dashed color-mix(in srgb, var(--ink) 25%, transparent); color: var(--muted); font-size: .85rem; }
 :is(.pokemon-page, .cards-page) .binder-slot .count { position: absolute; top: 6px; right: 6px; padding: 3px 8px; border-radius: 999px; font: 800 .8rem/1 "Alegreya Sans", sans-serif; background: var(--btn-on); color: var(--btn-on-ink); }
 :is(.pokemon-page, .cards-page) .binder-slot .note { position: absolute; inset: auto 4px 40% 4px; text-align: center; font-weight: 700; font-size: .78rem; color: var(--muted); }
+/* A favorite's star, in the corner the copy count leaves free. */
+:is(.binder, .pokemon-page, .cards-page) .binder-slot .fav {
+  position: absolute; top: 5px; left: 5px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 999px;
+  font-size: .9rem; line-height: 1; color: #fff; background: #1c1b22d9; box-shadow: 0 1px 4px #0006;
+}
 :is(.pokemon-page, .cards-page) .caption { font-size: .82rem; color: var(--muted); }
 :is(.pokemon-page, .cards-page) .caption .price { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 :is(.pokemon-page, .cards-page) .finish-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
@@ -308,6 +313,11 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .all-cards .binder-grid { margin-top: 18px; }
 .cards-page .set-label { font-weight: 600; }
 .pokemon-page .footnote { margin-top: 28px; font-size: .9rem; max-width: 75ch; }
+.card-detail .favorite-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 10px 0 0; }
+.card-detail .favorite { display: inline-flex; gap: 6px; align-items: center; }
+.card-detail .favorite [aria-hidden] { font-size: 1.15em; line-height: 1; }
+.card-detail .favorite[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-ink); }
+.card-detail .favorite-row .error { font-size: .85rem; }
 .card-detail .species-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; }
 .card-detail .species-links a { color: var(--focus); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .pokedex .dex-grid img { transition: none; } .pokedex .dex-grid a:hover img { transform: none; } }
@@ -356,6 +366,11 @@ html:has(.card-detail[open]) { overflow: hidden; }
 .collection .card-filters label { display: flex; gap: 6px; align-items: center; color: var(--muted); cursor: pointer; }
 .collection .card-filters .filters-toggle { display: inline-flex; gap: 6px; align-items: center; flex: none; }
 .collection .card-filters .filters-toggle[aria-expanded="true"] { background: var(--btn-on); color: var(--btn-on-ink); }
+.collection .card-filters .favorites-toggle { display: inline-flex; gap: 6px; align-items: center; flex: none; }
+.collection .card-filters .favorites-toggle[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-ink); }
+.collection .card-filters .favorites-toggle [aria-hidden] { font-size: 1.1em; line-height: 1; }
+.collection .card-filters .hint { margin: 8px 0 0; font-size: .9rem; }
+@media (max-width: 480px) { .collection .card-filters .favorites-toggle .label { display: none; } }
 .collection .card-filters .badge { min-width: 1.3em; padding: 2px 6px; border-radius: 999px; font-size: .75rem; background: var(--focus); color: var(--bg); }
 .collection .card-filters .filter-panel {
   display: grid; gap: 12px 14px; align-items: end; grid-template-columns: repeat(auto-fill, minmax(min(170px, 40vw), 1fr));

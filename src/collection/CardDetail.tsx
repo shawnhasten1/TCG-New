@@ -11,6 +11,7 @@ import { href } from "../app/router";
 import { useSettings } from "../app/settings";
 import { followMotion, recenterMotion } from "../opener/motion";
 import { Tilt } from "../opener/tilt";
+import { setFavorite, useFavorites } from "./favorites";
 import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
 import type { Ownership } from "./progress";
@@ -59,6 +60,13 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
   const sheetPull = useRef<{ y: number; dy: number } | null>(null);
   const coarse = useMemo(() => matchMedia("(pointer: coarse)").matches, []);
   const { motion } = useSettings();
+  const favorites = useFavorites();
+  const favorite = favorites.ids.has(card.id);
+  const [favError, setFavError] = useState<string>();
+  const toggleFavorite = () => {
+    setFavError(undefined);
+    setFavorite(card.id, !favorite).catch((err) => setFavError(err instanceof Error ? err.message : String(err)));
+  };
   useEffect(() => (motion ? followMotion(tilt) : undefined), [tilt, motion]);
 
   useEffect(() => {
@@ -219,6 +227,14 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             {/^\d+$/.test(card.localId) ? ` / ${official}` : ""} · {card.rarity}
             {card.category ? ` · ${card.category === "Pokemon" ? "Pokémon" : card.category}` : ""}
           </p>
+          {favorites.available && (
+            <p className="favorite-row">
+              <button type="button" className="favorite" aria-pressed={favorite} onClick={toggleFavorite}>
+                <span aria-hidden="true">{favorite ? "★" : "☆"}</span> {favorite ? "Favorite" : "Add to favorites"}
+              </button>
+              {favError && <span className="error">{favError}</span>}
+            </p>
+          )}
 
           {finishes.length > 1 && (
             <div className="finish-tabs" role="group" aria-label="Show finish">

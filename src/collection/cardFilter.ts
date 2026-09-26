@@ -14,13 +14,15 @@ export interface CardFilter {
   rarity: string;
   /** Owned in this finish; cards you don't own never match a finish. */
   finish: FinishKey | "any";
+  /** Only cards you've starred (see favorites.ts). */
+  favorites: boolean;
 }
 
-export const NO_FILTER: CardFilter = { query: "", category: "all", type: "all", rarity: "all", finish: "any" };
+export const NO_FILTER: CardFilter = { query: "", category: "all", type: "all", rarity: "all", finish: "any", favorites: false };
 
 export const CATEGORY_LABEL: Record<CardCategory, string> = { Pokemon: "Pokémon", Trainer: "Trainer", Energy: "Energy" };
 
-export const isFiltering = (f: CardFilter) => f.query.trim() !== "" || f.category !== "all" || f.type !== "all" || f.rarity !== "all" || f.finish !== "any";
+export const isFiltering = (f: CardFilter) => f.query.trim() !== "" || f.category !== "all" || f.type !== "all" || f.rarity !== "all" || f.finish !== "any" || f.favorites;
 
 /** Lower case with accents dropped, so "pokemon" finds "Pokémon". */
 export const fold = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
@@ -43,7 +45,8 @@ const searchText = (card: Card, setName: string) =>
       .join(" "),
   );
 
-export function matchesCard(card: Card, filter: CardFilter, opts: { setName?: string; owned?: Ownership } = {}): boolean {
+export function matchesCard(card: Card, filter: CardFilter, opts: { setName?: string; owned?: Ownership; favorites?: ReadonlySet<string> } = {}): boolean {
+  if (filter.favorites && !opts.favorites?.has(card.id)) return false;
   if (filter.category !== "all" && card.category !== filter.category) return false;
   if (filter.type !== "all" && !card.types?.includes(filter.type)) return false;
   if (filter.rarity !== "all" && card.rarity !== filter.rarity) return false;

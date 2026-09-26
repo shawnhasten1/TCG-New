@@ -1,9 +1,11 @@
 // Search box and filter menus shared by the binder and the collection views. The menus fold away behind a "Filters" button
-// so the page stays tidy on a phone; menus with nothing to choose from are left out.
+// so the page stays tidy on a phone; menus with nothing to choose from are left out. The favorites toggle stays out
+// beside them, one tap away, whenever someone's signed in to have favorites.
 
 import { useMemo, useState, type ReactNode } from "react";
 import type { Card } from "../api/types";
 import { FINISH_ORDER } from "./cardGroups";
+import { useFavorites } from "./favorites";
 import { CATEGORY_LABEL, filterOptions, isFiltering, NO_FILTER, type CardFilter } from "./cardFilter";
 import type { FinishKey } from "./pokedex";
 
@@ -31,6 +33,7 @@ export function CardFilterBar({
   pageFiltersInUse?: number;
 }) {
   const [open, setOpen] = useState(false);
+  const favorites = useFavorites();
   const { categories, types, rarities } = useMemo(() => filterOptions(cards), [cards]);
   const set = (patch: Partial<CardFilter>) => onChange({ ...filter, ...patch });
   // Keep a hidden menu's value when clearing, since the page owns it.
@@ -43,10 +46,17 @@ export function CardFilterBar({
     <div className="card-filters">
       <div className="search-row">
         <input type="search" placeholder={placeholder} value={filter.query} onChange={(e) => set({ query: e.target.value })} aria-label="Search cards" />
+        {favorites.available && (
+          <button type="button" className="favorites-toggle" aria-pressed={filter.favorites} aria-label="Favorites only" title="Show only favorites" onClick={() => set({ favorites: !filter.favorites })}>
+            <span aria-hidden="true">{filter.favorites ? "★" : "☆"}</span>
+            <span className="label">Favorites</span>
+          </button>
+        )}
         <button type="button" className="filters-toggle" aria-expanded={open} aria-controls="card-filter-panel" onClick={() => setOpen(!open)}>
           Filters{inUse > 0 && <span className="badge">{inUse}</span>}
         </button>
       </div>
+      {filter.favorites && favorites.ids.size === 0 && <p className="muted hint">No favorites yet. Open a card and tap ☆ to add it.</p>}
       {open && (
         <div className="filter-panel" id="card-filter-panel">
           {children}

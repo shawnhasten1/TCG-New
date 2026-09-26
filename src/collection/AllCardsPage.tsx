@@ -8,6 +8,7 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { isFiltering, matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
 import { CardFilterBar } from "./CardFilterBar";
+import { useFavorites } from "./favorites";
 import { pullHasFinish, type OwnedCard } from "./cardGroups";
 import { CARD_SORT_LABEL, dexNumber, sortCards, type CardSort } from "./cardSort";
 import { formatPrice } from "./prices";
@@ -30,6 +31,7 @@ export function AllCardsPage() {
   const [sort, setSort] = useState<CardSort>("recent");
   const [selected, setSelected] = useState<OwnedCard>();
   const [filter, setFilter] = useState<CardFilter>(NO_FILTER);
+  const favorites = useFavorites().ids;
 
   useEffect(() => {
     let live = true;
@@ -51,7 +53,7 @@ export function AllCardsPage() {
   }, [sets, owned]);
 
   const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
-  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, owned: e.owned })), [entries, filter]);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, owned: e.owned, favorites })), [entries, filter, favorites]);
   const filtering = isFiltering(filter);
   const matchingIds = useMemo(() => new Set(matching.map((e) => e.card.id)), [matching]);
 
@@ -130,10 +132,11 @@ export function AllCardsPage() {
                     className="binder-slot"
                     data-state="owned"
                     onClick={() => setSelected(e)}
-                    aria-label={`${e.card.name}, ${e.set.name} #${e.card.localId}, ${e.card.rarity}, ×${e.owned.total}`}
+                    aria-label={`${e.card.name}, ${e.set.name} #${e.card.localId}, ${e.card.rarity}, ×${e.owned.total}${favorites.has(e.card.id) ? ", favorite" : ""}`}
                   >
                     {e.card.image ? <RetryImg src={cardImage(e.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
                     {e.owned.total > 1 && <span className="count">×{e.owned.total}</span>}
+                    {favorites.has(e.card.id) && <span className="fav" aria-hidden="true">★</span>}
                   </button>
                   <span className="set-label">
                     {e.card.name}

@@ -7,6 +7,7 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
 import { CardFilterBar } from "./CardFilterBar";
+import { useFavorites } from "./favorites";
 import { FINISH_ORDER, finishCount, groupCards, pullHasFinish, sortRarities, type GroupBy, type OwnedCard, type Tile } from "./cardGroups";
 import { FINISH_LABEL, type FinishKey } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
@@ -33,6 +34,7 @@ export function CardsPage() {
   const [selected, setSelected] = useState<Tile>();
   // Rarity and finish have their own menus here, so the filter bar only searches and picks card and Pokémon type.
   const [filter, setFilter] = useState<CardFilter>(NO_FILTER);
+  const favorites = useFavorites().ids;
 
   useEffect(() => {
     let live = true;
@@ -53,7 +55,7 @@ export function CardsPage() {
     return out;
   }, [sets, owned]);
   const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
-  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name })), [entries, filter]);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, favorites })), [entries, filter, favorites]);
   const rarities = useMemo(() => sortRarities(entries.map((e) => e.card.rarity)), [entries]);
   const groups = useMemo(() => groupCards(matching, { groupBy, finish, rarity }), [matching, groupBy, finish, rarity]);
 
@@ -178,10 +180,11 @@ export function CardsPage() {
                         className="binder-slot"
                         data-state="owned"
                         onClick={() => setSelected(t)}
-                        aria-label={`${t.card.name}, ${t.set.name} #${t.card.localId}, ${t.card.rarity}, ×${t.count}`}
+                        aria-label={`${t.card.name}, ${t.set.name} #${t.card.localId}, ${t.card.rarity}, ×${t.count}${favorites.has(t.card.id) ? ", favorite" : ""}`}
                       >
                         {t.card.image ? <RetryImg src={cardImage(t.card, "low")} alt="" loading="lazy" /> : <span className="no-scan">No scan</span>}
                         {t.count > 1 && <span className="count">×{t.count}</span>}
+                        {favorites.has(t.card.id) && <span className="fav" aria-hidden="true">★</span>}
                       </button>
                       <span className="set-label">
                         {t.card.name}
