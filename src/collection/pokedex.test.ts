@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Card, CardWithSet, SetSummary } from "../api/types";
 import { profiles } from "../engine/profiles";
-import { buildPrintings, fullDex, groupByEra, obtainableFinishes, ownedSpecies, pokemonName, pokemonProgress, regionOf, searchPokemon } from "./pokedex";
+import { buildPrintings, fullDex, groupByEra, newEntryIds, obtainableFinishes, ownedSpecies, pokemonName, pokemonProgress, regionOf, searchPokemon } from "./pokedex";
 import type { Ownership } from "./progress";
 
 const profile = (id: string) => profiles.find((p) => p.id === id)!;
@@ -159,5 +159,15 @@ describe("fullDex", () => {
     const paldea = fullDex(ownedSpecies([newmon], new Map([own(newmon.id, { normal: 1 })]))).at(-1)!;
     expect(paldea.entries.at(-1)).toMatchObject({ dexId: 1030, name: "Newmon" });
     expect(paldea.entries).toHaveLength(125);
+  });
+});
+
+describe("newEntryIds", () => {
+  it("marks cards of Pokémon not caught yet, counting a tag team if any Pokémon on it is new", () => {
+    const pikachu = card("sv1-25", "Common");
+    const tag = card("sm9-33", "Ultra Rare", {}, { name: "Pikachu & Zekrom GX", dexId: [25, 644] });
+    const trainer: Card = { ...card("sv1-190", "Uncommon"), category: "Trainer", dexId: null };
+    expect(newEntryIds([pikachu, tag, trainer], new Set([25]))).toEqual(new Set(["sm9-33"]));
+    expect(newEntryIds([pikachu, tag], new Set([25, 644]))).toEqual(new Set());
   });
 });

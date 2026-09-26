@@ -7,6 +7,8 @@ import { isMember, useAccount } from "../account/account";
 import type { SetData } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
+import { caughtDex } from "../collection/caughtDex";
+import { newEntryIds } from "../collection/pokedex";
 import { getPulls, savePack } from "../collection/store";
 import type { PulledCard } from "../engine/types";
 import { OpenerBar } from "../opener/OpenerBar";
@@ -27,6 +29,7 @@ interface Ready {
   data: SetData;
   pulls: PulledCard[];
   newIds: Set<string>;
+  newEntries: Set<string>;
 }
 
 type Stage = { state: "loading"; done: number; total: number } | { state: "error"; message: string } | { state: "ready"; ready: Ready };
@@ -59,11 +62,15 @@ export function BoughtPackPage({ packId }: { packId: string }) {
         pulls = toPulls(pack, data);
         if (!pulls) throw new Error("This pack has cards the card database doesn't know yet. Try again in a while.");
       }
-      const have = new Set((await getPulls(pack.setId)).map((p) => p.cardId));
+      const all = await getPulls();
+      const have = new Set(all.filter((p) => p.setId === pack.setId).map((p) => p.cardId));
       const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have.has(id)));
+      // Without the Pokédex, nothing is marked a new entry.
+      const dex = await caughtDex(all).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
+      const newEntries = dex ? newEntryIds(pulls.map((p) => p.card), dex) : new Set<string>();
       const art = packArt(pack.setId, pack.art);
       if (art) await withTimeout(preloadImage(art.src), 4000);
-      if (live) setStage({ state: "ready", ready: { pack, data, pulls, newIds } });
+      if (live) setStage({ state: "ready", ready: { pack, data, pulls, newIds, newEntries } });
     })().catch((err) => live && setStage({ state: "error", message: errorText(err) }));
     othersThan(packId).then(
       (o) => live && setOthers(o),
@@ -100,7 +107,7 @@ export function BoughtPackPage({ packId }: { packId: string }) {
     );
   }
 
-  const { pack, data, pulls, newIds } = stage.ready;
+  const { pack, data, pulls, newIds, newEntries } = stage.ready;
   const wrapper = packArt(pack.setId, pack.art);
   const save = () => {
     savePack(pack.dealId, data.set.id, pulls, new Date(), wrapper?.id).then(
@@ -117,6 +124,7 @@ export function BoughtPackPage({ packId }: { packId: string }) {
       set={data.set}
       pulls={pulls}
       newIds={newIds}
+      newEntryIds={newEntries}
       packPhoto={wrapper}
       onOpened={save}
       onAgain={next}

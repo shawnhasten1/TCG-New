@@ -220,6 +220,14 @@ export function fullDex(species: SpeciesEntry[]): RegionDex[] {
   return out;
 }
 
+/** The National Pokédex numbers a card counts toward: none for trainers and energy. */
+export const speciesOf = (card: Card): number[] => (card.category === "Pokemon" && card.dexId?.length ? card.dexId : []);
+
+/** Ids of the cards that would add a Pokémon to the Pokédex. A tag-team card counts if any Pokémon on it is new. */
+export function newEntryIds(cards: Card[], caught: Set<number>): Set<string> {
+  return new Set(cards.filter((c) => speciesOf(c).some((d) => !caught.has(d))).map((c) => c.id));
+}
+
 /** Owned Pokémon cards grouped by species. Tag-team cards count toward each Pokémon on them. */
 export function ownedSpecies(ownedCards: Card[], owned: Map<string, Ownership>): SpeciesEntry[] {
   const by = new Map<number, SpeciesEntry>();

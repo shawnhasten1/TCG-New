@@ -9,7 +9,9 @@ import type { SetData } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
 import { useSettings } from "../app/settings";
+import { caughtDex } from "../collection/caughtDex";
 import { formatCountdown } from "../collection/daily";
+import { newEntryIds, speciesOf } from "../collection/pokedex";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
@@ -31,6 +33,7 @@ interface Ready {
   data: SetData;
   pulls: PulledCard[];
   newIds: Set<string>;
+  newEntries: Set<string>;
 }
 
 type Stage =
@@ -76,6 +79,8 @@ export function OpenPage() {
 
   /** Card ids already collected, per set, kept current as packs are saved. */
   const owned = useRef(new Map<string, Set<string>>());
+  /** Pokémon already caught (undefined if they couldn't be read), kept current as packs are saved. */
+  const caught = useRef<Promise<Set<number> | undefined>>(Promise.resolve(undefined));
   /** Set of every opened pack, oldest first, for the pity note. */
   const history = useRef<string[]>([]);
   const upcoming = useRef<Upcoming | undefined>(undefined);
@@ -102,10 +107,13 @@ export function OpenPage() {
     // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
     const have = owned.current.get(pack.setId);
     const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have?.has(id)));
+    // Don't hold the pack up for long on reading the Pokédex; without it, nothing is marked a new entry.
+    const dex = await Promise.race([caught.current, new Promise<undefined>((r) => setTimeout(r, 5000))]);
+    const newEntries = dex ? newEntryIds(pulls.map((p) => p.card), dex) : new Set<string>();
     // The wrapper shows first, so have it ready (it falls back to the plain one if it doesn't load).
     const art = packArt(pack.setId, pack.art);
     if (art) await withTimeout(preloadImage(art.src), 4000);
-    return { res, ready: { pack, data, pulls, newIds } };
+    return { res, ready: { pack, data, pulls, newIds, newEntries } };
   }, []);
 
   /** Puts a pack on screen: the one dealt ahead of time, or a fresh deal. */
@@ -125,13 +133,14 @@ export function OpenPage() {
     [request],
   );
 
-  // Start: read the collection (for "new" badges and the pity note), then get a pack.
+  // Start: read the collection (for "new" and "new entry" badges and the pity note), then get a pack.
   useEffect(() => {
     live.current = true;
     (async () => {
       const pulls = await getPulls().catch((err) => (console.warn("Couldn't read the collection", err), [] as PullRecord[]));
       if (!live.current) return;
       for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
+      caught.current = caughtDex(pulls).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
       history.current = packHistory(pulls);
       await show();
     })();
@@ -160,6 +169,7 @@ export function OpenPage() {
     const { pack, data, pulls } = ready;
     const have = owned.current.get(pack.setId) ?? owned.current.set(pack.setId, new Set()).get(pack.setId)!;
     for (const p of pulls) have.add(p.card.id);
+    void caught.current.then((dex) => pulls.forEach((p) => speciesOf(p.card).forEach((d) => dex?.add(d))));
     history.current.push(pack.setId);
     setTorn(true);
     savePack(pack.dealId, data.set.id, pulls, new Date(), packArt(pack.setId, pack.art)?.id).catch((err) => console.warn("Couldn't save this pack", err));
@@ -236,6 +246,7 @@ export function OpenPage() {
       set={ready.data.set}
       pulls={ready.pulls}
       newIds={ready.newIds}
+      newEntryIds={ready.newEntries}
       packPhoto={wrapper}
       onOpened={save}
       onAgain={next}
