@@ -6,7 +6,9 @@ import { href } from "../app/router";
 import { updateSettings } from "../app/settings";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
-import type { OwnedCard } from "./cardGroups";
+import { isFiltering, matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
+import { CardFilterBar } from "./CardFilterBar";
+import { pullHasFinish, type OwnedCard } from "./cardGroups";
 import { CARD_SORT_LABEL, dexNumber, sortCards, type CardSort } from "./cardSort";
 import { formatPrice } from "./prices";
 import { ownership } from "./progress";
@@ -27,6 +29,7 @@ export function AllCardsPage() {
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [sort, setSort] = useState<CardSort>("recent");
   const [selected, setSelected] = useState<OwnedCard>();
+  const [filter, setFilter] = useState<CardFilter>(NO_FILTER);
 
   useEffect(() => {
     let live = true;
@@ -47,6 +50,11 @@ export function AllCardsPage() {
     return out;
   }, [sets, owned]);
 
+  const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name, owned: e.owned })), [entries, filter]);
+  const filtering = isFiltering(filter);
+  const matchingIds = useMemo(() => new Set(matching.map((e) => e.card.id)), [matching]);
+
   const cardIds = useMemo(() => entries.map((e) => e.card.id), [entries]);
   const { showPrices, prices, loading } = useCardPrices(cardIds);
   const priceById = useMemo(
@@ -56,8 +64,8 @@ export function AllCardsPage() {
   const priceOf = (e: OwnedCard) => priceById.get(e.card.id);
   // Sorting by value needs prices; if they're switched off, fall back to recently pulled.
   const order = sort === "value" && !showPrices ? "recent" : sort;
-  const shown = useMemo(() => sortCards(entries, order, (e) => priceById.get(e.card.id)?.amount), [entries, order, priceById]);
-  const copies = entries.reduce((n, e) => n + e.owned.total, 0);
+  const shown = useMemo(() => sortCards(matching, order, (e) => priceById.get(e.card.id)?.amount), [matching, order, priceById]);
+  const copies = matching.reduce((n, e) => n + e.owned.total, 0);
 
   const chooseSort = (s: CardSort) => {
     if (s === "value" && !showPrices) updateSettings({ showPrices: true });
@@ -103,13 +111,15 @@ export function AllCardsPage() {
             </label>
             <PriceToggle />
           </div>
+          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter} />
 
           <p className="muted summary">
-            {plural(entries.length, "card")} · {copies} {copies === 1 ? "copy" : "copies"}
-            {showPrices && ` · worth ${formatTotals(pullsValue(pulls, prices))}`}
+            {filtering ? `${matching.length} of ${plural(entries.length, "card")}` : plural(entries.length, "card")} · {copies} {copies === 1 ? "copy" : "copies"}
+            {showPrices && ` · worth ${formatTotals(pullsValue(filtering ? pulls.filter((p) => matchingIds.has(p.cardId) && (filter.finish === "any" || pullHasFinish(p, filter.finish))) : pulls, prices))}`}
             {showPrices && loading && (order === "value" ? " (loading prices, order may shift…)" : " (loading…)")}
           </p>
 
+          {shown.length === 0 && <p className="muted empty">No cards match these filters.</p>}
           <ol className="binder-grid">
             {shown.map((e) => {
               const price = priceOf(e);

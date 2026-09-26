@@ -5,6 +5,7 @@ import { GuestNotice } from "../account/GuestNotice";
 import type { SetSummary } from "../api/types";
 import { client } from "../app/client";
 import { href } from "../app/router";
+import { fold, queryWords } from "./cardFilter";
 import { countPacks, tallyBySet } from "./progress";
 import { useCollectionSource, whose } from "./source";
 import type { PullRecord } from "./store";
@@ -20,6 +21,8 @@ export function CollectionPage() {
   const [pulls, setPulls] = useState<PullRecord[]>();
   /** Undefined until loaded; empty if the set list couldn't be fetched (names fall back to ids). */
   const [sets, setSets] = useState<SetSummary[]>();
+  const [query, setQuery] = useState("");
+  const [serie, setSerie] = useState("all");
 
   useEffect(() => {
     let live = true;
@@ -41,6 +44,24 @@ export function CollectionPage() {
     () => [...tallyBySet(pulls ?? [], (id) => byId.get(id)?.cardCount.official).values()].sort((a, b) => b.lastOpenedAt.localeCompare(a.lastOpenedAt)),
     [pulls, byId],
   );
+
+  const series = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const t of tallies) {
+      const s = byId.get(t.setId)?.serie;
+      if (s && !seen.has(s.id)) seen.set(s.id, s.name);
+    }
+    return [...seen];
+  }, [tallies, byId]);
+  const shownTallies = useMemo(() => {
+    const words = queryWords(query);
+    return tallies.filter((t) => {
+      const s = byId.get(t.setId);
+      if (serie !== "all" && s?.serie.id !== serie) return false;
+      const text = fold(`${s?.name ?? ""} ${s?.serie.name ?? ""} ${t.setId} ${s?.releaseDate?.slice(0, 4) ?? ""}`);
+      return words.every((w) => text.includes(w));
+    });
+  }, [tallies, byId, query, serie]);
 
   const cardIds = useMemo(() => pulls?.map((p) => p.cardId) ?? [], [pulls]);
   const { showPrices, prices, loading } = useCardPrices(cardIds);
@@ -97,8 +118,25 @@ export function CollectionPage() {
             </p>
             <PriceToggle />
           </div>
+          <div className="card-filters">
+            <input type="search" placeholder="Search sets by name, series or year" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
+            {series.length > 1 && (
+              <label>
+                Series{" "}
+                <select value={serie} onChange={(e) => setSerie(e.target.value)}>
+                  <option value="all">All</option>
+                  {series.map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+          {shownTallies.length === 0 && <p className="muted empty">No sets match. Looking for a card? Try <a href={source.links.all()}>All cards</a>.</p>}
           <ul className="set-progress">
-            {tallies.map((t) => {
+            {shownTallies.map((t) => {
               const s = byId.get(t.setId);
               const official = s?.cardCount.official ?? 0;
               const pct = official ? Math.min(100, (t.mainOwned / official) * 100) : 0;

@@ -9,6 +9,8 @@ import { pullableCardIds } from "../engine/openPack";
 import { profileFor } from "../engine/profiles";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
+import { isFiltering, matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
+import { CardFilterBar } from "./CardFilterBar";
 import { formatPrice } from "./prices";
 import { isMainSet, ownership, setProgress } from "./progress";
 import { useCollectionSource, whose } from "./source";
@@ -27,6 +29,7 @@ export function BinderPage({ setId }: { setId: string }) {
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [error, setError] = useState<string>();
   const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState<CardFilter>(NO_FILTER);
   const [selected, setSelected] = useState<Card>();
 
   useEffect(() => {
@@ -57,6 +60,7 @@ export function BinderPage({ setId }: { setId: string }) {
 
   const visible = data.cards.filter((c) => {
     const o = owned.get(c.id);
+    if (!matchesCard(c, search, { setName: data.set.name, owned: o })) return false;
     if (filter === "owned") return !!o;
     if (filter === "missing") return !o && pullable.has(c.id);
     if (filter === "duplicates") return (o?.total ?? 0) > 1;
@@ -151,9 +155,12 @@ export function BinderPage({ setId }: { setId: string }) {
         </div>
         <PriceToggle />
       </div>
+      <CardFilterBar cards={data.cards} filter={search} onChange={setSearch} placeholder="Search this set by name, number, type…" />
 
       {visible.length === 0 ? (
-        <p className="muted empty">{filter === "all" ? "This set has no cards." : `No ${filter} cards.`}</p>
+        <p className="muted empty">
+          {isFiltering(search) ? "No cards match these filters." : filter === "all" ? "This set has no cards." : `No ${filter} cards.`}
+        </p>
       ) : (
         <ol className="binder-grid">
           {visible.map((c) => {

@@ -5,6 +5,8 @@ import { cardImage } from "../api/tcgdex";
 import { href } from "../app/router";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
+import { matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
+import { CardFilterBar } from "./CardFilterBar";
 import { FINISH_ORDER, finishCount, groupCards, pullHasFinish, sortRarities, type GroupBy, type OwnedCard, type Tile } from "./cardGroups";
 import { FINISH_LABEL, type FinishKey } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
@@ -29,6 +31,8 @@ export function CardsPage() {
   const [rarity, setRarity] = useState("all");
   const [sort, setSort] = useState<Sort>("recent");
   const [selected, setSelected] = useState<Tile>();
+  // Rarity and finish have their own menus here, so the filter bar only searches and picks card and Pokémon type.
+  const [filter, setFilter] = useState<CardFilter>(NO_FILTER);
 
   useEffect(() => {
     let live = true;
@@ -48,8 +52,10 @@ export function CardsPage() {
     for (const d of sets ?? []) for (const card of d.cards) if (owned.has(card.id)) out.push({ card, set: d.set, owned: owned.get(card.id)! });
     return out;
   }, [sets, owned]);
+  const allCards = useMemo(() => entries.map((e) => e.card), [entries]);
+  const matching = useMemo(() => entries.filter((e) => matchesCard(e.card, filter, { setName: e.set.name })), [entries, filter]);
   const rarities = useMemo(() => sortRarities(entries.map((e) => e.card.rarity)), [entries]);
-  const groups = useMemo(() => groupCards(entries, { groupBy, finish, rarity }), [entries, groupBy, finish, rarity]);
+  const groups = useMemo(() => groupCards(matching, { groupBy, finish, rarity }), [matching, groupBy, finish, rarity]);
 
   // Prices only for the cards on screen, so filters keep the fetching down.
   const visibleIds = useMemo(() => groups.flatMap((g) => g.tiles.map((t) => t.card.id)), [groups]);
@@ -144,6 +150,7 @@ export function CardsPage() {
             </label>
             <PriceToggle />
           </div>
+          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter} hide={["rarity", "finish"]} />
 
           <p className="muted summary">
             {plural(cardCount, "card")} · {copies} {copies === 1 ? "copy" : "copies"}
