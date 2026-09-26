@@ -55,6 +55,8 @@
 }
 .opener .controls a.button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 .opener .controls a.button.primary, .opener .controls button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+.opener .controls .favorite-button [aria-hidden] { font-size: 1.15em; line-height: 1; }
+.opener .controls .favorite-button[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-ink); }
 .opener button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 
 /* ---------- Stage ---------- */
@@ -146,6 +148,9 @@
   transition: transform .75s cubic-bezier(.2,.9,.25,1);
 }
 .opener .pack.out .stack { z-index: 5; }
+/* While cards are showing only they take taps: the emptied pack's box reaches over the buttons below. */
+.opener .wrap.fitted { pointer-events: none; }
+.opener .wrap.fitted .stack { pointer-events: auto; }
 .opener .slot {
   position: absolute; inset: 0;
   perspective: 900px;
@@ -236,6 +241,8 @@
   animation: newPop .35s cubic-bezier(.2,.9,.25,1.4) both;
 }
 @keyframes newPop { from { transform: scale(.4); opacity: 0; } }
+/* A Pokémon new to the Pokédex: a gold badge, set apart from a card that's only new to the collection. */
+.opener .new-badge.entry { background: linear-gradient(135deg, #f7d774, #e0a526); color: #3a2600; box-shadow: 0 0 0 2px #fff8, 0 4px 14px -4px #b8860b; }
 .opener .summary-grid figure { position: relative; }
 .opener .summary-grid .new-badge { top: -8px; right: -6px; animation: none; }
 @media (prefers-reduced-motion: reduce) { .opener .new-badge { animation: none; } }

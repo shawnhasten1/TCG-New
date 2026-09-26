@@ -6,6 +6,7 @@ import { cardImage } from "../api/tcgdex";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
 import { CardDetail } from "../collection/CardDetail";
+import { setFavorite, useFavorites } from "../collection/favorites";
 import { ownership, type Ownership } from "../collection/progress";
 import { getPulls } from "../collection/store";
 import { setTier, tierInfo, type SetTier } from "../engine/setRarity";
@@ -35,6 +36,8 @@ interface Props {
   pulls: PulledCard[];
   /** Cards not in the collection before this pack, shown with a "New" badge. */
   newIds?: Set<string>;
+  /** Cards of a Pokémon not in the Pokédex before this pack, shown with a "New entry" badge in place of "New". */
+  newEntryIds?: Set<string>;
   /** Called once, when the pack is torn open (the pack is saved then). */
   onOpened?(): void;
   onAgain(): void;
@@ -66,7 +69,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, againLabel = "Open another pack", onShare, packPhoto }: Props) {
+export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, againLabel = "Open another pack", onShare, packPhoto }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -114,6 +117,13 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       setSharing(false);
     }
   };
+  /* ---------- Favorites ---------- */
+  const favorites = useFavorites();
+  const toggleFavorite = (cardId: string) => {
+    setShareNote(undefined);
+    setFavorite(cardId, !favorites.ids.has(cardId)).catch((err) => setShareNote({ kind: "error", text: err instanceof Error ? err.message : String(err) }));
+  };
+
   const togglePick = (i: number) =>
     setPicking((p) => {
       const next = new Set(p);
@@ -358,7 +368,7 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       <OpenerBar />
 
       {phase === "summary" ? (
-        <PackSummary pulls={pulls} newIds={newIds} official={set.cardCount.official} layout={layout} shared={shared} picking={picking} onPick={togglePick} />
+        <PackSummary pulls={pulls} newIds={newIds} newEntryIds={newEntryIds} official={set.cardCount.official} layout={layout} shared={shared} picking={picking} onPick={togglePick} />
       ) : (
         <div className={`wrap enter${phase === "reveal" ? " fitted" : ""}${packPhoto?.aspect ? " photo-shape" : ""}`} ref={wrapRef} style={wrapperStyle}>
           <div
@@ -408,9 +418,9 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
                     layout={layout}
                     data-tier={pullTier(pull)}
                     tabIndex={phase === "reveal" && i === idx ? 0 : -1}
-                    aria-label={cardLabel(pull) + (newIds?.has(pull.card.id) ? " New to your collection." : "")}
+                    aria-label={cardLabel(pull) + (newEntryIds?.has(pull.card.id) ? " New to your Pokédex." : newIds?.has(pull.card.id) ? " New to your collection." : "")}
                   />
-                  {newIds?.has(pull.card.id) && phase === "reveal" && i === idx && <span className="new-badge">New</span>}
+                  {phase === "reveal" && i === idx && <NewBadge id={pull.card.id} newIds={newIds} newEntryIds={newEntryIds} />}
                   {phase === "reveal" && i === idx && pull.card.rarity && pull.card.rarity !== "None" && (
                     <span className="rarity-tag" data-kind={tagKind(pull.card.rarity)} aria-hidden="true">
                       {isShiny(pull.card.rarity) && "✦ "}
@@ -469,9 +479,9 @@ export function PackOpener({ set, pulls, newIds, onOpened, onAgain, binderHref, 
       )}
       {phase === "reveal" && (
         <div className="controls">
-          {onShare && (
-            <button type="button" className="share-button" onClick={() => void share([idx])} disabled={sharing || shared.has(idx)}>
-              {shared.has(idx) ? "Shared" : sharing ? "Sharing…" : "Share"}
+          {favorites.available && (
+            <button type="button" className="favorite-button" aria-pressed={favorites.ids.has(pulls[idx].card.id)} onClick={() => toggleFavorite(pulls[idx].card.id)}>
+              <span aria-hidden="true">{favorites.ids.has(pulls[idx].card.id) ? "★" : "☆"}</span> {favorites.ids.has(pulls[idx].card.id) ? "Favorite" : "Add to favorites"}
             </button>
           )}
         </div>
@@ -514,9 +524,17 @@ function cardLabel(p: PulledCard): string {
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
+/** "New entry" for a Pokémon new to the Pokédex, else "New" for a card new to the collection. */
+function NewBadge({ id, newIds, newEntryIds }: { id: string; newIds?: Set<string>; newEntryIds?: Set<string> }) {
+  if (newEntryIds?.has(id)) return <span className="new-badge entry">New entry</span>;
+  if (newIds?.has(id)) return <span className="new-badge">New</span>;
+  return null;
+}
+
 interface SummaryProps {
   pulls: PulledCard[];
   newIds?: Set<string>;
+  newEntryIds?: Set<string>;
   official: number;
   layout: FrameLayout;
   /** Positions already shared to the feed. */
@@ -526,7 +544,7 @@ interface SummaryProps {
   onPick(i: number): void;
 }
 
-function PackSummary({ pulls, newIds, official, layout, shared, picking, onPick }: SummaryProps) {
+function PackSummary({ pulls, newIds, newEntryIds, official, layout, shared, picking, onPick }: SummaryProps) {
   const [selected, setSelected] = useState<PulledCard>();
   // The pack is saved when it's torn open, so the collection already counts these cards.
   const [owned, setOwned] = useState<Map<string, Ownership>>();
@@ -551,7 +569,7 @@ function PackSummary({ pulls, newIds, official, layout, shared, picking, onPick 
               <RetryImg src={cardImage(p.card, "low")} alt="" />
             </button>
           )}
-          {newIds?.has(p.card.id) && <span className="new-badge">New</span>}
+          <NewBadge id={p.card.id} newIds={newIds} newEntryIds={newEntryIds} />
           {picking?.has(i) && (
             <span className="pick-check" aria-hidden="true">
               ✓
