@@ -117,8 +117,20 @@ export function CardsPage() {
                 </button>
               ))}
             </div>
-            <label>
-              Rarity{" "}
+          </div>
+          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter} hide={["rarity", "finish"]} pageFiltersInUse={(rarity !== "all" ? 1 : 0) + (finish !== "any" ? 1 : 0)}>
+            <label className="field">
+              <span>Sort by</span>
+              <select value={order} onChange={(e) => setSort(e.target.value as Sort)}>
+                <option value="recent">Recently pulled</option>
+                <option value="set">Newest set</option>
+                <option value="copies">Most copies</option>
+                {showPrices && <option value="price">Highest price</option>}
+              </select>
+            </label>
+            <PriceToggle />
+            <label className="field">
+              <span>Rarity</span>
               <select value={rarity} onChange={(e) => setRarity(e.target.value)}>
                 <option value="all">All rarities</option>
                 {rarities.map((r) => (
@@ -128,8 +140,8 @@ export function CardsPage() {
                 ))}
               </select>
             </label>
-            <label>
-              Finish{" "}
+            <label className="field">
+              <span>Finish</span>
               <select value={finish} onChange={(e) => setFinish(e.target.value as FinishKey | "any")}>
                 <option value="any">Any</option>
                 {FINISH_ORDER.map((k) => (
@@ -139,18 +151,7 @@ export function CardsPage() {
                 ))}
               </select>
             </label>
-            <label>
-              Sort{" "}
-              <select value={order} onChange={(e) => setSort(e.target.value as Sort)}>
-                <option value="recent">Recently pulled</option>
-                <option value="set">Newest set</option>
-                <option value="copies">Most copies</option>
-                {showPrices && <option value="price">Highest price</option>}
-              </select>
-            </label>
-            <PriceToggle />
-          </div>
-          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter} hide={["rarity", "finish"]} />
+          </CardFilterBar>
 
           <p className="muted summary">
             {plural(cardCount, "card")} · {copies} {copies === 1 ? "copy" : "copies"}

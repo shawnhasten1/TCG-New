@@ -153,9 +153,10 @@ export function BinderPage({ setId }: { setId: string }) {
             </button>
           ))}
         </div>
-        <PriceToggle />
       </div>
-      <CardFilterBar cards={data.cards} filter={search} onChange={setSearch} placeholder="Search this set by name, number, type…" />
+      <CardFilterBar cards={data.cards} filter={search} onChange={setSearch} placeholder="Search this set…">
+        <PriceToggle />
+      </CardFilterBar>
 
       {visible.length === 0 ? (
         <p className="muted empty">

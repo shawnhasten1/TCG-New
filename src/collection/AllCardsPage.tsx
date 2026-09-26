@@ -98,9 +98,9 @@ export function AllCardsPage() {
         </p>
       ) : (
         <>
-          <div className="toolbar">
-            <label>
-              Sort by{" "}
+          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter}>
+            <label className="field">
+              <span>Sort by</span>
               <select value={order} onChange={(e) => chooseSort(e.target.value as CardSort)}>
                 {SORTS.map((s) => (
                   <option key={s} value={s}>
@@ -110,8 +110,7 @@ export function AllCardsPage() {
               </select>
             </label>
             <PriceToggle />
-          </div>
-          <CardFilterBar cards={allCards} filter={filter} onChange={setFilter} />
+          </CardFilterBar>
 
           <p className="muted summary">
             {filtering ? `${matching.length} of ${plural(entries.length, "card")}` : plural(entries.length, "card")} · {copies} {copies === 1 ? "copy" : "copies"}

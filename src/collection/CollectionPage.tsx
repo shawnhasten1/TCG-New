@@ -111,7 +111,7 @@ export function CollectionPage() {
         </p>
       ) : (
         <>
-          <div className="toolbar">
+          <div className="toolbar sets-toolbar">
             <p className="muted">
               {plural(totals.packs, "pack")} opened · {plural(totals.pulls, "card")} pulled · {totals.unique} different
               {values && ` · worth ${formatTotals(values.all)}${loading ? " (loading…)" : ""}`}
@@ -119,20 +119,19 @@ export function CollectionPage() {
             <PriceToggle />
           </div>
           <div className="card-filters">
-            <input type="search" placeholder="Search sets by name, series or year" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
-            {series.length > 1 && (
-              <label>
-                Series{" "}
-                <select value={serie} onChange={(e) => setSerie(e.target.value)}>
-                  <option value="all">All</option>
+            <div className="search-row">
+              <input type="search" placeholder="Search sets by name, series or year" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
+              {series.length > 1 && (
+                <select className="series" value={serie} onChange={(e) => setSerie(e.target.value)} aria-label="Series">
+                  <option value="all">All series</option>
                   {series.map(([id, name]) => (
                     <option key={id} value={id}>
                       {name}
                     </option>
                   ))}
                 </select>
-              </label>
-            )}
+              )}
+            </div>
           </div>
           {shownTallies.length === 0 && <p className="muted empty">No sets match. Looking for a card? Try <a href={source.links.all()}>All cards</a>.</p>}
           <ul className="set-progress">
