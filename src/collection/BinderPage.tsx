@@ -25,7 +25,7 @@ import { Spinner } from "../app/Spinner";
 
 type Filter = "all" | "owned" | "missing" | "duplicates";
 
-export function BinderPage({ setId }: { setId: string }) {
+export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: boolean }) {
   const source = useCollectionSource();
   const [data, setData] = useState<SetData>();
   const [pulls, setPulls] = useState<PullRecord[]>();
@@ -87,6 +87,11 @@ export function BinderPage({ setId }: { setId: string }) {
           <>
             <a href={source.links.collection()}>← {whose(source)} collection</a>
             <a href={href.friends()}>Friends</a>
+          </>
+        ) : fromShop ? (
+          <>
+            <a href={href.shop()}>← Shop</a>
+            <a href={href.collection()}>Collection</a>
           </>
         ) : (
           <>

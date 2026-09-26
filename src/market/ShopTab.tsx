@@ -1,5 +1,5 @@
 // #/market/shop: buy a pack from a set of your choice with coins. Sets are grouped by how scarce they are, and cheapest
-// first within each group; the pack's wrapper is still random, as with any pack.
+// first within each group; the pack's wrapper is still random, as with any pack. Tapping a pack shows the set's binder.
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
@@ -161,9 +161,9 @@ export function ShopTab() {
                 const { max, quantity } = limits(item);
                 return (
                   <li key={item.set.id} data-tier={item.tier}>
-                    <div className="shop-pack">
+                    <a className="shop-pack" href={href.shopBinder(item.set.id)} title={`See the cards in ${item.set.name}`} aria-label={`See the cards in ${item.set.name}`}>
                       {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <SetLogo logo={item.set.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{item.set.name}</span>} />}
-                    </div>
+                    </a>
                     <strong className="name">{item.set.name}</strong>
                     <small className="muted">
                       {item.set.serie.name} · {item.set.releaseDate.slice(0, 4)}

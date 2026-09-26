@@ -8,6 +8,7 @@ describe("navSection", () => {
     expect(section("#/")).toBe("open");
     expect(section("#/collection")).toBe("collection");
     expect(section("#/binder/base1")).toBe("collection");
+    expect(section("#/binder/base1/shop")).toBe("market");
     expect(section("#/pokedex")).toBe("collection");
     expect(section("#/pokemon/25")).toBe("collection");
     expect(section("#/cards")).toBe("collection");

@@ -72,7 +72,7 @@ function Page({ route }: { route: Route }) {
     case "collection":
       return <CollectionPage />;
     case "binder":
-      return <BinderPage key={route.setId} setId={route.setId} />;
+      return <BinderPage key={route.setId} setId={route.setId} fromShop={route.fromShop} />;
     case "foil":
       return <FoilLab />;
     case "packLab":
