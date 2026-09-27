@@ -3,5 +3,5 @@
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-# Demo games to switch on locally (comma-separated game ids; see wrangler.jsonc). Production leaves them off.
+# Games to switch on locally besides Pokémon (comma-separated game ids; see wrangler.jsonc, which lists the live ones).
 DEMO_GAMES=mtg

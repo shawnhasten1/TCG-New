@@ -67,9 +67,9 @@ Players can sign in with Google or with an email and password, and their collect
 - **Confirmations** (`src/app/Confirm.tsx`): every confirmation is the app's own modal, not the browser's `confirm()`. `await ask({ title, body, confirm, danger })` from anywhere; `<ConfirmHost />` in `App` shows it as a native modal `<dialog>` (focus stays inside, Escape or a tap outside cancels). Destructive ones have a red button and start on Cancel; on phones the buttons stack full width.
 - **Not yet**: "forgot password" (needs an email sender) and account deletion.
 
-## Demo games (Magic: The Gathering)
+## More games (Magic: The Gathering)
 
-The app plays one game at a time. Pokémon is always on; other games are demos that only exist where the Worker's `DEMO_GAMES` variable lists them. `wrangler.jsonc` sets it empty, so production is Pokémon only and looks exactly as before. To work on Magic locally, put `DEMO_GAMES=mtg` in `.dev.vars` (see `.dev.vars.example`) and restart `npm run dev`.
+The app plays one game at a time. Pokémon is always on; other games only exist where the Worker's `DEMO_GAMES` variable lists them. `wrangler.jsonc` lists `mtg`, so Magic is live in production. A new game stays out of that list while it's being built, and goes in `.dev.vars` (see `.dev.vars.example`) to work on it locally.
 
 - **The flag** (`worker/games.ts`): `GET /api/games` lists the games that are on, and every route that takes a game (dealing, sync, `/api/mtg/*`) refuses one that's off. The app asks at startup (`src/app/game.ts`); the game switch only shows when there's more than one game, and a game that's been switched off sends the app back to Pokémon.
 - **Game switch** (`src/app/GameSwitch.tsx`): a button with the current game's badge on the opener's top bar and in Settings, opening a menu of games. The choice is kept in localStorage and read once at startup; switching reloads onto the opener. `<html data-game>` carries it for styles.
