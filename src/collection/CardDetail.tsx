@@ -230,7 +230,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
           <h2>{card.name}</h2>
           <p className="muted">
             #{card.localId}
-            {/^\d+$/.test(card.localId) ? ` / ${official}` : ""} · {card.rarity}
+            {/^\d+$/.test(card.localId) && official ? ` / ${official}` : ""} · {card.rarity}
             {card.category ? ` · ${card.category === "Pokemon" ? "Pokémon" : card.category}` : ""}
           </p>
           {favorites.available && (
@@ -252,6 +252,13 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             </div>
           )}
 
+          {game === GAME && has("printings") && card.oracleId && (
+            <p className="species-links">
+              <a href={href.printings(card.oracleId)} onClick={close}>
+                All printings of {card.name} →
+              </a>
+            </p>
+          )}
           {game === GAME && has("pokedex") && card.category === "Pokemon" && !!card.dexId?.length && (
             <p className="species-links">
               {card.dexId.map((d) => (

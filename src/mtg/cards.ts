@@ -25,12 +25,14 @@ export interface RawCard {
   id: string;
   name: string;
   collector_number: string;
+  /** The set's code. */
+  set?: string;
   rarity: string;
   type_line?: string;
   finishes: string[];
   booster?: boolean;
   image_uris?: unknown;
-  card_faces?: { image_uris?: unknown }[];
+  card_faces?: { image_uris?: unknown; oracle_id?: string }[];
   prices?: Partial<Record<"usd" | "usd_foil" | "usd_etched" | "eur" | "eur_foil", string | null>>;
   artist?: string;
   /** The same card in every printing and set. */
@@ -56,19 +58,29 @@ export const setSymbol = (setId: string) => `https://svgs.scryfall.io/sets/${set
 
 const hasImage = (c: RawCard) => !!c.image_uris || !!c.card_faces?.some((f) => f.image_uris);
 
+/** Whether a Scryfall card is one that packs can hold: in boosters, with an image. */
+export const inPacks = (c: RawCard) => c.booster !== false && hasImage(c);
+
+/** One Scryfall card as the engine's card. */
+export function toCard(setId: string, c: RawCard): Card {
+  return {
+    id: `${setId}-${c.collector_number}`,
+    localId: c.collector_number,
+    name: c.name,
+    image: cardImageBase(c.id),
+    rarity: rarityOf(c),
+    // "holo" is a traditional foil. Etched foils are only in Collector Boosters, so they count as foil here.
+    variants: { normal: c.finishes.includes("nonfoil"), holo: c.finishes.includes("foil") || c.finishes.includes("etched"), reverse: false, firstEdition: false },
+    // Reversible cards keep theirs on the faces.
+    oracleId: c.oracle_id ?? c.card_faces?.[0]?.oracle_id ?? null,
+  };
+}
+
 /** Turns Scryfall's cards for one set into the engine's set data, in collector number order. */
 export function toSetData(set: MtgSet, raw: RawCard[]): SetData {
   const cards: Card[] = raw
-    .filter((c) => c.booster !== false && hasImage(c))
-    .map((c) => ({
-      id: `${set.id}-${c.collector_number}`,
-      localId: c.collector_number,
-      name: c.name,
-      image: cardImageBase(c.id),
-      rarity: rarityOf(c),
-      // "holo" is a traditional foil. Etched foils are only in Collector Boosters, so they count as foil here.
-      variants: { normal: c.finishes.includes("nonfoil"), holo: c.finishes.includes("foil") || c.finishes.includes("etched"), reverse: false, firstEdition: false },
-    }))
+    .filter(inPacks)
+    .map((c) => toCard(set.id, c))
     .sort((a, b) => a.localId.localeCompare(b.localId, "en", { numeric: true }));
   const byRarity: Record<string, Card[]> = {};
   for (const c of cards) (byRarity[c.rarity] ??= []).push(c);
@@ -101,19 +113,26 @@ export function rarityRank(rarity: string): number {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** A set's booster cards as Scryfall has them, a page at a time. */
-export async function fetchRawCards(set: MtgSet): Promise<RawCard[]> {
+/** Every printing a Scryfall search finds, a page at a time; none when nothing matches (Scryfall answers that with a 404). */
+export async function searchCards(query: string): Promise<RawCard[]> {
   const raw: RawCard[] = [];
-  let url: string | undefined = `${API}/cards/search?q=${encodeURIComponent(`set:${set.id} is:booster`)}&unique=prints&order=set`;
+  let url: string | undefined = `${API}/cards/search?q=${encodeURIComponent(query)}&unique=prints&order=set`;
   while (url) {
     const res = await fetch(url, { headers: HEADERS });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText} from Scryfall for ${set.name}`);
+    if (res.status === 404) break;
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText} from Scryfall for "${query}"`);
     const page = (await res.json()) as { data: RawCard[]; has_more: boolean; next_page?: string };
     raw.push(...page.data);
     url = page.has_more ? page.next_page : undefined;
     // Scryfall asks for 50–100 ms between requests.
     if (url) await wait(100);
   }
+  return raw;
+}
+
+/** A set's booster cards as Scryfall has them. */
+export async function fetchRawCards(set: MtgSet): Promise<RawCard[]> {
+  const raw = await searchCards(`set:${set.id} is:booster`);
   if (!raw.length) throw new Error(`Scryfall has no booster cards for ${set.name}`);
   return raw;
 }

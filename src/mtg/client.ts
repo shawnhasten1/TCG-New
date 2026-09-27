@@ -1,11 +1,11 @@
 // Magic set data and prices in the app: from the Worker (which keeps Scryfall's data, worker/mtg.ts), cached on the device.
 
 import type { CardPricing } from "../api/tcgdex";
-import type { SetData, SetSummary } from "../api/types";
+import type { CardWithSet, SetData, SetSummary } from "../api/types";
 import { cache } from "../app/client";
 
 /** Bump with the Worker's SET_VERSION. */
-const key = (id: string) => `mtg:set:${id}:v2`;
+const key = (id: string) => `mtg:set:${id}:v3`;
 
 export async function getMtgSet(id: string): Promise<SetData> {
   const hit = await cache.get<SetData>(key(id));
@@ -75,4 +75,16 @@ export async function cachedMtgCardPricing(ids: string[]): Promise<Map<string, C
     if (prices) for (const id of ids) if (setOf(id) === setId) out.set(id, prices[id] ?? null);
   }
   return out;
+}
+
+/** Every printing of a card among the sets here, newest set first (worker/mtg.ts). Kept for the day. */
+export async function getMtgPrintings(oracleId: string): Promise<CardWithSet[]> {
+  const key = `mtg:printings:${oracleId}:${today()}`;
+  const hit = await cache.get<CardWithSet[]>(key);
+  if (hit) return hit;
+  const res = await fetch(`/api/mtg/printings/${encodeURIComponent(oracleId)}`);
+  if (!res.ok) throw new Error(((await res.json().catch(() => ({}))) as { error?: string }).error ?? `Couldn't load the printings (${res.status}).`);
+  const printings = (await res.json()) as CardWithSet[];
+  await cache.set(key, printings);
+  return printings;
 }

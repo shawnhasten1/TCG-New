@@ -11,6 +11,8 @@ describe("navSection", () => {
     expect(section("#/binder/base1/shop")).toBe("market");
     expect(section("#/pokedex")).toBe("collection");
     expect(section("#/pokemon/25")).toBe("collection");
+    expect(section("#/index")).toBe("collection");
+    expect(section("#/card/ef86989d-ce80-4e55-aece-7d11710eeffa")).toBe("collection");
     expect(section("#/cards")).toBe("collection");
     expect(section("#/all")).toBe("collection");
     expect(section("#/packs")).toBe("collection");
@@ -28,6 +30,8 @@ describe("navSection", () => {
   });
 
   it("tells the market's pages apart", () => {
+    expect(parseRoute("#/card/ef86989d-ce80-4e55-aece-7d11710eeffa")).toEqual({ page: "printings", oracleId: "ef86989d-ce80-4e55-aece-7d11710eeffa" });
+    expect(parseRoute("#/card/not-an-id")).toEqual({ page: "open" });
     expect(parseRoute("#/market")).toEqual({ page: "market", tab: "sell" });
     expect(parseRoute("#/market/wallet")).toEqual({ page: "market", tab: "wallet" });
     expect(parseRoute("#/market/shop")).toEqual({ page: "market", tab: "shop" });

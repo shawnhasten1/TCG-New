@@ -4,9 +4,9 @@
 
 import type { ReactNode } from "react";
 import type { CardPricing, Progress } from "../api/tcgdex";
-import type { SetData, SetDetail, SetSummary } from "../api/types";
+import type { Card, SetData, SetDetail, SetSummary } from "../api/types";
 import { FINISH_ORDER } from "../collection/cardGroups";
-import { FINISH_LABEL, type FinishKey } from "../collection/pokedex";
+import { FINISH_LABEL, speciesOf, type FinishKey } from "../collection/pokedex";
 import { hiddenReason } from "../engine/openable";
 import { profileFor } from "../engine/profiles";
 import { drawableSets, ERAS } from "../engine/randomSet";
@@ -65,6 +65,11 @@ export interface GameCards {
   packArt(setId: string, artId: string | null | undefined): PackArt | undefined;
   /** Sets whose packs have designs. */
   packArtSets(): string[];
+  /**
+   * The collection's index, in games that have one: what entries a card is (a Pokémon's Pokédex numbers, a Magic card's
+   * oracle id), for "New entry" on the reveal (collection/entries.ts), and what that's called.
+   */
+  index?: { keys(card: Card): string[]; badge: string; aria: string };
   /** Where the pack designs come from, for the Packs view. */
   packCredit: { text: string; name: string; url: string };
   /** Where the card data and images come from, and a set to open the debug page on (it reads TCGdex). */
@@ -93,6 +98,7 @@ const pokemon: GameCards = {
   packArts,
   packArt,
   packArtSets: () => Object.keys(packPhotos),
+  index: { keys: (c) => speciesOf(c).map(String), badge: "New entry", aria: "New to your Pokédex." },
   packCredit: { text: "Pack photos from", name: "Bulbapedia", url: "https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Trading_Card_Game#International_sets" },
 };
 
@@ -132,6 +138,7 @@ const mtg: GameCards = {
   packArts: mtgPackArts,
   packArt: (setId, artId) => (artId ? mtgPackArts(setId).find((a) => a.id === artId) : undefined),
   packArtSets: mtgPackArtSets,
+  index: { keys: (c) => (c.oracleId ? [c.oracleId] : []), badge: "New card", aria: "A card you've never had, in any printing." },
   packCredit: { text: "Wrappers drawn around card art (by its artists) from", name: "Scryfall", url: "https://scryfall.com" },
 };
 

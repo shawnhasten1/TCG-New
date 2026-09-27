@@ -1,11 +1,12 @@
-// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages. A friend's collection has no
-// Pokédex or Packs view, and neither does a game without a Pokédex or pack photos.
+// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages; Magic has its card index where
+// Pokémon has the Pokédex. A friend's collection has no Pokédex, card index or Packs view, and neither does a game
+// without one.
 
 import { has } from "../app/game";
 import { href } from "../app/router";
 import { useCollectionSource } from "./source";
 
-export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" | "cards" | "all" | "packs" }) {
+export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" | "index" | "cards" | "all" | "packs" }) {
   const { owner, links } = useCollectionSource();
   return (
     <nav className="segmented view-switch" aria-label="View collection">
@@ -15,6 +16,11 @@ export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" |
       {!owner && has("pokedex") && (
         <a href={href.pokedex()} aria-current={current === "pokemon" ? "page" : undefined}>
           Pokédex
+        </a>
+      )}
+      {!owner && has("printings") && (
+        <a href={href.cardIndex()} aria-current={current === "index" ? "page" : undefined}>
+          Card index
         </a>
       )}
       <a href={links.cards()} aria-current={current === "cards" ? "page" : undefined}>

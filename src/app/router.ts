@@ -1,5 +1,5 @@
 // Tiny hash router: #/ (home: a pack from a random set), #/sets (set browser), #/collection, #/binder/<setId>,
-// (#/binder/<setId>/shop when looked at from the shop), #/pokedex, #/pokemon/<dexId>, #/cards, #/all (every card, sortable), #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab), #/pack-lab (pack photo lab), #/packs (collected pack wrappers).
+// (#/binder/<setId>/shop when looked at from the shop), #/pokedex, #/pokemon/<dexId>, #/index (Magic's card index), #/card/<oracleId> (every printing of a Magic card), #/cards, #/all (every card, sortable), #/feed, #/friends (or #/friends/<code> from an invite link), #/settings, #/debug/<setId>, #/foil (foil lab), #/pack-lab (pack photo lab), #/packs (collected pack wrappers).
 // A friend's collection: #/friend/<id> (by set), #/friend/<id>/cards, #/friend/<id>/all, #/friend/<id>/binder/<setId>.
 // Trades: #/trades, and #/trade/<friendId> to put an offer together.
 // Market: #/market (your listings), #/market/pick (choose cards to sell), #/market/shop (buy packs), #/market/unopened (packs
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export type MarketTab = "sell" | "shop" | "unopened" | "wallet";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string; fromShop?: boolean } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" } | { page: "openBought"; packId: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string; fromShop?: boolean } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "cardIndex" } | { page: "printings"; oracleId: string } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" } | { page: "openBought"; packId: string };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -36,6 +36,8 @@ export function parseRoute(hash: string): Route {
     return { page: "friend", friendId: id, view: sub === "cards" || sub === "all" ? sub : "set" };
   }
   if (page === "pokemon" && /^\d+$/.test(id ?? "")) return { page: "pokemon", dexId: Number(id) };
+  if (page === "index") return { page: "cardIndex" };
+  if (page === "card" && /^[0-9a-f-]{36}$/.test(id ?? "")) return { page: "printings", oracleId: id! };
   if (page === "binder" && id) return { page: "binder", setId: id, fromShop: sub === "shop" || undefined };
   // Home is the opener. Packs always come from a random set, so old #/open and #/open/<setId> links land here too.
   return { page: "open" };
@@ -70,6 +72,8 @@ export const href = {
   friendAll: (friendId: string) => `#/friend/${encodeURIComponent(friendId)}/all`,
   friends: (code?: string) => (code ? `#/friends/${encodeURIComponent(code)}` : "#/friends"),
   pokemon: (dexId: number) => `#/pokemon/${dexId}`,
+  cardIndex: () => "#/index",
+  printings: (oracleId: string) => `#/card/${oracleId}`,
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
   /** A set's binder, looked at from the shop before buying its packs. */
   shopBinder: (setId: string) => `#/binder/${encodeURIComponent(setId)}/shop`,
@@ -88,6 +92,8 @@ export function navSection(route: Route): NavSection | undefined {
     case "collection":
     case "pokedex":
     case "pokemon":
+    case "cardIndex":
+    case "printings":
     case "cards":
     case "all":
     case "packs":

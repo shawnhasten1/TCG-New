@@ -11,9 +11,8 @@ import { GAME, has } from "../app/game";
 import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { erasFor, useSettings } from "../app/settings";
-import { caughtDex } from "../collection/caughtDex";
+import { addEntries, newEntryIds, ownedEntries } from "../collection/entries";
 import { formatCountdown } from "../collection/daily";
-import { newEntryIds, speciesOf } from "../collection/pokedex";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
@@ -83,8 +82,8 @@ export function OpenPage() {
 
   /** Card ids already collected, per set, kept current as packs are saved. */
   const owned = useRef(new Map<string, Set<string>>());
-  /** Pokémon already caught (undefined if they couldn't be read), kept current as packs are saved. */
-  const caught = useRef<Promise<Set<number> | undefined>>(Promise.resolve(undefined));
+  /** Index entries already collected (Pokémon caught, Magic cards had), undefined if they couldn't be read; kept current as packs are saved. */
+  const entries = useRef<Promise<Set<string> | undefined>>(Promise.resolve(undefined));
   /** Set of every opened pack, oldest first, for the pity note. */
   const history = useRef<string[]>([]);
   const upcoming = useRef<Upcoming | undefined>(undefined);
@@ -111,9 +110,9 @@ export function OpenPage() {
     // Decided at deal time, so saving the pack mid-reveal doesn't un-new its cards.
     const have = owned.current.get(pack.setId);
     const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have?.has(id)));
-    // Don't hold the pack up for long on reading the Pokédex; without it, nothing is marked a new entry.
-    const dex = await Promise.race([caught.current, new Promise<undefined>((r) => setTimeout(r, 5000))]);
-    const newEntries = dex ? newEntryIds(pulls.map((p) => p.card), dex) : new Set<string>();
+    // Don't hold the pack up for long on reading the index; without it, nothing is marked a new entry.
+    const had = await Promise.race([entries.current, new Promise<undefined>((r) => setTimeout(r, 5000))]);
+    const newEntries = had ? newEntryIds(pulls.map((p) => p.card), had) : new Set<string>();
     // The wrapper shows first, so have it ready (it falls back to the plain one if it doesn't load).
     const art = wrapperFor(pack);
     if (art) await withTimeout(preloadImage(art.src), 4000);
@@ -144,7 +143,7 @@ export function OpenPage() {
       const pulls = await getPulls().catch((err) => (console.warn("Couldn't read the collection", err), [] as PullRecord[]));
       if (!live.current) return;
       for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
-      if (has("pokedex")) caught.current = caughtDex(pulls).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
+      if (gameCards.index) entries.current = ownedEntries(pulls).catch((err) => (console.warn("Couldn't read the collection's index", err), undefined));
       history.current = packHistory(pulls);
       await show();
     })();
@@ -173,7 +172,7 @@ export function OpenPage() {
     const { pack, data, pulls } = ready;
     const have = owned.current.get(pack.setId) ?? owned.current.set(pack.setId, new Set()).get(pack.setId)!;
     for (const p of pulls) have.add(p.card.id);
-    void caught.current.then((dex) => pulls.forEach((p) => speciesOf(p.card).forEach((d) => dex?.add(d))));
+    void entries.current.then((had) => addEntries(had, pulls.map((p) => p.card)));
     history.current.push(pack.setId);
     setTorn(true);
     savePack(pack.dealId, data.set.id, pulls, new Date(), wrapperFor(pack)?.id).catch((err) => console.warn("Couldn't save this pack", err));

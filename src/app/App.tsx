@@ -11,6 +11,8 @@ import { BoughtPackPage } from "../market/BoughtPackPage";
 import { MarketPage } from "../market/MarketPage";
 import { SellPicker } from "../market/SellPicker";
 import { FoilLab } from "../foil/FoilLab";
+import { CardIndexPage } from "../mtg/CardIndexPage";
+import { PrintingsPage } from "../mtg/PrintingsPage";
 import { OpenPage } from "../opener/OpenPage";
 import { PackLab } from "../opener/PackLab";
 import { SetPicker } from "../picker/SetPicker";
@@ -43,6 +45,8 @@ export function App() {
 const NEEDS: Partial<Record<Route["page"], Feature>> = {
   pokedex: "pokedex",
   pokemon: "pokedex",
+  cardIndex: "printings",
+  printings: "printings",
   packs: "packArt",
   market: "market",
   marketPick: "market",
@@ -78,6 +82,10 @@ function Page({ route }: { route: Route }) {
       return <AllCardsPage />;
     case "pokemon":
       return <PokemonPage key={route.dexId} dexId={route.dexId} />;
+    case "cardIndex":
+      return <CardIndexPage />;
+    case "printings":
+      return <PrintingsPage key={route.oracleId} oracleId={route.oracleId} />;
     case "friend":
       return (
         <FriendCollectionProvider key={route.friendId} friendId={route.friendId}>

@@ -423,7 +423,7 @@ export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain,
                     layout={layout}
                     data-tier={pullTier(pull)}
                     tabIndex={phase === "reveal" && i === idx ? 0 : -1}
-                    aria-label={cardLabel(pull) + (newEntryIds?.has(pull.card.id) ? " New to your Pokédex." : newIds?.has(pull.card.id) ? " New to your collection." : "")}
+                    aria-label={cardLabel(pull) + (newEntryIds?.has(pull.card.id) ? ` ${gameCards.index?.aria}` : newIds?.has(pull.card.id) ? " New to your collection." : "")}
                   />
                   {phase === "reveal" && i === idx && <NewBadge id={pull.card.id} newIds={newIds} newEntryIds={newEntryIds} />}
                   {phase === "reveal" && i === idx && pull.card.rarity && pull.card.rarity !== "None" && (
@@ -529,9 +529,9 @@ function cardLabel(p: PulledCard): string {
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
-/** "New entry" for a Pokémon new to the Pokédex, else "New" for a card new to the collection. */
+/** "New entry" for a Pokémon new to the Pokédex ("New card" for a Magic card new in any printing), else "New" for a card new to the collection. */
 function NewBadge({ id, newIds, newEntryIds }: { id: string; newIds?: Set<string>; newEntryIds?: Set<string> }) {
-  if (newEntryIds?.has(id)) return <span className="new-badge entry">New entry</span>;
+  if (newEntryIds?.has(id)) return <span className="new-badge entry">{gameCards.index?.badge}</span>;
   if (newIds?.has(id)) return <span className="new-badge">New</span>;
   return null;
 }

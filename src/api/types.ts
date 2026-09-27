@@ -91,6 +91,8 @@ export interface Card {
   types?: string[] | null;
   /** "Basic", "Stage1", "Stage2", "VMAX"… Pokémon cards only. Picks the foil's art window (artWindows.ts). */
   stage?: string | null;
+  /** Scryfall's id for the card itself, the same in every printing and set. Magic cards only. */
+  oracleId?: string | null;
 }
 
 /** A card from a cross-set query, which also says which set it's from. */

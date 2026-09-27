@@ -8,8 +8,7 @@ import type { SetData } from "../api/types";
 import { has } from "../app/game";
 import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
-import { caughtDex } from "../collection/caughtDex";
-import { newEntryIds } from "../collection/pokedex";
+import { newEntryIds, ownedEntries } from "../collection/entries";
 import { getPulls, savePack } from "../collection/store";
 import type { PulledCard } from "../engine/types";
 import { OpenerBar } from "../opener/OpenerBar";
@@ -68,9 +67,9 @@ export function BoughtPackPage({ packId }: { packId: string }) {
       const all = await getPulls();
       const have = new Set(all.filter((p) => p.setId === pack.setId).map((p) => p.cardId));
       const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have.has(id)));
-      // Without the Pokédex (or in a game without one), nothing is marked a new entry.
-      const dex = has("pokedex") ? await caughtDex(all).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined)) : undefined;
-      const newEntries = dex ? newEntryIds(pulls.map((p) => p.card), dex) : new Set<string>();
+      // Without the collection's index (or in a game without one), nothing is marked a new entry.
+      const had = await ownedEntries(all).catch((err) => (console.warn("Couldn't read the collection's index", err), undefined));
+      const newEntries = had ? newEntryIds(pulls.map((p) => p.card), had) : new Set<string>();
       const art = wrapperFor(pack);
       if (art) await withTimeout(preloadImage(art.src), 4000);
       if (live) setStage({ state: "ready", ready: { pack, data, pulls, newIds, newEntries } });

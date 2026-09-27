@@ -14,16 +14,17 @@ export type Game = "pokemon" | "mtg";
  * - market: selling cards, the pack shop and unopened packs.
  * - social: friends, the feed and trades.
  * - pokedex: the Pokédex views, and "New entry" on the reveal.
+ * - printings: Magic's card index, every printing of a card (by Scryfall's oracle id), and "New card" on the reveal.
  * - packArt: pack wrappers (photos of real packs, or drawn ones), and the Packs view that collects them.
  * - eraFilter: choosing which eras packs are drawn from, in Settings.
  * - setTiers: sets drawn by rarity tier, with pity.
  * - share: sharing cards to the feed from the reveal.
  */
-export type Feature = "sets" | "market" | "social" | "pokedex" | "packArt" | "eraFilter" | "setTiers" | "share";
+export type Feature = "sets" | "market" | "social" | "pokedex" | "printings" | "packArt" | "eraFilter" | "setTiers" | "share";
 
 export const GAMES: { id: Game; name: string; short: string; features: Feature[] }[] = [
   { id: "pokemon", name: "Pokémon", short: "PKMN", features: ["sets", "market", "social", "pokedex", "packArt", "eraFilter", "setTiers", "share"] },
-  { id: "mtg", name: "Magic: The Gathering", short: "MTG", features: ["sets", "market", "social", "packArt", "eraFilter", "setTiers", "share"] },
+  { id: "mtg", name: "Magic: The Gathering", short: "MTG", features: ["sets", "market", "social", "printings", "packArt", "eraFilter", "setTiers", "share"] },
 ];
 
 export const isGame = (v: unknown): v is Game => GAMES.some((g) => g.id === v);

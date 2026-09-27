@@ -4,11 +4,11 @@
 // - Card images are sent on to cards.scryfall.io, which Scryfall allows linking to and doesn't rate limit.
 // - Prices change daily, so they're kept apart from the cards: one entry per set per day, from the same search.
 
-import type { SetData, SetSummary } from "../src/api/types";
+import type { CardWithSet, SetData, SetSummary } from "../src/api/types";
 import { openPack, whyNotOpenable } from "../src/engine/openPack";
 import { createRng } from "../src/engine/rng";
 import type { CardPricing } from "../src/api/tcgdex";
-import { fetchSetData, fetchSetPrices, scryfallImage, setSymbol } from "../src/mtg/cards";
+import { fetchSetData, fetchSetPrices, inPacks, scryfallImage, searchCards, setSymbol, toCard, type RawCard } from "../src/mtg/cards";
 import { mtgArt, mtgPickPackArt, WRAPPER_VERSION } from "../src/mtg/packArt";
 import { renderWrapper } from "../src/mtg/wrapper";
 import { pickRandomSet } from "../src/engine/randomSet";
@@ -21,7 +21,7 @@ import { HttpError, json, randomToken, type Ctx } from "./http";
 import type { DealtRow } from "./packs";
 
 /** Bump when the shape of stored set data changes (src/mtg/cards.ts), with the app's in src/mtg/client.ts. */
-const SET_VERSION = 2;
+const SET_VERSION = 3;
 const setKey = (id: string) => `mtg:set:${id}:v${SET_VERSION}`;
 
 /** A set's cards, from D1, or from Scryfall the first time. */
@@ -74,7 +74,8 @@ export function mtgSetPrices(env: Env, set: MtgSet): Promise<Record<string, Card
 
 /** Sets read (or fetched from Scryfall) per request to fill in the set list, so no request makes too many calls. */
 const SUMMARIES_AT_ONCE = 5;
-const summariesKey = `mtg:sets:v${SET_VERSION}`;
+/** Summaries only count cards, so they're unaffected by SET_VERSION 3's oracle ids. */
+const summariesKey = "mtg:sets:v2";
 
 /**
  * Every Magic set as the set list shows it (SetSummary), with card counts from each set's data. Scryfall's own set
@@ -112,6 +113,7 @@ const SCRYFALL_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1
 
 /**
  * GET /api/mtg/pack/v<version>/<set>/<design>.svg: a drawn pack wrapper (src/mtg/wrapper.ts).
+ * GET /api/mtg/printings/<oracleId>: every printing of a card among the sets here (CardWithSet[], newest set first).
  * GET /api/mtg/sets: every set, as the set list shows it (SetSummary[]; see mtgSetSummaries).
  * GET /api/mtg/set/<id>: a set's cards (SetData).
  * GET /api/mtg/prices/<id>: today's prices for a set's cards, by card id (Record<string, CardPricing>).
@@ -124,6 +126,11 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
   const [, , , kind, id, file] = ctx.url.pathname.split("/");
 
   if (kind === "pack") return wrapper(ctx);
+  if (kind === "printings" && SCRYFALL_ID.test(id ?? "") && !file) {
+    const res = json(await mtgPrintings(ctx.env, id));
+    res.headers.set("Cache-Control", "public, max-age=3600");
+    return res;
+  }
   if (kind === "sets" && !id) {
     const sets = await mtgSetSummaries(ctx.env);
     const res = json(sets);
@@ -152,6 +159,41 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
     });
   }
   throw new HttpError(404, "Not found");
+}
+
+/** Changes whenever MTG_SETS does, so a card's printings are looked up again when sets are added. */
+const setsSignature = (() => {
+  let h = 0;
+  for (const c of MTG_SETS.map((s) => s.id).join(",")) h = (h * 31 + c.charCodeAt(0)) | 0;
+  return (h >>> 0).toString(36);
+})();
+
+/**
+ * Every printing of a card (by Scryfall's oracle id) among the sets packs come from, newest set first. One Scryfall
+ * search finds them however many sets there are; the answer is kept in D1 until the set list changes.
+ */
+export async function mtgPrintings(env: Env, oracleId: string): Promise<CardWithSet[]> {
+  const cache = d1Cache(env.DB);
+  const key = `mtg:printings:${oracleId}:v${SET_VERSION}:${setsSignature}`;
+  const hit = await cache.get<CardWithSet[]>(key);
+  if (hit) return hit;
+  let raw: RawCard[];
+  try {
+    // Only the sets here: a basic land has been printed in hundreds, and every page of them is another request.
+    raw = await searchCards(`oracleid:${oracleId} is:booster (${MTG_SETS.map((s) => `set:${s.id}`).join(" or ")})`);
+  } catch (err) {
+    console.error(`Couldn't look up the printings of ${oracleId}`, err);
+    throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
+  }
+  const printings = raw
+    .flatMap((c) => {
+      const set = mtgSet(c.set ?? "");
+      return set && inPacks(c) ? [{ set, card: { ...toCard(set.id, c), set: { id: set.id } } }] : [];
+    })
+    .sort((a, b) => b.set.released.localeCompare(a.set.released) || a.card.localId.localeCompare(b.card.localId, "en", { numeric: true }))
+    .map((p) => p.card);
+  await cache.set(key, printings);
+  return printings;
 }
 
 const IMAGE_HEADERS = { "User-Agent": "TCGPackOpener/0.1 (+https://tcg.spudfurd.dev)" };
