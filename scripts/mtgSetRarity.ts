@@ -5,41 +5,17 @@
 // Usage: npm run mtg-set-rarity   (re-run after adding sets; Scryfall's answers are cached per day in .cache)
 import { writeFile } from "node:fs/promises";
 import { priceFor } from "../src/collection/prices";
-import { fetchRawCards, toPricing, toSetData, type RawCard } from "../src/mtg/cards";
-import { MTG_SETS, type MtgSet } from "../src/mtg/sets";
-import { fileCache } from "./fileCache";
+import { toPricing, toSetData } from "../src/mtg/cards";
+import { MTG_SETS } from "../src/mtg/sets";
+import { rawCards, today } from "./scryfall";
 import { assignTiers, median, printTiers, spread, type PricedSet } from "./tiering";
 
 const SAMPLE = 25;
 
-const cache = fileCache();
-const today = new Date().toISOString().slice(0, 10);
-
-const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/** A set's cards from Scryfall, waiting out a 429 (it asks for about 10–15 seconds) a few times before giving up. */
-async function fetchPolitely(set: MtgSet): Promise<RawCard[]> {
-  for (let attempt = 1; ; attempt++) {
-    try {
-      return await fetchRawCards(set);
-    } catch (err) {
-      if (attempt >= 4 || !String(err).includes("429")) throw err;
-      console.log(`Scryfall asked to slow down; waiting before ${set.name}…`);
-      await wait(20_000);
-    }
-  }
-}
-
 const rows: PricedSet[] = [];
-// One set at a time, a second apart: Scryfall asks for requests to be spaced out, and answers bursts with 429s.
+// One set at a time: Scryfall asks for requests to be spaced out (see scryfall.ts).
 for (const set of MTG_SETS) {
-  const key = `scryfall:${set.id}:${today}`;
-  let raw = await cache.get<RawCard[]>(key);
-  if (!raw) {
-    raw = await fetchPolitely(set);
-    await cache.set(key, raw);
-    await wait(1000);
-  }
+  const raw = await rawCards(set);
   const data = toSetData(set, raw);
   const prices = toPricing(set, raw);
   const picks = spread(

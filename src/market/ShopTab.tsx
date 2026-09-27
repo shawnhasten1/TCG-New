@@ -3,14 +3,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
-import { client } from "../app/client";
+import { GAME } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { Help } from "../app/Help";
-import { SetLogo } from "../app/SetLogo";
-import { setTier, TIERS, type SetTier } from "../engine/setRarity";
+import { TIERS, type SetTier } from "../engine/setRarity";
 import { packArts } from "../packs/art";
-import { buyPacks, loadUnopened, loadWallet } from "./market";
-import { formatCoins } from "./protocol";
+import { buyPacks, loadUnopened, loadWallet, coins as formatCoins, currency } from "./market";
 import { QuantityStepper } from "./QuantityStepper";
 import { MAX_UNOPENED, maxQuantity, shopSets, type ShopEntry } from "./shop";
 import { ask } from "../app/Confirm";
@@ -39,7 +38,7 @@ export function ShopTab() {
 
   useEffect(() => {
     let live = true;
-    client.listSetSummaries().then(
+    gameCards.listSetSummaries().then(
       (s) => live && setSets(s),
       (err) => live && setError(message(err)),
     );
@@ -58,11 +57,11 @@ export function ShopTab() {
 
   /** Tiers, cheapest first, with their sets cheapest first. */
   const groups = useMemo(() => {
-    const sold = shopSets();
+    const sold = shopSets(GAME);
     const q = query.trim().toLowerCase();
     const items: Item[] = (sets ?? [])
       .filter((s) => Object.hasOwn(sold, s.id) && (!q || `${s.name} ${s.serie.name}`.toLowerCase().includes(q)))
-      .map((set) => ({ set, entry: sold[set.id], tier: setTier(set.id) }));
+      .map((set) => ({ set, entry: sold[set.id], tier: gameCards.setTier(set.id) }));
     return TIERS.map((t) => ({ tier: t, items: items.filter((i) => i.tier === t.id).sort((a, b) => a.entry.price - b.entry.price || b.set.releaseDate.localeCompare(a.set.releaseDate)) }))
       .filter((g) => g.items.length);
   }, [sets, query]);
@@ -112,7 +111,7 @@ export function ShopTab() {
             lines={[
               "Pick a set and buy a pack from it. Which wrapper you get is luck.",
               "Prices follow what a set's cards are worth, so sets with pricier cards cost more.",
-              "A pack costs more than its cards usually sell for, so the shop is for chasing a set, not making coins.",
+              `A pack costs more than its cards usually sell for, so the shop is for chasing a set, not making ${currency}.`,
             ]}
           />
         </div>
@@ -162,7 +161,7 @@ export function ShopTab() {
                 return (
                   <li key={item.set.id} data-tier={item.tier}>
                     <a className="shop-pack" href={href.shopBinder(item.set.id)} title={`See the cards in ${item.set.name}`} aria-label={`See the cards in ${item.set.name}`}>
-                      {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <SetLogo logo={item.set.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{item.set.name}</span>} />}
+                      {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <gameCards.SetMark set={item.set} loading="lazy" className="logo" fallback={<span className="logo-fallback">{item.set.name}</span>} />}
                     </a>
                     <strong className="name">{item.set.name}</strong>
                     <small className="muted">

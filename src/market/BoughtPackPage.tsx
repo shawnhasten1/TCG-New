@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { isMember, useAccount } from "../account/account";
 import type { SetData } from "../api/types";
+import { has } from "../app/game";
 import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { caughtDex } from "../collection/caughtDex";
@@ -43,6 +44,9 @@ async function othersThan(packId: string): Promise<UnopenedPack[]> {
   return packs.filter((p) => p.id !== packId && !opened.has(p.id));
 }
 
+/** The photo of the real pack it came in, in games that have them. */
+const wrapperFor = (pack: DealtPack) => (has("packArt") ? packArt(pack.setId, pack.art) : undefined);
+
 export function BoughtPackPage({ packId }: { packId: string }) {
   const member = isMember(useAccount());
   const [stage, setStage] = useState<Stage>({ state: "loading", done: 0, total: 0 });
@@ -65,10 +69,10 @@ export function BoughtPackPage({ packId }: { packId: string }) {
       const all = await getPulls();
       const have = new Set(all.filter((p) => p.setId === pack.setId).map((p) => p.cardId));
       const newIds = new Set(pulls.map((p) => p.card.id).filter((id) => !have.has(id)));
-      // Without the Pokédex, nothing is marked a new entry.
-      const dex = await caughtDex(all).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
+      // Without the Pokédex (or in a game without one), nothing is marked a new entry.
+      const dex = has("pokedex") ? await caughtDex(all).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined)) : undefined;
       const newEntries = dex ? newEntryIds(pulls.map((p) => p.card), dex) : new Set<string>();
-      const art = packArt(pack.setId, pack.art);
+      const art = wrapperFor(pack);
       if (art) await withTimeout(preloadImage(art.src), 4000);
       if (live) setStage({ state: "ready", ready: { pack, data, pulls, newIds, newEntries } });
     })().catch((err) => live && setStage({ state: "error", message: errorText(err) }));
@@ -108,7 +112,7 @@ export function BoughtPackPage({ packId }: { packId: string }) {
   }
 
   const { pack, data, pulls, newIds, newEntries } = stage.ready;
-  const wrapper = packArt(pack.setId, pack.art);
+  const wrapper = wrapperFor(pack);
   const save = () => {
     savePack(pack.dealId, data.set.id, pulls, new Date(), wrapper?.id).then(
       () => void syncNow(),
@@ -132,7 +136,7 @@ export function BoughtPackPage({ packId }: { packId: string }) {
       limitNote={others.length ? `${others.length} more unopened ${others.length === 1 ? "pack" : "packs"}` : "Your last unopened pack"}
       canOpenAgain={others.length > 0}
       againLabel="Open the next one"
-      onShare={member ? (slots) => shareCards(pack.dealId, slots) : undefined}
+      onShare={member && has("share") ? (slots) => shareCards(pack.dealId, slots) : undefined}
     />
   );
 }

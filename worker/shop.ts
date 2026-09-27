@@ -12,7 +12,9 @@ import type { DealtCard, DealtPack } from "../src/packs/protocol";
 import type { SyncCard } from "../src/sync/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, json, readJson, type Ctx } from "./http";
+import { rollMtgSet } from "./mtg";
 import { rollSet } from "./packs";
+import { MTG_SETS, mtgSet } from "../src/mtg/sets";
 import { balance, isOverdrawn, walletStatements } from "./wallet";
 
 const unopenedCount = async (db: D1Database, userId: string, game: Game) =>
@@ -21,8 +23,7 @@ const unopenedCount = async (db: D1Database, userId: string, game: Game) =>
 export async function buy(ctx: Ctx, userId: string, game: Game): Promise<Response> {
   const body = (await readJson<Partial<BuyRequest> | null>(ctx.req)) ?? {};
   const setId = typeof body.setId === "string" ? body.setId : "";
-  // Prices and rolling a chosen set are Pokémon's only, for now.
-  const price = game === "pokemon" ? shopPrice(setId) : undefined;
+  const price = shopPrice(setId, game);
   if (!price) throw new HttpError(404, "The shop doesn't sell packs from that set.");
   const quantity = parseQuantity(body.quantity);
   if (!quantity) throw new HttpError(400, `You can buy from 1 to ${MAX_BUY_AT_ONCE} packs at once.`);
@@ -33,13 +34,13 @@ export async function buy(ctx: Ctx, userId: string, game: Game): Promise<Respons
   const room = MAX_UNOPENED - (await unopenedCount(db, userId, game));
   if (quantity > room) throw new HttpError(429, room > 0 ? `You have room for ${room} more unopened ${room === 1 ? "pack" : "packs"}.` : `You have ${MAX_UNOPENED} unopened packs. Open some before buying more.`);
   const coins = await balance(db, userId, game);
-  if (coins < total) throw new HttpError(402, `${quantity === 1 ? "That pack costs" : `${quantity} packs cost`} ${formatCoins(total)}. You have ${formatCoins(coins)}.`);
+  if (coins < total) throw new HttpError(402, `${quantity === 1 ? "That pack costs" : `${quantity} packs cost`} ${formatCoins(total, game)}. You have ${formatCoins(coins, game)}.`);
 
   // Each pack is rolled on its own, with its own wrapper. The set's cards are cached after the first.
   const rows = [];
   let setName = setId;
   for (let i = 0; i < quantity; i++) {
-    const rolled = await rollSet(ctx, setId);
+    const rolled = game === "mtg" ? await rollMtgSet(ctx, mtgSet(setId)!) : await rollSet(ctx, setId);
     if (!("row" in rolled)) {
       console.error(`The shop sells ${setId}, but it can't fill a pack: ${rolled.unopenable}`);
       throw new HttpError(503, "Packs from that set can't be opened right now. Try another set.");
@@ -58,7 +59,7 @@ export async function buy(ctx: Ctx, userId: string, game: Game): Promise<Respons
       ),
     ]);
   } catch (err) {
-    if (isOverdrawn(err)) throw new HttpError(402, `Those ${packsWord} cost ${formatCoins(total)}, more than you have.`);
+    if (isOverdrawn(err)) throw new HttpError(402, `Those ${packsWord} cost ${formatCoins(total, game)}, more than you have.`);
     throw err;
   }
   return json({ coins: await balance(db, userId, game), packs: rows.map((r) => ({ id: r.id, setId, art: r.art })), unopened: await unopenedCount(db, userId, game) } satisfies BuyResponse);
@@ -80,13 +81,16 @@ export async function listUnopened(ctx: Ctx, userId: string, game: Game): Promis
   const { results } = await ctx.env.DB.prepare("SELECT id, set_id, art, price, bought_at FROM pack_inventory WHERE user_id = ? AND game = ? ORDER BY bought_at DESC, rowid DESC")
     .bind(userId, game)
     .all<Omit<InventoryRow, "cards" | "reveal">>();
-  // Names and logos from the Worker's cached set list, so the app needn't fetch it just to label packs.
-  const sets = new Map(
-    (
-      await tcgdex(ctx.env)
-        .client.listSetSummaries()
-        .catch((err) => (console.error("Couldn't load the set list", err), []))
-    ).map((s) => [s.id, s]),
+  // Names and logos from the Worker's cached set list, so the app needn't fetch it just to label packs. Magic's names
+  // are in MTG_SETS, and the app draws its set symbols from the set id.
+  const sets = new Map<string, { name: string; logo?: string | null }>(
+    game === "mtg"
+      ? MTG_SETS.map((s) => [s.id, { name: s.name }])
+      : (
+          await tcgdex(ctx.env)
+            .client.listSetSummaries()
+            .catch((err) => (console.error("Couldn't load the set list", err), []))
+        ).map((s) => [s.id, s]),
   );
   const packs = results.map((r): UnopenedPack => ({ id: r.id, setId: r.set_id, setName: sets.get(r.set_id)?.name, logo: sets.get(r.set_id)?.logo, art: r.art, price: r.price, boughtAt: r.bought_at }));
   return json({ packs } satisfies UnopenedResponse);

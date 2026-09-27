@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { bestOffer, coinValue, DECIDE_MS, FIRST_OFFER, formatCoins, LATER_OFFERS, listingCloses, OFFER_EVERY_MS, OFFER_GRACE_MS, offerFor, offerOpen, OFFERS, offersIn, parseIds, TRAINERS, UNPRICED_COINS } from "./protocol";
+import type { Game } from "../game";
 
 describe("coinValue", () => {
   it("counts a US cent as a coin", () => {
@@ -27,11 +28,13 @@ describe("formatCoins", () => {
     expect(formatCoins(1)).toBe("1 coin");
     expect(formatCoins(0)).toBe("0 coins");
     expect(formatCoins(1250)).toMatch(/^1.250 coins$/);
+    expect(formatCoins(1, "mtg")).toBe("1 Treasure");
+    expect(formatCoins(1250, "mtg")).toMatch(/^1.250 Treasure$/);
   });
 });
 
 describe("offerFor", () => {
-  const offers = (n: number) => Array.from({ length: 2000 }, (_, i) => offerFor(10_000, `seed-${i}`, n));
+  const offers = (n: number, game: Game = "pokemon") => Array.from({ length: 2000 }, (_, i) => offerFor(10_000, `seed-${i}`, n, game));
   const shares = (n: number) => offers(n).map((o) => o.coins / 10_000);
   const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
@@ -52,18 +55,24 @@ describe("offerFor", () => {
     expect(mean(later)).toBeCloseTo(0.915, 1);
   });
 
-  it("has a trainer to match the offer: lowballs from youngsters, top offers from collectors", () => {
-    const classOf = (from: string) => TRAINERS.find((t) => t.classes.some((c) => from.startsWith(`${c} `)));
-    for (const o of [...offers(0), ...offers(1)]) {
+  it.each(["pokemon", "mtg"] as Game[])("has a trainer to match the offer in %s: lowballs from youngsters, top offers from collectors", (game) => {
+    const trainers = TRAINERS[game];
+    const classOf = (from: string) => trainers.find((t) => t.classes.some((c) => from.startsWith(`${c} `)));
+    for (const o of [...offers(0, game), ...offers(1, game)]) {
       const group = classOf(o.from)!;
       expect(group).toBeDefined();
       const share = o.coins / 10_000;
       // Rounding to whole coins can put a share a hair either side of a group's cutoff.
       expect(share).toBeGreaterThanOrEqual(group.from - 0.0001);
-      const better = TRAINERS[TRAINERS.indexOf(group) - 1];
+      const better = trainers[trainers.indexOf(group) - 1];
       if (better) expect(share).toBeLessThan(better.from + 0.0001);
     }
-    expect(new Set(offers(1).map((o) => o.from)).size).toBeGreaterThan(50);
+    expect(new Set(offers(1, game).map((o) => o.from)).size).toBeGreaterThan(50);
+  });
+
+  it("offers the same coins whatever the game; only who's buying differs", () => {
+    expect(offerFor(1234, "abc", 3, "mtg").coins).toBe(offerFor(1234, "abc", 3).coins);
+    expect(offerFor(1234, "abc", 3, "mtg").from).not.toBe(offerFor(1234, "abc", 3).from);
   });
 
   it("never offers nothing", () => {

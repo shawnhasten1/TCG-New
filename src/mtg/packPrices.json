@@ -1,0 +1,74 @@
+{
+ "generated": "2026-09-27",
+ "packs": 3000,
+ "sets": {
+  "blb": {
+   "value": 740,
+   "price": 1050
+  },
+  "dft": {
+   "value": 517,
+   "price": 750
+  },
+  "dom": {
+   "value": 528,
+   "price": 750
+  },
+  "dsk": {
+   "value": 925,
+   "price": 1300
+  },
+  "eld": {
+   "value": 512,
+   "price": 750
+  },
+  "fdn": {
+   "value": 712,
+   "price": 1000
+  },
+  "inv": {
+   "value": 1386,
+   "price": 1950
+  },
+  "isd": {
+   "value": 521,
+   "price": 750
+  },
+  "ktk": {
+   "value": 413,
+   "price": 600
+  },
+  "lrw": {
+   "value": 1272,
+   "price": 1800
+  },
+  "mkm": {
+   "value": 593,
+   "price": 850
+  },
+  "mrd": {
+   "value": 1391,
+   "price": 1950
+  },
+  "ody": {
+   "value": 1007,
+   "price": 1450
+  },
+  "ons": {
+   "value": 1539,
+   "price": 2200
+  },
+  "shm": {
+   "value": 1421,
+   "price": 2000
+  },
+  "ulg": {
+   "value": 2830,
+   "price": 4000
+  },
+  "usg": {
+   "value": 4776,
+   "price": 6700
+  }
+ }
+}

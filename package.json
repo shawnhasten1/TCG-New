@@ -19,7 +19,8 @@
     "deploy": "npm run build && wrangler d1 migrations apply tcg --remote && wrangler deploy",
     "pack-art": "tsx scripts/packArt.ts",
     "pack-prices": "tsx scripts/packPrices.ts",
-    "mtg-set-rarity": "tsx scripts/mtgSetRarity.ts"
+    "mtg-set-rarity": "tsx scripts/mtgSetRarity.ts",
+    "mtg-pack-prices": "tsx scripts/mtgPackPrices.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

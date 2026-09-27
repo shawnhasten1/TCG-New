@@ -161,21 +161,29 @@ export async function rollMtg(ctx: Ctx, history: string[], eras: string[]): Prom
   while (sets.length) {
     const set = pickRandomSet(sets, Math.random, { floor, tierOf: mtgSetTier })!;
     sets.splice(sets.indexOf(set), 1);
-    const data = await mtgSetData(ctx.env, set);
-    const profile = mtgProfile(set);
-    const reason = whyNotOpenable(data, profile);
-    if (reason) {
-      console.warn(`Can't open ${set.id}: ${reason}`);
-      continue;
-    }
-    const pulls = openPack(data, profile, createRng(randomToken(16)));
-    return {
+    const rolled = await rollMtgSet(ctx, set);
+    if ("row" in rolled) return rolled.row;
+    console.warn(`Can't open ${set.id}: ${rolled.unopenable}`);
+  }
+  throw new HttpError(503, "No set could be opened.");
+}
+
+/** Rolls a pack from one Magic set (the shop's, where the player picks it), or says why the set can't fill a pack. */
+export async function rollMtgSet(ctx: Ctx, set: MtgSet): Promise<{ row: DealtRow; setName: string } | { unopenable: string }> {
+  const data = await mtgSetData(ctx.env, set);
+  const profile = mtgProfile(set);
+  const reason = whyNotOpenable(data, profile);
+  if (reason) return { unopenable: reason };
+  const pulls = openPack(data, profile, createRng(randomToken(16)));
+  return {
+    setName: set.name,
+    row: {
       deal_id: crypto.randomUUID(),
       set_id: set.id,
       cards: JSON.stringify(pulls.map((p): SyncCard => ({ cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition }))),
       reveal: JSON.stringify(pulls.map((p) => ({ slot: p.slot, outcome: p.outcome }))),
+      // Magic packs have no wrapper photos yet.
       art: null,
-    };
-  }
-  throw new HttpError(503, "No set could be opened.");
+    },
+  };
 }

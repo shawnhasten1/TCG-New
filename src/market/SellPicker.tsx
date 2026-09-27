@@ -3,6 +3,7 @@
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import type { Card, SetDetail } from "../api/types";
 import { isMember, useAccount } from "../account/account";
+import { has } from "../app/game";
 import { Help } from "../app/Help";
 import { Spinner } from "../app/Spinner";
 import { href } from "../app/router";
@@ -13,15 +14,16 @@ import { priceFor } from "../collection/prices";
 import { useCardPrices } from "../collection/usePrices";
 import { useOpenedSets } from "../collection/useOpenedSets";
 import { useSyncStatus } from "../sync/sync";
-import { listCards, loadMarket } from "./market";
-import { coinValue, formatCoins, MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
+import { listCards, loadMarket, coins as formatCoins } from "./market";
+import { coinValue, MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
 import "../collection/collection.css";
 import "../social/social.css";
 import "./market.css";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 const plural = (n: number) => `${n} ${n === 1 ? "card" : "cards"}`;
-const SORTS: CardSort[] = ["rarity", "value", "recent", "dex", "name", "set"];
+/** Pokédex number only where there's a Pokédex. */
+const SORTS: CardSort[] = ["rarity", "value", "recent", ...(has("pokedex") ? (["dex"] as const) : []), "name", "set"];
 
 export function SellPicker() {
   const account = useAccount();

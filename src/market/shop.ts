@@ -3,10 +3,12 @@
 //
 // A pack costs the average value of its cards marked up, so its price follows what the set is worth and buying packs to
 // sell the cards loses coins on average. The average comes from scripts/packPrices.ts, which opens thousands of each
-// set with the real engine and prices every card. Most packs are worth well under the average (it's the chase cards
+// set with the real engine and prices every card (scripts/mtgPackPrices.ts for Magic). Most packs are worth well under the average (it's the chase cards
 // that make it), so a typical pack is worth much less than its price; that's the gamble, as with real boosters. Sets missing from packPrices.json (e.g. released
 // since the script last ran) aren't sold: without a value, their price could be less than their packs are worth.
 
+import type { Game } from "../game";
+import mtgPrices from "../mtg/packPrices.json";
 import prices from "./packPrices.json";
 
 /** Bought packs' ids start with this, before and after they're opened. */
@@ -43,13 +45,17 @@ export interface ShopEntry {
   price: number;
 }
 
-const table = (prices as { sets: Record<string, ShopEntry> }).sets;
+/** Each game's shop, by set id. */
+const tables: Record<Game, Record<string, ShopEntry>> = {
+  pokemon: (prices as { sets: Record<string, ShopEntry> }).sets,
+  mtg: (mtgPrices as { sets: Record<string, ShopEntry> }).sets,
+};
 
-/** What a pack from a set costs, or undefined if the shop doesn't sell it. */
-export const shopPrice = (setId: string): number | undefined => (Object.hasOwn(table, setId) ? table[setId].price : undefined);
+/** What a pack from a set costs, or undefined if the game's shop doesn't sell it. */
+export const shopPrice = (setId: string, game: Game = "pokemon"): number | undefined => (Object.hasOwn(tables[game], setId) ? tables[game][setId].price : undefined);
 
-/** Every set the shop sells, by id. */
-export const shopSets = (): Record<string, ShopEntry> => table;
+/** Every set a game's shop sells, by id. */
+export const shopSets = (game: Game = "pokemon"): Record<string, ShopEntry> => tables[game];
 
 /** Buying packs from a set. */
 export interface BuyRequest {

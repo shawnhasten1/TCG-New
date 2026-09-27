@@ -1,5 +1,6 @@
 // The market, shared by the app and the Worker (worker/wallet.ts). Players sell cards to the market for coins, its
-// play money, and spend them on packs. Coins aren't real money and can't be bought or passed between players.
+// play money, and spend them on packs. Coins aren't real money and can't be bought or passed between players, or
+// between games: each game has its own, under its own name (CURRENCY), worth the same.
 //
 // A card's value in coins is its market price (collection/prices.ts), 1 coin to the US cent. The Worker works out
 // every value itself, so what the app shows is only ever a preview.
@@ -7,6 +8,7 @@
 import type { Price } from "../collection/prices";
 import { createRng } from "../engine/rng";
 import { rarityKind, type RarityKind } from "../engine/tiers";
+import type { Game } from "../game";
 import type { TradeCard } from "../social/protocol";
 
 export const COINS_PER_USD = 100;
@@ -30,9 +32,15 @@ export function coinValue(price: Pick<Price, "amount" | "currency"> | undefined,
   return { coins: Math.max(1, Math.round(usd * COINS_PER_USD)), priced: true };
 }
 
+/** What each game's coins are called: Pokémon's are coins, Magic's are Treasure (after its Treasure tokens). */
+export const CURRENCY: Record<Game, { one: string; many: string }> = {
+  pokemon: { one: "coin", many: "coins" },
+  mtg: { one: "Treasure", many: "Treasure" },
+};
+
 const coinFormat = new Intl.NumberFormat();
-/** "1,250 coins", "1 coin". */
-export const formatCoins = (n: number) => `${coinFormat.format(n)} ${n === 1 ? "coin" : "coins"}`;
+/** "1,250 coins", "1 coin"; "1,250 Treasure" in Magic. */
+export const formatCoins = (n: number, game: Game = "pokemon") => `${coinFormat.format(n)} ${n === 1 ? CURRENCY[game].one : CURRENCY[game].many}`;
 
 export type LedgerKind = "sale" | "purchase" | "grant";
 
@@ -77,14 +85,22 @@ export const LATER_OFFERS: [number, number] = [0.8, 1.03];
 
 /**
  * Who makes offers, by how good an offer is: the least a share of the value must be for each group. Youngsters
- * lowball; collectors pay up.
+ * lowball; collectors pay up. Magic's buyers are the same idea in Magic's world: goblins lowball, archmages pay up.
  */
-export const TRAINERS: { from: number; classes: string[] }[] = [
+export const TRAINERS: Record<Game, { from: number; classes: string[] }[]> = {
+  pokemon: [
   { from: 0.98, classes: ["Collector", "Gentleman", "Rich Boy", "Lady", "Socialite", "Veteran"] },
   { from: 0.9, classes: ["Ace Trainer", "Pokémon Breeder", "Scientist", "Super Nerd", "Black Belt", "Psychic", "Pokémon Ranger", "Pokéfan"] },
   { from: 0.78, classes: ["Hiker", "Fisherman", "Swimmer", "Bird Keeper", "Sailor", "Backpacker", "Kindler", "Juggler"] },
   { from: 0, classes: ["Youngster", "Bug Catcher", "Lass", "Tuber", "Camper", "Picnicker"] },
-];
+  ],
+  mtg: [
+    { from: 0.98, classes: ["Collector", "Archmage", "Guildmaster", "Curator", "Dragon Hoarder", "Noble"] },
+    { from: 0.9, classes: ["Artificer", "Sage", "Wizard", "Judge", "Deckbuilder", "Cleric", "Loremaster", "Sphinx Scholar"] },
+    { from: 0.78, classes: ["Merchant", "Trader", "Ranger", "Druid", "Rogue", "Monk", "Scout", "Shaman"] },
+    { from: 0, classes: ["Goblin", "Kobold", "Squire", "Apprentice", "Novice", "Peasant"] },
+  ],
+};
 export const TRAINER_NAMES = [
   "Tom", "Sam", "Joey", "Ana", "Mia", "Leo", "Kai", "Ben", "Zoe", "Max", "Ivy", "Eli", "Ray", "Jin", "Nia",
   "Otto", "Rosa", "Dale", "Gus", "Tess", "Wes", "Hana", "Omar", "Lou", "Pip", "Remy", "Vera", "Cal", "Dot", "Finn",
@@ -93,17 +109,17 @@ export const TRAINER_NAMES = [
 export interface MarketOffer {
   n: number;
   coins: number;
-  /** The trainer making it, e.g. "Hiker Tom". */
+  /** The trainer making it, e.g. "Hiker Tom" (or "Merchant Tom" in Magic). */
   from: string;
 }
 
-/** Offer number `n` (from 0) for a card worth `value` coins. */
-export function offerFor(value: number, seed: string, n: number): MarketOffer {
+/** Offer number `n` (from 0) for a card worth `value` coins, in `game`'s market. */
+export function offerFor(value: number, seed: string, n: number, game: Game = "pokemon"): MarketOffer {
   const rng = createRng(`${seed}:${n}`);
   const [lo, hi] = n === 0 ? FIRST_OFFER : LATER_OFFERS;
   // The mean of two draws leans to the middle of the range.
   const share = lo + ((rng() + rng()) / 2) * (hi - lo);
-  const classes = TRAINERS.find((t) => share >= t.from)!.classes;
+  const classes = TRAINERS[game].find((t) => share >= t.from)!.classes;
   const from = `${classes[Math.floor(rng() * classes.length)]} ${TRAINER_NAMES[Math.floor(rng() * TRAINER_NAMES.length)]}`;
   return { n, coins: Math.max(1, Math.round(value * share)), from };
 }

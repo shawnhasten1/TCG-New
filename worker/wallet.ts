@@ -7,10 +7,11 @@
 
 import type { CardPricing } from "../src/api/tcgdex";
 import { priceFor } from "../src/collection/prices";
-import { coinValue, WELCOME_COINS, type CoinValue, type LedgerEntry, type LedgerKind, type WalletResponse } from "../src/market/protocol";
+import { coinValue, CURRENCY, WELCOME_COINS, type CoinValue, type LedgerEntry, type LedgerKind, type WalletResponse } from "../src/market/protocol";
 import type { Game } from "../src/game";
 import type { TradeCard } from "../src/social/protocol";
 import { cardPricing } from "./cards";
+import { requireGame } from "./games";
 import { HttpError, json, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
 
@@ -19,13 +20,12 @@ const HISTORY = 50;
 /** Price lookups in flight at once. Each is a request to the card database unless it's already cached today. */
 const PRICE_CONCURRENCY = 6;
 
-/** The wallet is Pokémon's only, for now. */
-const GAME: Game = "pokemon";
-
+/** GET /api/wallet?game=: a game's balance and history (Pokémon when left out). */
 export async function handleWallet(ctx: Ctx): Promise<Response> {
   const user = await requireMember(ctx);
-  await welcome(ctx.env.DB, user, GAME);
-  if (ctx.req.method === "GET" && ctx.url.pathname === "/api/wallet") return json(await wallet(ctx, user, GAME));
+  const game = requireGame(ctx.env, ctx.url.searchParams.get("game") ?? undefined);
+  await welcome(ctx.env.DB, user, game);
+  if (ctx.req.method === "GET" && ctx.url.pathname === "/api/wallet") return json(await wallet(ctx, user, game));
   throw new HttpError(404, "Not found");
 }
 
@@ -77,10 +77,10 @@ export async function welcome(db: D1Database, user: UserRow, game: Game): Promis
     db
       .prepare(
         `INSERT INTO wallet_ledger (id, user_id, game, kind, amount, balance, ref, note, created_at)
-         SELECT ?1, user_id, game, 'grant', ?2, coins + ?2, 'welcome', 'Welcome coins', ?3 FROM wallets WHERE user_id = ?4 AND game = ?5 AND welcomed = 0
+         SELECT ?1, user_id, game, 'grant', ?2, coins + ?2, 'welcome', ?6, ?3 FROM wallets WHERE user_id = ?4 AND game = ?5 AND welcomed = 0
          ON CONFLICT (id) DO NOTHING`,
       )
-      .bind(id, WELCOME_COINS, Date.now(), user.id, game),
+      .bind(id, WELCOME_COINS, Date.now(), user.id, game, `Welcome ${CURRENCY[game].many}`),
     db.prepare("UPDATE wallets SET coins = coins + ?, welcomed = 1 WHERE user_id = ? AND game = ? AND welcomed = 0").bind(WELCOME_COINS, user.id, game),
   ]);
 }

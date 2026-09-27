@@ -141,7 +141,7 @@ export function FeedPage() {
                             {c.card.name}
                             {post.sale && (
                               <small className="sale">
-                                Sold to {post.sale.to} for {formatCoins(post.sale.coins)}
+                                Sold to {post.sale.to} for {formatCoins(post.sale.coins, post.game)}
                               </small>
                             )}
                             <small>

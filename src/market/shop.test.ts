@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { MAX_BUY_AT_ONCE, MAX_UNOPENED, maxQuantity, MIN_PACK_PRICE, PACK_MARKUP, packPrice, parseQuantity, shopPrice } from "./shop";
+import { mtgSet } from "../mtg/sets";
+import { MAX_BUY_AT_ONCE, MAX_UNOPENED, maxQuantity, MIN_PACK_PRICE, PACK_MARKUP, packPrice, parseQuantity, shopPrice, shopSets } from "./shop";
 
 describe("packPrice", () => {
   it("marks the average value of a pack's cards up, so buying to resell loses coins", () => {
@@ -56,5 +57,20 @@ describe("parseQuantity", () => {
 
   it("refuses anything else", () => {
     for (const v of [0, -1, 2.5, MAX_BUY_AT_ONCE + 1, "3", null, NaN]) expect(parseQuantity(v)).toBeUndefined();
+  });
+});
+
+describe("Magic's shop", () => {
+  it("sells only Magic sets, at prices worked out the same way as Pokémon's, and none of Pokémon's", () => {
+    const sets = shopSets("mtg");
+    expect(Object.keys(sets).length).toBeGreaterThan(0);
+    for (const [id, e] of Object.entries(sets)) {
+      expect(mtgSet(id)).toBeDefined();
+      expect(e.price).toBe(packPrice(e.value));
+      expect(shopPrice(id, "mtg")).toBe(e.price);
+    }
+    const pokemonSet = Object.keys(shopSets())[0];
+    expect(shopPrice(pokemonSet, "mtg")).toBeUndefined();
+    expect(shopPrice(Object.keys(sets)[0])).toBeUndefined();
   });
 });

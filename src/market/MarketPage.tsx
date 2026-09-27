@@ -14,8 +14,8 @@ import { pullTier } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { ago } from "../social/common";
 import type { TradeCard } from "../social/protocol";
-import { keepListings, loadMarket, loadWallet, sellListings, shareSale } from "./market";
-import { bestOffer, formatCoins, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
+import { keepListings, loadMarket, loadWallet, sellListings, shareSale, buyers, coins as formatCoins, currency } from "./market";
+import { bestOffer, OFFERS, type Listing, type MarketResponse, type WalletResponse } from "./protocol";
 import { ShopTab } from "./ShopTab";
 import { UnopenedTab } from "./UnopenedTab";
 import { ask } from "../app/Confirm";
@@ -61,7 +61,7 @@ export function MarketPage({ tab }: { tab: MarketTab }) {
       <h1>Market</h1>
       {!member ? (
         <p className="muted empty">
-          Sell cards to the market for coins, and spend them on packs. <a href={href.settings()}>Sign up or sign in</a> to start.
+          Sell cards to the market for {currency} to spend on packs. <a href={href.settings()}>Sign up or sign in</a> to start.
         </p>
       ) : (
         <>
@@ -187,7 +187,7 @@ function SellBoard() {
           <Help
             label="How selling works"
             lines={[
-              `List cards and trainers make offers: one straight away, usually low, then one a minute, up to ${OFFERS}.`,
+              `List cards and ${buyers} make offers: one straight away, usually low, then one a minute, up to ${OFFERS}.`,
               "Sell to the best offer whenever you like. Nothing sells until you tap Sell.",
               "You have 12 hours after the last offer to sell or keep. Kept cards can go straight back on the market.",
             ]}
@@ -347,7 +347,7 @@ function Wallet() {
       </p>
       {data.history.length === 0 ? (
         <p className="muted empty">
-          No coins yet. <a href={href.marketPick()}>Sell some cards</a> to earn some.
+          No {currency} yet. <a href={href.marketPick()}>Sell some cards</a> to earn some.
         </p>
       ) : (
         <ul className="ledger">

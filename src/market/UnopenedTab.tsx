@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Help } from "../app/Help";
 import { href } from "../app/router";
-import { SetLogo } from "../app/SetLogo";
+import { gameCards } from "../app/gameCards";
 import { getPulls } from "../collection/store";
 import { packArt, packArts } from "../packs/art";
 import { ago } from "../social/common";
@@ -65,7 +65,7 @@ export function UnopenedTab() {
             return (
               <li key={p.id}>
                 <div className="shop-pack">
-                  {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <SetLogo logo={p.logo} alt="" loading="lazy" className="logo" fallback={<span className="logo-fallback">{p.setName ?? p.setId}</span>} />}
+                  {art ? <RetryImg src={art.src} alt="" loading="lazy" /> : <gameCards.SetMark set={{ id: p.setId, name: p.setName ?? p.setId, logo: p.logo }} loading="lazy" className="logo" fallback={<span className="logo-fallback">{p.setName ?? p.setId}</span>} />}
                 </div>
                 <strong className="name">{p.setName ?? p.setId}</strong>
                 <small className="muted">Bought {ago(p.boughtAt)}</small>

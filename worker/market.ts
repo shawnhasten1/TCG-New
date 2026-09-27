@@ -12,6 +12,7 @@ import type { SharedCard, TradeCard } from "../src/social/protocol";
 import { parseCardUid, type RemoteCard } from "../src/sync/protocol";
 import { pruneDailyEntries } from "./cache";
 import { ownedCards, withCardData } from "./cards";
+import { requireGame } from "./games";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
 import { requireMember } from "./session";
 import { buy, getUnopened, listUnopened } from "./shop";
@@ -22,12 +23,10 @@ const isId = (s: string) => /^[0-9a-f-]{36}$/.test(s);
 const LIFETIME = listingCloses(0);
 const NEXT_SEQ = (param: number) => `(SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?${param})`;
 
-/** The market is Pokémon's only, for now. Everything below is for one game, the wallet included. */
-const GAME: Game = "pokemon";
-
+/** Each game has its own market and wallet: requests say which (?game=, Pokémon when left out). */
 export async function handleMarket(ctx: Ctx): Promise<Response> {
   const user = await requireMember(ctx);
-  const game = GAME;
+  const game = requireGame(ctx.env, ctx.url.searchParams.get("game") ?? undefined);
   await welcome(ctx.env.DB, user, game);
   const route = `${ctx.req.method} ${ctx.url.pathname}`;
   if (route === "GET /api/market") return json(await market(ctx, user.id, game));
@@ -57,7 +56,7 @@ interface ListingRow {
 
 const LISTING_COLUMNS = "id, pack_id, slot, card, value, priced, seed, listed_at";
 
-function toListing(r: ListingRow, now: number): Listing {
+function toListing(r: ListingRow, now: number, game: Game): Listing {
   const count = offersIn(r.listed_at, now);
   return {
     id: r.id,
@@ -65,7 +64,7 @@ function toListing(r: ListingRow, now: number): Listing {
     value: r.value,
     priced: !!r.priced,
     listedAt: r.listed_at,
-    offers: Array.from({ length: count }, (_, n) => offerFor(r.value, r.seed, n)),
+    offers: Array.from({ length: count }, (_, n) => offerFor(r.value, r.seed, n, game)),
     nextAt: count < OFFERS ? offerAt(r.listed_at, count) : null,
     closesAt: listingCloses(r.listed_at),
   };
@@ -81,7 +80,7 @@ async function market(ctx: Ctx, userId: string, game: Game): Promise<MarketRespo
       .bind(userId, game, now - LIFETIME)
       .all<ListingRow>(),
   ]);
-  return { coins, listings: open.results.map((r) => toListing(r, now)), now };
+  return { coins, listings: open.results.map((r) => toListing(r, now, game)), now };
 }
 
 /* ---------- Listing ---------- */
@@ -152,7 +151,7 @@ async function sell(ctx: Ctx, userId: string, game: Game): Promise<Response> {
   // Offers that have come in, while their listing's open.
   const takes = offers.flatMap((o) => {
     const row = byId.get(o.id);
-    return row && offerOpen(row.listed_at, o.n, now) ? [{ row, ...offerFor(row.value, row.seed, o.n), card: JSON.parse(row.card) as TradeCard }] : [];
+    return row && offerOpen(row.listed_at, o.n, now) ? [{ row, ...offerFor(row.value, row.seed, o.n, game), card: JSON.parse(row.card) as TradeCard }] : [];
   });
 
   // Cards traded or deleted since they were listed can't be sold; the rest still can.
