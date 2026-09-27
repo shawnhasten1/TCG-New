@@ -7,6 +7,11 @@
 	"observability": {
 		"enabled": true
 	},
+	// Demo games switched on, as comma-separated game ids (src/game.ts). Empty here, so production is Pokémon only;
+	// set DEMO_GAMES=mtg in .dev.vars to work on Magic: The Gathering locally (worker/games.ts).
+	"vars": {
+		"DEMO_GAMES": ""
+	},
 	"assets": {
 		"not_found_handling": "single-page-application",
 		"run_worker_first": [

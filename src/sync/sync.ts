@@ -6,6 +6,7 @@
 // when the connection returns, and every few minutes while the tab is open.
 
 import { useEffect, useState } from "react";
+import { GAME } from "../app/game";
 import { ApiError, getAccount, onAccountChange, refreshAccount, signOutOfServer, startGuest, api } from "../account/account";
 import { refreshInbox } from "../social/friends";
 import { applyRemote, dropOutbox, getSyncMeta, linkAccount, onLocalWrite, outboxSize, peekOutbox, unlinkAccount } from "../collection/store";
@@ -47,13 +48,14 @@ async function syncOnce(): Promise<void> {
   for (;;) {
     const entries = await peekOutbox(MAX_PUSH_PACKS);
     if (!entries.length) break;
-    await api("/api/collection", { body: { ops: entries.map((e) => e.op) } satisfies PushRequest });
+    await api(`/api/collection?game=${GAME}`, { body: { ops: entries.map((e) => e.op) } satisfies PushRequest });
     await dropOutbox(entries.map((e) => e.id));
   }
 
   let { cursor } = await getSyncMeta();
   for (;;) {
-    const page = await api<ChangesResponse>(`/api/collection${cursor ? `?since=${encodeURIComponent(cursor)}` : ""}`);
+    // Only this game's collection: each game's database keeps its own cursor.
+    const page = await api<ChangesResponse>(`/api/collection?game=${GAME}${cursor ? `&since=${encodeURIComponent(cursor)}` : ""}`);
     await applyRemote(user.id, page.packs, page.cursor);
     cursor = page.cursor;
     if (!page.more) break;
@@ -88,7 +90,7 @@ export function syncNow(): Promise<void> {
       setStatus({ state: "syncing", error: undefined });
       try {
         // One tab at a time, where the browser supports it; running twice is harmless anyway.
-        await (navigator.locks ? navigator.locks.request("tcg-sync", syncOnce) : syncOnce());
+        await (navigator.locks ? navigator.locks.request(`tcg-sync-${GAME}`, syncOnce) : syncOnce());
         setStatus({ state: "idle", lastSynced: new Date() });
         void refreshInbox();
       } catch (err) {

@@ -18,8 +18,12 @@ import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
 import { TradeComposer } from "../social/TradeComposer";
 import { TradesPage } from "../social/TradesPage";
+import { MtgBinderPage } from "../mtg/MtgBinderPage";
+import { MtgCollectionPage } from "../mtg/MtgCollectionPage";
 import { AppNav } from "./AppNav";
 import { ConfirmHost } from "./Confirm";
+import { GAME } from "./game";
+import { GameSwitch } from "./GameSwitch";
 import { navSection, useRoute, type Route } from "./router";
 import { SettingsPage } from "./SettingsPage";
 
@@ -29,9 +33,38 @@ export function App() {
   return (
     <>
       {section && <AppNav current={section} />}
-      <Page route={route} />
+      {GAME === "mtg" ? <MtgPage route={route} /> : <Page route={route} />}
       <ConfirmHost />
     </>
+  );
+}
+
+/** Magic has packs and a collection so far; the rest of the app is Pokémon's. */
+function MtgPage({ route }: { route: Route }) {
+  switch (route.page) {
+    case "open":
+      return <OpenPage />;
+    case "settings":
+      return <SettingsPage />;
+    case "collection":
+    case "picker":
+      return <MtgCollectionPage />;
+    case "binder":
+      return <MtgBinderPage key={route.setId} setId={route.setId} />;
+    case "foil":
+      return <FoilLab />;
+    default:
+      return <PokemonOnly />;
+  }
+}
+
+function PokemonOnly() {
+  return (
+    <main className="collection">
+      <h1>Pokémon only, for now</h1>
+      <p className="muted">The market, trades and the friends feed aren't in Magic yet. Switch games to use them; your Magic cards stay here.</p>
+      <GameSwitch />
+    </main>
   );
 }
 

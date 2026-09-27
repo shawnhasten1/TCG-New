@@ -68,7 +68,7 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
 
   const imaged = data.cards.filter(hasImage);
   const cards = profile.includeBasicEnergy ? imaged : imaged.filter((c) => !isFillerEnergy(c));
-  const variantDataMissing = !cards.some((c) => c.variants.holo || c.variants.reverse);
+  const variantDataMissing = !profile.variantsKnown && !cards.some((c) => c.variants.holo || c.variants.reverse);
   const pools = new Map<string, Card[]>();
   const slots: PreparedSlot[] = profile.slots.map((slot) => {
     const table: Record<string, number> = {};

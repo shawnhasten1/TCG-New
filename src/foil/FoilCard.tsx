@@ -36,6 +36,8 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   quality?: "high" | "low";
   /** Draws the layout's art box, for tuning. */
   showArtBox?: boolean;
+  /** A seam across the foil, as on some early Magic foils. Foil lab only. */
+  printLine?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
 
@@ -55,14 +57,16 @@ function reverseVars(pattern: ReversePattern, category?: CardCategory, types?: s
   return (tex ? { "--rev-tex": tex } : {}) as CSSProperties;
 }
 
-export function FoilCard({ image, rarity, finish, layout, category, trainerType, stage, types, reversePattern, holoPattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, className, style, ref, ...rest }: FoilCardProps) {
-  const t = treatment ?? foilTreatment(finish, rarity);
+export function FoilCard({ image, rarity, finish, layout, category, trainerType, stage, types, reversePattern, holoPattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, printLine, className, style, ref, ...rest }: FoilCardProps) {
+  // Games whose rarities each have their own foil (Yu-Gi-Oh!) say how it looks; Pokémon's goes by finish and rarity.
+  const own = finish === "holo" ? layout.rarityFoil?.(rarity) : undefined;
+  const t = treatment ?? own?.treatment ?? foilTreatment(finish, rarity);
   const artKind = cardKind(category, stage);
   const kind = { category, trainerType };
-  const look = styleOverride === undefined ? foilStyle(finish, rarity, kind) : (styleOverride ?? undefined);
+  const look = styleOverride === undefined ? (own ? undefined : foilStyle(finish, rarity, kind)) : (styleOverride ?? undefined);
   const rev = t === "reverse" ? (reversePattern ?? layout.reverse) : undefined;
   // Rarity styles (e.g. promo cosmos) bring their own pattern; plain holo rares get the era's.
-  const holo = t === "holo" && !look ? (holoPattern ?? layout.holo) : undefined;
+  const holo = t === "holo" && !look ? (holoPattern ?? own?.holo ?? layout.holo) : undefined;
   useEffect(ensureSparkles, []);
 
   return (
@@ -71,7 +75,8 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
       ref={ref}
       className={`tcg-card${className ? " " + className : ""}`}
       data-treatment={t}
-      data-tint={foilTint(rarity, kind)}
+      data-tint={own?.tint ?? foilTint(rarity, kind)}
+      data-foil-era={own?.era}
       data-style={t === "none" ? undefined : look}
       data-rev={rev}
       data-holo={holo}
@@ -82,6 +87,8 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
         {t !== "none" && <div className="foil" />}
         {t === "etched" && <div className="etch" />}
         {(t === "fullart" || t === "etched") && <div className="glitter" />}
+        {own?.mark === "star" && <div className="foil-star" />}
+        {printLine && t !== "none" && <div className="print-line" />}
         <div className="glare" />
         {showArtBox && (
           <ArtBox layout={layout} kind={artKind} />

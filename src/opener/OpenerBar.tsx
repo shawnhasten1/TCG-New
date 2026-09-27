@@ -1,12 +1,14 @@
-// The opener's own controls, above the pack: the sound toggle, and the guest reminder. The main menu is AppNav.
+// The opener's own controls, above the pack: the game switch, the sound toggle, and the guest reminder. The main menu is AppNav.
 
 import { GuestNotice } from "../account/GuestNotice";
+import { GameSwitch } from "../app/GameSwitch";
 import { updateSettings, useSettings } from "../app/settings";
 
 export function OpenerBar() {
   const { sound } = useSettings();
   return (
     <div className="topbar">
+      <GameSwitch />
       <div className="topbar-tools">
         <button type="button" className="icon-button sound-toggle" aria-pressed={sound} aria-label="Sound" title={sound ? "Sound on" : "Sound off"} onClick={() => updateSettings({ sound: !sound })}>
           <svg viewBox="0 0 24 24" aria-hidden="true">

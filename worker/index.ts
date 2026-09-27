@@ -5,6 +5,8 @@ import { handleAuth } from "./auth";
 import { handleCollection } from "./collection";
 import { handleFavorites } from "./favorites";
 import { handleFeed } from "./feed";
+import { handleGames } from "./games";
+import { handleMtg } from "./mtg";
 import { handleFriends } from "./friends";
 import { handleMarket } from "./market";
 import { handlePacks } from "./packs";
@@ -19,6 +21,8 @@ async function route(ctx: Ctx): Promise<Response> {
   if (pathname.startsWith("/api/auth/")) return handleAuth(ctx);
   if (pathname === "/api/collection") return handleCollection(ctx);
   if (pathname.startsWith("/api/packs/")) return handlePacks(ctx);
+  if (pathname === "/api/games") return handleGames(ctx);
+  if (pathname.startsWith("/api/mtg/")) return handleMtg(ctx);
   if (pathname === "/api/feed" || pathname.startsWith("/api/feed/")) return handleFeed(ctx);
   if (pathname === "/api/trades" || pathname.startsWith("/api/trades/")) return handleTrades(ctx);
   if (pathname === "/api/wallet") return handleWallet(ctx);

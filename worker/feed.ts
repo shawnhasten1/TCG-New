@@ -193,7 +193,7 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
 
   // Sharing straight from the reveal can beat the sync that opens the pack, so open it here too.
   await db.batch(openStatements(db, user.id, packId));
-  const pack = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND pack_id = ? AND deleted = 0").bind(user.id, packId).first<{ set_id: string; cards: string }>();
+  const pack = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id = ? AND deleted = 0").bind(user.id, packId).first<{ set_id: string; cards: string }>();
   if (!pack) throw new HttpError(404, "That pack isn't in your collection.");
   const packCards = JSON.parse(pack.cards) as RemoteCard[];
   let slots: number[];

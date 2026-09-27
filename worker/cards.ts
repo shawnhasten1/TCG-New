@@ -1,4 +1,5 @@
 // The cards a player owns right now: every card in their packs that hasn't been deleted or traded away.
+// Pokémon only: friends' collections, trades and the market aren't in the other games yet.
 
 import { cardUid, type RemoteCard } from "../src/sync/protocol";
 import type { OwnedCard, TradeCard } from "../src/social/protocol";
@@ -13,7 +14,7 @@ interface PackRow {
 }
 
 export async function ownedCards(db: D1Database, userId: string): Promise<OwnedCard[]> {
-  const { results } = await db.prepare("SELECT pack_id, set_id, opened_at, cards FROM packs WHERE user_id = ? AND deleted = 0").bind(userId).all<PackRow>();
+  const { results } = await db.prepare("SELECT pack_id, set_id, opened_at, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND deleted = 0").bind(userId).all<PackRow>();
   const out: OwnedCard[] = [];
   for (const r of results) {
     (JSON.parse(r.cards) as RemoteCard[]).forEach((c, slot) => {

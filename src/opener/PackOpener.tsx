@@ -3,6 +3,7 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
+import { GAME } from "../app/game";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
 import { CardDetail } from "../collection/CardDetail";
@@ -55,6 +56,8 @@ interface Props {
   /** A photo of the real sealed pack, worn instead of TCGdex's booster artwork or the generic wrapper (trialled in the pack lab).
    *  With `aspect` (width / height) the pack takes the photo's shape; without, the photo is cropped to the usual pack shape. */
   packPhoto?: { src: string; aspect?: number };
+  /** Tag the sealed pack with its set's rarity tier (Pokémon's sets have tiers; default on). */
+  showSetTier?: boolean;
 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -69,7 +72,7 @@ function setHue(id: string): number {
   return h;
 }
 
-export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, againLabel = "Open another pack", onShare, packPhoto }: Props) {
+export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain, binderHref, limitNote, pityNote, canOpenAgain = true, againLabel = "Open another pack", onShare, packPhoto, showSetTier = true }: Props) {
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const tilt = useMemo(() => new Tilt(reduced), [reduced]);
   const preload = useMemo(() => preloadPack(pulls), [pulls]);
@@ -236,7 +239,9 @@ export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain,
       const h = wrap.offsetHeight;
       // Where the settled card sits in the wrapper (see .stack in opener.css: top 15%, then translateY(-7.3%)).
       const cw = w / 1.12;
-      const ch = (cw * 825) / 600;
+      // The card's shape comes from CSS: TCGdex scans are 600×825, other games' differ.
+      const stack = stackRef.current;
+      const ch = cw * (stack?.offsetWidth ? stack.offsetHeight / stack.offsetWidth : 825 / 600);
       const cy = y + 0.15 * h - 0.073 * ch + ch / 2;
       const cx = x + w / 2;
       // Free space: below the top bar, above the hint, leaving room for the badge and rarity tag.
@@ -442,7 +447,7 @@ export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain,
               <polyline ref={ripRef} className="rip" fill="none" vectorEffect="non-scaling-stroke" strokeWidth="2.5" pathLength={1} strokeDashoffset={1} />
             </svg>
 
-            {phase === "sealed" && (
+            {phase === "sealed" && showSetTier && (
               <span className="rarity-tag" data-kind={PACK_TAG_KIND[packTier]} aria-hidden="true">
                 {tierInfo(packTier).name}
               </span>
@@ -580,7 +585,7 @@ function PackSummary({ pulls, newIds, newEntryIds, official, layout, shared, pic
             {p.card.name}
             <small>
               {p.card.rarity}
-              {p.finish !== "normal" ? ` · ${p.finish}` : ""}
+              {p.finish !== "normal" ? ` · ${GAME === "mtg" ? "foil" : p.finish}` : ""}
               {p.firstEdition ? " · 1st Ed" : ""}
             </small>
           </figcaption>

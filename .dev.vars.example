@@ -2,3 +2,6 @@
 # In Google Cloud Console, add http://localhost:5173/api/auth/google/callback as an authorized redirect URI.
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+
+# Demo games to switch on locally (comma-separated game ids; see wrangler.jsonc). Production leaves them off.
+DEMO_GAMES=mtg

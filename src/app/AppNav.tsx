@@ -2,7 +2,10 @@
 // across the top on wider screens. Layout is all in nav.css; the markup is the same for both.
 
 import type { ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { isMember, useAccount } from "../account/account";
+import { gameName } from "../game";
+import { GAME } from "./game";
 import { useInbox } from "../social/friends";
 import { href, type NavSection } from "./router";
 import "./nav.css";
@@ -60,19 +63,23 @@ const ITEMS: { id: NavSection; label: string; href: string }[] = [
   { id: "settings", label: "Settings", href: href.settings() },
 ];
 
+/** What each game has so far: Magic has packs and a collection. */
+const ITEMS_HERE = GAME === "pokemon" ? ITEMS : ITEMS.filter((i) => i.id === "open" || i.id === "collection" || i.id === "settings");
+
 export function AppNav({ current }: { current: NavSection }) {
   const signedIn = isMember(useAccount());
   const { friendRequests, feedNew, tradeOffers } = useInbox();
   const waiting = signedIn ? friendRequests + feedNew + tradeOffers : 0;
   return (
-    <header className="app-nav">
+    <header className="app-nav" style={{ "--nav-cols": ITEMS_HERE.length } as CSSProperties}>
       <a className="brand" href={href.open()}>
         <img src="./favicon.svg" alt="" width="28" height="28" />
         Pack Opener
+        {GAME !== "pokemon" && <span className="brand-game">{gameName(GAME)}</span>}
       </a>
       <nav aria-label="Main">
         <ul>
-          {ITEMS.map((item) => (
+          {ITEMS_HERE.map((item) => (
             <li key={item.id} className={`nav-${item.id}`}>
               <a href={item.href} aria-current={item.id === current ? "page" : undefined} title={item.id === "settings" ? item.label : undefined}>
                 <span className="nav-icon">

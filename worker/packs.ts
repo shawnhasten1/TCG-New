@@ -4,6 +4,7 @@
 // Opening moves it into packs (with the deal id as its pack id), where sync picks it up like any other change.
 
 import type { SetSummary } from "../src/api/types";
+import type { Game } from "../src/game";
 import { whyNotOpenable, openPack } from "../src/engine/openPack";
 import { profileFor } from "../src/engine/profiles";
 import { drawableSets, ERAS, pickRandomSet } from "../src/engine/randomSet";
@@ -16,6 +17,8 @@ import type { SyncCard } from "../src/sync/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
 import { requireUser } from "./session";
+import { requireGame } from "./games";
+import { rollMtg } from "./mtg";
 
 /** Sets tried when a drawn set can't fill a pack. */
 const MAX_REDRAWS = 6;
@@ -50,8 +53,8 @@ export function openStatements(db: D1Database, userId: string, dealId: string): 
   return [
     db
       .prepare(
-        `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq)
-         SELECT user_id, deal_id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1)
+        `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq, game)
+         SELECT user_id, deal_id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1), game
          FROM dealt_packs WHERE user_id = ?1 AND deal_id = ?2
          ON CONFLICT (user_id, pack_id) DO NOTHING`,
       )
@@ -74,54 +77,56 @@ function toPack(r: DealtRow): DealtPack {
   return { dealId: r.deal_id, setId: r.set_id, art: r.art, cards: cards.map((c, i) => ({ ...c, ...reveal[i] })) };
 }
 
-const dealtPack = (ctx: Ctx, userId: string) =>
-  ctx.env.DB.prepare("SELECT deal_id, set_id, cards, reveal, art FROM dealt_packs WHERE user_id = ?").bind(userId).first<DealtRow>();
+const dealtPack = (ctx: Ctx, userId: string, game: Game) =>
+  ctx.env.DB.prepare("SELECT deal_id, set_id, cards, reveal, art FROM dealt_packs WHERE user_id = ? AND game = ?").bind(userId, game).first<DealtRow>();
 
-async function allowanceFor(ctx: Ctx, userId: string) {
+/** Each game has its own allowance. */
+async function allowanceFor(ctx: Ctx, userId: string, game: Game) {
   const now = Date.now();
   // Deleted packs count too: throwing cards away doesn't give packs back. Bought packs don't: they cost coins instead.
-  const { results } = await ctx.env.DB.prepare("SELECT opened_at FROM packs WHERE user_id = ? AND opened_at >= ? AND pack_id NOT LIKE ?")
-    .bind(userId, new Date(now - ALLOWANCE_WINDOW_MS).toISOString(), `${SHOP_PACK_PREFIX}%`)
+  const { results } = await ctx.env.DB.prepare("SELECT opened_at FROM packs WHERE user_id = ? AND game = ? AND opened_at >= ? AND pack_id NOT LIKE ?")
+    .bind(userId, game, new Date(now - ALLOWANCE_WINDOW_MS).toISOString(), `${SHOP_PACK_PREFIX}%`)
     .all<{ opened_at: string }>();
   return packAllowance(results.map((r) => Date.parse(r.opened_at)), now);
 }
 
-function parseDeal(body: DealRequest | null): { eras: string[]; opened?: string } {
+function parseDeal(env: Env, body: DealRequest | null): { game: Game; eras: string[]; opened?: string } {
   const known = new Set<string>(ERAS.map((e) => e.id));
   const eras = Array.isArray(body?.eras) ? body.eras.filter((e): e is string => typeof e === "string" && known.has(e)) : [];
   const opened = typeof body?.opened === "string" && body.opened.length <= 64 ? body.opened : undefined;
-  return { eras, opened };
+  // Apps from before games don't say, and they're Pokémon.
+  const game = requireGame(env, body?.game);
+  return { game, eras, opened };
 }
 
 async function deal(ctx: Ctx, userId: string): Promise<Response> {
-  const { eras, opened } = parseDeal(await readJson<DealRequest | null>(ctx.req));
+  const { game, eras, opened } = parseDeal(ctx.env, await readJson<DealRequest | null>(ctx.req));
   const db = ctx.env.DB;
   if (opened) await db.batch(openStatements(db, userId, opened));
 
-  const allowance = await allowanceFor(ctx, userId);
-  const waiting = await dealtPack(ctx, userId);
+  const allowance = await allowanceFor(ctx, userId, game);
+  const waiting = await dealtPack(ctx, userId, game);
   if (waiting) return json({ pack: toPack(waiting), allowance } satisfies DealResponse);
   if (allowance.left === 0) return json({ pack: null, allowance } satisfies DealResponse);
 
-  // Pity counts dealt packs only: buying a pack from a set you chose doesn't use up a guarantee.
-  const { results } = await db
-    .prepare("SELECT set_id FROM packs WHERE user_id = ? AND pack_id NOT LIKE ? ORDER BY opened_at DESC LIMIT ?")
-    .bind(userId, `${SHOP_PACK_PREFIX}%`, HISTORY)
-    .all<{ set_id: string }>();
-  const history = results.map((r) => r.set_id).reverse();
-  const row = await roll(ctx, eras, history);
+  const row = game === "mtg" ? await rollMtg(ctx) : await rollPokemon(ctx, userId, eras);
 
   // Two tabs asking at once: the first one's pack wins, and both get it.
   await db
-    .prepare("INSERT INTO dealt_packs (user_id, deal_id, set_id, cards, reveal, art, dealt_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (user_id) DO NOTHING")
-    .bind(userId, row.deal_id, row.set_id, row.cards, row.reveal, row.art, Date.now())
+    .prepare("INSERT INTO dealt_packs (user_id, game, deal_id, set_id, cards, reveal, art, dealt_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (user_id, game) DO NOTHING")
+    .bind(userId, game, row.deal_id, row.set_id, row.cards, row.reveal, row.art, Date.now())
     .run();
-  const pack = (await dealtPack(ctx, userId)) ?? row;
+  const pack = (await dealtPack(ctx, userId, game)) ?? row;
   return json({ pack: toPack(pack), allowance } satisfies DealResponse);
 }
 
-/** Draws a set (weighted by rarity, with pity) and rolls a pack from it. */
-async function roll(ctx: Ctx, eras: string[], history: string[]): Promise<DealtRow> {
+/** Draws a Pokémon set (weighted by rarity, with pity) and rolls a pack from it. */
+async function rollPokemon(ctx: Ctx, userId: string, eras: string[]): Promise<DealtRow> {
+  // Pity counts dealt packs only: buying a pack from a set you chose doesn't use up a guarantee.
+  const { results } = await ctx.env.DB.prepare("SELECT set_id FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id NOT LIKE ? ORDER BY opened_at DESC LIMIT ?")
+    .bind(userId, `${SHOP_PACK_PREFIX}%`, HISTORY)
+    .all<{ set_id: string }>();
+  const history = results.map((r) => r.set_id).reverse();
   const { client, cache } = tcgdex(ctx.env);
   const unopenable = (await cache.get<Record<string, string>>(UNOPENABLE_KEY)) ?? {};
   let sets: SetSummary[];

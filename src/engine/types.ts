@@ -48,6 +48,11 @@ export interface PackProfile {
    * leave that card out rather than let energies take common slots.
    */
   includeBasicEnergy?: boolean;
+  /**
+   * The card data always says which finishes a card has (Scryfall does; TCGdex doesn't for some eras), so a set
+   * with no holo or reverse flags has no foils, rather than missing data.
+   */
+  variantsKnown?: boolean;
   /** Chance a whole pack is 1st Edition, for cards that have a 1st Edition printing. */
   firstEditionChance?: number;
   notes?: string;

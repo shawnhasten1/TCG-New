@@ -2,9 +2,23 @@
 // Where the art sits, per card kind, is in artWindows.ts. All values are % of the card image.
 
 import type { ReversePattern } from "./reverse";
+import type { Tint, Treatment } from "./treatment";
+import { mtgFoil } from "../mtg/foil";
+import type { MtgFoilEra } from "../mtg/sets";
 
 /** Art-box holo patterns for regular holo rares, after the physical cards of each era (see foil.css). */
 export type HoloPattern = "smooth" | "cosmos" | "cracked" | "starlight" | "sheen" | "tinsel" | "waterweb";
+
+/** How a foil card looks in a game whose foils don't follow Pokémon's rules (see FrameLayout.rarityFoil). */
+export interface RarityFoil {
+  treatment: Treatment;
+  holo?: HoloPattern;
+  tint?: Tint;
+  /** A variant of the treatment for this era, styled in foil.css (data-foil-era), e.g. Magic's "premodern" or "dark". */
+  era?: string;
+  /** A mark stamped on foil cards only: Magic's pre-2003 shooting star. */
+  mark?: "star";
+}
 
 export interface FrameLayout {
   id: string;
@@ -20,6 +34,8 @@ export interface FrameLayout {
   holo: HoloPattern;
   /** A sample holo card from this era, for the foil lab. */
   sample: { image: string; name: string; rarity: string; types: string[]; stage: string };
+  /** For games whose foils don't follow Pokémon's rules (Magic): the treatment and pattern for a foil card of a rarity. */
+  rarityFoil?(rarity: string): RarityFoil | undefined;
 }
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
@@ -127,9 +143,32 @@ export const layouts: FrameLayout[] = [
   },
 ];
 
-const bySerie = new Map(layouts.flatMap((l) => l.series.map((s) => [s, l] as const)));
+/**
+ * Magic's foil eras (mtg/sets.ts foilEra), one layout each; a set's serie id is "mtg-<era>" (mtg/cards.ts). Not in
+ * `layouts`, whose rows the foil lab draws from Pokémon samples: the lab's Magic section shows these, and only where
+ * Magic is switched on, since their images come through the Worker. Art windows are in artWindows.ts.
+ */
+const mtgLayout = (era: MtgFoilEra, name: string, border: FrameLayout["border"], sample: { id: string; name: string }): FrameLayout => ({
+  id: `mtg-${era}`,
+  name,
+  series: [`mtg-${era}`],
+  border,
+  reverse: "plain",
+  holo: "smooth",
+  sample: { image: `/api/mtg/card/${sample.id}`, name: sample.name, rarity: "Common", types: [], stage: "Basic" },
+  rarityFoil: () => mtgFoil(era),
+});
 
-/** The frame layout for a serie, defaulting to the modern frame. */
+export const MTG_LAYOUTS: Record<MtgFoilEra, FrameLayout> = {
+  premodern: mtgLayout("premodern", "Magic, 1999–2003 (old frame)", { x: 4.7, y: 3.5 }, { id: "9561ffdb-f4dd-4b62-a2c2-933498e3a061", name: "Aegis of Honor" }),
+  modern: mtgLayout("modern", "Magic, 2003 on", { x: 4.5, y: 3.2 }, { id: "6f1a7590-3eee-4803-b192-d4fb771e6a86", name: "Acrobatic Cheerleader" }),
+  dark: mtgLayout("dark", "Magic, Future Sight to Shadowmoor", { x: 4.5, y: 3.2 }, { id: "2a1470a6-d09d-4a2a-84a6-d56e32ed237a", name: "Ajani Goldmane" }),
+};
+
+const bySerie = new Map([...layouts, ...Object.values(MTG_LAYOUTS)].flatMap((l) => l.series.map((s) => [s, l] as const)));
+const MODERN = layouts.find((l) => l.id === "me")!;
+
+/** The frame layout for a serie, defaulting to the modern Pokémon frame. */
 export function layoutFor(serieId: string): FrameLayout {
-  return bySerie.get(serieId) ?? layouts[layouts.length - 1];
+  return bySerie.get(serieId) ?? MODERN;
 }

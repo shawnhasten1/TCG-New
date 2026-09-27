@@ -1,6 +1,7 @@
 // Phase 5 dev page (#/foil): every era mask and finish side by side, for tuning.
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useGames } from "../app/game";
 import { href } from "../app/router";
 import type { Finish } from "../engine/types";
 import { Tilt } from "../opener/tilt";
@@ -10,6 +11,7 @@ import type { CardCategory } from "../api/types";
 import { typeSymbol } from "./reverse";
 import { artWindow, cardKind, type CardKind } from "./artWindows";
 import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
+import { MtgFoilSection } from "./MtgFoilSection";
 import "./foil-lab.css";
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
@@ -160,6 +162,7 @@ export function FoilLab() {
   const [cardWidth, setCardWidth] = useState(220);
   const [holoTry, setHoloTry] = useState<HoloTry>("era");
   const [glow, setGlow] = useState(0.45);
+  const mtg = useGames().includes("mtg");
 
   useEffect(() => {
     if (sweep) return;
@@ -245,6 +248,8 @@ export function FoilLab() {
           </p>
         )}
       </header>
+
+      {mtg && <MtgFoilSection showArtBox={showArtBox} />}
 
       <section>
         <h2>Era masks</h2>

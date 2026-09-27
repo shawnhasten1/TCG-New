@@ -1,0 +1,61 @@
+/* ---------- Game switch (GameSwitch.tsx): the current game's badge and name, opening a menu of games ---------- */
+.game-switch { position: relative; display: inline-block; }
+.game-switch button { font: 700 .95rem/1.1 "Alegreya Sans", system-ui, sans-serif; color: var(--ink); cursor: pointer; }
+.game-switch-button {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 10px 4px 5px;
+  border-radius: 999px; background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.game-switch-button:hover { border-color: var(--focus); }
+.game-switch button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.game-switch-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42vw; }
+.game-switch .chevrons { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--muted); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.game-switch-menu {
+  position: absolute; z-index: 40; top: calc(100% + 6px); left: 0; min-width: 100%; width: max-content; max-width: calc(100vw - 32px);
+  margin: 0; padding: 6px; list-style: none; display: grid; gap: 2px;
+  border-radius: 14px; background: var(--btn); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: 0 14px 34px -12px #0007;
+}
+.game-switch .game-switch-menu li > button {
+  all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 5px 12px 5px 6px; border-radius: 10px;
+  font: 700 .95rem/1.1 "Alegreya Sans", system-ui, sans-serif; color: var(--muted);
+}
+.game-switch .game-switch-menu li > button:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.game-switch .game-switch-menu li > button[aria-current] { color: var(--ink); background: color-mix(in srgb, var(--ink) 12%, transparent); }
+.game-switch .game-switch-menu li > button:not([aria-current]) .game-badge { opacity: .7; }
+.game-switch .game-switch-menu li > button:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+/* A game's badge: a round emblem with a short tag across its foot. */
+.game-badge { position: relative; flex: none; width: 34px; height: 34px; padding-bottom: 4px; }
+.game-badge svg { display: block; width: 30px; height: 30px; margin-inline: auto; }
+.game-badge-tag {
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  padding: 1px 3px; border-radius: 3px; background: #1d1f24; color: #fff;
+  font: 800 .5rem/1 "Alegreya Sans", system-ui, sans-serif; letter-spacing: .03em;
+}
+.game-badge[data-game="pokemon"] .top { fill: #e3350d; }
+.game-badge[data-game="pokemon"] .bottom { fill: #fff; }
+.game-badge[data-game="pokemon"] .line { fill: #fff; stroke: #1d1f24; stroke-width: 2; }
+.game-badge[data-game="pokemon"] .button { fill: #fff; stroke: #1d1f24; stroke-width: 1; }
+.game-badge[data-game="pokemon"] svg { border-radius: 50%; box-shadow: 0 0 0 1.5px #1d1f24; }
+.game-badge[data-game="mtg"] svg { border-radius: 50%; background: #1d1f24; }
+.game-badge .pip { stroke: #1d1f24; stroke-width: 1; }
+.game-badge .pip.w { fill: #f8f1d0; }
+.game-badge .pip.u { fill: #3d8bd9; }
+.game-badge .pip.b { fill: #8b8184; }
+.game-badge .pip.r { fill: #e0553a; }
+.game-badge .pip.g { fill: #2f9a5b; }
+
+/* On the opener, it sits at the left of the top bar, across from sound. */
+.opener .topbar .game-switch { margin-right: auto; }
+.opener .topbar .game-switch-button { min-height: 44px; padding: 4px 10px 4px 5px; gap: 10px; }
+/* The top bar's icon styles (20px, stroked) aren't for badges. */
+.opener .topbar .game-badge svg { width: 30px; height: 30px; stroke: none; }
+.opener .topbar .game-switch .chevrons { width: 16px; height: 16px; }
+
+/* ---------- Magic cards are a touch narrower than Pokémon's (Scryfall's 672×936 vs TCGdex's 600×825) ---------- */
+:root[data-game="mtg"] .opener .stack,
+:root[data-game="mtg"] .card-detail .detail-card { aspect-ratio: 672 / 936; }
+:root[data-game="mtg"] .opener .summary-grid img { aspect-ratio: 672 / 936; border-radius: 4.8% / 3.4%; }
+:root[data-game="mtg"] .tcg-card { border-radius: 4.8% / 3.4%; }

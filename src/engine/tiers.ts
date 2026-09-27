@@ -5,7 +5,8 @@ import type { PulledCard } from "./types";
 export type Tier = 0 | 1 | 2 | 3;
 
 const CHASE = /illustration|secret|hyper|shiny ultra|gold|rainbow/i;
-const ULTRA = /double|ultra|\bv\b|vmax|vstar|lv\.x|prime|legend|radiant|amazing|ace spec|shiny|classic collection|black white/i;
+// Magic's Mythic Rares count as ultra, its Rares as rare.
+const ULTRA = /double|ultra|mythic|\bv\b|vmax|vstar|lv\.x|prime|legend|radiant|amazing|ace spec|shiny|classic collection|black white/i;
 const RARE = /rare/i;
 
 /** Tiers by rarity label. There are only a few dozen labels, and sorting thousands of cards asks over and over. */

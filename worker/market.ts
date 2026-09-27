@@ -152,7 +152,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
 
   // Cards traded or deleted since they were listed can't be sold; the rest still can.
   const { results: packRows } = await db
-    .prepare("SELECT pack_id, cards FROM packs WHERE user_id = ? AND deleted = 0 AND pack_id IN (SELECT value FROM json_each(?))")
+    .prepare("SELECT pack_id, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND deleted = 0 AND pack_id IN (SELECT value FROM json_each(?))")
     .bind(userId, JSON.stringify([...new Set(takes.map((t) => t.row.pack_id))]))
     .all<{ pack_id: string; cards: string }>();
   const packs = new Map(packRows.map((p) => [p.pack_id, JSON.parse(p.cards) as RemoteCard[]]));
@@ -177,7 +177,7 @@ async function sell(ctx: Ctx, userId: string): Promise<Response> {
           .prepare(
             `INSERT INTO sale_checks (sale_id, n, ok) VALUES (?1, ?2,
                EXISTS (SELECT 1 FROM listings WHERE id = ?3 AND status = 'open') AND
-               EXISTS (SELECT 1 FROM packs WHERE user_id = ?4 AND pack_id = ?5 AND deleted = 0 AND json_extract(cards, ?6) IS NOT NULL AND json_extract(cards, ?7) IS NULL))`,
+               EXISTS (SELECT 1 FROM packs WHERE user_id = ?4 AND pack_id = ?5 AND game = 'pokemon' AND deleted = 0 AND json_extract(cards, ?6) IS NOT NULL AND json_extract(cards, ?7) IS NULL))`,
           )
           .bind(saleId, n, t.row.id, userId, t.row.pack_id, `$[${t.row.slot}]`, `$[${t.row.slot}].gone`),
       ),

@@ -5,6 +5,7 @@
 // Reloading or asking again gets the same pack back, so it can't be rerolled. Tearing it opens it: the pack
 // joins the collection, through the sync outbox ({ op: "open" }) or the next deal's `opened`, whichever lands first.
 
+import type { Game } from "../game";
 import type { SyncCard } from "../sync/protocol";
 
 /** Packs you can hold at once. */
@@ -61,6 +62,8 @@ export interface DealtPack {
 }
 
 export interface DealRequest {
+  /** Which game's pack; Pokémon when left out. */
+  game?: Game;
   /** Eras to draw from (pack profile ids); empty means every era. */
   eras?: string[];
   /** A pack just torn here; it's opened before the next is dealt. */

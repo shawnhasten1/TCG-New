@@ -1,7 +1,9 @@
 // The collection: every card you own, saved to IndexedDB when its pack is torn open (or when sync brings it).
 // Every change is also queued in an outbox for syncing to the account (see sync/sync.ts).
 // Cards traded away aren't kept; cards received in trades come in packs of their own (see sync/protocol.ts).
+// Each game keeps its collection in a database of its own (see app/game.ts); Pokémon's has the original name.
 
+import { GAME } from "../app/game";
 import type { Finish, PulledCard } from "../engine/types";
 import { cardUid, type RemotePack, type SyncOp, type SyncPack } from "../sync/protocol";
 
@@ -31,7 +33,7 @@ export interface WrapperRecord {
   openedAt: string;
 }
 
-const DB_NAME = "tcg-collection";
+const DB_NAME = GAME === "pokemon" ? "tcg-collection" : `tcg-collection-${GAME}`;
 const STORE = "pulls";
 /** Wrappers kept from opened packs, keyed by pack id. They stay when the pack's cards are traded away. */
 const WRAPPERS = "wrappers";
@@ -111,7 +113,7 @@ function all<T>(req: IDBRequest<T[]>): Promise<T[]> {
 /* ---------- Change notifications (this tab and others) ---------- */
 
 const events = new EventTarget();
-const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("tcg-collection") : undefined;
+const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(DB_NAME) : undefined;
 channel?.addEventListener("message", () => events.dispatchEvent(new Event("change")));
 
 function changed() {

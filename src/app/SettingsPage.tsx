@@ -9,7 +9,10 @@ import { countPacks } from "../collection/progress";
 import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
 import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
+import { gameName } from "../game";
 import { ask } from "./Confirm";
+import { GAME, useGames } from "./game";
+import { GameSwitch } from "./GameSwitch";
 import "../collection/collection.css";
 import { type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
@@ -34,6 +37,9 @@ export function SettingsPage() {
   const settings = useSettings();
   const account = useAccount();
   const signedIn = isMember(account);
+  // Where there's more than one game, say which game's collection this is.
+  const manyGames = useGames().length > 1;
+  const which = manyGames ? `${gameName(GAME)} ` : "";
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string }>();
 
@@ -62,13 +68,13 @@ export function SettingsPage() {
 
   const exportCollection = () => {
     if (!pulls) return;
-    download(`pack-opener-collection-${localDay(new Date())}.json`, JSON.stringify(toBackup(pulls), null, 1));
+    download(`pack-opener-${GAME === "pokemon" ? "" : `${GAME}-`}collection-${localDay(new Date())}.json`, JSON.stringify(toBackup(pulls), null, 1));
     setMessage({ kind: "ok", text: `Exported ${plural(pulls.length, "card")} from ${plural(packs, "pack")}.` });
   };
 
   const resetAll = async () => {
     const ok = await ask({
-      title: "Delete your whole collection?",
+      title: `Delete your whole ${which}collection?`,
       body: `${plural(pulls?.length ?? 0, "card")} from ${plural(packs, "pack")}${signedIn ? ", on every device you're signed in on" : ""}. Export it first to keep a record, but you can't bring it back from the file.`,
       confirm: "Delete collection",
       danger: true,
@@ -84,6 +90,14 @@ export function SettingsPage() {
       <h1>Settings</h1>
 
       <AccountSection />
+
+      {manyGames && (
+        <section>
+          <h2>Game</h2>
+          <GameSwitch />
+          <p className="muted">Each game has its own collection and packs. Your account is the same in all of them.</p>
+        </section>
+      )}
 
       <section>
         <h2>Appearance</h2>
@@ -126,7 +140,7 @@ export function SettingsPage() {
         <p className="muted">{plural(today, "pack")} opened today.</p>
       </section>
 
-      <section>
+      {GAME === "pokemon" && <section>
         <h2>Sets packs come from</h2>
         <p className="muted">Every pack is drawn from a random set. Narrow the draw to the eras you like; at least one stays on.</p>
         <fieldset className="eras">
@@ -137,7 +151,7 @@ export function SettingsPage() {
             </label>
           ))}
         </fieldset>
-      </section>
+      </section>}
 
       <section>
         <h2>Export</h2>
@@ -160,7 +174,7 @@ export function SettingsPage() {
       <section>
         <h2>Reset</h2>
         <button type="button" className="danger" onClick={resetAll} disabled={!pulls?.length}>
-          Delete my whole collection
+          Delete my whole {which}collection
         </button>
       </section>
     </main>

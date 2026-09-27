@@ -20,6 +20,23 @@ const cutRect = (x1: number, y1: number, r = 0.6): Cut => ({ rect: { x0: -5, y0:
 const cutEllipse = (cx: number, cy: number, rx: number, ry: number): Cut => ({ ellipse: { cx, cy, rx, ry } });
 
 export const ART_WINDOWS: Record<string, Record<CardKind, ArtShape>> = {
+  // Magic (672×936 Scryfall scans): every card type shares one art box. Only used when a Magic foil is tried on the art
+  // box in the foil lab; live foils cover the whole card (the pre-2003 frame's dimmer art and text box are in foil.css).
+  "mtg-premodern": {
+    basic: { art: R(11.5, 9.3, 88.5, 55, 0.2) },
+    stage: { art: R(11.5, 9.3, 88.5, 55, 0.2) },
+    trainer: { art: R(11.5, 9.3, 88.5, 55, 0.2) },
+  },
+  "mtg-modern": {
+    basic: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+    stage: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+    trainer: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+  },
+  "mtg-dark": {
+    basic: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+    stage: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+    trainer: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
+  },
   wotc: {
     basic: { art: R(10.5, 11.8, 89.2, 51.2, 0.3) },
     // The gold "STAGE" badge with the pre-evolution sits over the art's top-left corner.

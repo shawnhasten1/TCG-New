@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import type { CardPricing } from "../api/tcgdex";
 import type { Card } from "../api/types";
 import { client } from "../app/client";
+import { GAME } from "../app/game";
 import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
 import type { FrameLayout } from "../foil/layouts";
@@ -17,7 +18,8 @@ import { formatPrice, priceFor } from "./prices";
 import type { Ownership } from "./progress";
 import "./collection.css";
 
-const FINISH_LABEL: Record<Finish, string> = { normal: "Normal", holo: "Holo", reverse: "Reverse holo" };
+// A Magic card is just foil or not.
+const FINISH_LABEL: Record<Finish, string> = GAME === "mtg" ? { normal: "Non-foil", holo: "Foil", reverse: "Reverse holo" } : { normal: "Normal", holo: "Holo", reverse: "Reverse holo" };
 
 /** Finishes this card can be printed in, most special first. */
 function printings(card: Card): Finish[] {
@@ -126,6 +128,8 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
   };
 
   useEffect(() => {
+    // Prices come from TCGdex, so Pokémon only for now.
+    if (GAME !== "pokemon") return;
     let live = true;
     client.getCardPricing(card.id).then(
       (p) => live && setPricing(p),
@@ -273,10 +277,10 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             <p className="muted">Not pulled yet.</p>
           )}
 
-          <h3>Market price</h3>
-          {pricing === "loading" && <p className="muted">Loading prices…</p>}
-          {pricing === "error" && <p className="muted">Couldn't load prices.</p>}
-          {pricing !== "loading" && pricing !== "error" && (
+          {GAME === "pokemon" && <h3>Market price</h3>}
+          {GAME === "pokemon" && pricing === "loading" && <p className="muted">Loading prices…</p>}
+          {GAME === "pokemon" && pricing === "error" && <p className="muted">Couldn't load prices.</p>}
+          {GAME === "pokemon" && pricing !== "loading" && pricing !== "error" && (
             <ul className="prices">
               {printings(card).map((f) => {
                 const price = priceFor(pricing, f, firstEd);

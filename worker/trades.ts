@@ -166,7 +166,7 @@ async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
   for (const h of handovers) {
     const key = `${h.from}/${h.packId}`;
     if (packs.has(key)) continue;
-    const row = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND pack_id = ? AND deleted = 0").bind(h.from, h.packId).first<{ set_id: string; cards: string }>();
+    const row = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id = ? AND deleted = 0").bind(h.from, h.packId).first<{ set_id: string; cards: string }>();
     if (row) packs.set(key, { set_id: row.set_id, cards: JSON.parse(row.cards) });
   }
   const cardOf = (h: Handover) => packs.get(`${h.from}/${h.packId}`)?.cards[h.slot];
@@ -182,7 +182,7 @@ async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
       db
         .prepare(
           `INSERT INTO trade_checks (trade_id, n, ok) VALUES (?1, ?2, EXISTS (
-             SELECT 1 FROM packs WHERE user_id = ?3 AND pack_id = ?4 AND deleted = 0 AND json_extract(cards, ?5) IS NOT NULL AND json_extract(cards, ?6) IS NULL))`,
+             SELECT 1 FROM packs WHERE user_id = ?3 AND pack_id = ?4 AND game = 'pokemon' AND deleted = 0 AND json_extract(cards, ?5) IS NOT NULL AND json_extract(cards, ?6) IS NULL))`,
         )
         .bind(id, n, h.from, h.packId, `$[${h.slot}]`, `$[${h.slot}].gone`),
     ),

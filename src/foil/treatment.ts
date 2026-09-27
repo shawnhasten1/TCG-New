@@ -4,7 +4,8 @@
 import type { Card } from "../api/types";
 import type { Finish } from "../engine/types";
 
-export type Treatment = "none" | "holo" | "reverse" | "fullart" | "etched";
+/** "traditional" is Magic's foil: the whole card, smooth, with no texture or glitter (only games' rarityFoil pick it). */
+export type Treatment = "none" | "holo" | "reverse" | "fullart" | "etched" | "traditional";
 export type Tint = "rainbow" | "gold";
 export type Style = "cosmos" | "radiant" | "amazing" | "shiny" | "rainbow" | "v" | "vmax" | "acespec" | "double" | "illustration" | "special" | "ultra";
 
