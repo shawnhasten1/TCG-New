@@ -1,9 +1,14 @@
 // #/feed: cards you and your friends shared from packs, newest first. Tap a card for a closer look; react and comment
-// under each post.
+// under each post. The feed is every game's: each post shows its game's badge (where there's more than one game) and
+// its cards as that game has them.
 
 import { useCallback, useEffect, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
+import { GAME, useGames } from "../app/game";
+import { gameName } from "../game";
+import { cardsFor } from "../app/gameCards";
+import { GameBadge } from "../app/GameSwitch";
 import { href } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
 import { ownership, type Ownership } from "../collection/progress";
@@ -31,6 +36,7 @@ export function FeedPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [owned, setOwned] = useState<Map<string, Ownership>>();
   const [selected, setSelected] = useState<{ post: FeedPost; shared: SharedCard }>();
+  const manyGames = useGames().length > 1;
 
   const refresh = useCallback(async () => {
     try {
@@ -125,6 +131,12 @@ export function FeedPage() {
                           {post.sale ? "Sold on the market" : post.set.name} · {ago(post.createdAt)}
                         </span>
                       </div>
+                      {manyGames && (
+                        <span className="post-game" title={gameName(post.game)}>
+                          <GameBadge game={post.game} />
+                          <span className="sr-only">{gameName(post.game)}</span>
+                        </span>
+                      )}
                       {post.mine && (
                         <button type="button" className="link" onClick={() => void remove(post)}>
                           Remove
@@ -146,7 +158,7 @@ export function FeedPage() {
                             )}
                             <small>
                               {c.card.rarity}
-                              {c.finish !== "normal" ? ` · ${c.finish}` : ""}
+                              {c.finish !== "normal" ? ` · ${cardsFor(post.game).finishName[c.finish].toLowerCase()}` : ""}
                               {c.firstEdition ? " · 1st Ed" : ""}
                             </small>
                           </figcaption>
@@ -172,9 +184,11 @@ export function FeedPage() {
         <CardDetail
           card={selected.shared.card}
           official={selected.post.set.official}
-          owned={owned?.get(selected.shared.card.id)}
+          // Your copies are only in this game's collection.
+          owned={selected.post.game === GAME ? owned?.get(selected.shared.card.id) : undefined}
           layout={layoutFor(selected.post.set.serieId)}
           finish={selected.shared.finish}
+          game={selected.post.game}
           onClose={() => setSelected(undefined)}
         />
       )}

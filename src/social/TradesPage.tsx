@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
 import { pullTier } from "../engine/tiers";
@@ -196,7 +197,7 @@ function TradeSide({ title, cards, onSelect }: { title: string; cards: TradeCard
                 {c.card.name}
                 <small>
                   {c.set.name}
-                  {c.finish !== "normal" ? ` · ${c.finish}` : ""}
+                  {c.finish !== "normal" ? ` · ${gameCards.finishName[c.finish].toLowerCase()}` : ""}
                   {c.firstEdition ? " · 1st Ed" : ""}
                 </small>
               </figcaption>

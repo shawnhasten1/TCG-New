@@ -3,6 +3,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "../account/account";
+import { GAME } from "../app/game";
 import { href } from "../app/router";
 import type { FriendCollection, FriendProfile } from "../social/protocol";
 import { parseCardUid } from "../sync/protocol";
@@ -39,11 +40,11 @@ export function friendPulls(res: FriendCollection): PullRecord[] {
 const recent = new Map<string, { at: number; res: Promise<FriendCollection> }>();
 const KEEP_MS = 60_000;
 
-/** A friend's collection; `fresh` skips the brief cache (for trading, where it must be current). */
+/** A friend's collection in this game; `fresh` skips the brief cache (for trading, where it must be current). */
 export function fetchFriend(friendId: string, fresh = false): Promise<FriendCollection> {
   const hit = recent.get(friendId);
   if (!fresh && hit && Date.now() - hit.at < KEEP_MS) return hit.res;
-  const res = api<FriendCollection>(`/api/friends/${friendId}/collection`);
+  const res = api<FriendCollection>(`/api/friends/${friendId}/collection?game=${GAME}`);
   recent.set(friendId, { at: Date.now(), res });
   res.catch(() => recent.delete(friendId));
   return res;

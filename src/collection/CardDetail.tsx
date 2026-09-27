@@ -3,7 +3,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { CardPricing } from "../api/tcgdex";
 import type { Card } from "../api/types";
-import { gameCards } from "../app/gameCards";
+import { GAME, has } from "../app/game";
+import { cardsFor } from "../app/gameCards";
+import type { Game } from "../game";
 import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
 import type { FrameLayout } from "../foil/layouts";
@@ -14,11 +16,9 @@ import { Tilt } from "../opener/tilt";
 import { setFavorite, useFavorites } from "./favorites";
 import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
-import { priceSource } from "./usePrices";
 import type { Ownership } from "./progress";
 import "./collection.css";
 
-const FINISH_LABEL = gameCards.finishName;
 
 /** Finishes this card can be printed in, most special first. */
 function printings(card: Card): Finish[] {
@@ -40,9 +40,14 @@ interface Props {
    */
   finish?: Finish;
   onClose(): void;
+  /** The card's game, when it isn't this one's (a post from the shared feed): its prices and finish names. */
+  game?: Game;
 }
 
-export function CardDetail({ card, official, owned, layout, finish: initialFinish, onClose }: Props) {
+export function CardDetail({ card, official, owned, layout, finish: initialFinish, onClose, game = GAME }: Props) {
+  // The card's own game, which can be another than this one's (a post in the shared feed).
+  const cards = cardsFor(game);
+  const FINISH_LABEL = cards.finishName;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const reduced = useMemo(() => matchMedia("(prefers-reduced-motion: reduce)").matches, []);
@@ -128,14 +133,14 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
 
   useEffect(() => {
     let live = true;
-    priceSource.get(card.id).then(
+    cards.getCardPricing(card.id).then(
       (p) => live && setPricing(p),
       () => live && setPricing("error"),
     );
     return () => {
       live = false;
     };
-  }, [card.id]);
+  }, [card.id, cards]);
 
   const firstEd = (owned?.firstEdition ?? 0) > 0;
   const close = () => dialogRef.current?.close();
@@ -247,7 +252,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             </div>
           )}
 
-          {card.category === "Pokemon" && !!card.dexId?.length && (
+          {game === GAME && has("pokedex") && card.category === "Pokemon" && !!card.dexId?.length && (
             <p className="species-links">
               {card.dexId.map((d) => (
                 <a key={d} href={href.pokemon(d)} onClick={close}>

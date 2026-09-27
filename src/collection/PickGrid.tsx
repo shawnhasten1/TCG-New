@@ -2,6 +2,7 @@
 // tapping it adds another copy until they're all picked, then clears. Styles are in social.css (.pick-page).
 
 import type { ReactNode } from "react";
+import { gameCards } from "../app/gameCards";
 import { cardImage } from "../api/tcgdex";
 import type { Card, SetDetail } from "../api/types";
 import { pullTier } from "../engine/tiers";
@@ -11,6 +12,9 @@ import { RetryImg } from "../app/RetryImg";
 import { Spinner } from "../app/Spinner";
 import { compareNumbers } from "./cardSort";
 import { useIncremental } from "./useIncremental";
+
+/** "holo" or "foil", as this game calls it. */
+const finishName = (f: Finish) => gameCards.finishName[f].toLowerCase();
 
 /** Copies of one card in one finish that someone owns. */
 export interface Pickable {
@@ -106,7 +110,7 @@ export function PickGrid({
           const lastCopy = warnLastCopy && n > 0 && n === p.uids.length;
           return (
             <li key={p.key} data-finish={p.finish} data-tier={p.tier} data-picked={n > 0 || undefined}>
-              <button type="button" aria-pressed={n > 0} aria-label={`${p.card.name}, ${p.set.name}${p.finish !== "normal" ? `, ${p.finish}` : ""}, ${p.uids.length} owned${n ? `, ${n} picked` : ""}`} onClick={() => onPick(p)}>
+              <button type="button" aria-pressed={n > 0} aria-label={`${p.card.name}, ${p.set.name}${p.finish !== "normal" ? `, ${finishName(p.finish)}` : ""}, ${p.uids.length} owned${n ? `, ${n} picked` : ""}`} onClick={() => onPick(p)}>
                 <RetryImg src={cardImage(p.card, "low")} alt="" loading="lazy" />
                 {p.uids.length > 1 && <span className="count">×{p.uids.length}</span>}
                 {n > 0 && <span className="pick-check">{p.uids.length > 1 ? n : "✓"}</span>}
@@ -115,7 +119,7 @@ export function PickGrid({
                 <strong>{p.card.name}</strong>
                 <small>
                   {p.set.name}
-                  {p.finish !== "normal" ? ` · ${p.finish}` : ""}
+                  {p.finish !== "normal" ? ` · ${finishName(p.finish)}` : ""}
                   {p.firstEdition ? " · 1st Ed" : ""}
                 </small>
                 {note?.(p)}

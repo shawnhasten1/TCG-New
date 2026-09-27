@@ -4,6 +4,7 @@
 // page asks again. Selling takes the best offer.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { gameCards } from "../app/gameCards";
 import { cardImage } from "../api/tcgdex";
 import { isMember, useAccount } from "../account/account";
 import { Help } from "../app/Help";
@@ -271,7 +272,7 @@ function ListingRow({ listing: l, now, busy, onSell, onKeep, onLook }: { listing
         <strong className="name">{c.card.name}</strong>
         <small className="muted">
           {c.set.name}
-          {c.finish !== "normal" ? ` · ${c.finish}` : ""}
+          {c.finish !== "normal" ? ` · ${gameCards.finishName[c.finish].toLowerCase()}` : ""}
           {c.firstEdition ? " · 1st Ed" : ""}
         </small>
         <small className="muted" title={l.priced ? undefined : "No market price, so this is an estimate for its rarity"}>

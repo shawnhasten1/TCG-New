@@ -172,3 +172,6 @@
 .pick-page .offer-bar button:disabled { opacity: .5; cursor: default; }
 .pick-page .offer-bar .error { flex-basis: 100%; text-align: center; font-weight: 600; }
 .friends .ok { color: var(--ink); font-weight: 600; }
+/* A post's game, where there's more than one: the feed is every game's. */
+.feed .feed-post .post-game { flex: none; display: flex; }
+.feed .feed-post .post-game + .link { margin-left: 0; }

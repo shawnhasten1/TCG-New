@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { api, getAccount, isMember, onAccountChange } from "../account/account";
+import { GAME } from "../app/game";
 import type { FriendsResponse, InboxResponse } from "./protocol";
 
 export const loadFriends = () => api<FriendsResponse>("/api/friends");
@@ -41,7 +42,8 @@ export const noteFeedSeen = () => setInbox({ ...inbox, feedNew: 0 });
 export async function refreshInbox(): Promise<void> {
   if (!isMember(getAccount())) return setInbox(EMPTY);
   try {
-    setInbox(await api<InboxResponse>("/api/social/inbox"));
+    // Trade offers are counted for this game; requests and the feed are every game's.
+    setInbox(await api<InboxResponse>(`/api/social/inbox?game=${GAME}`));
   } catch {
     // Keep the last counts; the next sync tries again.
   }

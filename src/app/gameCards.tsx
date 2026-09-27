@@ -16,6 +16,7 @@ import { setSymbol } from "../mtg/cards";
 import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet, getMtgSets } from "../mtg/client";
 import { boosterEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
 import { client } from "./client";
+import type { Game } from "../game";
 import { GAME } from "./game";
 import { SetLogo } from "./SetLogo";
 import "../mtg/mtg.css";
@@ -116,4 +117,8 @@ const mtg: GameCards = {
   credit: { name: "Scryfall", url: "https://scryfall.com" },
 };
 
-export const gameCards: GameCards = GAME === "mtg" ? mtg : pokemon;
+/** A game's cards: for a card from another game than this one, like a friend's post in the shared feed. */
+export const cardsFor = (game: Game): GameCards => (game === "mtg" ? mtg : pokemon);
+
+/** This game's cards. */
+export const gameCards: GameCards = cardsFor(GAME);

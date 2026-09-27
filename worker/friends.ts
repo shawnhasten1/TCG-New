@@ -108,11 +108,13 @@ async function friendsOf(ctx: Ctx, user: UserRow): Promise<FriendsResponse> {
 
 const list = async (ctx: Ctx, user: UserRow) => json(await friendsOf(ctx, user));
 
+/** The badge's counts. Friend requests and the feed are every game's; trade offers are the game's asked about (?game=). */
 async function inbox(ctx: Ctx, user: UserRow): Promise<Response> {
+  const game = requireGame(ctx.env, ctx.url.searchParams.get("game") ?? undefined);
   const row = await ctx.env.DB.prepare("SELECT COUNT(*) AS n FROM friendships WHERE (user_a = ?1 OR user_b = ?1) AND status = 'pending' AND requested_by != ?1")
     .bind(user.id)
     .first<{ n: number }>();
-  return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user), tradeOffers: await tradeOffers(ctx, user) } satisfies InboxResponse);
+  return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user), tradeOffers: await tradeOffers(ctx, user, game) } satisfies InboxResponse);
 }
 
 /** A friend's cards in one game (?game=, Pokémon when left out), to browse. Only friends can see each other's collections. */

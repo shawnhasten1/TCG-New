@@ -525,7 +525,7 @@ export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain,
 }
 
 function cardLabel(p: PulledCard): string {
-  const extras = [p.card.rarity, p.finish !== "normal" ? p.finish : "", p.firstEdition ? "1st Edition" : ""].filter(Boolean);
+  const extras = [p.card.rarity, p.finish !== "normal" ? gameCards.finishName[p.finish].toLowerCase() : "", p.firstEdition ? "1st Edition" : ""].filter(Boolean);
   return `${p.card.name}, ${extras.join(", ")}. Press Enter for the next card; arrow keys tilt.`;
 }
 
