@@ -11,7 +11,7 @@ import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
 import { gameName } from "../game";
 import { ask } from "./Confirm";
-import { GAME, useGames } from "./game";
+import { GAME, has, useGames } from "./game";
 import { GameSwitch } from "./GameSwitch";
 import "../collection/collection.css";
 import { type Theme, updateSettings, useSettings } from "./settings";
@@ -140,7 +140,7 @@ export function SettingsPage() {
         <p className="muted">{plural(today, "pack")} opened today.</p>
       </section>
 
-      {GAME === "pokemon" && <section>
+      {has("eraFilter") && <section>
         <h2>Sets packs come from</h2>
         <p className="muted">Every pack is drawn from a random set. Narrow the draw to the eras you like; at least one stays on.</p>
         <fieldset className="eras">

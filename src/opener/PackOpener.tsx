@@ -3,7 +3,7 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import { cardImage } from "../api/tcgdex";
-import { GAME } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import { sfx } from "../app/sound";
 import type { SetDetail } from "../api/types";
 import { CardDetail } from "../collection/CardDetail";
@@ -585,7 +585,7 @@ function PackSummary({ pulls, newIds, newEntryIds, official, layout, shared, pic
             {p.card.name}
             <small>
               {p.card.rarity}
-              {p.finish !== "normal" ? ` · ${GAME === "mtg" ? "foil" : p.finish}` : ""}
+              {p.finish !== "normal" ? ` · ${gameCards.finishName[p.finish].toLowerCase()}` : ""}
               {p.firstEdition ? " · 1st Ed" : ""}
             </small>
           </figcaption>

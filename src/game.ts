@@ -7,9 +7,23 @@
 
 export type Game = "pokemon" | "mtg";
 
-export const GAMES: { id: Game; name: string; short: string }[] = [
-  { id: "pokemon", name: "Pokémon", short: "PKMN" },
-  { id: "mtg", name: "Magic: The Gathering", short: "MTG" },
+/**
+ * Parts of the app a game may not have yet. Pages ask whether the game has one (`has` in app/game.ts) rather than
+ * which game it is, so giving Magic a feature is adding it to its list.
+ * - sets: the set browser (#/sets).
+ * - market: selling cards, the pack shop and unopened packs.
+ * - social: friends, the feed and trades.
+ * - pokedex: the Pokédex views, and "New entry" on the reveal.
+ * - packArt: photos of real pack wrappers, and the Packs view that collects them.
+ * - eraFilter: choosing which eras packs are drawn from, in Settings.
+ * - setTiers: sets drawn by rarity tier, with pity.
+ * - share: sharing cards to the feed from the reveal.
+ */
+export type Feature = "sets" | "market" | "social" | "pokedex" | "packArt" | "eraFilter" | "setTiers" | "share";
+
+export const GAMES: { id: Game; name: string; short: string; features: Feature[] }[] = [
+  { id: "pokemon", name: "Pokémon", short: "PKMN", features: ["sets", "market", "social", "pokedex", "packArt", "eraFilter", "setTiers", "share"] },
+  { id: "mtg", name: "Magic: The Gathering", short: "MTG", features: [] },
 ];
 
 export const isGame = (v: unknown): v is Game => GAMES.some((g) => g.id === v);

@@ -41,8 +41,8 @@ export function openStatements(db: D1Database, userId: string, dealId: string): 
     return [
       db
         .prepare(
-          `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq)
-           SELECT user_id, id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1)
+          `INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, art, deleted, seq, game)
+           SELECT user_id, id, set_id, ?3, cards, art, 0, (SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?1), game
            FROM pack_inventory WHERE user_id = ?1 AND id = ?2
            ON CONFLICT (user_id, pack_id) DO NOTHING`,
         )

@@ -27,7 +27,8 @@ import {
   type ShareRequest,
   type SharedCard,
 } from "../src/social/protocol";
-import { tcgdex } from "./cache";
+import type { Game } from "../src/game";
+import { setCards } from "./cards";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { openStatements } from "./packs";
 import { requireMember, type UserRow } from "./session";
@@ -193,7 +194,8 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
 
   // Sharing straight from the reveal can beat the sync that opens the pack, so open it here too.
   await db.batch(openStatements(db, user.id, packId));
-  const pack = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id = ? AND deleted = 0").bind(user.id, packId).first<{ set_id: string; cards: string }>();
+  // The feed is every game's: the post belongs to the pack's game.
+  const pack = await db.prepare("SELECT game, set_id, cards FROM packs WHERE user_id = ? AND pack_id = ? AND deleted = 0").bind(user.id, packId).first<{ game: Game; set_id: string; cards: string }>();
   if (!pack) throw new HttpError(404, "That pack isn't in your collection.");
   const packCards = JSON.parse(pack.cards) as RemoteCard[];
   let slots: number[];
@@ -203,13 +205,7 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
     throw new HttpError(400, err instanceof Error ? err.message : String(err));
   }
 
-  let data;
-  try {
-    data = await tcgdex(ctx.env).client.getSetCards(pack.set_id);
-  } catch (err) {
-    console.error(`Couldn't load ${pack.set_id} to share`, err);
-    throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
-  }
+  const data = await setCards(ctx, pack.game, pack.set_id);
   const byId = new Map(data.cards.map((c) => [c.id, c]));
   const existing = await db.prepare("SELECT id, cards FROM posts WHERE user_id = ? AND pack_id = ?").bind(user.id, packId).first<{ id: string; cards: string }>();
   const cards = new Map<number, SharedCard>((existing ? (JSON.parse(existing.cards) as SharedCard[]) : []).map((c) => [c.slot, c]));
@@ -228,8 +224,8 @@ async function share(ctx: Ctx, user: UserRow): Promise<Response> {
     const setInfo = { id: data.set.id, name: data.set.name, serieId: data.set.serie.id, official: data.set.cardCount.official };
     // Two shares at once from the same pack: the second one merges into the first on retry.
     await db
-      .prepare("INSERT INTO posts (id, user_id, pack_id, set_info, cards, created_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (user_id, pack_id) DO UPDATE SET cards = excluded.cards")
-      .bind(crypto.randomUUID(), user.id, packId, JSON.stringify(setInfo), shared, Date.now())
+      .prepare("INSERT INTO posts (id, user_id, game, pack_id, set_info, cards, created_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (user_id, pack_id) DO UPDATE SET cards = excluded.cards")
+      .bind(crypto.randomUUID(), user.id, pack.game, packId, JSON.stringify(setInfo), shared, Date.now())
       .run();
   }
   return json({ ok: true, slots: [...cards.keys()].sort((a, b) => a - b) });

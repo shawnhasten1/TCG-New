@@ -2,13 +2,13 @@
 // allowance. A dealt pack stays the same until it's torn, so reloading shows it again rather than a new one.
 // The next pack is dealt and its set downloaded while you reveal the current one, so it's usually ready at once.
 // Set rarity pity is enforced by the server too; the note here counts from the saved packs.
-// Each game deals its own packs (app/game.ts); pity, pack photos and sharing are Pokémon's only, for now.
+// Each game deals its own packs (app/game.ts); pity, pack photos and sharing are features a game may not have yet.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMember, useAccount } from "../account/account";
 import type { SetData } from "../api/types";
-import { client } from "../app/client";
-import { GAME } from "../app/game";
+import { GAME, has } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { useSettings } from "../app/settings";
 import { caughtDex } from "../collection/caughtDex";
@@ -23,7 +23,6 @@ import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "
 import { shareCards } from "../social/feed";
 import { isBoughtPack } from "../market/shop";
 import { isOpenedPack } from "../sync/protocol";
-import { forgetMtgSet, getMtgSet } from "../mtg/client";
 import { OpenerBar } from "./OpenerBar";
 import { PackOpener } from "./PackOpener";
 import { preloadImage, withTimeout } from "./preload";
@@ -51,14 +50,8 @@ type Dealt = { res: DealResponse; ready?: Ready };
 /** The next deal, requested while the current pack is revealed. */
 type Upcoming = { promise: Promise<Dealt>; settled: boolean };
 
-/** Where this game's set data comes from. */
-const sets =
-  GAME === "mtg"
-    ? { get: (id: string) => getMtgSet(id), forget: forgetMtgSet }
-    : { get: (id: string, onProgress?: (done: number, total: number) => void) => client.getSetCards(id, onProgress), forget: (id: string) => client.forgetSetCards(id) };
-
-/** The wrapper a pack comes in: a photo of the real pack, when there is one (none for Magic yet: the plain wrapper, named for its set). */
-const wrapperFor = (pack: DealtPack): { src: string; aspect?: number } | undefined => (GAME === "pokemon" ? packArt(pack.setId, pack.art) : undefined);
+/** The wrapper a pack comes in: a photo of the real pack, when there is one (otherwise the plain wrapper, named for its set). */
+const wrapperFor = (pack: DealtPack): { src: string; aspect?: number } | undefined => (has("packArt") ? packArt(pack.setId, pack.art) : undefined);
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -104,15 +97,15 @@ export function OpenPage() {
 
   /** Asks for a pack (opening `opened` first) and downloads its set. */
   const request = useCallback(async (opened?: string, onProgress?: (done: number, total: number) => void): Promise<Dealt> => {
-    const res = await dealPack({ game: GAME, eras: GAME === "pokemon" ? erasRef.current : [], opened });
+    const res = await dealPack({ game: GAME, eras: has("eraFilter") ? erasRef.current : [], opened });
     if (!res.pack) return { res };
     const { pack } = res;
-    let data = await sets.get(pack.setId, onProgress);
+    let data = await gameCards.getSetCards(pack.setId, onProgress);
     let pulls = toPulls(pack, data);
     if (!pulls) {
       // This device's copy of the set is older than the server's: fetch it again.
-      await sets.forget(pack.setId);
-      data = await sets.get(pack.setId, onProgress);
+      await gameCards.forgetSetCards(pack.setId);
+      data = await gameCards.getSetCards(pack.setId, onProgress);
       pulls = toPulls(pack, data);
       if (!pulls) throw new Error("This pack has cards the card database doesn't know yet. Try again in a while.");
     }
@@ -152,8 +145,7 @@ export function OpenPage() {
       const pulls = await getPulls().catch((err) => (console.warn("Couldn't read the collection", err), [] as PullRecord[]));
       if (!live.current) return;
       for (const p of pulls) (owned.current.get(p.setId) ?? owned.current.set(p.setId, new Set()).get(p.setId)!).add(p.cardId);
-      // Only Pokémon have a Pokédex.
-      if (GAME === "pokemon") caught.current = caughtDex(pulls).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
+      if (has("pokedex")) caught.current = caughtDex(pulls).catch((err) => (console.warn("Couldn't read the Pokédex", err), undefined));
       history.current = packHistory(pulls);
       await show();
     })();
@@ -265,11 +257,11 @@ export function OpenPage() {
       onAgain={next}
       binderHref={href.binder(ready.data.set.id)}
       // Counts after the pack on screen, whose set is already known, so it reads the same once torn.
-      pityNote={GAME === "pokemon" ? guaranteeNote(torn ? history.current : [...history.current, ready.pack.setId]) : undefined}
-      showSetTier={GAME === "pokemon"}
+      pityNote={has("setTiers") ? guaranteeNote(torn ? history.current : [...history.current, ready.pack.setId]) : undefined}
+      showSetTier={has("setTiers")}
       limitNote={available === 0 ? `Next pack in ${countdown}` : `${available} of ${limit} ${limit === 1 ? "pack" : "packs"} left${nextAt ? ` · next in ${countdown}` : ""}`}
       canOpenAgain={available > 0}
-      onShare={member && GAME === "pokemon" ? (slots) => shareCards(ready.pack.dealId, slots) : undefined}
+      onShare={member && has("share") ? (slots) => shareCards(ready.pack.dealId, slots) : undefined}
     />
   );
 }

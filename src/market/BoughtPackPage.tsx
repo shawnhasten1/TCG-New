@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { isMember, useAccount } from "../account/account";
 import type { SetData } from "../api/types";
-import { client } from "../app/client";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { caughtDex } from "../collection/caughtDex";
 import { newEntryIds } from "../collection/pokedex";
@@ -53,12 +53,12 @@ export function BoughtPackPage({ packId }: { packId: string }) {
     (async () => {
       const pack = await loadBoughtPack(packId);
       const progress = (done: number, total: number) => live && setStage({ state: "loading", done, total });
-      let data = await client.getSetCards(pack.setId, progress);
+      let data = await gameCards.getSetCards(pack.setId, progress);
       let pulls = toPulls(pack, data);
       if (!pulls) {
         // This device's copy of the set is older than the server's: fetch it again.
-        await client.forgetSetCards(pack.setId);
-        data = await client.getSetCards(pack.setId, progress);
+        await gameCards.forgetSetCards(pack.setId);
+        data = await gameCards.getSetCards(pack.setId, progress);
         pulls = toPulls(pack, data);
         if (!pulls) throw new Error("This pack has cards the card database doesn't know yet. Try again in a while.");
       }

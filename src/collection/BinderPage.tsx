@@ -3,10 +3,11 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import type { Card, SetData } from "../api/types";
-import { client } from "../app/client";
+import { has } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { pullableCardIds } from "../engine/openPack";
-import { profileFor } from "../engine/profiles";
+import { rarityKind } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { isFiltering, matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
@@ -19,7 +20,7 @@ import { clearPulls, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { ask } from "../app/Confirm";
 import "./collection.css";
-import { SetLogo } from "../app/SetLogo";
+import "../mtg/mtg.css";
 import { RetryImg } from "../app/RetryImg";
 import { Spinner } from "../app/Spinner";
 
@@ -41,7 +42,10 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
 
   useEffect(() => {
     let live = true;
-    client.getSetCards(setId).then((d) => live && setData(d), (e) => live && setError(String(e)));
+    gameCards.getSetCards(setId).then(
+      (d) => live && setData(d),
+      (e) => live && setError(e instanceof Error ? e.message : String(e)),
+    );
     const reload = () => source.getPulls(setId).then((p) => live && setPulls(p));
     void reload();
     const off = source.onChange(reload);
@@ -52,7 +56,7 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
   }, [setId, source]);
 
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
-  const profile = data && profileFor(data.set);
+  const profile = data && gameCards.profileFor(data.set);
   const pullable = useMemo(() => (data ? (profile ? pullableCardIds(data, profile) : new Set(data.cards.map((c) => c.id))) : new Set<string>()), [data, profile]);
   const official = data?.set.cardCount.official ?? 0;
   const progress = data && pulls ? setProgress(data.cards, official, pulls, pullable) : undefined;
@@ -96,21 +100,18 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
         ) : (
           <>
             <a href={href.collection()}>← Collection</a>
-            <a href={href.picker()}>All sets</a>
-            <a href={href.pokedex()}>Pokédex</a>
+            {has("sets") && <a href={href.picker()}>All sets</a>}
+            {has("pokedex") && <a href={href.pokedex()}>Pokédex</a>}
           </>
         )}
       </nav>
 
       <header className="binder-head">
-        <SetLogo logo={data.set.logo} className="set-logo" alt="" />
+        <gameCards.SetMark set={data.set} className="set-logo" />
         <div>
           <h1>{data.set.name}</h1>
           {source.owner && <p className="owner-note">{whose(source)} binder</p>}
-          <p className="muted">
-            {data.set.serie.name}
-            {data.set.releaseDate ? ` · ${data.set.releaseDate.slice(0, 4)}` : ""}
-          </p>
+          <p className="muted">{gameCards.describeSet(data.set)}</p>
           <div className="progress-line">
             <div className="bar" role="progressbar" aria-valuenow={Math.round(progress.percent)} aria-valuemin={0} aria-valuemax={100} aria-label="Main set completion">
               <div style={{ width: `${progress.percent}%` }} />
@@ -195,7 +196,7 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
                   {favorites.has(c.id) && <span className="fav" aria-hidden="true">★</span>}
                   {o && (
                     <span className="finishes">
-                      {o.byFinish.holo > 0 && <span data-f="holo">Holo</span>}
+                      {o.byFinish.holo > 0 && <span data-f="holo">{gameCards.finishName.holo}</span>}
                       {o.byFinish.reverse > 0 && <span data-f="reverse">Rev</span>}
                       {o.firstEdition > 0 && <span data-f="first">1st</span>}
                     </span>
@@ -205,6 +206,11 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
                 <span className="caption">
                   #{c.localId}
                   {extra ? " ✦" : ""}
+                  {gameCards.rarityInBinder && (
+                    <span className="rarity" data-kind={rarityKind(c.rarity)}>
+                      {c.rarity}
+                    </span>
+                  )}
                   {price && <span className="price">{formatPrice(price)}</span>}
                 </span>
               </li>
@@ -214,7 +220,7 @@ export function BinderPage({ setId, fromShop }: { setId: string; fromShop?: bool
       )}
 
       <footer>
-        <p className="muted">Faded cards are still missing. “Not in packs” cards (basic energy, cards without scans) don't count toward completion. ✦ marks secret and subset cards.</p>
+        <p className="muted">{gameCards.binderNote}</p>
         {progress.pulls > 0 && !source.owner && (
           <button type="button" className="danger" onClick={reset}>
             Reset this set

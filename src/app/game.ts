@@ -6,7 +6,7 @@
 // was picked sends the app back to Pokémon.
 
 import { useSyncExternalStore } from "react";
-import { isGame, type Game, type GamesResponse } from "../game";
+import { GAMES, isGame, type Feature, type Game, type GamesResponse } from "../game";
 
 const KEY = "tcg-pack-opener:game";
 
@@ -21,6 +21,11 @@ function stored(): Game {
 }
 
 export const GAME: Game = stored();
+
+const FEATURES = new Set(GAMES.find((g) => g.id === GAME)!.features);
+
+/** Whether this game has a part of the app yet (see Feature in ../game.ts). */
+export const has = (feature: Feature) => FEATURES.has(feature);
 
 /** Switches to another game: the app reloads on its opener. */
 export function switchGame(game: Game): void {

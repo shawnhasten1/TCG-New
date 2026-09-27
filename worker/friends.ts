@@ -5,6 +5,7 @@
 import { CODE_ALPHABET, CODE_LENGTH, normalizeFriendCode, parseDisplayName, type FriendCollection, type FriendEntry, type FriendsResponse, type InboxResponse } from "../src/social/protocol";
 import { ownedCards } from "./cards";
 import { feedNew } from "./feed";
+import { requireGame } from "./games";
 import { tradeOffers } from "./trades";
 import { HttpError, json, readJson, type Ctx } from "./http";
 import { requireMember, type UserRow } from "./session";
@@ -114,14 +115,15 @@ async function inbox(ctx: Ctx, user: UserRow): Promise<Response> {
   return json({ friendRequests: row?.n ?? 0, feedNew: await feedNew(ctx, user), tradeOffers: await tradeOffers(ctx, user) } satisfies InboxResponse);
 }
 
-/** A friend's cards, to browse. Only friends can see each other's collections. */
+/** A friend's cards in one game (?game=, Pokémon when left out), to browse. Only friends can see each other's collections. */
 async function collection(ctx: Ctx, user: UserRow, friendId: string): Promise<Response> {
+  const game = requireGame(ctx.env, ctx.url.searchParams.get("game") ?? undefined);
   if ((await friendship(ctx, user.id, friendId))?.status !== "accepted") throw new HttpError(404, "You can only see your friends' collections.");
   const owner = await ctx.env.DB.prepare("SELECT id, display_name, avatar_url FROM users WHERE id = ?").bind(friendId).first<{ id: string; display_name: string | null; avatar_url: string | null }>();
   if (!owner) throw new HttpError(404, "That player is gone.");
   return json({
     owner: { id: owner.id, displayName: owner.display_name ?? "New player", avatarUrl: owner.avatar_url },
-    cards: await ownedCards(ctx.env.DB, friendId),
+    cards: await ownedCards(ctx.env.DB, friendId, game),
   } satisfies FriendCollection);
 }
 

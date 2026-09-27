@@ -4,8 +4,8 @@
 import type { ReactNode } from "react";
 import type { CSSProperties } from "react";
 import { isMember, useAccount } from "../account/account";
-import { gameName } from "../game";
-import { GAME } from "./game";
+import { gameName, type Feature } from "../game";
+import { GAME, has } from "./game";
 import { useInbox } from "../social/friends";
 import { href, type NavSection } from "./router";
 import "./nav.css";
@@ -63,8 +63,9 @@ const ITEMS: { id: NavSection; label: string; href: string }[] = [
   { id: "settings", label: "Settings", href: href.settings() },
 ];
 
-/** What each game has so far: Magic has packs and a collection. */
-const ITEMS_HERE = GAME === "pokemon" ? ITEMS : ITEMS.filter((i) => i.id === "open" || i.id === "collection" || i.id === "settings");
+/** Sections that are a feature some games don't have yet. */
+const NEEDS: Partial<Record<NavSection, Feature>> = { sets: "sets", market: "market", social: "social" };
+const ITEMS_HERE = ITEMS.filter((i) => !NEEDS[i.id] || has(NEEDS[i.id]!));
 
 export function AppNav({ current }: { current: NavSection }) {
   const signedIn = isMember(useAccount());

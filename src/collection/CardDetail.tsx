@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { CardPricing } from "../api/tcgdex";
 import type { Card } from "../api/types";
-import { GAME } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
 import type { FrameLayout } from "../foil/layouts";
@@ -18,8 +18,7 @@ import { priceSource } from "./usePrices";
 import type { Ownership } from "./progress";
 import "./collection.css";
 
-// A Magic card is just foil or not.
-const FINISH_LABEL: Record<Finish, string> = GAME === "mtg" ? { normal: "Non-foil", holo: "Foil", reverse: "Reverse holo" } : { normal: "Normal", holo: "Holo", reverse: "Reverse holo" };
+const FINISH_LABEL = gameCards.finishName;
 
 /** Finishes this card can be printed in, most special first. */
 function printings(card: Card): Finish[] {

@@ -8,7 +8,10 @@
 // A card handed over stays in its pack, marked `gone` with the trade id (see sync/protocol.ts). The cards each player
 // receives arrive as new packs, one per set, with ids starting "t-". Every changed pack gets a new seq, so sync
 // carries the swap to every device.
+//
+// A trade is between cards of one game, and the packs it makes belong to that game.
 
+import type { Game } from "../src/game";
 import { parseCardUid, TRADE_PACK_PREFIX, type RemoteCard, type SyncCard } from "../src/sync/protocol";
 import { MAX_OPEN_TRADES, parseTradeSide, type OwnedCard, type Trade, type TradeCard, type TradeRequest, type TradesResponse, type TradeStatus } from "../src/social/protocol";
 import { ownedCards, withCardData } from "./cards";
@@ -20,12 +23,14 @@ const ID = "[0-9a-f-]{36}";
 /** Finished trades stay in the list this long. */
 const HISTORY_MS = 30 * 24 * 60 * 60 * 1000;
 const NEXT_SEQ = (param: number) => `(SELECT COALESCE(MAX(seq), 0) + 1 FROM packs WHERE user_id = ?${param})`;
+/** Trades are Pokémon's only, for now. Accepting one goes by the game it was offered in. */
+const GAME: Game = "pokemon";
 
 export async function handleTrades(ctx: Ctx): Promise<Response> {
   const user = await requireMember(ctx);
   const route = `${ctx.req.method} ${ctx.url.pathname}`;
   if (route === "GET /api/trades") return list(ctx, user);
-  if (route === "POST /api/trades") return create(ctx, user);
+  if (route === "POST /api/trades") return create(ctx, user, GAME);
   const m = route.match(new RegExp(`^POST /api/trades/(${ID})/(accept|decline|cancel)$`));
   if (m?.[2] === "accept") return accept(ctx, user, m[1]);
   if (m) return answer(ctx, user, m[1], m[2] as "decline" | "cancel");
@@ -73,10 +78,10 @@ async function trades(ctx: Ctx, user: UserRow): Promise<TradesResponse> {
   const { results } = await ctx.env.DB.prepare(
     `SELECT t.*, f.display_name AS from_name, f.avatar_url AS from_avatar, o.display_name AS to_name, o.avatar_url AS to_avatar
      FROM trades t JOIN users f ON f.id = t.from_user JOIN users o ON o.id = t.to_user
-     WHERE (t.from_user = ?1 OR t.to_user = ?1) AND (t.status = 'pending' OR t.resolved_at > ?2)
+     WHERE (t.from_user = ?1 OR t.to_user = ?1) AND t.game = ?3 AND (t.status = 'pending' OR t.resolved_at > ?2)
      ORDER BY COALESCE(t.resolved_at, t.created_at) DESC LIMIT 100`,
   )
-    .bind(user.id, Date.now() - HISTORY_MS)
+    .bind(user.id, Date.now() - HISTORY_MS, GAME)
     .all<TradeRow>();
   const res: TradesResponse = { incoming: [], outgoing: [], history: [] };
   for (const r of results) {
@@ -91,15 +96,15 @@ const list = async (ctx: Ctx, user: UserRow) => json(await trades(ctx, user));
 /* ---------- Offering ---------- */
 
 /** Picks `uids` out of a player's cards, or says which side has cards it doesn't own. */
-async function pick(ctx: Ctx, userId: string, uids: string[], whose: "your" | "their"): Promise<OwnedCard[]> {
+async function pick(ctx: Ctx, userId: string, game: Game, uids: string[], whose: "your" | "their"): Promise<OwnedCard[]> {
   if (!uids.length) return [];
-  const owned = new Map((await ownedCards(ctx.env.DB, userId)).map((c) => [c.uid, c]));
+  const owned = new Map((await ownedCards(ctx.env.DB, userId, game)).map((c) => [c.uid, c]));
   const picked = uids.map((u) => owned.get(u));
   if (picked.some((c) => !c)) throw new HttpError(409, `Some of ${whose} cards in this offer aren't in ${whose} collection any more.`);
   return picked as OwnedCard[];
 }
 
-async function create(ctx: Ctx, user: UserRow): Promise<Response> {
+async function create(ctx: Ctx, user: UserRow, game: Game): Promise<Response> {
   const body = (await readJson<Partial<TradeRequest> | null>(ctx.req)) ?? {};
   const to = typeof body.to === "string" && new RegExp(`^${ID}$`).test(body.to) ? body.to : undefined;
   if (!to || to === user.id) throw new HttpError(400, "Who's the offer for?");
@@ -117,10 +122,10 @@ async function create(ctx: Ctx, user: UserRow): Promise<Response> {
   const open = await ctx.env.DB.prepare("SELECT COUNT(*) AS n FROM trades WHERE from_user = ? AND status = 'pending'").bind(user.id).first<{ n: number }>();
   if ((open?.n ?? 0) >= MAX_OPEN_TRADES) throw new HttpError(429, "You have lots of offers waiting. Cancel some before sending more.");
 
-  const [mine, theirs] = await Promise.all([pick(ctx, user.id, give, "your"), pick(ctx, to, get, "their")]);
-  const [giveCards, getCards] = await Promise.all([withCardData(ctx, mine), withCardData(ctx, theirs)]);
-  await ctx.env.DB.prepare("INSERT INTO trades (id, from_user, to_user, status, cards, created_at) VALUES (?, ?, ?, 'pending', ?, ?)")
-    .bind(crypto.randomUUID(), user.id, to, JSON.stringify({ give: giveCards, get: getCards }), Date.now())
+  const [mine, theirs] = await Promise.all([pick(ctx, user.id, game, give, "your"), pick(ctx, to, game, get, "their")]);
+  const [giveCards, getCards] = await Promise.all([withCardData(ctx, game, mine), withCardData(ctx, game, theirs)]);
+  await ctx.env.DB.prepare("INSERT INTO trades (id, game, from_user, to_user, status, cards, created_at) VALUES (?, ?, ?, ?, 'pending', ?, ?)")
+    .bind(crypto.randomUUID(), game, user.id, to, JSON.stringify({ give: giveCards, get: getCards }), Date.now())
     .run();
   return list(ctx, user);
 }
@@ -146,7 +151,10 @@ interface Handover {
 
 async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
   const db = ctx.env.DB;
-  const trade = await db.prepare("SELECT from_user, to_user, status, cards FROM trades WHERE id = ? AND to_user = ?").bind(id, user.id).first<Pick<TradeRow, "from_user" | "to_user" | "status" | "cards">>();
+  const trade = await db
+    .prepare("SELECT game, from_user, to_user, status, cards FROM trades WHERE id = ? AND to_user = ?")
+    .bind(id, user.id)
+    .first<Pick<TradeRow, "from_user" | "to_user" | "status" | "cards"> & { game: Game }>();
   if (!trade) throw new HttpError(404, "That offer isn't for you.");
   if (trade.status !== "pending") throw new HttpError(409, "That offer has already been answered.");
   const fail = async (message: string) => {
@@ -166,7 +174,7 @@ async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
   for (const h of handovers) {
     const key = `${h.from}/${h.packId}`;
     if (packs.has(key)) continue;
-    const row = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id = ? AND deleted = 0").bind(h.from, h.packId).first<{ set_id: string; cards: string }>();
+    const row = await db.prepare("SELECT set_id, cards FROM packs WHERE user_id = ? AND game = ? AND pack_id = ? AND deleted = 0").bind(h.from, trade.game, h.packId).first<{ set_id: string; cards: string }>();
     if (row) packs.set(key, { set_id: row.set_id, cards: JSON.parse(row.cards) });
   }
   const cardOf = (h: Handover) => packs.get(`${h.from}/${h.packId}`)?.cards[h.slot];
@@ -182,9 +190,9 @@ async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
       db
         .prepare(
           `INSERT INTO trade_checks (trade_id, n, ok) VALUES (?1, ?2, EXISTS (
-             SELECT 1 FROM packs WHERE user_id = ?3 AND pack_id = ?4 AND game = 'pokemon' AND deleted = 0 AND json_extract(cards, ?5) IS NOT NULL AND json_extract(cards, ?6) IS NULL))`,
+             SELECT 1 FROM packs WHERE user_id = ?3 AND pack_id = ?4 AND game = ?7 AND deleted = 0 AND json_extract(cards, ?5) IS NOT NULL AND json_extract(cards, ?6) IS NULL))`,
         )
-        .bind(id, n, h.from, h.packId, `$[${h.slot}]`, `$[${h.slot}].gone`),
+        .bind(id, n, h.from, h.packId, `$[${h.slot}]`, `$[${h.slot}].gone`, trade.game),
     ),
     // Hand each card over: marked gone where it was...
     ...handovers.map((h) =>
@@ -193,8 +201,8 @@ async function accept(ctx: Ctx, user: UserRow, id: string): Promise<Response> {
     // ...and into a new pack per set for whoever receives it.
     ...receivedPacks(handovers, packs, cardOf).map((p, n) =>
       db
-        .prepare(`INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, deleted, seq) VALUES (?1, ?2, ?3, ?4, ?5, 0, ${NEXT_SEQ(1)})`)
-        .bind(p.to, `${TRADE_PACK_PREFIX}${id}-${n}`, p.setId, openedAt, JSON.stringify(p.cards)),
+        .prepare(`INSERT INTO packs (user_id, pack_id, set_id, opened_at, cards, deleted, seq, game) VALUES (?1, ?2, ?3, ?4, ?5, 0, ${NEXT_SEQ(1)}, ?6)`)
+        .bind(p.to, `${TRADE_PACK_PREFIX}${id}-${n}`, p.setId, openedAt, JSON.stringify(p.cards), trade.game),
     ),
     db.prepare("UPDATE trades SET status = 'accepted', resolved_at = ? WHERE id = ?").bind(now, id),
     db.prepare("DELETE FROM trade_checks WHERE trade_id = ?").bind(id),

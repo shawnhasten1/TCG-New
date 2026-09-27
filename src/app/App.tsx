@@ -18,7 +18,6 @@ import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
 import { TradeComposer } from "../social/TradeComposer";
 import { TradesPage } from "../social/TradesPage";
-import { MtgBinderPage } from "../mtg/MtgBinderPage";
 import { MtgCollectionPage } from "../mtg/MtgCollectionPage";
 import { AppNav } from "./AppNav";
 import { ConfirmHost } from "./Confirm";
@@ -50,7 +49,7 @@ function MtgPage({ route }: { route: Route }) {
     case "picker":
       return <MtgCollectionPage />;
     case "binder":
-      return <MtgBinderPage key={route.setId} setId={route.setId} />;
+      return <BinderPage key={route.setId} setId={route.setId} />;
     case "foil":
       return <FoilLab />;
     default:

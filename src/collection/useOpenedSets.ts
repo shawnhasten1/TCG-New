@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetData } from "../api/types";
-import { client } from "../app/client";
+import { gameCards } from "../app/gameCards";
 import type { PullRecord } from "./store";
 
 /** `sets` is undefined until loaded; `progress` is [loaded, total] while loading. Sets that fail to load are left out. */
@@ -19,7 +19,7 @@ export function useOpenedSets(pulls: PullRecord[] | undefined) {
     let done = 0;
     Promise.all(
       ids.map((id) =>
-        client.getSetCards(id).then(
+        gameCards.getSetCards(id).then(
           (d) => (live && setProgress([++done, ids.length]), d),
           () => undefined,
         ),

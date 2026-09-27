@@ -2,9 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { CardPricing } from "../api/tcgdex";
-import { client } from "../app/client";
-import { GAME } from "../app/game";
-import { cachedMtgCardPricing, getMtgCardPricing } from "../mtg/client";
+import { gameCards } from "../app/gameCards";
 import { updateSettings, useSettings } from "../app/settings";
 import type { Ownership } from "./progress";
 import { formatPrice, priceFor, type Price } from "./prices";
@@ -13,10 +11,7 @@ import type { PullRecord } from "./store";
 export type Totals = Record<Price["currency"], number>;
 
 /** Where this game's prices come from: TCGdex per card for Pokémon, the Worker per set for Magic (src/mtg/client.ts). */
-export const priceSource =
-  GAME === "mtg"
-    ? { get: getMtgCardPricing, cached: cachedMtgCardPricing }
-    : { get: (id: string) => client.getCardPricing(id), cached: (ids: string[]) => client.cachedCardPricing(ids) };
+export const priceSource = { get: gameCards.getCardPricing, cached: gameCards.cachedCardPricing };
 
 /** How often fetched prices are handed to the page. Each hand-off re-sorts and re-renders it, so not once per card. */
 const FLUSH_MS = 400;
