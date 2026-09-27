@@ -7,6 +7,7 @@ import { profileFor } from "../engine/profiles";
 import { ERAS } from "../engine/randomSet";
 import { pullTier } from "../engine/tiers";
 import type { PackProfile } from "../engine/types";
+import { compareNumbers } from "./cardSort";
 import names from "./pokedex.json";
 import type { Ownership } from "./progress";
 
@@ -145,7 +146,7 @@ export function groupByEra(printings: Printing[]): EraGroup[] {
     const bySet = new Map<string, Printing[]>();
     for (const p of inEra) (bySet.get(p.card.set.id) ?? bySet.set(p.card.set.id, []).get(p.card.set.id)!).push(p);
     const sets = [...bySet.entries()]
-      .map(([setId, ps]) => ({ setId, set: ps[0].set, printings: ps.sort((a, b) => a.card.localId.localeCompare(b.card.localId, undefined, { numeric: true })) }))
+      .map(([setId, ps]) => ({ setId, set: ps[0].set, printings: ps.sort((a, b) => compareNumbers(a.card.localId, b.card.localId)) }))
       .sort((a, b) => (a.set?.releaseDate ?? "9999").localeCompare(b.set?.releaseDate ?? "9999") || a.setId.localeCompare(b.setId));
     out.push({ era, name: eraName(era), sets });
   }

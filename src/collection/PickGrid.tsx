@@ -8,6 +8,9 @@ import { pullTier } from "../engine/tiers";
 import type { Finish } from "../engine/types";
 import { pullUid, type PullRecord } from "./store";
 import { RetryImg } from "../app/RetryImg";
+import { Spinner } from "../app/Spinner";
+import { compareNumbers } from "./cardSort";
+import { useIncremental } from "./useIncremental";
 
 /** Copies of one card in one finish that someone owns. */
 export interface Pickable {
@@ -37,7 +40,7 @@ export function pickables(pulls: PullRecord[], cards: Map<string, { card: Card; 
     if (p.openedAt > g.lastPulledAt) g.lastPulledAt = p.openedAt;
   }
   // Best cards first, then by set and number.
-  return [...groups.values()].sort((a, b) => b.tier - a.tier || a.set.name.localeCompare(b.set.name) || a.card.localId.localeCompare(b.card.localId, undefined, { numeric: true }));
+  return [...groups.values()].sort((a, b) => b.tier - a.tier || a.set.name.localeCompare(b.set.name) || compareNumbers(a.card.localId, b.card.localId));
 }
 
 /** Copies picked per tile. */
@@ -72,32 +75,61 @@ export function duplicatePicks(items: Pickable[], room: number): Picked {
 /** The card uids picked, taking copies in the order they're listed. */
 export const pickedUids = (items: Pickable[], picked: Picked) => items.flatMap((p) => p.uids.slice(0, picked.get(p.key) ?? 0));
 
-export function PickGrid({ items, picked, onPick, warnLastCopy, note }: { items: Pickable[]; picked: Picked; onPick(p: Pickable): void; warnLastCopy?: boolean; note?(p: Pickable): ReactNode }) {
+/**
+ * Tiles for `items`, drawn a batch at a time as the list is scrolled (big collections froze drawing them all).
+ * Pass a new `resetKey` when the search or sort changes to start again from the first batch.
+ */
+export function PickGrid({
+  items,
+  picked,
+  onPick,
+  warnLastCopy,
+  note,
+  resetKey,
+  busy,
+}: {
+  items: Pickable[];
+  picked: Picked;
+  onPick(p: Pickable): void;
+  warnLastCopy?: boolean;
+  note?(p: Pickable): ReactNode;
+  resetKey?: unknown;
+  /** Dims the grid while a newer search or sort is still being worked out. */
+  busy?: boolean;
+}) {
+  const { limit, more, sentinel } = useIncremental(items.length, resetKey);
   return (
-    <ul className="pick-grid">
-      {items.map((p) => {
-        const n = picked.get(p.key) ?? 0;
-        const lastCopy = warnLastCopy && n > 0 && n === p.uids.length;
-        return (
-          <li key={p.key} data-finish={p.finish} data-tier={p.tier} data-picked={n > 0 || undefined}>
-            <button type="button" aria-pressed={n > 0} aria-label={`${p.card.name}, ${p.set.name}${p.finish !== "normal" ? `, ${p.finish}` : ""}, ${p.uids.length} owned${n ? `, ${n} picked` : ""}`} onClick={() => onPick(p)}>
-              <RetryImg src={cardImage(p.card, "low")} alt="" loading="lazy" />
-              {p.uids.length > 1 && <span className="count">×{p.uids.length}</span>}
-              {n > 0 && <span className="pick-check">{p.uids.length > 1 ? n : "✓"}</span>}
-            </button>
-            <span className="caption">
-              <strong>{p.card.name}</strong>
-              <small>
-                {p.set.name}
-                {p.finish !== "normal" ? ` · ${p.finish}` : ""}
-                {p.firstEdition ? " · 1st Ed" : ""}
-              </small>
-              {note?.(p)}
-              {lastCopy && <small className="warn">Your last copy</small>}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <ul className="pick-grid" aria-busy={busy || undefined}>
+        {items.slice(0, limit).map((p) => {
+          const n = picked.get(p.key) ?? 0;
+          const lastCopy = warnLastCopy && n > 0 && n === p.uids.length;
+          return (
+            <li key={p.key} data-finish={p.finish} data-tier={p.tier} data-picked={n > 0 || undefined}>
+              <button type="button" aria-pressed={n > 0} aria-label={`${p.card.name}, ${p.set.name}${p.finish !== "normal" ? `, ${p.finish}` : ""}, ${p.uids.length} owned${n ? `, ${n} picked` : ""}`} onClick={() => onPick(p)}>
+                <RetryImg src={cardImage(p.card, "low")} alt="" loading="lazy" />
+                {p.uids.length > 1 && <span className="count">×{p.uids.length}</span>}
+                {n > 0 && <span className="pick-check">{p.uids.length > 1 ? n : "✓"}</span>}
+              </button>
+              <span className="caption">
+                <strong>{p.card.name}</strong>
+                <small>
+                  {p.set.name}
+                  {p.finish !== "normal" ? ` · ${p.finish}` : ""}
+                  {p.firstEdition ? " · 1st Ed" : ""}
+                </small>
+                {note?.(p)}
+                {lastCopy && <small className="warn">Your last copy</small>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      {more && (
+        <p className="muted loading-line more-cards" ref={sentinel}>
+          <Spinner /> Loading more cards…
+        </p>
+      )}
+    </>
   );
 }

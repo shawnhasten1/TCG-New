@@ -13,6 +13,7 @@ import { MAX_TRADE_CARDS, type FriendProfile } from "./protocol";
 import { proposeTrade } from "./trades";
 import "../collection/collection.css";
 import "./social.css";
+import { Spinner } from "../app/Spinner";
 
 type Side = "theirs" | "mine";
 
@@ -96,8 +97,9 @@ export function TradeComposer({ friendId }: { friendId: string }) {
           {error}
         </p>
       ) : !friend || !sets ? (
-        <p className="muted" role="status">
-          {progress[1] ? `Loading cards… ${progress[0]} of ${progress[1]} sets` : "Loading…"}
+        <p className="muted loading-line" role="status">
+          <Spinner />
+          {progress[1] ? `Looking up cards… ${progress[0]} of ${progress[1]} sets` : "Loading cards…"}
         </p>
       ) : (
         <>
@@ -121,7 +123,7 @@ export function TradeComposer({ friendId }: { friendId: string }) {
           {shown.length === 0 ? (
             <p className="muted empty">{lists[side].length ? "No cards match." : side === "theirs" ? `${friend.displayName} hasn't got any cards yet.` : "You haven't got any cards yet."}</p>
           ) : (
-            <PickGrid items={shown} picked={picked[side]} onPick={(p) => cycle(side, p)} warnLastCopy={side === "mine"} />
+            <PickGrid items={shown} picked={picked[side]} onPick={(p) => cycle(side, p)} warnLastCopy={side === "mine"} resetKey={`${side}|${q}|${dupesOnly}`} />
           )}
           <div className="offer-bar">
             <span>

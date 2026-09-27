@@ -1,9 +1,10 @@
 // #/market/pick: choose cards to list on the market. Cards already listed are left out.
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import type { Card, SetDetail } from "../api/types";
 import { isMember, useAccount } from "../account/account";
 import { Help } from "../app/Help";
+import { Spinner } from "../app/Spinner";
 import { href } from "../app/router";
 import { cyclePick, duplicatePicks, PickGrid, pickables, pickedCount, pickedUids, type Pickable, type Picked } from "../collection/PickGrid";
 import { getPulls, onCollectionChange, pullUid, type PullRecord } from "../collection/store";
@@ -11,6 +12,7 @@ import { CARD_SORT_LABEL, sortCards, type CardSort } from "../collection/cardSor
 import { priceFor } from "../collection/prices";
 import { useCardPrices } from "../collection/usePrices";
 import { useOpenedSets } from "../collection/useOpenedSets";
+import { useSyncStatus } from "../sync/sync";
 import { listCards, loadMarket } from "./market";
 import { coinValue, formatCoins, MAX_LIST_AT_ONCE, MAX_LISTED, type MarketResponse } from "./protocol";
 import "../collection/collection.css";
@@ -22,7 +24,11 @@ const plural = (n: number) => `${n} ${n === 1 ? "card" : "cards"}`;
 const SORTS: CardSort[] = ["rarity", "value", "recent", "dex", "name", "set"];
 
 export function SellPicker() {
-  const member = isMember(useAccount());
+  const account = useAccount();
+  const member = isMember(account);
+  const sync = useSyncStatus();
+  // On a device that hasn't got the collection yet, the first sync brings it in; until then "no cards" would be wrong.
+  const syncing = !sync.lastSynced && (sync.state === "idle" || sync.state === "syncing");
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [market, setMarket] = useState<MarketResponse>();
   const [error, setError] = useState<string>();
@@ -59,7 +65,10 @@ export function SellPicker() {
 
   // What the market counts each card as, the same way the Worker does (prices are cached per day on the device).
   const { prices } = useCardPrices(useMemo(() => items.map((p) => p.card.id), [items]), true);
-  const valueOf = (p: Pickable) => (prices.has(p.card.id) ? coinValue(priceFor(prices.get(p.card.id), p.finish, p.firstEdition), p.card.rarity) : undefined);
+  const valueOf = useCallback(
+    (p: Pickable) => (prices.has(p.card.id) ? coinValue(priceFor(prices.get(p.card.id), p.finish, p.firstEdition), p.card.rarity) : undefined),
+    [prices],
+  );
   const pickedValue = items.reduce((sum, p) => sum + (picked.get(p.key) ?? 0) * (valueOf(p)?.coins ?? 0), 0);
   const pickedPriced = items.every((p) => !picked.get(p.key) || prices.has(p.card.id));
 
@@ -80,11 +89,20 @@ export function SellPicker() {
     }
   };
 
-  const q = search.trim().toLowerCase();
-  const shown = sortCards(
-    items.filter((p) => (!q || p.card.name.toLowerCase().includes(q) || p.set.name.toLowerCase().includes(q)) && (!dupesOnly || p.uids.length > 1)),
-    sort,
-    (p) => valueOf(p)?.coins,
+  // The controls change at once; the (slower) grid catches up with these deferred copies.
+  const viewSearch = useDeferredValue(search);
+  const viewSort = useDeferredValue(sort);
+  const viewDupes = useDeferredValue(dupesOnly);
+  const pending = viewSearch !== search || viewSort !== sort || viewDupes !== dupesOnly;
+  const q = viewSearch.trim().toLowerCase();
+  const shown = useMemo(
+    () =>
+      sortCards(
+        items.filter((p) => (!q || p.card.name.toLowerCase().includes(q) || p.set.name.toLowerCase().includes(q)) && (!viewDupes || p.uids.length > 1)),
+        viewSort,
+        (p) => valueOf(p)?.coins,
+      ),
+    [items, q, viewDupes, viewSort, valueOf],
   );
 
   return (
@@ -93,7 +111,11 @@ export function SellPicker() {
         <a href={href.market()}>← Market</a>
       </nav>
       <h1>Choose cards to sell</h1>
-      {!member ? (
+      {account.status === "unknown" ? (
+        <p className="muted loading-line" role="status">
+          <Spinner /> Loading your cards…
+        </p>
+      ) : !member ? (
         <p className="muted empty">
           <a href={href.settings()}>Sign up or sign in</a> to sell cards.
         </p>
@@ -101,9 +123,11 @@ export function SellPicker() {
         <p className="error" role="alert">
           {error}
         </p>
-      ) : !market || !pulls || !sets ? (
-        <p className="muted" role="status">
-          {progress[1] ? `Loading cards… ${progress[0]} of ${progress[1]} sets` : "Loading…"}
+      ) : !market || !pulls || !sets || (!items.length && syncing) ? (
+        <p className="muted loading-line" role="status">
+          <Spinner />
+          {/* Your collection only stores which cards you have, so each set's card details are looked up (and kept on this device). */}
+          {progress[1] ? `Looking up your cards… ${progress[0]} of ${progress[1]} sets` : "Loading your cards…"}
         </p>
       ) : room === 0 ? (
         <p className="muted empty">
@@ -143,7 +167,7 @@ export function SellPicker() {
               Pick all duplicates
             </button>
           </div>
-          {shown.length === 0 ? (
+          {shown.length === 0 && !pending ? (
             <p className="muted empty">{items.length ? "No cards match." : "No cards to sell yet."}</p>
           ) : (
             <PickGrid
@@ -151,6 +175,8 @@ export function SellPicker() {
               picked={picked}
               onPick={pick}
               warnLastCopy
+              resetKey={`${q}|${viewSort}|${viewDupes}`}
+              busy={pending}
               note={(p) => {
                 const v = valueOf(p);
                 return (

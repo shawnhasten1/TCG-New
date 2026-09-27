@@ -7,7 +7,7 @@ import type { PullRecord } from "./store";
 
 /** `sets` is undefined until loaded; `progress` is [loaded, total] while loading. Sets that fail to load are left out. */
 export function useOpenedSets(pulls: PullRecord[] | undefined) {
-  const [sets, setSets] = useState<SetData[]>();
+  const [loaded, setLoaded] = useState<{ key: string; sets: SetData[] }>();
   const [progress, setProgress] = useState<[number, number]>([0, 0]);
   const setIds = useMemo(() => [...new Set(pulls?.map((p) => p.setId))].sort().join(","), [pulls]);
 
@@ -24,12 +24,15 @@ export function useOpenedSets(pulls: PullRecord[] | undefined) {
           () => undefined,
         ),
       ),
-    ).then((all) => live && setSets(all.filter((d): d is SetData => !!d)));
+    ).then((all) => live && setLoaded({ key: setIds, sets: all.filter((d): d is SetData => !!d) }));
     return () => {
       live = false;
     };
     // Re-run only when the set of opened sets changes, not on every new pull.
   }, [setIds, !!pulls]);
 
+  // While new sets load, keep showing the ones already there, unless there were none: then it's still loading (as when
+  // a fresh device's first sync brings the collection in), not an empty collection.
+  const sets = loaded && (loaded.key === setIds || loaded.sets.length) ? loaded.sets : undefined;
   return { sets, progress };
 }

@@ -14,12 +14,18 @@ export type Sortable = { card: Card; set: { releaseDate?: string } } & ({ owned:
 /** Lowest National Pokédex number on the card; undefined for Trainers, Energy and cards TCGdex has no number for. */
 export const dexNumber = (e: Pick<Sortable, "card">) => (e.card.dexId?.length ? Math.min(...e.card.dexId) : undefined);
 
+// Shared collators: localeCompare with options builds a new one on every call, which made sorting thousands of cards slow.
+/** Names A to Z, ignoring case and accents, with numbers in number order. */
+export const compareNames = new Intl.Collator(undefined, { sensitivity: "base", numeric: true }).compare;
+/** Card numbers in number order ("2" before "10", then "TG05"). */
+export const compareNumbers = new Intl.Collator(undefined, { numeric: true }).compare;
+
 const pulledAt = (e: Sortable) => ("owned" in e ? e.owned.lastPulledAt : e.lastPulledAt);
 const recent = (a: Sortable, b: Sortable) => pulledAt(b).localeCompare(pulledAt(a));
-const byName = (a: Sortable, b: Sortable) => a.card.name.localeCompare(b.card.name, undefined, { sensitivity: "base", numeric: true });
+const byName = (a: Sortable, b: Sortable) => compareNames(a.card.name, b.card.name);
 /** Newest set first, then card number: a stable last resort. */
 const printing = (a: Sortable, b: Sortable) =>
-  (b.set.releaseDate ?? "").localeCompare(a.set.releaseDate ?? "") || a.card.localId.localeCompare(b.card.localId, undefined, { numeric: true });
+  (b.set.releaseDate ?? "").localeCompare(a.set.releaseDate ?? "") || compareNumbers(a.card.localId, b.card.localId);
 
 /**
  * Sorted copy of `entries`. Value is highest first (cards with no price last), recent is newest first,

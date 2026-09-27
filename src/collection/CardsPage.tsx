@@ -7,6 +7,7 @@ import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
 import { matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
 import { CardFilterBar } from "./CardFilterBar";
+import { compareNumbers } from "./cardSort";
 import { useFavorites } from "./favorites";
 import { FINISH_ORDER, finishCount, groupCards, pullHasFinish, sortRarities, type GroupBy, type OwnedCard, type Tile } from "./cardGroups";
 import { FINISH_LABEL, type FinishKey } from "./pokedex";
@@ -81,7 +82,7 @@ export function CardsPage() {
 
   const compare: Record<Sort, (a: Tile, b: Tile) => number> = {
     recent: (a, b) => b.owned.lastPulledAt.localeCompare(a.owned.lastPulledAt),
-    set: (a, b) => (b.set.releaseDate ?? "").localeCompare(a.set.releaseDate ?? "") || a.card.localId.localeCompare(b.card.localId, undefined, { numeric: true }),
+    set: (a, b) => (b.set.releaseDate ?? "").localeCompare(a.set.releaseDate ?? "") || compareNumbers(a.card.localId, b.card.localId),
     copies: (a, b) => b.count - a.count,
     price: (a, b) => (tilePrice(b)?.amount ?? -1) - (tilePrice(a)?.amount ?? -1),
   };

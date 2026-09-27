@@ -8,11 +8,16 @@ const CHASE = /illustration|secret|hyper|shiny ultra|gold|rainbow/i;
 const ULTRA = /double|ultra|\bv\b|vmax|vstar|lv\.x|prime|legend|radiant|amazing|ace spec|shiny|classic collection|black white/i;
 const RARE = /rare/i;
 
+/** Tiers by rarity label. There are only a few dozen labels, and sorting thousands of cards asks over and over. */
+const tierOf = new Map<string, Tier>();
+
 export function rarityTier(rarity: string): Tier {
-  if (CHASE.test(rarity)) return 3;
-  if (ULTRA.test(rarity)) return 2;
-  if (RARE.test(rarity)) return 1;
-  return 0;
+  let tier = tierOf.get(rarity);
+  if (tier === undefined) {
+    tier = CHASE.test(rarity) ? 3 : ULTRA.test(rarity) ? 2 : RARE.test(rarity) ? 1 : 0;
+    tierOf.set(rarity, tier);
+  }
+  return tier;
 }
 
 export type RarityKind = "common" | "uncommon" | "rare" | "ultra" | "chase";
