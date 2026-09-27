@@ -16,6 +16,7 @@ import { pityFloor } from "../src/engine/setRarity";
 import { boosterEra, MTG_ERAS, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier, type MtgSet } from "../src/mtg/sets";
 import type { SyncCard } from "../src/sync/protocol";
 import { d1Cache, pruneDailyEntries } from "./cache";
+import { scryfall } from "./scryfall";
 import { requireGame } from "./games";
 import { HttpError, json, randomToken, type Ctx } from "./http";
 import type { DealtRow } from "./packs";
@@ -31,7 +32,7 @@ export async function mtgSetData(env: Env, set: MtgSet): Promise<SetData> {
   if (hit) return hit;
   let data: SetData;
   try {
-    data = await fetchSetData(set);
+    data = await fetchSetData(set, scryfall(env));
   } catch (err) {
     console.error(`Couldn't load ${set.name} from Scryfall`, err);
     throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");
@@ -57,7 +58,7 @@ export function mtgSetPrices(env: Env, set: MtgSet): Promise<Record<string, Card
       if (hit) return hit;
       let prices: Record<string, CardPricing>;
       try {
-        prices = await fetchSetPrices(set);
+        prices = await fetchSetPrices(set, scryfall(env));
       } catch (err) {
         console.error(`Couldn't load prices for ${set.name} from Scryfall`, err);
         throw new HttpError(503, "Couldn't reach the price database. Try again in a moment.");
@@ -73,7 +74,7 @@ export function mtgSetPrices(env: Env, set: MtgSet): Promise<Record<string, Card
 }
 
 /** Sets read (or fetched from Scryfall) per request to fill in the set list, so no request makes too many calls. */
-const SUMMARIES_AT_ONCE = 5;
+const SUMMARIES_AT_ONCE = 3;
 /** Summaries only count cards, so they're unaffected by SET_VERSION 3's oracle ids. */
 const summariesKey = "mtg:sets:v2";
 
@@ -87,8 +88,15 @@ export async function mtgSetSummaries(env: Env): Promise<SetSummary[]> {
   const known = (await cache.get<Record<string, SetSummary>>(summariesKey)) ?? {};
   const missing = MTG_SETS.filter((s) => !known[s.id]).slice(0, SUMMARIES_AT_ONCE);
   if (missing.length) {
-    const got = await Promise.all(missing.map((s) => mtgSetData(env, s).then(toSummary, (err) => (console.error(`Couldn't summarise ${s.id}`, err), undefined))));
-    for (const s of got) if (s) known[s.id] = s;
+    // One set at a time, and none after a failure: Scryfall answers bursts with 429s (see scryfall.ts).
+    for (const s of missing) {
+      try {
+        known[s.id] = toSummary(await mtgSetData(env, s));
+      } catch (err) {
+        console.error(`Couldn't summarise ${s.id}`, err);
+        break;
+      }
+    }
     await cache.set(summariesKey, known);
   }
   return MTG_SETS.map((s) => known[s.id] ?? toSummary({ set: { id: s.id, name: s.name, releaseDate: s.released, cardCount: { total: 0, official: 0 } } }));
@@ -180,7 +188,7 @@ export async function mtgPrintings(env: Env, oracleId: string): Promise<CardWith
   let raw: RawCard[];
   try {
     // Only the sets here: a basic land has been printed in hundreds, and every page of them is another request.
-    raw = await searchCards(`oracleid:${oracleId} is:booster (${MTG_SETS.map((s) => `set:${s.id}`).join(" or ")})`);
+    raw = await searchCards(`oracleid:${oracleId} is:booster (${MTG_SETS.map((s) => `set:${s.id}`).join(" or ")})`, scryfall(env));
   } catch (err) {
     console.error(`Couldn't look up the printings of ${oracleId}`, err);
     throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");

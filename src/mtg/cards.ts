@@ -113,12 +113,15 @@ export function rarityRank(rarity: string): number {
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** How to reach Scryfall: plain fetch in scripts, a throttled one in the Worker (worker/scryfall.ts). */
+export type Fetcher = (url: string, init?: RequestInit) => Promise<Response>;
+
 /** Every printing a Scryfall search finds, a page at a time; none when nothing matches (Scryfall answers that with a 404). */
-export async function searchCards(query: string): Promise<RawCard[]> {
+export async function searchCards(query: string, fetcher: Fetcher = fetch): Promise<RawCard[]> {
   const raw: RawCard[] = [];
   let url: string | undefined = `${API}/cards/search?q=${encodeURIComponent(query)}&unique=prints&order=set`;
   while (url) {
-    const res = await fetch(url, { headers: HEADERS });
+    const res = await fetcher(url, { headers: HEADERS });
     if (res.status === 404) break;
     if (!res.ok) throw new Error(`${res.status} ${res.statusText} from Scryfall for "${query}"`);
     const page = (await res.json()) as { data: RawCard[]; has_more: boolean; next_page?: string };
@@ -131,17 +134,17 @@ export async function searchCards(query: string): Promise<RawCard[]> {
 }
 
 /** A set's booster cards as Scryfall has them. */
-export async function fetchRawCards(set: MtgSet): Promise<RawCard[]> {
-  const raw = await searchCards(`set:${set.id} is:booster`);
+export async function fetchRawCards(set: MtgSet, fetcher: Fetcher = fetch): Promise<RawCard[]> {
+  const raw = await searchCards(`set:${set.id} is:booster`, fetcher);
   if (!raw.length) throw new Error(`Scryfall has no booster cards for ${set.name}`);
   return raw;
 }
 
 /** Fetches a set's booster cards from Scryfall. Call rarely: the result should be cached (worker/mtg.ts). */
-export const fetchSetData = async (set: MtgSet): Promise<SetData> => toSetData(set, await fetchRawCards(set));
+export const fetchSetData = async (set: MtgSet, fetcher: Fetcher = fetch): Promise<SetData> => toSetData(set, await fetchRawCards(set, fetcher));
 
 /** Fetches today's prices for a set's cards from Scryfall. Call once a day at most: cache the result (worker/mtg.ts). */
-export const fetchSetPrices = async (set: MtgSet): Promise<Record<string, CardPricing>> => toPricing(set, await fetchRawCards(set));
+export const fetchSetPrices = async (set: MtgSet, fetcher: Fetcher = fetch): Promise<Record<string, CardPricing>> => toPricing(set, await fetchRawCards(set, fetcher));
 
 const amount = (v: string | null | undefined) => {
   const n = Number(v);
