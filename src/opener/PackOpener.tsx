@@ -10,7 +10,7 @@ import { CardDetail } from "../collection/CardDetail";
 import { setFavorite, useFavorites } from "../collection/favorites";
 import { ownership, type Ownership } from "../collection/progress";
 import { getPulls } from "../collection/store";
-import { setTier, tierInfo, type SetTier } from "../engine/setRarity";
+import { tierInfo, type SetTier } from "../engine/setRarity";
 
 /** The sealed pack wears a set-rarity tag in the same colours as the card rarity tag. */
 const PACK_TAG_KIND: Record<SetTier, RarityKind> = { common: "common", uncommon: "uncommon", rare: "rare", legendary: "chase" };
@@ -350,7 +350,7 @@ export function PackOpener({ set, pulls, newIds, newEntryIds, onOpened, onAgain,
   const tier = current ? pullTier(current) : 0;
   const isLast = idx === pulls.length - 1;
   let hint = "";
-  const packTier = setTier(set.id);
+  const packTier = gameCards.setTier(set.id);
   if (phase === "sealed") hint = "Drag across the top of the pack to tear it open.";
   else if (phase === "opening" && waitingForImages) hint = "Loading cards…";
   else if (phase === "reveal") {

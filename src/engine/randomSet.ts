@@ -43,7 +43,7 @@ export interface PickOptions {
 }
 
 /** Picks one set, weighted by its rarity tier (scarcer sets come up less often). */
-export function pickRandomSet(sets: SetSummary[], rng: Rng, { avoid, floor, tierOf = setTier }: PickOptions = {}): SetSummary | undefined {
+export function pickRandomSet<T extends { id: string }>(sets: T[], rng: Rng, { avoid, floor, tierOf = setTier }: PickOptions = {}): T | undefined {
   const pool = sets.length > 1 && avoid ? sets.filter((s) => s.id !== avoid) : sets;
   const weights = drawWeights(pool.map((s) => s.id), tierOf, floor);
   let roll = rng();

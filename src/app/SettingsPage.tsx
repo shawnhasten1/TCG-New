@@ -7,14 +7,14 @@ import { toBackup } from "../collection/backup";
 import { localDay, packsOpenedOn } from "../collection/daily";
 import { countPacks } from "../collection/progress";
 import { clearPulls, getPulls, onCollectionChange, type PullRecord } from "../collection/store";
-import { ERAS } from "../engine/randomSet";
 import { PACK_LIMIT, RECHARGE_MS } from "../packs/protocol";
 import { gameName } from "../game";
 import { ask } from "./Confirm";
 import { GAME, has, useGames } from "./game";
 import { GameSwitch } from "./GameSwitch";
 import "../collection/collection.css";
-import { type Theme, updateSettings, useSettings } from "./settings";
+import { gameCards } from "./gameCards";
+import { erasFor, setEras, type Theme, updateSettings, useSettings } from "./settings";
 import { sfx } from "./sound";
 
 const THEMES: { id: Theme; name: string }[] = [
@@ -56,13 +56,15 @@ export function SettingsPage() {
 
   const packs = countPacks(pulls ?? []);
 
-  // An empty list means every era, so all boxes show ticked; at least one always stays ticked.
-  const eraOn = (id: string) => !settings.eras.length || settings.eras.includes(id);
+  // An empty list means every era, so all boxes show ticked; at least one always stays ticked. Each game has its own.
+  const ERAS = gameCards.eras;
+  const eras = erasFor(settings, GAME);
+  const eraOn = (id: string) => !eras.length || eras.includes(id);
   const toggleEra = (id: string, on: boolean) => {
     const current = ERAS.map((e) => e.id).filter(eraOn);
     const next = on ? [...current, id] : current.filter((e) => e !== id);
     if (!next.length) return;
-    updateSettings({ eras: next.length === ERAS.length ? [] : next });
+    setEras(GAME, next.length === ERAS.length ? [] : next);
   };
   const today = pulls ? packsOpenedOn(pulls, localDay(new Date())) : 0;
 

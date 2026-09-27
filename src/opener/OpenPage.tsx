@@ -10,7 +10,7 @@ import type { SetData } from "../api/types";
 import { GAME, has } from "../app/game";
 import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
-import { useSettings } from "../app/settings";
+import { erasFor, useSettings } from "../app/settings";
 import { caughtDex } from "../collection/caughtDex";
 import { formatCountdown } from "../collection/daily";
 import { newEntryIds, speciesOf } from "../collection/pokedex";
@@ -74,7 +74,7 @@ function packHistory(pulls: PullRecord[]): string[] {
 }
 
 export function OpenPage() {
-  const { eras } = useSettings();
+  const eras = erasFor(useSettings(), GAME);
   const member = isMember(useAccount());
   const [stage, setStage] = useState<Stage>({ state: "starting" });
   /** From the last deal: counted before its pack was torn. */
@@ -257,7 +257,7 @@ export function OpenPage() {
       onAgain={next}
       binderHref={href.binder(ready.data.set.id)}
       // Counts after the pack on screen, whose set is already known, so it reads the same once torn.
-      pityNote={has("setTiers") ? guaranteeNote(torn ? history.current : [...history.current, ready.pack.setId]) : undefined}
+      pityNote={has("setTiers") ? guaranteeNote(torn ? history.current : [...history.current, ready.pack.setId], gameCards.setTier) : undefined}
       showSetTier={has("setTiers")}
       limitNote={available === 0 ? `Next pack in ${countdown}` : `${available} of ${limit} ${limit === 1 ? "pack" : "packs"} left${nextAt ? ` · next in ${countdown}` : ""}`}
       canOpenAgain={available > 0}

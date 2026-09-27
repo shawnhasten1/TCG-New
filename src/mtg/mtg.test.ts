@@ -5,7 +5,10 @@ import { rarityTier } from "../engine/tiers";
 import { layoutFor, MTG_LAYOUTS } from "../foil/layouts";
 import { priceFor } from "../collection/prices";
 import { rarityOf, scryfallImage, toPricing, toSetData, type RawCard } from "./cards";
-import { boosterEra, foilEra, MTG_PROFILES, MTG_SETS, mtgProfile, type MtgSet } from "./sets";
+import { pickRandomSet } from "../engine/randomSet";
+import { pityFloor, TIERS } from "../engine/setRarity";
+import { boosterEra, foilEra, MTG_ERAS, MTG_PROFILES, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSetTier, type MtgSet } from "./sets";
+import rarity from "./setRarity.json";
 
 let n = 0;
 function raw(rarity: string, over: Partial<RawCard> = {}): RawCard {
@@ -174,5 +177,34 @@ describe("toPricing", () => {
 
   it("leaves out cards with no price", () => {
     expect(toPricing(play, [raw("common", { prices: { usd: null, usd_foil: null, eur: null } }), raw("common")])).toEqual({});
+  });
+});
+
+describe("drawing a Magic set", () => {
+  it("limits the draw to the chosen booster eras, and draws from every set with none chosen", () => {
+    expect(mtgDrawableSets([])).toEqual(MTG_SETS);
+    const classic = mtgDrawableSets(["classic"]);
+    expect(classic.length).toBeGreaterThan(0);
+    expect(classic.every((s) => boosterEra(s) === "classic")).toBe(true);
+    expect(mtgDrawableSets(MTG_ERAS.map((e) => e.id))).toEqual(MTG_SETS);
+  });
+
+  it("has a tier for every set, and only for sets there are", () => {
+    const tiers = (rarity as { sets: Record<string, { tier: string }> }).sets;
+    expect(Object.keys(tiers).sort()).toEqual(MTG_SETS.map((s) => s.id).sort());
+    for (const s of MTG_SETS) expect(TIERS.map((t) => t.id)).toContain(mtgSetTier(s.id));
+    expect(mtgSetTier("not-a-set")).toBe("common");
+  });
+
+  it("keeps a pity guarantee: ten packs without a rare set make the next one rare or better", () => {
+    const common = MTG_SETS.filter((s) => mtgSetTier(s.id) === "common").map((s) => s.id);
+    const history = Array.from({ length: 10 }, (_, i) => common[i % common.length]);
+    const floor = pityFloor(history, mtgSetTier);
+    expect(floor).toBe("rare");
+    const rng = createRng("pity");
+    for (let i = 0; i < 50; i++) {
+      const set = pickRandomSet(MTG_SETS, rng, { floor, tierOf: mtgSetTier })!;
+      expect(["rare", "legendary"]).toContain(mtgSetTier(set.id));
+    }
   });
 });

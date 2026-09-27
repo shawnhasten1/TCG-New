@@ -2,6 +2,7 @@
 
 import type { Card } from "../api/types";
 import type { Finish } from "../engine/types";
+import type { Game } from "../game";
 
 /** Friend code characters: digits and capitals without 0/O and 1/I, so codes survive being read aloud. 32 of them. */
 export const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -100,6 +101,8 @@ export interface FeedPost {
   author: FriendProfile;
   /** Your own post, which you can take down. */
   mine: boolean;
+  /** Whose cards these are: the feed is shared by every game. */
+  game: Game;
   set: { id: string; name: string; serieId: string; official: number };
   cards: SharedCard[];
   createdAt: number;

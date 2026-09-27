@@ -8,7 +8,9 @@
 // A set's booster era and foil era both follow from its release date, so adding a set is one line in MTG_SETS.
 // Odds are rounded from Wizards' published collation where there is one, and community counts otherwise; tune them here.
 
+import type { SetTier } from "../engine/setRarity";
 import type { PackProfile, SlotProfile } from "../engine/types";
+import rarity from "./setRarity.json";
 
 export type MtgEra = "classic" | "draft" | "play";
 
@@ -71,6 +73,16 @@ export const MTG_SETS: MtgSet[] = [
 ];
 
 export const mtgSet = (id: string) => MTG_SETS.find((s) => s.id === id);
+
+/** The sets packs are drawn from, limited to `eras` (booster eras; empty means every era). */
+export function mtgDrawableSets(eras: readonly string[] = []): MtgSet[] {
+  return eras.length ? MTG_SETS.filter((s) => eras.includes(boosterEra(s))) : MTG_SETS;
+}
+
+const tiers = (rarity as { sets: Record<string, { tier: SetTier }> }).sets;
+
+/** How scarce a set's packs are (scripts/mtgSetRarity.ts); sets without market data count as "common". */
+export const mtgSetTier = (id: string): SetTier => tiers[id]?.tier ?? "common";
 
 const PLAIN = { normal: 1 };
 const FOIL = { holo: 1 };

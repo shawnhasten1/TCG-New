@@ -116,7 +116,7 @@ export function FeedPage() {
             <>
               <ul className="feed-list">
                 {posts.map((post) => (
-                  <li key={post.id} className="feed-post">
+                  <li key={post.id} className="feed-post" data-game={post.game}>
                     <header>
                       <Avatar friend={post.author} />
                       <div className="who-text">

@@ -18,6 +18,7 @@ import { tcgdex } from "./cache";
 import { HttpError, json, randomToken, readJson, type Ctx } from "./http";
 import { requireUser } from "./session";
 import { requireGame } from "./games";
+import { MTG_ERAS } from "../src/mtg/sets";
 import { rollMtg } from "./mtg";
 
 /** Sets tried when a drawn set can't fill a pack. */
@@ -91,12 +92,24 @@ async function allowanceFor(ctx: Ctx, userId: string, game: Game) {
 }
 
 function parseDeal(env: Env, body: DealRequest | null): { game: Game; eras: string[]; opened?: string } {
-  const known = new Set<string>(ERAS.map((e) => e.id));
-  const eras = Array.isArray(body?.eras) ? body.eras.filter((e): e is string => typeof e === "string" && known.has(e)) : [];
-  const opened = typeof body?.opened === "string" && body.opened.length <= 64 ? body.opened : undefined;
   // Apps from before games don't say, and they're Pokémon.
   const game = requireGame(env, body?.game);
+  // Each game has its own eras (Pokémon's pack profiles, Magic's booster eras).
+  const known = new Set<string>((game === "mtg" ? MTG_ERAS : ERAS).map((e) => e.id));
+  const eras = Array.isArray(body?.eras) ? body.eras.filter((e): e is string => typeof e === "string" && known.has(e)) : [];
+  const opened = typeof body?.opened === "string" && body.opened.length <= 64 ? body.opened : undefined;
   return { game, eras, opened };
+}
+
+/**
+ * The sets of a player's last dealt packs in a game, oldest first, for pity. Bought packs don't count: buying a pack
+ * from a set you chose doesn't use up a guarantee.
+ */
+export async function pityHistory(ctx: Ctx, userId: string, game: Game): Promise<string[]> {
+  const { results } = await ctx.env.DB.prepare("SELECT set_id FROM packs WHERE user_id = ? AND game = ? AND pack_id NOT LIKE ? ORDER BY opened_at DESC LIMIT ?")
+    .bind(userId, game, `${SHOP_PACK_PREFIX}%`, HISTORY)
+    .all<{ set_id: string }>();
+  return results.map((r) => r.set_id).reverse();
 }
 
 async function deal(ctx: Ctx, userId: string): Promise<Response> {
@@ -109,7 +122,7 @@ async function deal(ctx: Ctx, userId: string): Promise<Response> {
   if (waiting) return json({ pack: toPack(waiting), allowance } satisfies DealResponse);
   if (allowance.left === 0) return json({ pack: null, allowance } satisfies DealResponse);
 
-  const row = game === "mtg" ? await rollMtg(ctx) : await rollPokemon(ctx, userId, eras);
+  const row = game === "mtg" ? await rollMtg(ctx, await pityHistory(ctx, userId, game), eras) : await rollPokemon(ctx, userId, eras);
 
   // Two tabs asking at once: the first one's pack wins, and both get it.
   await db
@@ -122,11 +135,7 @@ async function deal(ctx: Ctx, userId: string): Promise<Response> {
 
 /** Draws a Pokémon set (weighted by rarity, with pity) and rolls a pack from it. */
 async function rollPokemon(ctx: Ctx, userId: string, eras: string[]): Promise<DealtRow> {
-  // Pity counts dealt packs only: buying a pack from a set you chose doesn't use up a guarantee.
-  const { results } = await ctx.env.DB.prepare("SELECT set_id FROM packs WHERE user_id = ? AND game = 'pokemon' AND pack_id NOT LIKE ? ORDER BY opened_at DESC LIMIT ?")
-    .bind(userId, `${SHOP_PACK_PREFIX}%`, HISTORY)
-    .all<{ set_id: string }>();
-  const history = results.map((r) => r.set_id).reverse();
+  const history = await pityHistory(ctx, userId, "pokemon");
   const { client, cache } = tcgdex(ctx.env);
   const unopenable = (await cache.get<Record<string, string>>(UNOPENABLE_KEY)) ?? {};
   let sets: SetSummary[];

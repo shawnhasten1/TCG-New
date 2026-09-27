@@ -99,7 +99,7 @@ export function rarityRank(rarity: string): number {
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** A set's booster cards as Scryfall has them, a page at a time. */
-async function fetchRawCards(set: MtgSet): Promise<RawCard[]> {
+export async function fetchRawCards(set: MtgSet): Promise<RawCard[]> {
   const raw: RawCard[] = [];
   let url: string | undefined = `${API}/cards/search?q=${encodeURIComponent(`set:${set.id} is:booster`)}&unique=prints&order=set`;
   while (url) {

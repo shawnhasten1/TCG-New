@@ -22,3 +22,6 @@
   :root:not([data-theme="light"])[data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
   :root:not([data-theme="light"])[data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
 }
+
+/* A Magic post in the friends feed, which every game shares: Magic's card shape wherever it's shown. */
+.feed .feed-post[data-game="mtg"] .feed-cards img { aspect-ratio: 672 / 936; border-radius: 4.8% / 3.4%; }

@@ -9,10 +9,12 @@ import { FINISH_ORDER } from "../collection/cardGroups";
 import { FINISH_LABEL, type FinishKey } from "../collection/pokedex";
 import { hiddenReason } from "../engine/openable";
 import { profileFor } from "../engine/profiles";
+import { drawableSets, ERAS } from "../engine/randomSet";
+import { setTier, type SetTier } from "../engine/setRarity";
 import type { PackProfile } from "../engine/types";
 import { setSymbol } from "../mtg/cards";
 import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet, getMtgSets } from "../mtg/client";
-import { boosterEra, MTG_ERAS, mtgProfile, mtgSet } from "../mtg/sets";
+import { boosterEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
 import { client } from "./client";
 import { GAME } from "./game";
 import { SetLogo } from "./SetLogo";
@@ -35,6 +37,12 @@ export interface GameCards {
   profileFor(set: SetDetail): PackProfile | undefined;
   /** Why the set browser leaves a set out (packs never come from it), or undefined. */
   hiddenReason(set: SetSummary): string | undefined;
+  /** The eras packs can be limited to, in Settings. */
+  eras: readonly { id: string; name: string }[];
+  /** The sets packs are drawn from, limited to `eras` (empty means every era). The server draws from the same ones. */
+  drawableSets(sets: SetSummary[], opts: { unopenable?: Record<string, string>; eras?: string[] }): SetSummary[];
+  /** How scarce a set's packs are, which weights the draw and sets pity. */
+  setTier(id: string): SetTier;
   /** The line under a set's name. */
   describeSet(set: SetDetail): string;
   /** The set's logo or symbol, or `fallback` when it has none. */
@@ -60,6 +68,9 @@ const pokemon: GameCards = {
   cachedCardPricing: (ids) => client.cachedCardPricing(ids),
   profileFor,
   hiddenReason,
+  eras: ERAS,
+  drawableSets,
+  setTier,
   describeSet: (set) => `${set.serie.name}${set.releaseDate ? ` · ${set.releaseDate.slice(0, 4)}` : ""}`,
   SetMark: ({ set, className, loading, fallback }) => <SetLogo logo={set.logo} className={className} loading={loading} fallback={fallback} alt="" />,
   finishes: FINISH_ORDER,
@@ -85,6 +96,12 @@ const mtg: GameCards = {
   },
   // Every Magic set here is a booster set.
   hiddenReason: () => undefined,
+  eras: MTG_ERAS,
+  drawableSets: (sets, { eras }) => {
+    const ids = new Set(mtgDrawableSets(eras).map((s) => s.id));
+    return sets.filter((s) => ids.has(s.id));
+  },
+  setTier: mtgSetTier,
   describeSet: (set) => {
     const info = mtgSet(set.id);
     const era = info && MTG_ERAS.find((e) => e.id === boosterEra(info))?.name;

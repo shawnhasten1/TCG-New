@@ -64,6 +64,7 @@ export const FRIEND_IDS = "SELECT CASE WHEN user_a = ?1 THEN user_b ELSE user_a 
 interface PostRow {
   id: string;
   user_id: string;
+  game: Game;
   set_info: string;
   cards: string;
   created_at: number;
@@ -76,6 +77,7 @@ const toPost = (r: PostRow, me: string, extra: Pick<FeedPost, "reactions" | "myR
   id: r.id,
   author: { id: r.user_id, displayName: r.display_name ?? "New player", avatarUrl: r.avatar_url },
   mine: r.user_id === me,
+  game: r.game,
   set: JSON.parse(r.set_info),
   cards: JSON.parse(r.cards),
   createdAt: r.created_at,
@@ -95,7 +97,7 @@ function parseCursor(v: string | null): [number, string] | undefined {
 async function feed(ctx: Ctx, user: UserRow): Promise<Response> {
   const before = parseCursor(ctx.url.searchParams.get("before"));
   const { results } = await ctx.env.DB.prepare(
-    `SELECT p.id, p.user_id, p.set_info, p.cards, p.created_at, p.sale, u.display_name, u.avatar_url
+    `SELECT p.id, p.user_id, p.game, p.set_info, p.cards, p.created_at, p.sale, u.display_name, u.avatar_url
      FROM posts p JOIN users u ON u.id = p.user_id
      WHERE (p.user_id = ?1 OR p.user_id IN (${FRIEND_IDS})) AND (?2 IS NULL OR (p.created_at, p.id) < (?2, ?3))
      ORDER BY p.created_at DESC, p.id DESC LIMIT ?4`,

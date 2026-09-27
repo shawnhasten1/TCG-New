@@ -1,0 +1,124 @@
+{
+ "generated": "2026-09-27",
+ "sets": {
+  "usg": {
+   "tier": "legendary",
+   "score": 0.906,
+   "usd": 0.2,
+   "eur": 0.14,
+   "sampled": 25
+  },
+  "lrw": {
+   "tier": "rare",
+   "score": 0.844,
+   "usd": 0.22,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "ody": {
+   "tier": "rare",
+   "score": 0.781,
+   "usd": 0.16,
+   "eur": 0.15,
+   "sampled": 25
+  },
+  "shm": {
+   "tier": "rare",
+   "score": 0.75,
+   "usd": 0.17,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "ulg": {
+   "tier": "uncommon",
+   "score": 0.719,
+   "usd": 0.16,
+   "eur": 0.14,
+   "sampled": 25
+  },
+  "dom": {
+   "tier": "uncommon",
+   "score": 0.625,
+   "usd": 0.16,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "fdn": {
+   "tier": "uncommon",
+   "score": 0.563,
+   "usd": 0.19,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "blb": {
+   "tier": "uncommon",
+   "score": 0.531,
+   "usd": 0.16,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "inv": {
+   "tier": "uncommon",
+   "score": 0.5,
+   "usd": 0.16,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "mrd": {
+   "tier": "common",
+   "score": 0.469,
+   "usd": 0.13,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "dft": {
+   "tier": "common",
+   "score": 0.438,
+   "usd": 0.18,
+   "eur": 0.04,
+   "sampled": 25
+  },
+  "isd": {
+   "tier": "common",
+   "score": 0.344,
+   "usd": 0.13,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "dsk": {
+   "tier": "common",
+   "score": 0.281,
+   "usd": 0.14,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "ktk": {
+   "tier": "common",
+   "score": 0.219,
+   "usd": 0.07,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "mkm": {
+   "tier": "common",
+   "score": 0.219,
+   "usd": 0.14,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "ons": {
+   "tier": "common",
+   "score": 0.188,
+   "usd": 0.12,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "eld": {
+   "tier": "common",
+   "score": 0.125,
+   "usd": 0.14,
+   "eur": 0.04,
+   "sampled": 25
+  }
+ }
+}

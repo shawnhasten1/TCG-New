@@ -4,14 +4,13 @@
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
 import { getUnopenable } from "../app/client";
-import { has } from "../app/game";
+import { GAME, has } from "../app/game";
 import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { tallyBySet, type SetTally } from "../collection/progress";
 import { getPulls, onCollectionChange } from "../collection/store";
-import { useSettings } from "../app/settings";
-import { ERAS, drawableSets } from "../engine/randomSet";
-import { setTier, tierInfo } from "../engine/setRarity";
+import { erasFor, useSettings } from "../app/settings";
+import { tierInfo } from "../engine/setRarity";
 import "./picker.css";
 
 interface Group {
@@ -67,10 +66,9 @@ export function SetPicker() {
 
   const shown = groups.reduce((n, g) => n + g.sets.length, 0);
   const anyHidden = !!sets?.some((s) => gameCards.hiddenReason(s) || unopenable[s.id]);
-  const { eras } = useSettings();
-  // Games without the era filter draw from every set they have.
-  const drawable = !sets ? 0 : has("eraFilter") ? drawableSets(sets, { unopenable, eras }).length : sets.filter((s) => !gameCards.hiddenReason(s)).length;
-  const eraNote = eras.length ? ERAS.filter((e) => eras.includes(e.id)).map((e) => e.name).join(", ") : "every era";
+  const eras = erasFor(useSettings(), GAME);
+  const drawable = !sets ? 0 : gameCards.drawableSets(sets, { unopenable, eras: has("eraFilter") ? eras : [] }).length;
+  const eraNote = eras.length ? gameCards.eras.filter((e) => eras.includes(e.id)).map((e) => e.name).join(", ") : "every era";
 
   return (
     <main className="picker">
@@ -141,9 +139,9 @@ function SetTileBody({ set, note, tally }: { set: SetSummary; note?: string; tal
           {set.cardCount.official ? ` · ${set.cardCount.official} cards` : ""}
         </span>
         {note && <em>{note}</em>}
-        {!note && has("setTiers") && setTier(set.id) !== "common" && (
-          <span className="tier-chip" data-set-tier={setTier(set.id)}>
-            {tierInfo(setTier(set.id)).name}
+        {!note && has("setTiers") && gameCards.setTier(set.id) !== "common" && (
+          <span className="tier-chip" data-set-tier={gameCards.setTier(set.id)}>
+            {tierInfo(gameCards.setTier(set.id)).name}
           </span>
         )}
         {tally && (

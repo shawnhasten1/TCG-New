@@ -9,7 +9,9 @@ import { openPack, whyNotOpenable } from "../src/engine/openPack";
 import { createRng } from "../src/engine/rng";
 import type { CardPricing } from "../src/api/tcgdex";
 import { fetchSetData, fetchSetPrices, scryfallImage, setSymbol } from "../src/mtg/cards";
-import { boosterEra, MTG_ERAS, MTG_SETS, mtgProfile, mtgSet, type MtgSet } from "../src/mtg/sets";
+import { pickRandomSet } from "../src/engine/randomSet";
+import { pityFloor } from "../src/engine/setRarity";
+import { boosterEra, MTG_ERAS, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier, type MtgSet } from "../src/mtg/sets";
 import type { SyncCard } from "../src/sync/protocol";
 import { d1Cache, pruneDailyEntries } from "./cache";
 import { requireGame } from "./games";
@@ -148,11 +150,17 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
   throw new HttpError(404, "Not found");
 }
 
-/** Rolls a Magic pack from a random set. */
-export async function rollMtg(ctx: Ctx): Promise<DealtRow> {
-  const sets = [...MTG_SETS];
+/**
+ * Rolls a Magic pack from a random set, as Pokémon's are: limited to the player's booster eras, weighted by how scarce
+ * each set is (mtgSetTier), and at least the tier a pity guarantee calls for, going by `history` (the sets of their
+ * last dealt packs, oldest first). A set that can't fill a pack is dropped and another drawn.
+ */
+export async function rollMtg(ctx: Ctx, history: string[], eras: string[]): Promise<DealtRow> {
+  const sets = [...mtgDrawableSets(eras)];
+  const floor = pityFloor(history, mtgSetTier);
   while (sets.length) {
-    const [set] = sets.splice(Math.floor(Math.random() * sets.length), 1);
+    const set = pickRandomSet(sets, Math.random, { floor, tierOf: mtgSetTier })!;
+    sets.splice(sets.indexOf(set), 1);
     const data = await mtgSetData(ctx.env, set);
     const profile = mtgProfile(set);
     const reason = whyNotOpenable(data, profile);

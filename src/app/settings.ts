@@ -2,13 +2,16 @@
 // The collection itself lives in IndexedDB; these are conveniences, so failures fall back to defaults.
 
 import { useEffect, useState } from "react";
+import type { Game } from "../game";
 
 export interface Settings {
   sound: boolean;
   /** 0–1. */
   volume: number;
-  /** Eras packs are drawn from (pack profile ids); empty means every era. */
+  /** Pokémon eras packs are drawn from (pack profile ids); empty means every era. Other games' are in gameEras. */
   eras: string[];
+  /** Eras packs are drawn from in the other games, by game (Magic's are booster eras); empty means every era. */
+  gameEras: Partial<Record<Game, string[]>>;
   /** Tilt cards by tilting the phone. */
   motion: boolean;
   /** "system" follows the device; index.html applies a forced theme before first paint. */
@@ -19,7 +22,7 @@ export interface Settings {
 
 export type Theme = "system" | "light" | "dark";
 
-export const DEFAULTS: Settings = { sound: true, volume: 0.6, eras: [], motion: true, theme: "system", showPrices: false };
+export const DEFAULTS: Settings = { sound: true, volume: 0.6, eras: [], gameEras: {}, motion: true, theme: "system", showPrices: false };
 const KEY = "tcg-pack-opener:settings";
 /** Bumped when a default changes in a way stored settings should pick up. */
 const VERSION = 2;
@@ -54,6 +57,14 @@ export function onSettingsChange(fn: (s: Settings) => void): () => void {
   const on = (e: Event) => fn((e as CustomEvent<Settings>).detail);
   events.addEventListener("change", on);
   return () => events.removeEventListener("change", on);
+}
+
+/** The eras a game's packs are drawn from; empty means every era. */
+export const erasFor = (s: Settings, game: Game): string[] => (game === "pokemon" ? s.eras : (s.gameEras[game] ?? []));
+
+/** Sets a game's eras. Pokémon's stay in `eras`, where they were before there were other games. */
+export function setEras(game: Game, eras: string[]): void {
+  updateSettings(game === "pokemon" ? { eras } : { gameEras: { ...getSettings().gameEras, [game]: eras } });
 }
 
 /** Current settings, re-rendering when any component changes them. */
