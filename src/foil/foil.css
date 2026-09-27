@@ -395,6 +395,13 @@
   background: #1d3a78 url("/tcg-card-back-2x.jpg") center / cover no-repeat;
   box-shadow: 0 2px 4px #0003;
 }
+/* A Magic card's back (public/tcg-mtg-card-back.jpg). It goes by the card's game, set on the close-up, not the page's:
+   a Pokémon card in the shared feed keeps its own back while playing Magic. */
+.card-detail[data-game="mtg"] .tcg-back {
+  border-radius: 4.8% / 3.4%;
+  background-color: #2a1d12;
+  background-image: url("/tcg-mtg-card-back.jpg");
+}
 
 /* ---------- Tuning overlay ---------- */
 .tcg-card .art-box { z-index: 6; overflow: visible; }

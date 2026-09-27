@@ -178,6 +178,8 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
       ref={dialogRef}
       aria-label={card.name}
       className={`card-detail${zoomed ? " zoomed" : ""}`}
+      // The card's game, for its back (foil.css), which can differ from the page's in the shared feed.
+      data-game={game}
       onClose={onClose}
       onCancel={(e) => {
         // Escape backs out of the showcase before it closes the dialog.
