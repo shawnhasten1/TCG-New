@@ -1,5 +1,7 @@
-// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages. A friend's collection has no Pokédex or Packs view.
+// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages. A friend's collection has no
+// Pokédex or Packs view, and neither does a game without a Pokédex or pack photos.
 
+import { has } from "../app/game";
 import { href } from "../app/router";
 import { useCollectionSource } from "./source";
 
@@ -10,7 +12,7 @@ export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" |
       <a href={links.collection()} aria-current={current === "set" ? "page" : undefined}>
         By set
       </a>
-      {!owner && (
+      {!owner && has("pokedex") && (
         <a href={href.pokedex()} aria-current={current === "pokemon" ? "page" : undefined}>
           Pokédex
         </a>
@@ -21,7 +23,7 @@ export function CollectionViewSwitch({ current }: { current: "set" | "pokemon" |
       <a href={links.all()} aria-current={current === "all" ? "page" : undefined}>
         All cards
       </a>
-      {!owner && (
+      {!owner && has("packArt") && (
         <a href={href.packs()} aria-current={current === "packs" ? "page" : undefined}>
           Packs
         </a>

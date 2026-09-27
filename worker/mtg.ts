@@ -4,12 +4,12 @@
 // - Card images are sent on to cards.scryfall.io, which Scryfall allows linking to and doesn't rate limit.
 // - Prices change daily, so they're kept apart from the cards: one entry per set per day, from the same search.
 
-import type { SetData } from "../src/api/types";
+import type { SetData, SetSummary } from "../src/api/types";
 import { openPack, whyNotOpenable } from "../src/engine/openPack";
 import { createRng } from "../src/engine/rng";
 import type { CardPricing } from "../src/api/tcgdex";
-import { fetchSetData, fetchSetPrices, scryfallImage } from "../src/mtg/cards";
-import { MTG_SETS, mtgProfile, mtgSet, type MtgSet } from "../src/mtg/sets";
+import { fetchSetData, fetchSetPrices, scryfallImage, setSymbol } from "../src/mtg/cards";
+import { boosterEra, MTG_ERAS, MTG_SETS, mtgProfile, mtgSet, type MtgSet } from "../src/mtg/sets";
 import type { SyncCard } from "../src/sync/protocol";
 import { d1Cache, pruneDailyEntries } from "./cache";
 import { requireGame } from "./games";
@@ -68,9 +68,46 @@ export function mtgSetPrices(env: Env, set: MtgSet): Promise<Record<string, Card
   return got;
 }
 
+/** Sets read (or fetched from Scryfall) per request to fill in the set list, so no request makes too many calls. */
+const SUMMARIES_AT_ONCE = 5;
+const summariesKey = `mtg:sets:v${SET_VERSION}`;
+
+/**
+ * Every Magic set as the set list shows it (SetSummary), with card counts from each set's data. Scryfall's own set
+ * list won't do: newer sets have no printed size, and older ones count basic lands. So each set's summary is worked
+ * out from its cards and kept in D1, a few sets per request; the rest come back with no counts (0) until then.
+ */
+export async function mtgSetSummaries(env: Env): Promise<SetSummary[]> {
+  const cache = d1Cache(env.DB);
+  const known = (await cache.get<Record<string, SetSummary>>(summariesKey)) ?? {};
+  const missing = MTG_SETS.filter((s) => !known[s.id]).slice(0, SUMMARIES_AT_ONCE);
+  if (missing.length) {
+    const got = await Promise.all(missing.map((s) => mtgSetData(env, s).then(toSummary, (err) => (console.error(`Couldn't summarise ${s.id}`, err), undefined))));
+    for (const s of got) if (s) known[s.id] = s;
+    await cache.set(summariesKey, known);
+  }
+  return MTG_SETS.map((s) => known[s.id] ?? toSummary({ set: { id: s.id, name: s.name, releaseDate: s.released, cardCount: { total: 0, official: 0 } } }));
+}
+
+/** A set's summary. Its serie is its booster era, which is how the set list groups Magic sets. */
+function toSummary(data: { set: Pick<SetData["set"], "id" | "name" | "releaseDate" | "cardCount"> }): SetSummary {
+  const set = mtgSet(data.set.id)!;
+  const era = boosterEra(set);
+  return {
+    id: set.id,
+    name: set.name,
+    logo: null,
+    symbol: setSymbol(set.id),
+    releaseDate: set.released,
+    serie: { id: `mtg-${era}`, name: MTG_ERAS.find((e) => e.id === era)!.name },
+    cardCount: { total: data.set.cardCount.total, official: data.set.cardCount.official },
+  };
+}
+
 const SCRYFALL_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /**
+ * GET /api/mtg/sets: every set, as the set list shows it (SetSummary[]; see mtgSetSummaries).
  * GET /api/mtg/set/<id>: a set's cards (SetData).
  * GET /api/mtg/prices/<id>: today's prices for a set's cards, by card id (Record<string, CardPricing>).
  * GET /api/mtg/card/<scryfallId>/<high|low>.webp: redirects to the card's image on Scryfall. The name matches
@@ -81,6 +118,13 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
   if (ctx.req.method !== "GET" && ctx.req.method !== "HEAD") throw new HttpError(405, "Method not allowed");
   const [, , , kind, id, file] = ctx.url.pathname.split("/");
 
+  if (kind === "sets" && !id) {
+    const sets = await mtgSetSummaries(ctx.env);
+    const res = json(sets);
+    // Only a complete list is worth keeping; an incomplete one fills in over the next few requests.
+    res.headers.set("Cache-Control", sets.every((s) => s.cardCount.total) ? "public, max-age=3600" : "no-store");
+    return res;
+  }
   if (kind === "set" && !file) {
     const set = mtgSet(id ?? "");
     if (!set) throw new HttpError(404, "No such set");

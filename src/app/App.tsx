@@ -18,10 +18,10 @@ import { FeedPage } from "../social/FeedPage";
 import { FriendsPage } from "../social/FriendsPage";
 import { TradeComposer } from "../social/TradeComposer";
 import { TradesPage } from "../social/TradesPage";
-import { MtgCollectionPage } from "../mtg/MtgCollectionPage";
 import { AppNav } from "./AppNav";
 import { ConfirmHost } from "./Confirm";
-import { GAME } from "./game";
+import { gameName, type Feature } from "../game";
+import { GAME, has } from "./game";
 import { GameSwitch } from "./GameSwitch";
 import { navSection, useRoute, type Route } from "./router";
 import { SettingsPage } from "./SettingsPage";
@@ -29,39 +29,36 @@ import { SettingsPage } from "./SettingsPage";
 export function App() {
   const route = useRoute();
   const section = navSection(route);
+  const need = NEEDS[route.page];
   return (
     <>
       {section && <AppNav current={section} />}
-      {GAME === "mtg" ? <MtgPage route={route} /> : <Page route={route} />}
+      {need && !has(need) ? <NotHere /> : <Page route={route} />}
       <ConfirmHost />
     </>
   );
 }
 
-/** Magic has packs and a collection so far; the rest of the app is Pokémon's. */
-function MtgPage({ route }: { route: Route }) {
-  switch (route.page) {
-    case "open":
-      return <OpenPage />;
-    case "settings":
-      return <SettingsPage />;
-    case "collection":
-    case "picker":
-      return <MtgCollectionPage />;
-    case "binder":
-      return <BinderPage key={route.setId} setId={route.setId} />;
-    case "foil":
-      return <FoilLab />;
-    default:
-      return <PokemonOnly />;
-  }
-}
+/** Pages that are part of a feature some games don't have yet (see Feature in ../game.ts). */
+const NEEDS: Partial<Record<Route["page"], Feature>> = {
+  pokedex: "pokedex",
+  pokemon: "pokedex",
+  packs: "packArt",
+  market: "market",
+  marketPick: "market",
+  openBought: "market",
+  feed: "social",
+  friends: "social",
+  friend: "social",
+  trades: "social",
+  trade: "social",
+};
 
-function PokemonOnly() {
+function NotHere() {
   return (
     <main className="collection">
-      <h1>Pokémon only, for now</h1>
-      <p className="muted">The market, trades and the friends feed aren't in Magic yet. Switch games to use them; your Magic cards stay here.</p>
+      <h1>Not in {gameName(GAME)} yet</h1>
+      <p className="muted">This part of the app is only in Pokémon for now. Switch games to use it; your {gameName(GAME)} cards stay here.</p>
       <GameSwitch />
     </main>
   );

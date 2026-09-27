@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
 import type { SetSummary } from "../api/types";
-import { client } from "../app/client";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { fold, queryWords } from "./cardFilter";
 import { countPacks, tallyBySet } from "./progress";
@@ -12,7 +12,6 @@ import type { PullRecord } from "./store";
 import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { CollectionViewSwitch } from "./ViewSwitch";
 import "./collection.css";
-import { SetLogo } from "../app/SetLogo";
 import { Spinner } from "../app/Spinner";
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -29,7 +28,7 @@ export function CollectionPage() {
     let live = true;
     const reload = () => source.getPulls().then((p) => live && setPulls(p));
     void reload();
-    client.listSetSummaries().then(
+    gameCards.listSetSummaries().then(
       (s) => live && setSets(s),
       () => live && setSets([]),
     );
@@ -144,7 +143,7 @@ export function CollectionPage() {
               return (
                 <li key={t.setId}>
                   <a href={source.links.binder(t.setId)}>
-                    <div className="logo"><SetLogo logo={s?.logo} alt="" loading="lazy" fallback={<span>{s?.name ?? t.setId}</span>} /></div>
+                    <div className="logo"><gameCards.SetMark set={s ?? { id: t.setId, name: t.setId }} loading="lazy" fallback={<span>{s?.name ?? t.setId}</span>} /></div>
                     <div className="meta">
                       <strong>{s?.name ?? t.setId}</strong>
                       <div className="bar" aria-hidden="true">

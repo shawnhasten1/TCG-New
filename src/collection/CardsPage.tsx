@@ -2,6 +2,7 @@
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { layoutFor } from "../foil/layouts";
 import { CardDetail } from "./CardDetail";
@@ -9,8 +10,8 @@ import { matchesCard, NO_FILTER, type CardFilter } from "./cardFilter";
 import { CardFilterBar } from "./CardFilterBar";
 import { compareNumbers } from "./cardSort";
 import { useFavorites } from "./favorites";
-import { FINISH_ORDER, finishCount, groupCards, pullHasFinish, sortRarities, type GroupBy, type OwnedCard, type Tile } from "./cardGroups";
-import { FINISH_LABEL, type FinishKey } from "./pokedex";
+import { finishCount, groupCards, pullHasFinish, sortRarities, type GroupBy, type OwnedCard, type Tile } from "./cardGroups";
+import type { FinishKey } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
 import { ownership } from "./progress";
 import { useCollectionSource, whose } from "./source";
@@ -24,7 +25,7 @@ import { useIncremental } from "./useIncremental";
 import { RetryImg } from "../app/RetryImg";
 
 type Sort = "recent" | "set" | "copies" | "price";
-const FINISH_HEADING: Record<FinishKey, string> = { firstEdition: "1st Edition", holo: "Holo", reverse: "Reverse holo", normal: "Normal" };
+const FINISH_HEADING = gameCards.finishName;
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export function CardsPage() {
@@ -167,7 +168,7 @@ export function CardsPage() {
               <span>Finish</span>
               <select value={finish} onChange={(e) => setFinish(e.target.value as FinishKey | "any")}>
                 <option value="any">Any</option>
-                {FINISH_ORDER.map((k) => (
+                {gameCards.finishes.map((k) => (
                   <option key={k} value={k}>
                     {FINISH_HEADING[k]}
                   </option>
@@ -223,9 +224,9 @@ export function CardsPage() {
                       </span>
                       {viewGroupBy === "rarity" && (
                         <ul className="finish-chips" aria-label="Finishes">
-                          {FINISH_ORDER.filter((f) => finishCount(t.owned, f) > 0).map((f) => (
+                          {gameCards.finishes.filter((f) => finishCount(t.owned, f) > 0).map((f) => (
                             <li key={f} data-f={f} data-owned="true">
-                              {FINISH_LABEL[f]} ×{finishCount(t.owned, f)}
+                              {gameCards.finishShort[f]} ×{finishCount(t.owned, f)}
                             </li>
                           ))}
                         </ul>

@@ -2,6 +2,7 @@
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
+import { has } from "../app/game";
 import { href } from "../app/router";
 import { updateSettings } from "../app/settings";
 import { layoutFor } from "../foil/layouts";
@@ -23,7 +24,8 @@ import { RetryImg } from "../app/RetryImg";
 import { Spinner } from "../app/Spinner";
 import { useIncremental } from "./useIncremental";
 
-const SORTS: CardSort[] = ["value", "recent", "dex", "name"];
+/** Pokédex number only where there's a Pokédex. */
+const SORTS: CardSort[] = has("pokedex") ? ["value", "recent", "dex", "name"] : ["value", "recent", "name"];
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const pad = (n: number) => String(n).padStart(4, "0");
 

@@ -1,7 +1,7 @@
 // Magic set data and prices in the app: from the Worker (which keeps Scryfall's data, worker/mtg.ts), cached on the device.
 
 import type { CardPricing } from "../api/tcgdex";
-import type { SetData } from "../api/types";
+import type { SetData, SetSummary } from "../api/types";
 import { cache } from "../app/client";
 
 /** Bump with the Worker's SET_VERSION. */
@@ -19,6 +19,23 @@ export async function getMtgSet(id: string): Promise<SetData> {
 
 /** Drops a set's cached cards, so the next getMtgSet fetches them fresh. */
 export const forgetMtgSet = (id: string) => cache.delete(key(id));
+
+let setsLoading: Promise<SetSummary[]> | undefined;
+
+/** Every Magic set, as the set list shows it. Kept for the day once the Worker has every set's card counts. */
+export function getMtgSets(): Promise<SetSummary[]> {
+  setsLoading ??= (async () => {
+    const key = `mtg:sets:${today()}`;
+    const hit = await cache.get<SetSummary[]>(key);
+    if (hit) return hit;
+    const res = await fetch("/api/mtg/sets");
+    if (!res.ok) throw new Error(((await res.json().catch(() => ({}))) as { error?: string }).error ?? `Couldn't load the sets (${res.status}).`);
+    const sets = (await res.json()) as SetSummary[];
+    if (sets.every((s) => s.cardCount.total)) await cache.set(key, sets);
+    return sets;
+  })().finally(() => (setsLoading = undefined));
+  return setsLoading;
+}
 
 const today = () => new Date().toISOString().slice(0, 10);
 const pricesKey = (setId: string, day: string) => `mtg:prices:${setId}:${day}`;

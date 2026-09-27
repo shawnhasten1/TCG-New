@@ -4,17 +4,26 @@
 
 import type { ReactNode } from "react";
 import type { CardPricing, Progress } from "../api/tcgdex";
-import type { SetData, SetDetail } from "../api/types";
+import type { SetData, SetDetail, SetSummary } from "../api/types";
+import { FINISH_ORDER } from "../collection/cardGroups";
+import { FINISH_LABEL, type FinishKey } from "../collection/pokedex";
+import { hiddenReason } from "../engine/openable";
 import { profileFor } from "../engine/profiles";
-import type { Finish, PackProfile } from "../engine/types";
+import type { PackProfile } from "../engine/types";
 import { setSymbol } from "../mtg/cards";
-import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet } from "../mtg/client";
+import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet, getMtgSets } from "../mtg/client";
 import { boosterEra, MTG_ERAS, mtgProfile, mtgSet } from "../mtg/sets";
 import { client } from "./client";
 import { GAME } from "./game";
 import { SetLogo } from "./SetLogo";
+import "../mtg/mtg.css";
+
+/** Enough of a set to show its logo or symbol. */
+type SetMarkSet = { id: string; name: string; logo?: string | null };
 
 export interface GameCards {
+  /** Every set, for the set browser and to name and count the sets in a collection. */
+  listSetSummaries(): Promise<SetSummary[]>;
   getSetCards(id: string, onProgress?: Progress): Promise<SetData>;
   /** Drops a set's cached cards, so the next getSetCards fetches them fresh. */
   forgetSetCards(id: string): Promise<void>;
@@ -24,32 +33,48 @@ export interface GameCards {
   cachedCardPricing(ids: string[]): Promise<Map<string, CardPricing | null>>;
   /** How the set's packs are made up, which says which of its cards packs can hold. */
   profileFor(set: SetDetail): PackProfile | undefined;
+  /** Why the set browser leaves a set out (packs never come from it), or undefined. */
+  hiddenReason(set: SetSummary): string | undefined;
   /** The line under a set's name. */
   describeSet(set: SetDetail): string;
-  /** The set's logo or symbol. */
-  SetMark(props: { set: SetDetail; className?: string }): ReactNode;
-  /** What each finish is called. */
-  finishName: Record<Finish, string>;
+  /** The set's logo or symbol, or `fallback` when it has none. */
+  SetMark(props: { set: SetMarkSet; className?: string; loading?: "lazy"; fallback?: ReactNode }): ReactNode;
+  /** The finishes cards come in, rarest first. */
+  finishes: FinishKey[];
+  /** What each finish is called, and its short name for chips. */
+  finishName: Record<FinishKey, string>;
+  finishShort: Record<FinishKey, string>;
   /** Whether binder slots name the card's rarity, which Magic cards only show by the set symbol's colour. */
   rarityInBinder: boolean;
   /** The binder's footnote: what's left out of completion, and what ✦ marks. */
   binderNote: string;
+  /** Where the card data and images come from, and a set to open the debug page on (it reads TCGdex). */
+  credit: { name: string; url: string; debugSet?: string };
 }
 
 const pokemon: GameCards = {
+  listSetSummaries: () => client.listSetSummaries(),
   getSetCards: (id, onProgress) => client.getSetCards(id, onProgress),
   forgetSetCards: (id) => client.forgetSetCards(id),
   getCardPricing: (id) => client.getCardPricing(id),
   cachedCardPricing: (ids) => client.cachedCardPricing(ids),
   profileFor,
+  hiddenReason,
   describeSet: (set) => `${set.serie.name}${set.releaseDate ? ` · ${set.releaseDate.slice(0, 4)}` : ""}`,
-  SetMark: ({ set, className }) => <SetLogo logo={set.logo} className={className} alt="" />,
-  finishName: { normal: "Normal", holo: "Holo", reverse: "Reverse holo" },
+  SetMark: ({ set, className, loading, fallback }) => <SetLogo logo={set.logo} className={className} loading={loading} fallback={fallback} alt="" />,
+  finishes: FINISH_ORDER,
+  finishName: { firstEdition: "1st Edition", holo: "Holo", reverse: "Reverse holo", normal: "Normal" },
+  finishShort: FINISH_LABEL,
   rarityInBinder: false,
   binderNote: "Faded cards are still missing. “Not in packs” cards (basic energy, cards without scans) don't count toward completion. ✦ marks secret and subset cards.",
+  credit: { name: "TCGdex", url: "https://tcgdex.dev", debugSet: "sv03.5" },
 };
 
+// A Magic card is just foil or not.
+const MTG_FINISHES = { firstEdition: "1st Edition", holo: "Foil", reverse: "Reverse holo", normal: "Non-foil" };
+
 const mtg: GameCards = {
+  listSetSummaries: getMtgSets,
   getSetCards: (id) => getMtgSet(id),
   forgetSetCards: forgetMtgSet,
   getCardPricing: getMtgCardPricing,
@@ -58,16 +83,20 @@ const mtg: GameCards = {
     const info = mtgSet(set.id);
     return info && mtgProfile(info);
   },
+  // Every Magic set here is a booster set.
+  hiddenReason: () => undefined,
   describeSet: (set) => {
     const info = mtgSet(set.id);
     const era = info && MTG_ERAS.find((e) => e.id === boosterEra(info))?.name;
     return [set.id.toUpperCase(), era, set.releaseDate?.slice(0, 4)].filter(Boolean).join(" · ");
   },
-  SetMark: ({ set, className }) => <img className={`set-symbol ${className ?? ""}`} src={setSymbol(set.id)} alt="" />,
-  // A Magic card is just foil or not.
-  finishName: { normal: "Non-foil", holo: "Foil", reverse: "Reverse holo" },
+  SetMark: ({ set, className, loading }) => <img className={`set-symbol ${className ?? ""}`} src={setSymbol(set.id)} loading={loading} alt="" />,
+  finishes: ["holo", "normal"],
+  finishName: MTG_FINISHES,
+  finishShort: MTG_FINISHES,
   rarityInBinder: true,
   binderNote: "Faded cards are still missing. “Not in packs” cards don't count toward completion. ✦ marks basic lands and printings numbered after the main set.",
+  credit: { name: "Scryfall", url: "https://scryfall.com" },
 };
 
 export const gameCards: GameCards = GAME === "mtg" ? mtg : pokemon;

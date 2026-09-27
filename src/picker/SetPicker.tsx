@@ -1,17 +1,18 @@
-// Set browser (#/sets): sets by series, each opening its binder. Packs themselves always come from a random set.
+// Set browser (#/sets): sets by series (by booster era for Magic), each opening its binder. Packs themselves always come
+// from a random set.
 
 import { useEffect, useMemo, useState } from "react";
 import type { SetSummary } from "../api/types";
-import { client, getUnopenable } from "../app/client";
+import { getUnopenable } from "../app/client";
+import { has } from "../app/game";
+import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { tallyBySet, type SetTally } from "../collection/progress";
 import { getPulls, onCollectionChange } from "../collection/store";
-import { hiddenReason } from "../engine/openable";
 import { useSettings } from "../app/settings";
 import { ERAS, drawableSets } from "../engine/randomSet";
 import { setTier, tierInfo } from "../engine/setRarity";
 import "./picker.css";
-import { SetLogo } from "../app/SetLogo";
 
 interface Group {
   serie: { id: string; name: string };
@@ -34,7 +35,7 @@ export function SetPicker() {
   const [tallies, setTallies] = useState<Map<string, SetTally>>(new Map());
 
   useEffect(() => {
-    client.listSetSummaries().then(setSets, (e) => setError(String(e)));
+    gameCards.listSetSummaries().then(setSets, (e) => setError(e instanceof Error ? e.message : String(e)));
     getUnopenable().then(setUnopenable);
   }, []);
 
@@ -51,7 +52,7 @@ export function SetPicker() {
     const q = query.trim().toLowerCase();
     const bySerie = new Map<string, Group>();
     for (const s of sets) {
-      const hidden = hiddenReason(s) ?? unopenable[s.id];
+      const hidden = gameCards.hiddenReason(s) ?? unopenable[s.id];
       if (hidden && !showHidden) continue;
       if (q && !`${s.name} ${s.id} ${s.serie.name}`.toLowerCase().includes(q)) continue;
       const g = bySerie.get(s.serie.id) ?? { serie: s.serie, sets: [], latest: "" };
@@ -65,8 +66,10 @@ export function SetPicker() {
   }, [sets, unopenable, query, showHidden]);
 
   const shown = groups.reduce((n, g) => n + g.sets.length, 0);
+  const anyHidden = !!sets?.some((s) => gameCards.hiddenReason(s) || unopenable[s.id]);
   const { eras } = useSettings();
-  const drawable = sets ? drawableSets(sets, { unopenable, eras }).length : 0;
+  // Games without the era filter draw from every set they have.
+  const drawable = !sets ? 0 : has("eraFilter") ? drawableSets(sets, { unopenable, eras }).length : sets.filter((s) => !gameCards.hiddenReason(s)).length;
   const eraNote = eras.length ? ERAS.filter((e) => eras.includes(e.id)).map((e) => e.name).join(", ") : "every era";
 
   return (
@@ -79,15 +82,15 @@ export function SetPicker() {
             Open a pack
           </a>
           <p className="muted">
-            {sets ? `Drawn at random from ${drawable} sets (${eraNote}).` : "Loading sets…"}{" "}
-            <a href={href.settings()}>Change eras</a>
+            {sets ? `Drawn at random from ${drawable} sets${has("eraFilter") ? ` (${eraNote})` : ""}.` : "Loading sets…"}{" "}
+            {has("eraFilter") && <a href={href.settings()}>Change eras</a>}
           </p>
         </div>
         <div className="filters">
           <input type="search" placeholder="Search sets" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search sets" />
-          <label>
+          {anyHidden && <label>
             <input type="checkbox" checked={showHidden} onChange={(e) => setShowHidden(e.target.checked)} /> Show sets packs never come from
-          </label>
+          </label>}
         </div>
       </header>
 
@@ -119,7 +122,7 @@ export function SetPicker() {
       ))}
 
       <footer>
-        Card data and images from <a href="https://tcgdex.dev">TCGdex</a>. <a href={href.debug("sv03.5")}>Debug page</a> · <a href={href.foil()}>Foil lab</a>
+        Card data and images from <a href={gameCards.credit.url}>{gameCards.credit.name}</a>. {gameCards.credit.debugSet && <><a href={href.debug(gameCards.credit.debugSet)}>Debug page</a> · </>}<a href={href.foil()}>Foil lab</a>
       </footer>
     </main>
   );
@@ -129,15 +132,16 @@ function SetTileBody({ set, note, tally }: { set: SetSummary; note?: string; tal
   return (
     <>
       <div className="logo">
-        <SetLogo logo={set.logo} alt="" loading="lazy" fallback={<span className="logo-text">{set.name}</span>} />
+        <gameCards.SetMark set={set} loading="lazy" fallback={<span className="logo-text">{set.name}</span>} />
       </div>
       <div className="meta">
         <strong>{set.name}</strong>
         <span>
-          {formatDate(set.releaseDate)} · {set.cardCount.official} cards
+          {formatDate(set.releaseDate)}
+          {set.cardCount.official ? ` · ${set.cardCount.official} cards` : ""}
         </span>
         {note && <em>{note}</em>}
-        {!note && setTier(set.id) !== "common" && (
+        {!note && has("setTiers") && setTier(set.id) !== "common" && (
           <span className="tier-chip" data-set-tier={setTier(set.id)}>
             {tierInfo(setTier(set.id)).name}
           </span>

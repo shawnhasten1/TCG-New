@@ -4,12 +4,10 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import type { Card } from "../api/types";
-import { FINISH_ORDER } from "./cardGroups";
+import { gameCards } from "../app/gameCards";
 import { useFavorites } from "./favorites";
 import { CATEGORY_LABEL, filterOptions, isFiltering, NO_FILTER, type CardFilter } from "./cardFilter";
-import type { FinishKey } from "./pokedex";
 
-const FINISH_NAME: Record<FinishKey, string> = { firstEdition: "1st Edition", holo: "Holo", reverse: "Reverse holo", normal: "Normal" };
 
 export function CardFilterBar({
   cards,
@@ -104,9 +102,9 @@ export function CardFilterBar({
               <span>Finish</span>
               <select value={filter.finish} onChange={(e) => set({ finish: e.target.value as CardFilter["finish"] })}>
                 <option value="any">Any</option>
-                {FINISH_ORDER.map((k) => (
+                {gameCards.finishes.map((k) => (
                   <option key={k} value={k}>
-                    {FINISH_NAME[k]}
+                    {gameCards.finishName[k]}
                   </option>
                 ))}
               </select>

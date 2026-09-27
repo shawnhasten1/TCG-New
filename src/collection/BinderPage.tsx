@@ -20,7 +20,6 @@ import { clearPulls, type PullRecord } from "./store";
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
 import { ask } from "../app/Confirm";
 import "./collection.css";
-import "../mtg/mtg.css";
 import { RetryImg } from "../app/RetryImg";
 import { Spinner } from "../app/Spinner";
 

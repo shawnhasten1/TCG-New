@@ -1,11 +1,13 @@
-/* ---------- Magic collection and binders (the Pokémon pages' styles, in collection.css, do most of it). The binder is shared, so its rules go by html[data-game]. ---------- */
-.mtg-collection h2 { margin: 28px 0 0; font: italic 800 1.3rem/1.2 "Alegreya", Georgia, serif; }
-.mtg-collection .set-progress .logo img { width: 40px; height: 40px; object-fit: contain; }
+/* ---------- Magic's look on the shared pages (their styles, in collection.css and picker.css, do most of it). The pages
+   are Pokémon's too, so these rules go by html[data-game]. ---------- */
+/* Set symbols are square, where Pokémon logos are wide. */
 [data-game="mtg"] .binder .set-symbol { width: 80px; height: 80px; object-fit: contain; }
+[data-game="mtg"] .set-progress .set-symbol { width: 44px; height: 44px; object-fit: contain; }
+[data-game="mtg"] .picker .set-symbol { width: 60px; height: 60px; object-fit: contain; filter: none; }
 /* Set symbols are black SVGs: lighten them in dark mode. */
-:root[data-theme="dark"] :is(.mtg-collection .set-progress .logo img, [data-game="mtg"] .binder .set-symbol) { filter: invert(1); }
+:root[data-theme="dark"][data-game="mtg"] .set-symbol { filter: invert(1); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) :is(.mtg-collection .set-progress .logo img, [data-game="mtg"] .binder .set-symbol) { filter: invert(1); }
+  :root:not([data-theme="light"])[data-game="mtg"] .set-symbol { filter: invert(1); }
 }
 
 [data-game="mtg"] .binder-slot { aspect-ratio: 672 / 936; border-radius: 4.8% / 3.4%; }
@@ -14,9 +16,9 @@
 [data-game="mtg"] .binder .caption .rarity { font-weight: 700; font-size: .78rem; color: var(--ink); }
 [data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #9a730c; }
 [data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #c2410c; }
-:root[data-theme="dark"] [data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
-:root[data-theme="dark"] [data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
+:root[data-theme="dark"][data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
+:root[data-theme="dark"][data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) [data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
-  :root:not([data-theme="light"]) [data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
+  :root:not([data-theme="light"])[data-game="mtg"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
+  :root:not([data-theme="light"])[data-game="mtg"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
 }
