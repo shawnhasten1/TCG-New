@@ -9,6 +9,8 @@ import { openPack, whyNotOpenable } from "../src/engine/openPack";
 import { createRng } from "../src/engine/rng";
 import type { CardPricing } from "../src/api/tcgdex";
 import { fetchSetData, fetchSetPrices, scryfallImage, setSymbol } from "../src/mtg/cards";
+import { mtgArt, mtgPickPackArt, WRAPPER_VERSION } from "../src/mtg/packArt";
+import { renderWrapper } from "../src/mtg/wrapper";
 import { pickRandomSet } from "../src/engine/randomSet";
 import { pityFloor } from "../src/engine/setRarity";
 import { boosterEra, MTG_ERAS, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier, type MtgSet } from "../src/mtg/sets";
@@ -109,6 +111,7 @@ function toSummary(data: { set: Pick<SetData["set"], "id" | "name" | "releaseDat
 const SCRYFALL_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /**
+ * GET /api/mtg/pack/v<version>/<set>/<design>.svg: a drawn pack wrapper (src/mtg/wrapper.ts).
  * GET /api/mtg/sets: every set, as the set list shows it (SetSummary[]; see mtgSetSummaries).
  * GET /api/mtg/set/<id>: a set's cards (SetData).
  * GET /api/mtg/prices/<id>: today's prices for a set's cards, by card id (Record<string, CardPricing>).
@@ -120,6 +123,7 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
   if (ctx.req.method !== "GET" && ctx.req.method !== "HEAD") throw new HttpError(405, "Method not allowed");
   const [, , , kind, id, file] = ctx.url.pathname.split("/");
 
+  if (kind === "pack") return wrapper(ctx);
   if (kind === "sets" && !id) {
     const sets = await mtgSetSummaries(ctx.env);
     const res = json(sets);
@@ -148,6 +152,41 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
     });
   }
   throw new HttpError(404, "Not found");
+}
+
+const IMAGE_HEADERS = { "User-Agent": "TCGPackOpener/0.1 (+https://tcg.spudfurd.dev)" };
+
+/** A file's bytes as base64, for a data URI. */
+function base64(bytes: Uint8Array): string {
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+async function dataUri(url: string, type: string): Promise<string> {
+  const res = await fetch(url, { headers: IMAGE_HEADERS });
+  if (!res.ok) throw new HttpError(502, `Couldn't load ${url} (${res.status}).`);
+  return `data:${type};base64,${base64(new Uint8Array(await res.arrayBuffer()))}`;
+}
+
+/**
+ * A drawn pack wrapper: the design's card art and the set symbol, fetched from Scryfall and inlined. The path carries
+ * WRAPPER_VERSION, so a wrapper never changes at its URL and can be cached for good, by browsers and Cloudflare.
+ */
+async function wrapper(ctx: Ctx): Promise<Response> {
+  const [, , , , version, setId, file] = ctx.url.pathname.split("/");
+  const set = mtgSet(setId ?? "");
+  const art = set && file?.endsWith(".svg") ? mtgArt(set.id, decodeURIComponent(file.slice(0, -4))) : undefined;
+  if (version !== `v${WRAPPER_VERSION}` || !set || !art) throw new HttpError(404, "No such pack");
+
+  const cache = typeof caches === "undefined" ? undefined : caches.default;
+  const hit = await cache?.match(ctx.req.url);
+  if (hit) return hit;
+  const [artUri, symbolUri] = await Promise.all([dataUri(scryfallImage(art.scryfallId, "art_crop"), "image/jpeg"), dataUri(setSymbol(set.id), "image/svg+xml")]);
+  const svg = renderWrapper({ era: boosterEra(set), setId: set.id, setName: set.name, cardName: art.name, art: artUri, symbol: symbolUri });
+  const res = new Response(svg, { headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=31536000, immutable" } });
+  await cache?.put(ctx.req.url, res.clone());
+  return res;
 }
 
 /**
@@ -182,8 +221,8 @@ export async function rollMtgSet(ctx: Ctx, set: MtgSet): Promise<{ row: DealtRow
       set_id: set.id,
       cards: JSON.stringify(pulls.map((p): SyncCard => ({ cardId: p.card.id, localId: p.card.localId, finish: p.finish, firstEdition: p.firstEdition }))),
       reveal: JSON.stringify(pulls.map((p) => ({ slot: p.slot, outcome: p.outcome }))),
-      // Magic packs have no wrapper photos yet.
-      art: null,
+      // Which design its wrapper is (packArt.ts), kept with the pack.
+      art: mtgPickPackArt(set.id),
     },
   };
 }

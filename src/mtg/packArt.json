@@ -1,0 +1,444 @@
+{
+ "usg": [
+  {
+   "id": "321",
+   "name": "Gaea's Cradle",
+   "scryfallId": "25b0b816-0583-44aa-9dc5-f3ff48993a51",
+   "artist": "Mark Zug"
+  },
+  {
+   "id": "325",
+   "name": "Serra's Sanctum",
+   "scryfallId": "f7a18130-dbaa-4657-a885-3a96a985935a",
+   "artist": "Ciruelo"
+  },
+  {
+   "id": "171",
+   "name": "Yawgmoth's Will",
+   "scryfallId": "6d3e3c3a-d351-4d91-8884-312d4b6f540d",
+   "artist": "Ron Spencer"
+  },
+  {
+   "id": "76",
+   "name": "Gilded Drake",
+   "scryfallId": "8de3fdae-cc2c-4a14-b15b-4fe1a983dfbf",
+   "artist": "Bob Eggleton"
+  }
+ ],
+ "ulg": [
+  {
+   "id": "126",
+   "name": "Grim Monolith",
+   "scryfallId": "9ddc9fe1-17c8-4e1d-aeb8-c4214e881280",
+   "artist": "Chippy"
+  },
+  {
+   "id": "80",
+   "name": "Goblin Welder",
+   "scryfallId": "6171e136-1167-4329-acb2-6853d3a814e5",
+   "artist": "Scott M. Fischer"
+  },
+  {
+   "id": "101",
+   "name": "Deranged Hermit",
+   "scryfallId": "bf0e94c9-61c4-4cc0-b5ce-db62bc2660ee",
+   "artist": "Kev Walker"
+  },
+  {
+   "id": "38",
+   "name": "Palinchron",
+   "scryfallId": "5621db3f-a9e7-4350-9c6a-0ba04a628947",
+   "artist": "Matthew D. Wilson"
+  }
+ ],
+ "inv": [
+  {
+   "id": "306",
+   "name": "Phyrexian Altar",
+   "scryfallId": "25158cd5-749b-408c-9ab1-0f83e38730f7",
+   "artist": "Ron Spears"
+  },
+  {
+   "id": "317",
+   "name": "Tsabo's Web",
+   "scryfallId": "0dee69f8-cceb-41b9-a0ee-6b2ac9f4bad9",
+   "artist": "Carl Critchlow"
+  },
+  {
+   "id": "242",
+   "name": "Crosis, the Purger",
+   "scryfallId": "e5f336d8-12a4-482d-8ffd-c205858c72ba",
+   "artist": "Pete Venters"
+  },
+  {
+   "id": "237",
+   "name": "Captain Sisay",
+   "scryfallId": "d24d441c-f37f-44fe-8a93-f5c89df807e4",
+   "artist": "Ray Lago"
+  }
+ ],
+ "ody": [
+  {
+   "id": "132",
+   "name": "Entomb",
+   "scryfallId": "f60a2091-fb97-4f04-911b-fce9b6351044",
+   "artist": "Ron Spears"
+  },
+  {
+   "id": "164",
+   "name": "Tainted Pact",
+   "scryfallId": "c513f51b-a0db-4c08-8acc-1e91060b93b7",
+   "artist": "Adam Rex"
+  },
+  {
+   "id": "329",
+   "name": "Tarnished Citadel",
+   "scryfallId": "30375d24-ccfe-47a2-babd-1bda0a6298fe",
+   "artist": "David Martin"
+  },
+  {
+   "id": "320",
+   "name": "Deserted Temple",
+   "scryfallId": "d1fa74b2-f9bd-4617-8b65-878781f3a2fd",
+   "artist": "Rob Alexander"
+  }
+ ],
+ "ons": [
+  {
+   "id": "321",
+   "name": "Polluted Delta",
+   "scryfallId": "0f7585c8-9e21-4eef-afc1-2852de23db2f",
+   "artist": "Rob Alexander"
+  },
+  {
+   "id": "316",
+   "name": "Flooded Strand",
+   "scryfallId": "b4e3d844-d3b4-41d8-921d-c1cb3af343f8",
+   "artist": "Rob Alexander"
+  },
+  {
+   "id": "330",
+   "name": "Wooded Foothills",
+   "scryfallId": "cdad38f7-9dfa-4f1b-9fac-41ab2b253f53",
+   "artist": "Rob Alexander"
+  },
+  {
+   "id": "328",
+   "name": "Windswept Heath",
+   "scryfallId": "7a7c5941-9c8a-4a40-9efb-a84f05c58e53",
+   "artist": "Anthony S. Waters"
+  }
+ ],
+ "mrd": [
+  {
+   "id": "152",
+   "name": "Chrome Mox",
+   "scryfallId": "6a058e68-70af-4a64-859c-c881e5578368",
+   "artist": "Donato Giancola"
+  },
+  {
+   "id": "47",
+   "name": "Quicksilver Elemental",
+   "scryfallId": "2905f6ac-d054-454b-8e1a-9c32db13a581",
+   "artist": "Tony Szczudlo"
+  },
+  {
+   "id": "251",
+   "name": "Sword of Kaldra",
+   "scryfallId": "3a665bff-b57a-450c-9310-932b0686a03e",
+   "artist": "Donato Giancola"
+  },
+  {
+   "id": "150",
+   "name": "Chalice of the Void",
+   "scryfallId": "1a02ca71-5e39-4a5f-aaba-a1e3e10a6a3e",
+   "artist": "Mark Zug"
+  }
+ ],
+ "lrw": [
+  {
+   "id": "145",
+   "name": "Thoughtseize",
+   "scryfallId": "3df8c148-e87d-4043-9d8b-ec72bf8b6d5d",
+   "artist": "Aleksi Briclot"
+  },
+  {
+   "id": "252",
+   "name": "Wort, Boggart Auntie",
+   "scryfallId": "a08a1377-dede-47c8-8447-c9df125f3b14",
+   "artist": "Larry MacDougall"
+  },
+  {
+   "id": "263",
+   "name": "Thousand-Year Elixir",
+   "scryfallId": "18743fd4-2a15-40a2-ac90-e3f0fef07e37",
+   "artist": "Richard Sardinha"
+  },
+  {
+   "id": "256",
+   "name": "Dolmen Gate",
+   "scryfallId": "fdcbf10e-32f2-41c5-a7a2-5f24662892d2",
+   "artist": "Richard Sardinha"
+  }
+ ],
+ "shm": [
+  {
+   "id": "176",
+   "name": "Sygg, River Cutthroat",
+   "scryfallId": "3926f037-aaec-416e-a486-b59aae6faf44",
+   "artist": "Jeremy Enecio"
+  },
+  {
+   "id": "257",
+   "name": "Painter's Servant",
+   "scryfallId": "be407a81-b25a-4e5d-845e-be0cc0d18db8",
+   "artist": "Mike Dringenberg"
+  },
+  {
+   "id": "42",
+   "name": "Knacksaw Clique",
+   "scryfallId": "22353590-f248-460e-a1a5-0b7431a4c82d",
+   "artist": "Steven Belledin"
+  },
+  {
+   "id": "7",
+   "name": "Greater Auramancy",
+   "scryfallId": "1177787f-bf1e-438b-9615-97d03b04128c",
+   "artist": "Chuck Lukacs"
+  }
+ ],
+ "isd": [
+  {
+   "id": "199",
+   "name": "Parallel Lives",
+   "scryfallId": "01033dae-fec1-41f2-b7f2-cc6a43331790",
+   "artist": "Steve Prescott"
+  },
+  {
+   "id": "105",
+   "name": "Liliana of the Veil",
+   "scryfallId": "ac506c17-adc8-49c6-9d8d-43db7cb1ec9d",
+   "artist": "Steve Argyle"
+  },
+  {
+   "id": "129",
+   "name": "Balefire Dragon",
+   "scryfallId": "b0dce4ac-f472-4f3b-b01a-eff0902a578f",
+   "artist": "Eric Deschamps"
+  },
+  {
+   "id": "78",
+   "name": "Snapcaster Mage",
+   "scryfallId": "9e5b279e-4670-4a1e-87d0-3cab7e4f9e58",
+   "artist": "Volkan Baǵa"
+  }
+ ],
+ "ktk": [
+  {
+   "id": "239",
+   "name": "Polluted Delta",
+   "scryfallId": "ff2f5f58-9a95-4ca6-93a0-813738f0072f",
+   "artist": "Vincent Proce"
+  },
+  {
+   "id": "230",
+   "name": "Bloodstained Mire",
+   "scryfallId": "7f430794-0d86-4f6a-97e0-4bbb6716d613",
+   "artist": "Daarken"
+  },
+  {
+   "id": "249",
+   "name": "Wooded Foothills",
+   "scryfallId": "a8503cca-7e7d-44c4-8587-81376b396398",
+   "artist": "Jonas De Ro"
+  },
+  {
+   "id": "233",
+   "name": "Flooded Strand",
+   "scryfallId": "8c2996d9-3287-4480-8c04-7a378e37e3cf",
+   "artist": "Andreas Rocha"
+  }
+ ],
+ "dom": [
+  {
+   "id": "224",
+   "name": "Mox Amber",
+   "scryfallId": "66024e69-ad60-4c9a-a0ca-da138d33ad80",
+   "artist": "Steven Belledin"
+  },
+  {
+   "id": "238",
+   "name": "Cabal Stronghold",
+   "scryfallId": "0bda51ef-ee3e-48d4-92e2-c9083bbe0f80",
+   "artist": "Dimitar Marinski"
+  },
+  {
+   "id": "217",
+   "name": "Helm of the Host",
+   "scryfallId": "1d65d20c-09e5-4139-838b-7e0e48eb2b2b",
+   "artist": "Igor Kieryluk"
+  },
+  {
+   "id": "172",
+   "name": "Marwyn, the Nurturer",
+   "scryfallId": "251613c0-2e72-4bd1-b3b5-69602b07b6f9",
+   "artist": "Chris Rahn"
+  }
+ ],
+ "eld": [
+  {
+   "id": "161",
+   "name": "The Great Henge",
+   "scryfallId": "af915ed2-1f34-43f6-85f5-2430325b720f",
+   "artist": "Adam Paquette"
+  },
+  {
+   "id": "120",
+   "name": "Embercleave",
+   "scryfallId": "aaae15dd-11b6-4421-99e9-365c7fe4a5d6",
+   "artist": "Joe Slucher"
+  },
+  {
+   "id": "240",
+   "name": "Castle Garenbrig",
+   "scryfallId": "e3c2c66c-f7f0-41d5-a805-a129aeaf1b75",
+   "artist": "Adam Paquette"
+  },
+  {
+   "id": "75",
+   "name": "Ayara, First of Locthwain",
+   "scryfallId": "ed0ace28-9a33-4f0d-b8c8-f5517f20ccf1",
+   "artist": "Ryan Pancoast"
+  }
+ ],
+ "mkm": [
+  {
+   "id": "12",
+   "name": "Delney, Streetwise Lookout",
+   "scryfallId": "be219928-3d0e-4d00-b124-152ce8a8c13b",
+   "artist": "Darren Tan"
+  },
+  {
+   "id": "270",
+   "name": "Undercity Sewers",
+   "scryfallId": "2b5801fb-2026-4f25-98bc-ebb2f99684b9",
+   "artist": "Yeong-Hao Han"
+  },
+  {
+   "id": "271",
+   "name": "Underground Mortuary",
+   "scryfallId": "f6ca59cd-8779-4a84-a54b-e863b79c61f0",
+   "artist": "Sergey Glushakov"
+  },
+  {
+   "id": "269",
+   "name": "Thundering Falls",
+   "scryfallId": "17260fff-b239-4af4-9306-3236ae3fa5a5",
+   "artist": "Grady Frederick"
+  }
+ ],
+ "blb": [
+  {
+   "id": "260",
+   "name": "Three Tree City",
+   "scryfallId": "56f88a48-cced-4a9d-8c19-e4f105f0d8a2",
+   "artist": "Grady Frederick"
+  },
+  {
+   "id": "183",
+   "name": "Lumra, Bellow of the Woods",
+   "scryfallId": "ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+   "artist": "Matt Stewart"
+  },
+  {
+   "id": "100",
+   "name": "Maha, Its Feathers Night",
+   "scryfallId": "cf3320ec-c4e8-405a-982d-e009c58c9e21",
+   "artist": "Alessandra Pisano"
+  },
+  {
+   "id": "230",
+   "name": "Ral, Crackling Wit",
+   "scryfallId": "acfde780-899a-4c5b-a39b-f4a3ff129103",
+   "artist": "Rudy Siswanto"
+  }
+ ],
+ "dsk": [
+  {
+   "id": "113",
+   "name": "Overlord of the Balemurk",
+   "scryfallId": "9b911653-7b96-4cf3-a907-13c5c53a14f7",
+   "artist": "Babs Webb"
+  },
+  {
+   "id": "120",
+   "name": "Valgavoth, Terror Eater",
+   "scryfallId": "7740ff55-67bb-409e-90f7-2c2c8b8c770a",
+   "artist": "Antonio José Manzanedo"
+  },
+  {
+   "id": "176",
+   "name": "Enduring Vitality",
+   "scryfallId": "9d76a30c-0431-4334-892a-9822dda9671a",
+   "artist": "Valera Lutfullina"
+  },
+  {
+   "id": "202",
+   "name": "Tyvar, the Pummeler",
+   "scryfallId": "5f7687b1-630a-4e95-89c7-eaf456d8cb68",
+   "artist": "Olivier Bernard"
+  }
+ ],
+ "fdn": [
+  {
+   "id": "58",
+   "name": "Bloodthirsty Conqueror",
+   "scryfallId": "ce860ed4-a5bd-4347-9eab-dd716ea84db1",
+   "artist": "Dmitry Burmak"
+  },
+  {
+   "id": "216",
+   "name": "Doubling Season",
+   "scryfallId": "f2c4f80e-84a0-463b-82c3-5c6503809351",
+   "artist": "Chuck Lukacs"
+  },
+  {
+   "id": "97",
+   "name": "Twinflame Tyrant",
+   "scryfallId": "1eb34f51-0bd2-43c3-af95-2ce8dabcc7bb",
+   "artist": "Xabi Gaztelua"
+  },
+  {
+   "id": "1",
+   "name": "Sire of Seven Deaths",
+   "scryfallId": "8d8432a7-1c8a-4cfb-947c-ecf9791063eb",
+   "artist": "Lius Lasahido"
+  }
+ ],
+ "dft": [
+  {
+   "id": "231",
+   "name": "The Aetherspark",
+   "scryfallId": "05690d52-06c4-40b1-8360-380418a83250",
+   "artist": "Donato Giancola"
+  },
+  {
+   "id": "237",
+   "name": "Monument to Endurance",
+   "scryfallId": "d21433ba-0a14-42bc-ad0b-a4ef823a3295",
+   "artist": "Victor Sales"
+  },
+  {
+   "id": "260",
+   "name": "Riverpyre Verge",
+   "scryfallId": "57a93a71-d77c-417f-85d0-cd420f573331",
+   "artist": "Titus Lunter"
+  },
+  {
+   "id": "264",
+   "name": "Sunbillow Verge",
+   "scryfallId": "94ed132f-b818-4dbf-9b4a-e5acb067e0a4",
+   "artist": "Pete Venters"
+  }
+ ]
+}

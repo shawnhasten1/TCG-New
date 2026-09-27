@@ -17,7 +17,6 @@ import { newEntryIds, speciesOf } from "../collection/pokedex";
 import { getPulls, savePack, type PullRecord } from "../collection/store";
 import { guaranteeNote } from "../engine/setRarity";
 import type { PulledCard } from "../engine/types";
-import { packArt } from "../packs/art";
 import { dealPack, toPulls } from "../packs/deal";
 import { RECHARGE_MS, type Allowance, type DealResponse, type DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
@@ -50,8 +49,8 @@ type Dealt = { res: DealResponse; ready?: Ready };
 /** The next deal, requested while the current pack is revealed. */
 type Upcoming = { promise: Promise<Dealt>; settled: boolean };
 
-/** The wrapper a pack comes in: a photo of the real pack, when there is one (otherwise the plain wrapper, named for its set). */
-const wrapperFor = (pack: DealtPack): { src: string; aspect?: number } | undefined => (has("packArt") ? packArt(pack.setId, pack.art) : undefined);
+/** The wrapper a pack comes in: a photo of the real pack or a drawn one, when there is one (otherwise the plain wrapper, named for its set). */
+const wrapperFor = (pack: DealtPack) => (has("packArt") ? gameCards.packArt(pack.setId, pack.art) : undefined);
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -177,7 +176,7 @@ export function OpenPage() {
     void caught.current.then((dex) => pulls.forEach((p) => speciesOf(p.card).forEach((d) => dex?.add(d))));
     history.current.push(pack.setId);
     setTorn(true);
-    savePack(pack.dealId, data.set.id, pulls, new Date(), packArt(pack.setId, pack.art)?.id).catch((err) => console.warn("Couldn't save this pack", err));
+    savePack(pack.dealId, data.set.id, pulls, new Date(), wrapperFor(pack)?.id).catch((err) => console.warn("Couldn't save this pack", err));
     // Deal the next pack now (the server opens this one first) and download its set during the reveal.
     const up: Upcoming = { promise: request(pack.dealId), settled: false };
     up.promise.then(

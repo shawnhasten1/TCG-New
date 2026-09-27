@@ -8,7 +8,6 @@ import { gameCards } from "../app/gameCards";
 import { href } from "../app/router";
 import { Help } from "../app/Help";
 import { TIERS, type SetTier } from "../engine/setRarity";
-import { packArts } from "../packs/art";
 import { buyPacks, loadUnopened, loadWallet, coins as formatCoins, currency } from "./market";
 import { QuantityStepper } from "./QuantityStepper";
 import { MAX_UNOPENED, maxQuantity, shopSets, type ShopEntry } from "./shop";
@@ -154,7 +153,7 @@ export function ShopTab() {
             <h3>{g.tier.name}s</h3>
             <ul className="shop-grid">
               {g.items.map((item) => {
-                const art = packArts(item.set.id)[0];
+                const art = gameCards.packArts(item.set.id)[0];
                 const short = coins !== undefined && coins < item.entry.price;
                 const full = unopened >= MAX_UNOPENED;
                 const { max, quantity } = limits(item);

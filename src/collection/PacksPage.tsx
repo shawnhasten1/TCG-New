@@ -5,10 +5,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
 import type { SetSummary } from "../api/types";
-import { client } from "../app/client";
 import { href } from "../app/router";
-import { packArts, type PackArt } from "../packs/art";
-import manifest from "../packs/packArt.json";
+import { gameCards } from "../app/gameCards";
+import type { PackArt } from "../packs/art";
 import { PackDetail } from "./PackDetail";
 import { getWrappers, onCollectionChange, type WrapperRecord } from "./store";
 import { CollectionViewSwitch } from "./ViewSwitch";
@@ -37,7 +36,7 @@ export function PacksPage() {
     let live = true;
     const reload = () => getWrappers().then((w) => live && setWrappers(w));
     void reload();
-    client.listSetSummaries().then((s) => live && setSets(s), () => undefined);
+    gameCards.listSetSummaries().then((s) => live && setSets(s), () => undefined);
     const off = onCollectionChange(reload);
     return () => {
       live = false;
@@ -49,7 +48,7 @@ export function PacksPage() {
 
   const groups = useMemo(() => {
     const bySet = new Map<string, SetWrappers>();
-    for (const setId of Object.keys(manifest)) bySet.set(setId, { setId, arts: packArts(setId), counts: new Map(), firstAt: new Map(), lastOpenedAt: "" });
+    for (const setId of gameCards.packArtSets()) bySet.set(setId, { setId, arts: gameCards.packArts(setId), counts: new Map(), firstAt: new Map(), lastOpenedAt: "" });
     for (const w of wrappers ?? []) {
       const g = bySet.get(w.setId);
       if (!g) continue; // a set whose photos have since been dropped
@@ -138,7 +137,7 @@ export function PacksPage() {
             />
           )}
           <p className="muted credit">
-            Pack photos from <a href="https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Trading_Card_Game#International_sets">Bulbapedia</a>.
+            {gameCards.packCredit.text} <a href={gameCards.packCredit.url}>{gameCards.packCredit.name}</a>.
           </p>
         </>
       )}

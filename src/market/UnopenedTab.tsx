@@ -5,7 +5,6 @@ import { Help } from "../app/Help";
 import { href } from "../app/router";
 import { gameCards } from "../app/gameCards";
 import { getPulls } from "../collection/store";
-import { packArt, packArts } from "../packs/art";
 import { ago } from "../social/common";
 import { loadUnopened } from "./market";
 import { MAX_UNOPENED, type UnopenedPack } from "./shop";
@@ -61,7 +60,7 @@ export function UnopenedTab() {
       ) : (
         <ul className="shop-grid unopened">
           {packs.map((p) => {
-            const art = packArt(p.setId, p.art) ?? packArts(p.setId)[0];
+            const art = gameCards.packArt(p.setId, p.art) ?? gameCards.packArts(p.setId)[0];
             return (
               <li key={p.id}>
                 <div className="shop-pack">

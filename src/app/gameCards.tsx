@@ -13,6 +13,9 @@ import { drawableSets, ERAS } from "../engine/randomSet";
 import { setTier, type SetTier } from "../engine/setRarity";
 import type { PackProfile } from "../engine/types";
 import { setSymbol } from "../mtg/cards";
+import { mtgPackArts, mtgPackArtSets } from "../mtg/packArt";
+import { packArt, packArts, type PackArt } from "../packs/art";
+import packPhotos from "../packs/packArt.json";
 import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet, getMtgSets } from "../mtg/client";
 import { boosterEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
 import { client } from "./client";
@@ -57,6 +60,13 @@ export interface GameCards {
   rarityInBinder: boolean;
   /** The binder's footnote: what's left out of completion, and what ✦ marks. */
   binderNote: string;
+  /** The designs a set's packs come in (photos of real packs for Pokémon, drawn wrappers for Magic), and one of them. */
+  packArts(setId: string): PackArt[];
+  packArt(setId: string, artId: string | null | undefined): PackArt | undefined;
+  /** Sets whose packs have designs. */
+  packArtSets(): string[];
+  /** Where the pack designs come from, for the Packs view. */
+  packCredit: { text: string; name: string; url: string };
   /** Where the card data and images come from, and a set to open the debug page on (it reads TCGdex). */
   credit: { name: string; url: string; debugSet?: string };
 }
@@ -80,6 +90,10 @@ const pokemon: GameCards = {
   rarityInBinder: false,
   binderNote: "Faded cards are still missing. “Not in packs” cards (basic energy, cards without scans) don't count toward completion. ✦ marks secret and subset cards.",
   credit: { name: "TCGdex", url: "https://tcgdex.dev", debugSet: "sv03.5" },
+  packArts,
+  packArt,
+  packArtSets: () => Object.keys(packPhotos),
+  packCredit: { text: "Pack photos from", name: "Bulbapedia", url: "https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Trading_Card_Game#International_sets" },
 };
 
 // A Magic card is just foil or not.
@@ -115,6 +129,10 @@ const mtg: GameCards = {
   rarityInBinder: true,
   binderNote: "Faded cards are still missing. “Not in packs” cards don't count toward completion. ✦ marks basic lands and printings numbered after the main set.",
   credit: { name: "Scryfall", url: "https://scryfall.com" },
+  packArts: mtgPackArts,
+  packArt: (setId, artId) => (artId ? mtgPackArts(setId).find((a) => a.id === artId) : undefined),
+  packArtSets: mtgPackArtSets,
+  packCredit: { text: "Wrappers drawn around card art (by its artists) from", name: "Scryfall", url: "https://scryfall.com" },
 };
 
 /** A game's cards: for a card from another game than this one, like a friend's post in the shared feed. */

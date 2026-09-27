@@ -32,6 +32,9 @@ export interface RawCard {
   image_uris?: unknown;
   card_faces?: { image_uris?: unknown }[];
   prices?: Partial<Record<"usd" | "usd_foil" | "usd_etched" | "eur" | "eur_foil", string | null>>;
+  artist?: string;
+  /** The same card in every printing and set. */
+  oracle_id?: string;
 }
 
 const RARITY: Record<string, string> = { common: "Common", uncommon: "Uncommon", rare: "Rare", mythic: "Mythic Rare", special: "Special", bonus: "Bonus" };
@@ -45,8 +48,8 @@ export function rarityOf(card: RawCard): string {
 /** Where a card's image is served from (worker/mtg.ts, which sends the browser on to Scryfall); the app adds "/high.webp" or "/low.webp". */
 export const cardImageBase = (scryfallId: string) => `/api/mtg/card/${scryfallId}`;
 
-/** A Scryfall image of the card's front: "large" is 672×936, "normal" 488×680. */
-export const scryfallImage = (scryfallId: string, size: "large" | "normal") => `https://cards.scryfall.io/${size}/front/${scryfallId[0]}/${scryfallId[1]}/${scryfallId}.jpg`;
+/** A Scryfall image of the card's front: "large" is 672×936, "normal" 488×680, "art_crop" just the art (about 626×457). */
+export const scryfallImage = (scryfallId: string, size: "large" | "normal" | "art_crop") => `https://cards.scryfall.io/${size}/front/${scryfallId[0]}/${scryfallId[1]}/${scryfallId}.jpg`;
 
 /** The set's symbol, as an SVG. */
 export const setSymbol = (setId: string) => `https://svgs.scryfall.io/sets/${setId}.svg`;

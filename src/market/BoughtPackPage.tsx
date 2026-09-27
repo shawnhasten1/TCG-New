@@ -15,7 +15,6 @@ import type { PulledCard } from "../engine/types";
 import { OpenerBar } from "../opener/OpenerBar";
 import { PackOpener } from "../opener/PackOpener";
 import { preloadImage, withTimeout } from "../opener/preload";
-import { packArt } from "../packs/art";
 import { toPulls } from "../packs/deal";
 import type { DealtPack } from "../packs/protocol";
 import { shareCards } from "../social/feed";
@@ -45,7 +44,7 @@ async function othersThan(packId: string): Promise<UnopenedPack[]> {
 }
 
 /** The photo of the real pack it came in, in games that have them. */
-const wrapperFor = (pack: DealtPack) => (has("packArt") ? packArt(pack.setId, pack.art) : undefined);
+const wrapperFor = (pack: DealtPack) => (has("packArt") ? gameCards.packArt(pack.setId, pack.art) : undefined);
 
 export function BoughtPackPage({ packId }: { packId: string }) {
   const member = isMember(useAccount());
