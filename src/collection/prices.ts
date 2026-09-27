@@ -35,8 +35,14 @@ export function priceFor(pricing: CardPricing | null | undefined, finish: Finish
   }
   const cm = pricing.cardmarket;
   if (cm) {
-    // Cardmarket's "-holo" columns are the foil version of a non-holo card, i.e. the reverse holo.
-    const amount = finish === "reverse" ? num(cm["avg-holo"]) ?? num(cm["trend-holo"]) : num(cm.trend) ?? num(cm.avg);
+    // Cardmarket's "-holo" columns are the foil version of a non-holo card, i.e. the reverse holo. A Magic foil is its
+    // own printing, priced in "trend-foil" (src/mtg/cards.ts), so its non-foil price never stands in for it.
+    const amount =
+      finish === "reverse"
+        ? num(cm["avg-holo"]) ?? num(cm["trend-holo"])
+        : finish === "holo" && "trend-foil" in cm
+          ? num(cm["trend-foil"])
+          : num(cm.trend) ?? num(cm.avg);
     if (amount) return { amount, currency: "EUR", source: "Cardmarket" };
   }
   return undefined;

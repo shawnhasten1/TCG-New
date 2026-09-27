@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { CardPricing } from "../api/tcgdex";
 import type { Card } from "../api/types";
-import { client } from "../app/client";
 import { GAME } from "../app/game";
 import type { Finish } from "../engine/types";
 import { FoilCard } from "../foil/FoilCard";
@@ -15,6 +14,7 @@ import { Tilt } from "../opener/tilt";
 import { setFavorite, useFavorites } from "./favorites";
 import { pokemonName } from "./pokedex";
 import { formatPrice, priceFor } from "./prices";
+import { priceSource } from "./usePrices";
 import type { Ownership } from "./progress";
 import "./collection.css";
 
@@ -128,10 +128,8 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
   };
 
   useEffect(() => {
-    // Prices come from TCGdex, so Pokémon only for now.
-    if (GAME !== "pokemon") return;
     let live = true;
-    client.getCardPricing(card.id).then(
+    priceSource.get(card.id).then(
       (p) => live && setPricing(p),
       () => live && setPricing("error"),
     );
@@ -277,10 +275,10 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             <p className="muted">Not pulled yet.</p>
           )}
 
-          {GAME === "pokemon" && <h3>Market price</h3>}
-          {GAME === "pokemon" && pricing === "loading" && <p className="muted">Loading prices…</p>}
-          {GAME === "pokemon" && pricing === "error" && <p className="muted">Couldn't load prices.</p>}
-          {GAME === "pokemon" && pricing !== "loading" && pricing !== "error" && (
+          <h3>Market price</h3>
+          {pricing === "loading" && <p className="muted">Loading prices…</p>}
+          {pricing === "error" && <p className="muted">Couldn't load prices.</p>}
+          {pricing !== "loading" && pricing !== "error" && (
             <ul className="prices">
               {printings(card).map((f) => {
                 const price = priceFor(pricing, f, firstEd);

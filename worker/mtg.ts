@@ -2,14 +2,16 @@
 // - A set's cards are fetched once (two or three search pages) and kept in D1 (api_cache); the app caches them again
 //   on the device. Scryfall asks that data be cached for at least a day, and set lists don't change after release.
 // - Card images are sent on to cards.scryfall.io, which Scryfall allows linking to and doesn't rate limit.
+// - Prices change daily, so they're kept apart from the cards: one entry per set per day, from the same search.
 
 import type { SetData } from "../src/api/types";
 import { openPack, whyNotOpenable } from "../src/engine/openPack";
 import { createRng } from "../src/engine/rng";
-import { fetchSetData, scryfallImage } from "../src/mtg/cards";
+import type { CardPricing } from "../src/api/tcgdex";
+import { fetchSetData, fetchSetPrices, scryfallImage } from "../src/mtg/cards";
 import { MTG_SETS, mtgProfile, mtgSet, type MtgSet } from "../src/mtg/sets";
 import type { SyncCard } from "../src/sync/protocol";
-import { d1Cache } from "./cache";
+import { d1Cache, pruneDailyEntries } from "./cache";
 import { requireGame } from "./games";
 import { HttpError, json, randomToken, type Ctx } from "./http";
 import type { DealtRow } from "./packs";
@@ -34,10 +36,43 @@ export async function mtgSetData(env: Env, set: MtgSet): Promise<SetData> {
   return data;
 }
 
+const today = () => new Date().toISOString().slice(0, 10);
+/** Ends in the day, so pruneDailyEntries clears it out once it's past. */
+const pricesKey = (id: string, day: string) => `mtg:prices:${id}:${day}`;
+/** Sets whose prices are being fetched in this isolate, so a burst of requests fetches once. */
+const pricing = new Map<string, Promise<Record<string, CardPricing>>>();
+
+/** Today's prices for a set's cards, by card id (cards with none are left out). From D1, or Scryfall once a day. */
+export function mtgSetPrices(env: Env, set: MtgSet): Promise<Record<string, CardPricing>> {
+  const key = pricesKey(set.id, today());
+  let got = pricing.get(key);
+  if (!got) {
+    got = (async () => {
+      const cache = d1Cache(env.DB);
+      const hit = await cache.get<Record<string, CardPricing>>(key);
+      if (hit) return hit;
+      let prices: Record<string, CardPricing>;
+      try {
+        prices = await fetchSetPrices(set);
+      } catch (err) {
+        console.error(`Couldn't load prices for ${set.name} from Scryfall`, err);
+        throw new HttpError(503, "Couldn't reach the price database. Try again in a moment.");
+      }
+      await cache.set(key, prices);
+      // A new day's first fetch: tidy away past days' entries while we're here.
+      await pruneDailyEntries(env.DB);
+      return prices;
+    })().finally(() => pricing.delete(key));
+    pricing.set(key, got);
+  }
+  return got;
+}
+
 const SCRYFALL_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /**
  * GET /api/mtg/set/<id>: a set's cards (SetData).
+ * GET /api/mtg/prices/<id>: today's prices for a set's cards, by card id (Record<string, CardPricing>).
  * GET /api/mtg/card/<scryfallId>/<high|low>.webp: redirects to the card's image on Scryfall. The name matches
  *   TCGdex's image URLs, so the app shows every game's cards the same way, but it's the JPEG Scryfall serves.
  */
@@ -50,6 +85,13 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
     const set = mtgSet(id ?? "");
     if (!set) throw new HttpError(404, "No such set");
     const res = json(await mtgSetData(ctx.env, set));
+    res.headers.set("Cache-Control", "public, max-age=3600");
+    return res;
+  }
+  if (kind === "prices" && !file) {
+    const set = mtgSet(id ?? "");
+    if (!set) throw new HttpError(404, "No such set");
+    const res = json(await mtgSetPrices(ctx.env, set));
     res.headers.set("Cache-Control", "public, max-age=3600");
     return res;
   }

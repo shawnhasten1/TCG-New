@@ -3,12 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CardPricing } from "../api/tcgdex";
 import { client } from "../app/client";
+import { GAME } from "../app/game";
+import { cachedMtgCardPricing, getMtgCardPricing } from "../mtg/client";
 import { updateSettings, useSettings } from "../app/settings";
 import type { Ownership } from "./progress";
 import { formatPrice, priceFor, type Price } from "./prices";
 import type { PullRecord } from "./store";
 
 export type Totals = Record<Price["currency"], number>;
+
+/** Where this game's prices come from: TCGdex per card for Pokémon, the Worker per set for Magic (src/mtg/client.ts). */
+export const priceSource =
+  GAME === "mtg"
+    ? { get: getMtgCardPricing, cached: cachedMtgCardPricing }
+    : { get: (id: string) => client.getCardPricing(id), cached: (ids: string[]) => client.cachedCardPricing(ids) };
 
 /** How often fetched prices are handed to the page. Each hand-off re-sorts and re-renders it, so not once per card. */
 const FLUSH_MS = 400;
@@ -22,13 +30,13 @@ function knownPrices() {
 }
 
 /**
- * Loads prices for `ids`: everything already cached in one go, then the rest from TCGdex a few at a time (it
- * rate-limits bursts), handing them over in batches.
+ * Loads prices for `ids`: everything already cached in one go, then the rest a few at a time (TCGdex rate-limits
+ * bursts; Magic's come a set at a time, so most of these wait on the same fetch), handing them over in batches.
  */
 async function loadPrices(ids: string[], onPrices: (got: Map<string, CardPricing | null>) => void, signal: { live: boolean }) {
   const seen = knownPrices();
   const first = new Map<string, CardPricing | null>(ids.filter((id) => seen.has(id)).map((id) => [id, seen.get(id)!]));
-  const cached = await client.cachedCardPricing(ids.filter((id) => !seen.has(id)));
+  const cached = await priceSource.cached(ids.filter((id) => !seen.has(id)));
   if (!signal.live) return;
   for (const [id, p] of cached) {
     seen.set(id, p);
@@ -49,7 +57,7 @@ async function loadPrices(ids: string[], onPrices: (got: Map<string, CardPricing
   const worker = async () => {
     while (next < todo.length && signal.live) {
       const id = todo[next++];
-      const p = await client.getCardPricing(id).catch(() => null);
+      const p = await priceSource.get(id).catch(() => null);
       seen.set(id, p);
       batch.set(id, p);
       timer ??= setTimeout(flush, FLUSH_MS);

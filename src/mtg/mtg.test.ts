@@ -3,7 +3,8 @@ import { openPack, packFinishes, whyNotOpenable } from "../engine/openPack";
 import { createRng } from "../engine/rng";
 import { rarityTier } from "../engine/tiers";
 import { layoutFor, MTG_LAYOUTS } from "../foil/layouts";
-import { rarityOf, scryfallImage, toSetData, type RawCard } from "./cards";
+import { priceFor } from "../collection/prices";
+import { rarityOf, scryfallImage, toPricing, toSetData, type RawCard } from "./cards";
 import { boosterEra, foilEra, MTG_PROFILES, MTG_SETS, mtgProfile, type MtgSet } from "./sets";
 
 let n = 0;
@@ -149,5 +150,29 @@ describe("look", () => {
   it("gives each set its serie by foil era", () => {
     expect(toSetData({ id: "ody", name: "Odyssey", released: "2001-10-01" }, fullSet()).set.serie.id).toBe("mtg-premodern");
     expect(toSetData({ id: "lrw", name: "Lorwyn", released: "2007-10-12" }, fullSet()).set.serie.id).toBe("mtg-dark");
+  });
+});
+
+describe("toPricing", () => {
+  it("prices each finish from Scryfall, preferring TCGplayer's dollars", () => {
+    const c = raw("rare", { collector_number: "7", prices: { usd: "0.50", usd_foil: "2.25", eur: "0.40", eur_foil: "1.80" } });
+    const p = toPricing(play, [c])["tst-7"];
+    expect(priceFor(p, "normal")).toEqual({ amount: 0.5, currency: "USD", source: "TCGplayer" });
+    expect(priceFor(p, "holo")).toEqual({ amount: 2.25, currency: "USD", source: "TCGplayer" });
+  });
+
+  it("uses etched foil prices when there's no plain foil", () => {
+    const p = toPricing(play, [raw("mythic", { collector_number: "8", finishes: ["etched"], prices: { usd_etched: "9.99" } })])["tst-8"];
+    expect(priceFor(p, "holo")?.amount).toBe(9.99);
+  });
+
+  it("falls back to Cardmarket, but never gives a foil the non-foil price", () => {
+    const p = toPricing(play, [raw("common", { collector_number: "9", prices: { usd: null, eur: "0.10" } })])["tst-9"];
+    expect(priceFor(p, "normal")).toEqual({ amount: 0.1, currency: "EUR", source: "Cardmarket" });
+    expect(priceFor(p, "holo")).toBeUndefined();
+  });
+
+  it("leaves out cards with no price", () => {
+    expect(toPricing(play, [raw("common", { prices: { usd: null, usd_foil: null, eur: null } }), raw("common")])).toEqual({});
   });
 });

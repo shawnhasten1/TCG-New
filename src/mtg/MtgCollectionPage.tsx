@@ -1,12 +1,13 @@
 // The Magic collection: every set packs come from, by booster era, with how much of each you've collected.
 // Sets you haven't opened don't load their cards, so the page stays light until you do.
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
 import type { SetData } from "../api/types";
 import { href } from "../app/router";
 import { countPacks } from "../collection/progress";
 import { getPulls, onCollectionChange, type PullRecord } from "../collection/store";
+import { formatTotals, PriceToggle, pullsValue, useCardPrices } from "../collection/usePrices";
 import { setSymbol } from "./cards";
 import { getMtgSet } from "./client";
 import { boosterEra, MTG_ERAS, MTG_SETS } from "./sets";
@@ -46,9 +47,19 @@ export function MtgCollectionPage() {
     };
   }, [pulls, sets]);
 
-  const bySet = new Map<string, PullRecord[]>();
-  for (const p of pulls ?? []) (bySet.get(p.setId) ?? bySet.set(p.setId, []).get(p.setId)!).push(p);
+  const bySet = useMemo(() => {
+    const m = new Map<string, PullRecord[]>();
+    for (const p of pulls ?? []) (m.get(p.setId) ?? m.set(p.setId, []).get(p.setId)!).push(p);
+    return m;
+  }, [pulls]);
   const unique = new Set(pulls?.map((p) => p.cardId)).size;
+
+  const cardIds = useMemo(() => pulls?.map((p) => p.cardId) ?? [], [pulls]);
+  const { showPrices, prices, loading } = useCardPrices(cardIds);
+  const values = useMemo(() => {
+    if (!showPrices || !pulls) return undefined;
+    return { all: pullsValue(pulls, prices), bySet: new Map([...bySet].map(([id, ps]) => [id, pullsValue(ps, prices)])) };
+  }, [showPrices, pulls, bySet, prices]);
 
   return (
     <main className="collection mtg-collection">
@@ -60,17 +71,19 @@ export function MtgCollectionPage() {
         </p>
       ) : (
         <>
-          <p className="muted">
-            {pulls.length ? (
-              <>
+          {pulls.length ? (
+            <div className="toolbar sets-toolbar">
+              <p className="muted">
                 {plural(countPacks(pulls), "pack")} opened · {plural(pulls.length, "card")} pulled · {unique} different
-              </>
-            ) : (
-              <>
-                Nothing here yet. <a href={href.open()}>Open a pack</a>: each comes from one of these sets, at random.
-              </>
-            )}
-          </p>
+                {values && ` · worth ${formatTotals(values.all)}${loading ? " (loading…)" : ""}`}
+              </p>
+              <PriceToggle />
+            </div>
+          ) : (
+            <p className="muted">
+              Nothing here yet. <a href={href.open()}>Open a pack</a>: each comes from one of these sets, at random.
+            </p>
+          )}
           {MTG_ERAS.map((era) => (
             <section key={era.id}>
               <h2>{era.name}</h2>
@@ -92,7 +105,7 @@ export function MtgCollectionPage() {
                             <div style={{ width: `${pct}%` }} />
                           </div>
                           <span className="muted">
-                            {mine.length ? `${owned} / ${total ?? "?"} cards · ${plural(countPacks(mine), "pack")}` : `${s.id.toUpperCase()} · ${s.released.slice(0, 4)} · not opened yet`}
+                            {mine.length ? `${owned} / ${total ?? "?"} cards · ${plural(countPacks(mine), "pack")}${values ? ` · ${formatTotals(values.bySet.get(s.id)!)}` : ""}` : `${s.id.toUpperCase()} · ${s.released.slice(0, 4)} · not opened yet`}
                           </span>
                         </div>
                       </a>

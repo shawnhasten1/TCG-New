@@ -7,8 +7,10 @@ import type { Card, SetData } from "../api/types";
 import { RetryImg } from "../app/RetryImg";
 import { href } from "../app/router";
 import { CardDetail } from "../collection/CardDetail";
+import { formatPrice } from "../collection/prices";
 import { ownership } from "../collection/progress";
 import { getPulls, onCollectionChange, type PullRecord } from "../collection/store";
+import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "../collection/usePrices";
 import { rarityKind } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { setSymbol } from "./cards";
@@ -43,6 +45,11 @@ export function MtgBinderPage({ setId }: { setId: string }) {
   }, [setId]);
 
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
+
+  // Prices for owned cards, on request.
+  const ownedIds = useMemo(() => [...owned.keys()], [owned]);
+  const { showPrices, prices, loading } = useCardPrices(ownedIds);
+  const value = useMemo(() => (showPrices && pulls ? pullsValue(pulls, prices) : undefined), [showPrices, pulls, prices]);
 
   if (!info) return <main className="collection"><p className="error">There's no Magic set {setId} here.</p></main>;
   if (error) return <main className="collection"><p className="error">Couldn't load this set. {error}</p></main>;
@@ -83,6 +90,12 @@ export function MtgBinderPage({ setId }: { setId: string }) {
               <dt>Cards pulled</dt>
               <dd>{pulls.length}</dd>
             </div>
+            {value && (
+              <div>
+                <dt>Value{loading ? " (loading…)" : ""}</dt>
+                <dd>{formatTotals(value)}</dd>
+              </div>
+            )}
           </dl>
         </div>
         <a className="button primary" href={href.open()}>
@@ -98,6 +111,7 @@ export function MtgBinderPage({ setId }: { setId: string }) {
             </button>
           ))}
         </div>
+        <PriceToggle />
       </div>
 
       {visible.length === 0 ? (
@@ -106,6 +120,7 @@ export function MtgBinderPage({ setId }: { setId: string }) {
         <ol className="binder-grid">
           {visible.map((c) => {
             const o = owned.get(c.id);
+            const price = showPrices && o ? ownedPrice(prices.get(c.id), o) : undefined;
             return (
               <li key={c.id}>
                 <button
@@ -123,6 +138,7 @@ export function MtgBinderPage({ setId }: { setId: string }) {
                   <span className="rarity" data-kind={rarityKind(c.rarity)}>
                     {c.rarity}
                   </span>
+                  {price && <span className="price">{formatPrice(price)}</span>}
                 </span>
               </li>
             );
