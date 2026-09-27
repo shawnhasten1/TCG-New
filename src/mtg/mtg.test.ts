@@ -7,7 +7,7 @@ import { priceFor } from "../collection/prices";
 import { rarityOf, scryfallImage, toPricing, toSetData, type RawCard } from "./cards";
 import { pickRandomSet } from "../engine/randomSet";
 import { pityFloor, TIERS } from "../engine/setRarity";
-import { boosterEra, foilEra, MTG_ERAS, MTG_PROFILES, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSetTier, type MtgSet } from "./sets";
+import { boosterEra, foilEra, MTG_ERAS, MTG_PROFILES, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSetTier, OTHER_PROFILES, type MtgSet } from "./sets";
 import rarity from "./setRarity.json";
 
 let n = 0;
@@ -95,6 +95,28 @@ describe("profiles", () => {
     for (const [era, profile] of Object.entries(MTG_PROFILES)) {
       expect(whyNotOpenable(data, profile)).toBeUndefined();
       expect(openPack(data, profile, createRng("x"))).toHaveLength(sizes[era as keyof typeof sizes]);
+    }
+  });
+
+  it("gives sets with unusual boosters their own packs", () => {
+    const sizes = { small8: 8, small12: 12, beyond: 7 };
+    for (const [pack, size] of Object.entries(sizes) as [keyof typeof sizes, number][]) {
+      const set = { ...classic, pack };
+      expect(mtgProfile(set)).toBe(OTHER_PROFILES[pack]);
+      const data = toSetData(set, fullSet());
+      expect(whyNotOpenable(data, mtgProfile(set))).toBeUndefined();
+      expect(openPack(data, mtgProfile(set), createRng("x"))).toHaveLength(size);
+    }
+    expect(MTG_SETS.find((s) => s.id === "arn")?.pack).toBe("small8");
+  });
+
+  it("puts a common in the land slot of a set with no basic lands", () => {
+    const noBasics = fullSet().filter((c) => !c.type_line?.startsWith("Basic"));
+    for (const set of [draft, play]) {
+      const data = toSetData(set, noBasics);
+      expect(whyNotOpenable(data, mtgProfile(set))).toBeUndefined();
+      const pack = openPack(data, mtgProfile(set), createRng("no-basics"));
+      expect(pack.find((p) => /land/i.test(p.slot))!.card.rarity).toBe("Common");
     }
   });
 
@@ -191,7 +213,8 @@ describe("drawing a Magic set", () => {
 
   it("has a tier for every set, and only for sets there are", () => {
     const tiers = (rarity as { sets: Record<string, { tier: string }> }).sets;
-    expect(Object.keys(tiers).sort()).toEqual(MTG_SETS.map((s) => s.id).sort());
+    // Tiers go by what commons sell for, and Assassin's Creed's boosters have none, so it counts as common.
+    expect(Object.keys(tiers).sort()).toEqual(MTG_SETS.map((s) => s.id).filter((id) => id !== "acr").sort());
     for (const s of MTG_SETS) expect(TIERS.map((t) => t.id)).toContain(mtgSetTier(s.id));
     expect(mtgSetTier("not-a-set")).toBe("common");
   });

@@ -133,9 +133,14 @@ export async function searchCards(query: string, fetcher: Fetcher = fetch): Prom
   return raw;
 }
 
-/** A set's booster cards as Scryfall has them. */
+/**
+ * A set's booster cards as Scryfall has them. Scryfall marks which cards come in boosters some time after a set is
+ * out (none of 2026's were yet in September), so until then it's the whole set but promos, counted as booster cards.
+ * That may let in a few printings only Collector Boosters have.
+ */
 export async function fetchRawCards(set: MtgSet, fetcher: Fetcher = fetch): Promise<RawCard[]> {
-  const raw = await searchCards(`set:${set.id} is:booster`, fetcher);
+  let raw = await searchCards(`set:${set.id} is:booster`, fetcher);
+  if (!raw.length) raw = (await searchCards(`set:${set.id} -is:promo`, fetcher)).map((c) => ({ ...c, booster: true }));
   if (!raw.length) throw new Error(`Scryfall has no booster cards for ${set.name}`);
   return raw;
 }

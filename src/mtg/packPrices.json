@@ -2,29 +2,297 @@
  "generated": "2026-09-27",
  "packs": 3000,
  "sets": {
+  "10e": {
+   "value": 1521,
+   "price": 2150
+  },
+  "2ed": {
+   "value": 64441,
+   "price": 90250
+  },
+  "2x2": {
+   "value": 1180,
+   "price": 1700
+  },
+  "2xm": {
+   "value": 1377,
+   "price": 1950
+  },
+  "3ed": {
+   "value": 7021,
+   "price": 9850
+  },
+  "4ed": {
+   "value": 854,
+   "price": 1200
+  },
+  "5dn": {
+   "value": 1577,
+   "price": 2250
+  },
+  "5ed": {
+   "value": 971,
+   "price": 1400
+  },
+  "6ed": {
+   "value": 1760,
+   "price": 2500
+  },
+  "7ed": {
+   "value": 25160,
+   "price": 35250
+  },
+  "8ed": {
+   "value": 2269,
+   "price": 3200
+  },
+  "9ed": {
+   "value": 3184,
+   "price": 4500
+  },
+  "a25": {
+   "value": 1127,
+   "price": 1600
+  },
+  "acr": {
+   "value": 792,
+   "price": 1150
+  },
+  "aer": {
+   "value": 384,
+   "price": 550
+  },
+  "afr": {
+   "value": 607,
+   "price": 850
+  },
+  "akh": {
+   "value": 489,
+   "price": 700
+  },
+  "ala": {
+   "value": 647,
+   "price": 950
+  },
+  "all": {
+   "value": 1775,
+   "price": 2500
+  },
+  "apc": {
+   "value": 812,
+   "price": 1150
+  },
+  "arb": {
+   "value": 636,
+   "price": 900
+  },
+  "arn": {
+   "value": 62914,
+   "price": 88100
+  },
+  "atq": {
+   "value": 23182,
+   "price": 32500
+  },
+  "avr": {
+   "value": 703,
+   "price": 1000
+  },
+  "bbd": {
+   "value": 952,
+   "price": 1350
+  },
+  "bfz": {
+   "value": 316,
+   "price": 450
+  },
   "blb": {
    "value": 740,
    "price": 1050
   },
+  "bng": {
+   "value": 403,
+   "price": 600
+  },
+  "bok": {
+   "value": 895,
+   "price": 1300
+  },
+  "bro": {
+   "value": 473,
+   "price": 700
+  },
+  "chk": {
+   "value": 1225,
+   "price": 1750
+  },
+  "chr": {
+   "value": 890,
+   "price": 1250
+  },
+  "clb": {
+   "value": 1214,
+   "price": 1700
+  },
+  "cmm": {
+   "value": 1388,
+   "price": 1950
+  },
+  "cmr": {
+   "value": 853,
+   "price": 1200
+  },
+  "cn2": {
+   "value": 703,
+   "price": 1000
+  },
+  "cns": {
+   "value": 927,
+   "price": 1300
+  },
+  "con": {
+   "value": 561,
+   "price": 800
+  },
+  "csp": {
+   "value": 1120,
+   "price": 1600
+  },
+  "dbl": {
+   "value": 869,
+   "price": 1250
+  },
   "dft": {
    "value": 517,
+   "price": 750
+  },
+  "dgm": {
+   "value": 306,
+   "price": 450
+  },
+  "dis": {
+   "value": 804,
+   "price": 1150
+  },
+  "dka": {
+   "value": 408,
+   "price": 600
+  },
+  "dmr": {
+   "value": 988,
+   "price": 1400
+  },
+  "dmu": {
+   "value": 507,
    "price": 750
   },
   "dom": {
    "value": 528,
    "price": 750
   },
+  "drk": {
+   "value": 1852,
+   "price": 2600
+  },
   "dsk": {
    "value": 925,
    "price": 1300
+  },
+  "dst": {
+   "value": 1228,
+   "price": 1750
+  },
+  "dtk": {
+   "value": 320,
+   "price": 450
+  },
+  "ecl": {
+   "value": 1931,
+   "price": 2750
   },
   "eld": {
    "value": 512,
    "price": 750
   },
+  "ema": {
+   "value": 1860,
+   "price": 2650
+  },
+  "emn": {
+   "value": 364,
+   "price": 550
+  },
+  "eoe": {
+   "value": 713,
+   "price": 1000
+  },
+  "eve": {
+   "value": 1069,
+   "price": 1500
+  },
+  "exo": {
+   "value": 4087,
+   "price": 5750
+  },
   "fdn": {
    "value": 712,
    "price": 1000
+  },
+  "fem": {
+   "value": 297,
+   "price": 450
+  },
+  "fin": {
+   "value": 754,
+   "price": 1100
+  },
+  "frf": {
+   "value": 297,
+   "price": 450
+  },
+  "fut": {
+   "value": 1213,
+   "price": 1700
+  },
+  "gpt": {
+   "value": 529,
+   "price": 750
+  },
+  "grn": {
+   "value": 399,
+   "price": 600
+  },
+  "gtc": {
+   "value": 481,
+   "price": 700
+  },
+  "hml": {
+   "value": 325,
+   "price": 500
+  },
+  "hob": {
+   "value": 7800,
+   "price": 10950
+  },
+  "hou": {
+   "value": 447,
+   "price": 650
+  },
+  "ice": {
+   "value": 1296,
+   "price": 1850
+  },
+  "iko": {
+   "value": 696,
+   "price": 1000
+  },
+  "ima": {
+   "value": 1085,
+   "price": 1550
+  },
+  "inr": {
+   "value": 743,
+   "price": 1050
   },
   "inv": {
    "value": 1386,
@@ -34,31 +302,323 @@
    "value": 521,
    "price": 750
   },
+  "jou": {
+   "value": 516,
+   "price": 750
+  },
+  "jud": {
+   "value": 1588,
+   "price": 2250
+  },
+  "khm": {
+   "value": 689,
+   "price": 1000
+  },
+  "kld": {
+   "value": 388,
+   "price": 550
+  },
   "ktk": {
    "value": 413,
    "price": 600
+  },
+  "lci": {
+   "value": 3698,
+   "price": 5200
+  },
+  "lea": {
+   "value": 394967,
+   "price": 553000
+  },
+  "leb": {
+   "value": 196709,
+   "price": 275400
+  },
+  "leg": {
+   "value": 15449,
+   "price": 21650
+  },
+  "lgn": {
+   "value": 876,
+   "price": 1250
   },
   "lrw": {
    "value": 1272,
    "price": 1800
   },
+  "ltr": {
+   "value": 1655,
+   "price": 2350
+  },
+  "m10": {
+   "value": 902,
+   "price": 1300
+  },
+  "m11": {
+   "value": 767,
+   "price": 1100
+  },
+  "m12": {
+   "value": 588,
+   "price": 850
+  },
+  "m13": {
+   "value": 515,
+   "price": 750
+  },
+  "m14": {
+   "value": 589,
+   "price": 850
+  },
+  "m15": {
+   "value": 512,
+   "price": 750
+  },
+  "m19": {
+   "value": 511,
+   "price": 750
+  },
+  "m20": {
+   "value": 610,
+   "price": 900
+  },
+  "m21": {
+   "value": 581,
+   "price": 850
+  },
+  "mbs": {
+   "value": 839,
+   "price": 1200
+  },
+  "mh1": {
+   "value": 1225,
+   "price": 1750
+  },
+  "mh2": {
+   "value": 927,
+   "price": 1300
+  },
+  "mh3": {
+   "value": 1136,
+   "price": 1600
+  },
+  "mid": {
+   "value": 421,
+   "price": 600
+  },
+  "mir": {
+   "value": 2084,
+   "price": 2950
+  },
   "mkm": {
    "value": 593,
    "price": 850
   },
+  "mm2": {
+   "value": 1246,
+   "price": 1750
+  },
+  "mm3": {
+   "value": 1059,
+   "price": 1500
+  },
+  "mma": {
+   "value": 1400,
+   "price": 2000
+  },
+  "mmq": {
+   "value": 1384,
+   "price": 1950
+  },
+  "mom": {
+   "value": 615,
+   "price": 900
+  },
+  "mor": {
+   "value": 1239,
+   "price": 1750
+  },
   "mrd": {
    "value": 1391,
+   "price": 1950
+  },
+  "msh": {
+   "value": 1556,
+   "price": 2200
+  },
+  "nem": {
+   "value": 1011,
+   "price": 1450
+  },
+  "neo": {
+   "value": 794,
+   "price": 1150
+  },
+  "nph": {
+   "value": 1378,
    "price": 1950
   },
   "ody": {
    "value": 1007,
    "price": 1450
   },
+  "ogw": {
+   "value": 395,
+   "price": 600
+  },
+  "one": {
+   "value": 629,
+   "price": 900
+  },
   "ons": {
    "value": 1539,
    "price": 2200
   },
+  "ori": {
+   "value": 378,
+   "price": 550
+  },
+  "otj": {
+   "value": 576,
+   "price": 850
+  },
+  "p02": {
+   "value": 2336,
+   "price": 3300
+  },
+  "pcy": {
+   "value": 1971,
+   "price": 2800
+  },
+  "plc": {
+   "value": 1156,
+   "price": 1650
+  },
+  "pls": {
+   "value": 2198,
+   "price": 3100
+  },
+  "por": {
+   "value": 5953,
+   "price": 8350
+  },
+  "ptk": {
+   "value": 26677,
+   "price": 37350
+  },
+  "rav": {
+   "value": 762,
+   "price": 1100
+  },
+  "ren": {
+   "value": 1781,
+   "price": 2500
+  },
+  "rix": {
+   "value": 526,
+   "price": 750
+  },
+  "rna": {
+   "value": 518,
+   "price": 750
+  },
+  "roe": {
+   "value": 958,
+   "price": 1350
+  },
+  "rtr": {
+   "value": 494,
+   "price": 700
+  },
+  "rvr": {
+   "value": 5920,
+   "price": 8300
+  },
+  "s99": {
+   "value": 1502,
+   "price": 2150
+  },
+  "scg": {
+   "value": 1506,
+   "price": 2150
+  },
   "shm": {
+   "value": 1421,
+   "price": 2000
+  },
+  "snc": {
+   "value": 542,
+   "price": 800
+  },
+  "soi": {
+   "value": 290,
+   "price": 450
+  },
+  "sok": {
+   "value": 1100,
+   "price": 1550
+  },
+  "som": {
+   "value": 1080,
+   "price": 1550
+  },
+  "sos": {
+   "value": 1759,
+   "price": 2500
+  },
+  "spm": {
+   "value": 552,
+   "price": 800
+  },
+  "sth": {
+   "value": 5210,
+   "price": 7300
+  },
+  "stx": {
+   "value": 372,
+   "price": 550
+  },
+  "tdm": {
+   "value": 580,
+   "price": 850
+  },
+  "thb": {
+   "value": 669,
+   "price": 950
+  },
+  "ths": {
+   "value": 472,
+   "price": 700
+  },
+  "tla": {
+   "value": 784,
+   "price": 1100
+  },
+  "tmp": {
+   "value": 3103,
+   "price": 4350
+  },
+  "tmt": {
+   "value": 4825,
+   "price": 6800
+  },
+  "tor": {
+   "value": 1420,
+   "price": 2000
+  },
+  "tsp": {
+   "value": 909,
+   "price": 1300
+  },
+  "tsr": {
+   "value": 1160,
+   "price": 1650
+  },
+  "uds": {
+   "value": 3122,
+   "price": 4400
+  },
+  "ugl": {
    "value": 1421,
    "price": 2000
   },
@@ -66,9 +626,61 @@
    "value": 2830,
    "price": 4000
   },
+  "uma": {
+   "value": 1668,
+   "price": 2350
+  },
+  "unf": {
+   "value": 437,
+   "price": 650
+  },
+  "unh": {
+   "value": 5057,
+   "price": 7100
+  },
   "usg": {
    "value": 4776,
    "price": 6700
+  },
+  "ust": {
+   "value": 658,
+   "price": 950
+  },
+  "vis": {
+   "value": 1615,
+   "price": 2300
+  },
+  "vow": {
+   "value": 480,
+   "price": 700
+  },
+  "war": {
+   "value": 800,
+   "price": 1150
+  },
+  "woe": {
+   "value": 520,
+   "price": 750
+  },
+  "wth": {
+   "value": 1654,
+   "price": 2350
+  },
+  "wwk": {
+   "value": 1217,
+   "price": 1750
+  },
+  "xln": {
+   "value": 441,
+   "price": 650
+  },
+  "zen": {
+   "value": 1186,
+   "price": 1700
+  },
+  "znr": {
+   "value": 595,
+   "price": 850
   }
  }
 }

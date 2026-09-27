@@ -1,123 +1,1187 @@
 {
  "generated": "2026-09-27",
  "sets": {
-  "usg": {
+  "lea": {
    "tier": "legendary",
-   "score": 0.906,
-   "usd": 0.2,
+   "score": 1,
+   "usd": 36.82,
+   "eur": 24.58,
+   "sampled": 25
+  },
+  "leb": {
+   "tier": "legendary",
+   "score": 0.994,
+   "usd": 9.64,
+   "eur": 7.09,
+   "sampled": 25
+  },
+  "arn": {
+   "tier": "legendary",
+   "score": 0.988,
+   "usd": 6.27,
+   "eur": 5.33,
+   "sampled": 25
+  },
+  "2ed": {
+   "tier": "legendary",
+   "score": 0.976,
+   "usd": 1.26,
+   "eur": 1.24,
+   "sampled": 25
+  },
+  "ptk": {
+   "tier": "legendary",
+   "score": 0.976,
+   "usd": 3.44,
+   "eur": 0.86,
+   "sampled": 25
+  },
+  "atq": {
+   "tier": "legendary",
+   "score": 0.97,
+   "usd": 1.14,
+   "eur": 1.06,
+   "sampled": 25
+  },
+  "leg": {
+   "tier": "legendary",
+   "score": 0.961,
+   "usd": 0.48,
+   "eur": 0.77,
+   "sampled": 25
+  },
+  "drk": {
+   "tier": "legendary",
+   "score": 0.955,
+   "usd": 0.33,
+   "eur": 0.34,
+   "sampled": 25
+  },
+  "p02": {
+   "tier": "rare",
+   "score": 0.946,
+   "usd": 0.3,
+   "eur": 0.25,
+   "sampled": 25
+  },
+  "ugl": {
+   "tier": "rare",
+   "score": 0.938,
+   "usd": 0.28,
+   "eur": 0.23,
+   "sampled": 25
+  },
+  "wth": {
+   "tier": "rare",
+   "score": 0.896,
+   "usd": 0.23,
+   "eur": 0.16,
+   "sampled": 25
+  },
+  "mma": {
+   "tier": "rare",
+   "score": 0.896,
+   "usd": 0.24,
    "eur": 0.14,
+   "sampled": 25
+  },
+  "tor": {
+   "tier": "rare",
+   "score": 0.887,
+   "usd": 0.22,
+   "eur": 0.16,
+   "sampled": 25
+  },
+  "3ed": {
+   "tier": "rare",
+   "score": 0.854,
+   "usd": 0.2,
+   "eur": 0.19,
+   "sampled": 25
+  },
+  "dbl": {
+   "tier": "rare",
+   "score": 0.836,
+   "usd": 0.28,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "cmm": {
+   "tier": "rare",
+   "score": 0.83,
+   "usd": 0.23,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "s99": {
+   "tier": "rare",
+   "score": 0.827,
+   "usd": 0.18,
+   "eur": 0.26,
    "sampled": 25
   },
   "lrw": {
    "tier": "rare",
-   "score": 0.844,
+   "score": 0.821,
    "usd": 0.22,
    "eur": 0.12,
    "sampled": 25
   },
-  "ody": {
+  "unh": {
    "tier": "rare",
-   "score": 0.781,
-   "usd": 0.16,
-   "eur": 0.15,
+   "score": 0.818,
+   "usd": 0.21,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "por": {
+   "tier": "rare",
+   "score": 0.815,
+   "usd": 0.18,
+   "eur": 0.2,
+   "sampled": 25
+  },
+  "usg": {
+   "tier": "rare",
+   "score": 0.815,
+   "usd": 0.2,
+   "eur": 0.14,
+   "sampled": 25
+  },
+  "fem": {
+   "tier": "rare",
+   "score": 0.798,
+   "usd": 0.18,
+   "eur": 0.17,
+   "sampled": 25
+  },
+  "clb": {
+   "tier": "rare",
+   "score": 0.795,
+   "usd": 0.21,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "rvr": {
+   "tier": "rare",
+   "score": 0.795,
+   "usd": 0.23,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "mh1": {
+   "tier": "rare",
+   "score": 0.792,
+   "usd": 0.19,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "mh3": {
+   "tier": "rare",
+   "score": 0.783,
+   "usd": 0.22,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "eve": {
+   "tier": "rare",
+   "score": 0.747,
+   "usd": 0.2,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "2xm": {
+   "tier": "rare",
+   "score": 0.747,
+   "usd": 0.21,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "ice": {
+   "tier": "rare",
+   "score": 0.735,
+   "usd": 0.17,
+   "eur": 0.14,
+   "sampled": 25
+  },
+  "plc": {
+   "tier": "rare",
+   "score": 0.735,
+   "usd": 0.17,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "iko": {
+   "tier": "rare",
+   "score": 0.726,
+   "usd": 0.23,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "mmq": {
+   "tier": "rare",
+   "score": 0.723,
+   "usd": 0.22,
+   "eur": 0.1,
    "sampled": 25
   },
   "shm": {
    "tier": "rare",
-   "score": 0.75,
+   "score": 0.714,
    "usd": 0.17,
    "eur": 0.12,
    "sampled": 25
   },
-  "ulg": {
+  "arb": {
    "tier": "uncommon",
-   "score": 0.719,
+   "score": 0.702,
    "usd": 0.16,
    "eur": 0.14,
    "sampled": 25
   },
+  "ody": {
+   "tier": "uncommon",
+   "score": 0.699,
+   "usd": 0.16,
+   "eur": 0.15,
+   "sampled": 25
+  },
+  "mm2": {
+   "tier": "uncommon",
+   "score": 0.693,
+   "usd": 0.19,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "nph": {
+   "tier": "uncommon",
+   "score": 0.69,
+   "usd": 0.16,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "exo": {
+   "tier": "uncommon",
+   "score": 0.688,
+   "usd": 0.16,
+   "eur": 0.15,
+   "sampled": 25
+  },
+  "zen": {
+   "tier": "uncommon",
+   "score": 0.685,
+   "usd": 0.17,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "afr": {
+   "tier": "uncommon",
+   "score": 0.685,
+   "usd": 0.2,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "ren": {
+   "tier": "uncommon",
+   "score": 0.682,
+   "usd": 1.4,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "dmr": {
+   "tier": "uncommon",
+   "score": 0.682,
+   "usd": 0.22,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "ulg": {
+   "tier": "uncommon",
+   "score": 0.679,
+   "usd": 0.16,
+   "eur": 0.14,
+   "sampled": 25
+  },
+  "mh2": {
+   "tier": "uncommon",
+   "score": 0.679,
+   "usd": 0.2,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "vis": {
+   "tier": "uncommon",
+   "score": 0.661,
+   "usd": 0.15,
+   "eur": 0.17,
+   "sampled": 25
+  },
+  "pls": {
+   "tier": "uncommon",
+   "score": 0.661,
+   "usd": 0.17,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "7ed": {
+   "tier": "uncommon",
+   "score": 0.658,
+   "usd": 0.16,
+   "eur": 0.13,
+   "sampled": 25
+  },
   "dom": {
    "tier": "uncommon",
-   "score": 0.625,
+   "score": 0.655,
    "usd": 0.16,
    "eur": 0.11,
    "sampled": 25
   },
-  "fdn": {
+  "all": {
    "tier": "uncommon",
-   "score": 0.563,
-   "usd": 0.19,
-   "eur": 0.06,
+   "score": 0.643,
+   "usd": 0.15,
+   "eur": 0.16,
    "sampled": 25
   },
-  "blb": {
+  "ema": {
    "tier": "uncommon",
-   "score": 0.531,
+   "score": 0.64,
+   "usd": 0.19,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "mm3": {
+   "tier": "uncommon",
+   "score": 0.64,
+   "usd": 0.21,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "chr": {
+   "tier": "uncommon",
+   "score": 0.634,
+   "usd": 0.18,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "5ed": {
+   "tier": "uncommon",
+   "score": 0.628,
+   "usd": 0.15,
+   "eur": 0.15,
+   "sampled": 25
+  },
+  "tmp": {
+   "tier": "uncommon",
+   "score": 0.622,
+   "usd": 0.16,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "sok": {
+   "tier": "uncommon",
+   "score": 0.622,
+   "usd": 0.17,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "uma": {
+   "tier": "uncommon",
+   "score": 0.622,
+   "usd": 0.16,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "mor": {
+   "tier": "uncommon",
+   "score": 0.619,
+   "usd": 0.16,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "2x2": {
+   "tier": "uncommon",
+   "score": 0.616,
+   "usd": 0.23,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "mir": {
+   "tier": "uncommon",
+   "score": 0.613,
+   "usd": 0.14,
+   "eur": 0.18,
+   "sampled": 25
+  },
+  "tsr": {
+   "tier": "uncommon",
+   "score": 0.613,
+   "usd": 0.17,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "uds": {
+   "tier": "uncommon",
+   "score": 0.607,
+   "usd": 0.15,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "sth": {
+   "tier": "uncommon",
+   "score": 0.604,
+   "usd": 0.14,
+   "eur": 0.16,
+   "sampled": 25
+  },
+  "m11": {
+   "tier": "uncommon",
+   "score": 0.583,
+   "usd": 0.15,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "6ed": {
+   "tier": "uncommon",
+   "score": 0.583,
+   "usd": 0.15,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "inr": {
+   "tier": "uncommon",
+   "score": 0.583,
+   "usd": 0.2,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "vow": {
+   "tier": "uncommon",
+   "score": 0.58,
+   "usd": 0.21,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "fut": {
+   "tier": "uncommon",
+   "score": 0.577,
+   "usd": 0.16,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "khm": {
+   "tier": "uncommon",
+   "score": 0.574,
+   "usd": 0.21,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "a25": {
+   "tier": "uncommon",
+   "score": 0.56,
+   "usd": 0.16,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "one": {
+   "tier": "uncommon",
+   "score": 0.551,
+   "usd": 0.19,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "cns": {
+   "tier": "uncommon",
+   "score": 0.548,
+   "usd": 0.16,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "m20": {
+   "tier": "uncommon",
+   "score": 0.536,
+   "usd": 0.16,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "mrd": {
+   "tier": "uncommon",
+   "score": 0.533,
+   "usd": 0.13,
+   "eur": 0.13,
+   "sampled": 25
+  },
+  "cmr": {
+   "tier": "uncommon",
+   "score": 0.53,
+   "usd": 0.19,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "som": {
+   "tier": "uncommon",
+   "score": 0.524,
+   "usd": 0.13,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "dmu": {
+   "tier": "uncommon",
+   "score": 0.524,
+   "usd": 0.18,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "dst": {
+   "tier": "uncommon",
+   "score": 0.512,
+   "usd": 0.15,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "sos": {
+   "tier": "uncommon",
+   "score": 0.494,
    "usd": 0.16,
    "eur": 0.07,
    "sampled": 25
   },
   "inv": {
    "tier": "uncommon",
-   "score": 0.5,
+   "score": 0.491,
    "usd": 0.16,
    "eur": 0.09,
    "sampled": 25
   },
-  "mrd": {
+  "woe": {
+   "tier": "uncommon",
+   "score": 0.491,
+   "usd": 0.21,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "dka": {
+   "tier": "uncommon",
+   "score": 0.482,
+   "usd": 0.16,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "blb": {
+   "tier": "uncommon",
+   "score": 0.482,
+   "usd": 0.16,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "unf": {
+   "tier": "uncommon",
+   "score": 0.479,
+   "usd": 0.11,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "rav": {
+   "tier": "uncommon",
+   "score": 0.476,
+   "usd": 0.15,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "mom": {
    "tier": "common",
-   "score": 0.469,
+   "score": 0.473,
+   "usd": 0.22,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "apc": {
+   "tier": "common",
+   "score": 0.47,
    "usd": 0.13,
-   "eur": 0.13,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "csp": {
+   "tier": "common",
+   "score": 0.47,
+   "usd": 0.14,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "lci": {
+   "tier": "common",
+   "score": 0.47,
+   "usd": 0.2,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "scg": {
+   "tier": "common",
+   "score": 0.464,
+   "usd": 0.15,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "fdn": {
+   "tier": "common",
+   "score": 0.464,
+   "usd": 0.19,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "nem": {
+   "tier": "common",
+   "score": 0.461,
+   "usd": 0.13,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "wwk": {
+   "tier": "common",
+   "score": 0.461,
+   "usd": 0.12,
+   "eur": 0.11,
+   "sampled": 25
+  },
+  "m13": {
+   "tier": "common",
+   "score": 0.461,
+   "usd": 0.13,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "bok": {
+   "tier": "common",
+   "score": 0.458,
+   "usd": 0.14,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "roe": {
+   "tier": "common",
+   "score": 0.452,
+   "usd": 0.11,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "fin": {
+   "tier": "common",
+   "score": 0.446,
+   "usd": 0.18,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "ltr": {
+   "tier": "common",
+   "score": 0.443,
+   "usd": 0.19,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "hml": {
+   "tier": "common",
+   "score": 0.44,
+   "usd": 0.15,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "tsp": {
+   "tier": "common",
+   "score": 0.426,
+   "usd": 0.14,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "gpt": {
+   "tier": "common",
+   "score": 0.426,
+   "usd": 0.1,
+   "eur": 0.12,
+   "sampled": 25
+  },
+  "m10": {
+   "tier": "common",
+   "score": 0.417,
+   "usd": 0.12,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "snc": {
+   "tier": "common",
+   "score": 0.414,
+   "usd": 0.18,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "ala": {
+   "tier": "common",
+   "score": 0.411,
+   "usd": 0.12,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "lgn": {
+   "tier": "common",
+   "score": 0.408,
+   "usd": 0.15,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "neo": {
+   "tier": "common",
+   "score": 0.408,
+   "usd": 0.18,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "dis": {
+   "tier": "common",
+   "score": 0.399,
+   "usd": 0.12,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "m12": {
+   "tier": "common",
+   "score": 0.396,
+   "usd": 0.13,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "bro": {
+   "tier": "common",
+   "score": 0.396,
+   "usd": 0.15,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "m19": {
+   "tier": "common",
+   "score": 0.384,
+   "usd": 0.13,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "m21": {
+   "tier": "common",
+   "score": 0.384,
+   "usd": 0.17,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "otj": {
+   "tier": "common",
+   "score": 0.378,
+   "usd": 0.16,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "war": {
+   "tier": "common",
+   "score": 0.375,
+   "usd": 0.15,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "msh": {
+   "tier": "common",
+   "score": 0.375,
+   "usd": 0.14,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "4ed": {
+   "tier": "common",
+   "score": 0.372,
+   "usd": 0.12,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "5dn": {
+   "tier": "common",
+   "score": 0.369,
+   "usd": 0.16,
+   "eur": 0.07,
    "sampled": 25
   },
   "dft": {
    "tier": "common",
-   "score": 0.438,
+   "score": 0.369,
    "usd": 0.18,
    "eur": 0.04,
    "sampled": 25
   },
-  "isd": {
+  "mid": {
    "tier": "common",
-   "score": 0.344,
+   "score": 0.366,
+   "usd": 0.17,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "eoe": {
+   "tier": "common",
+   "score": 0.363,
+   "usd": 0.14,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "jud": {
+   "tier": "common",
+   "score": 0.36,
+   "usd": 0.16,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "m14": {
+   "tier": "common",
+   "score": 0.357,
    "usd": 0.13,
    "eur": 0.08,
    "sampled": 25
   },
-  "dsk": {
+  "mbs": {
    "tier": "common",
-   "score": 0.281,
+   "score": 0.348,
+   "usd": 0.09,
+   "eur": 0.1,
+   "sampled": 25
+  },
+  "ust": {
+   "tier": "common",
+   "score": 0.342,
+   "usd": 0.12,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "isd": {
+   "tier": "common",
+   "score": 0.336,
+   "usd": 0.13,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "hob": {
+   "tier": "common",
+   "score": 0.333,
+   "usd": 0.15,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "xln": {
+   "tier": "common",
+   "score": 0.327,
+   "usd": 0.16,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "thb": {
+   "tier": "common",
+   "score": 0.321,
+   "usd": 0.16,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "tla": {
+   "tier": "common",
+   "score": 0.321,
+   "usd": 0.15,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "rna": {
+   "tier": "common",
+   "score": 0.318,
+   "usd": 0.14,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "gtc": {
+   "tier": "common",
+   "score": 0.315,
+   "usd": 0.12,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "bbd": {
+   "tier": "common",
+   "score": 0.313,
+   "usd": 0.11,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "hou": {
+   "tier": "common",
+   "score": 0.31,
+   "usd": 0.14,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "stx": {
+   "tier": "common",
+   "score": 0.307,
+   "usd": 0.16,
+   "eur": 0.04,
+   "sampled": 25
+  },
+  "jou": {
+   "tier": "common",
+   "score": 0.292,
+   "usd": 0.11,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "dgm": {
+   "tier": "common",
+   "score": 0.28,
+   "usd": 0.11,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "8ed": {
+   "tier": "common",
+   "score": 0.277,
+   "usd": 0.09,
+   "eur": 0.09,
+   "sampled": 25
+  },
+  "kld": {
+   "tier": "common",
+   "score": 0.274,
+   "usd": 0.1,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "spm": {
+   "tier": "common",
+   "score": 0.271,
    "usd": 0.14,
    "eur": 0.06,
    "sampled": 25
   },
-  "ktk": {
+  "ecl": {
    "tier": "common",
-   "score": 0.219,
-   "usd": 0.07,
-   "eur": 0.08,
+   "score": 0.271,
+   "usd": 0.15,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "bng": {
+   "tier": "common",
+   "score": 0.265,
+   "usd": 0.13,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "dsk": {
+   "tier": "common",
+   "score": 0.256,
+   "usd": 0.14,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "pcy": {
+   "tier": "common",
+   "score": 0.253,
+   "usd": 0.14,
+   "eur": 0.07,
    "sampled": 25
   },
   "mkm": {
    "tier": "common",
-   "score": 0.219,
+   "score": 0.247,
    "usd": 0.14,
    "eur": 0.06,
    "sampled": 25
   },
+  "emn": {
+   "tier": "common",
+   "score": 0.247,
+   "usd": 0.11,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "tdm": {
+   "tier": "common",
+   "score": 0.241,
+   "usd": 0.15,
+   "eur": 0.04,
+   "sampled": 25
+  },
+  "avr": {
+   "tier": "common",
+   "score": 0.238,
+   "usd": 0.09,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "ths": {
+   "tier": "common",
+   "score": 0.217,
+   "usd": 0.07,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "aer": {
+   "tier": "common",
+   "score": 0.211,
+   "usd": 0.11,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "tmt": {
+   "tier": "common",
+   "score": 0.208,
+   "usd": 0.12,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "cn2": {
+   "tier": "common",
+   "score": 0.205,
+   "usd": 0.11,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "chk": {
+   "tier": "common",
+   "score": 0.199,
+   "usd": 0.12,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "ktk": {
+   "tier": "common",
+   "score": 0.193,
+   "usd": 0.07,
+   "eur": 0.08,
+   "sampled": 25
+  },
+  "akh": {
+   "tier": "common",
+   "score": 0.19,
+   "usd": 0.1,
+   "eur": 0.07,
+   "sampled": 25
+  },
   "ons": {
    "tier": "common",
-   "score": 0.188,
+   "score": 0.19,
    "usd": 0.12,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "rtr": {
+   "tier": "common",
+   "score": 0.182,
+   "usd": 0.11,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "rix": {
+   "tier": "common",
+   "score": 0.179,
+   "usd": 0.09,
    "eur": 0.07,
    "sampled": 25
   },
   "eld": {
    "tier": "common",
-   "score": 0.125,
+   "score": 0.176,
    "usd": 0.14,
    "eur": 0.04,
+   "sampled": 25
+  },
+  "10e": {
+   "tier": "common",
+   "score": 0.17,
+   "usd": 0.11,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "ima": {
+   "tier": "common",
+   "score": 0.155,
+   "usd": 0.12,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "con": {
+   "tier": "common",
+   "score": 0.14,
+   "usd": 0.09,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "ogw": {
+   "tier": "common",
+   "score": 0.14,
+   "usd": 0.07,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "znr": {
+   "tier": "common",
+   "score": 0.14,
+   "usd": 0.12,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "bfz": {
+   "tier": "common",
+   "score": 0.134,
+   "usd": 0.07,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "m15": {
+   "tier": "common",
+   "score": 0.125,
+   "usd": 0.07,
+   "eur": 0.07,
+   "sampled": 25
+  },
+  "ori": {
+   "tier": "common",
+   "score": 0.086,
+   "usd": 0.1,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "grn": {
+   "tier": "common",
+   "score": 0.086,
+   "usd": 0.09,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "9ed": {
+   "tier": "common",
+   "score": 0.054,
+   "usd": 0.1,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "frf": {
+   "tier": "common",
+   "score": 0.054,
+   "usd": 0.08,
+   "eur": 0.06,
+   "sampled": 25
+  },
+  "dtk": {
+   "tier": "common",
+   "score": 0.036,
+   "usd": 0.08,
+   "eur": 0.05,
+   "sampled": 25
+  },
+  "soi": {
+   "tier": "common",
+   "score": 0.033,
+   "usd": 0.07,
+   "eur": 0.05,
    "sampled": 25
   }
  }

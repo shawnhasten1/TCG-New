@@ -70,14 +70,18 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
   const cards = profile.includeBasicEnergy ? imaged : imaged.filter((c) => !isFillerEnergy(c));
   const variantDataMissing = !profile.variantsKnown && !cards.some((c) => c.variants.holo || c.variants.reverse);
   const pools = new Map<string, Card[]>();
-  const slots: PreparedSlot[] = profile.slots.map((slot) => {
+  const fill = (from: Record<string, number>) => {
     const table: Record<string, number> = {};
-    for (const [selector, weight] of Object.entries(slot.table)) {
+    for (const [selector, weight] of Object.entries(from)) {
       if (!(weight > 0)) continue;
       if (!pools.has(selector)) pools.set(selector, selectPool(selector, cards, profile, variantDataMissing));
       if (pools.get(selector)!.length) table[selector] = weight;
     }
-    return { slot, table };
+    return table;
+  };
+  const slots: PreparedSlot[] = profile.slots.map((slot) => {
+    const table = fill(slot.table);
+    return { slot, table: !Object.keys(table).length && slot.fallback ? fill(slot.fallback) : table };
   });
 
   const reachable = new Set<string>();

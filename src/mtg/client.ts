@@ -3,6 +3,7 @@
 import type { CardPricing } from "../api/tcgdex";
 import type { CardWithSet, SetData, SetSummary } from "../api/types";
 import { cache } from "../app/client";
+import { MTG_SETS_SIGNATURE } from "./sets";
 
 /** Bump with the Worker's SET_VERSION. */
 const key = (id: string) => `mtg:set:${id}:v3`;
@@ -22,13 +23,16 @@ export const forgetMtgSet = (id: string) => cache.delete(key(id));
 
 let setsLoading: Promise<SetSummary[]> | undefined;
 
-/** Every Magic set, as the set list shows it. Kept for the day once the Worker has every set's card counts. */
+/**
+ * Every Magic set, as the set list shows it. Kept for the day once the Worker has every set's card counts. The set
+ * list's signature is in the key and the URL, so adding sets refreshes it here and in the browser's HTTP cache.
+ */
 export function getMtgSets(): Promise<SetSummary[]> {
   setsLoading ??= (async () => {
-    const key = `mtg:sets:${today()}`;
+    const key = `mtg:sets:${MTG_SETS_SIGNATURE}:${today()}`;
     const hit = await cache.get<SetSummary[]>(key);
     if (hit) return hit;
-    const res = await fetch("/api/mtg/sets");
+    const res = await fetch(`/api/mtg/sets?v=${MTG_SETS_SIGNATURE}`);
     if (!res.ok) throw new Error(((await res.json().catch(() => ({}))) as { error?: string }).error ?? `Couldn't load the sets (${res.status}).`);
     const sets = (await res.json()) as SetSummary[];
     if (sets.every((s) => s.cardCount.total)) await cache.set(key, sets);
@@ -77,12 +81,12 @@ export async function cachedMtgCardPricing(ids: string[]): Promise<Map<string, C
   return out;
 }
 
-/** Every printing of a card among the sets here, newest set first (worker/mtg.ts). Kept for the day. */
+/** Every printing of a card among the sets here, newest set first (worker/mtg.ts). Kept for the day, or until sets are added. */
 export async function getMtgPrintings(oracleId: string): Promise<CardWithSet[]> {
-  const key = `mtg:printings:${oracleId}:${today()}`;
+  const key = `mtg:printings:${oracleId}:${MTG_SETS_SIGNATURE}:${today()}`;
   const hit = await cache.get<CardWithSet[]>(key);
   if (hit) return hit;
-  const res = await fetch(`/api/mtg/printings/${encodeURIComponent(oracleId)}`);
+  const res = await fetch(`/api/mtg/printings/${encodeURIComponent(oracleId)}?v=${MTG_SETS_SIGNATURE}`);
   if (!res.ok) throw new Error(((await res.json().catch(() => ({}))) as { error?: string }).error ?? `Couldn't load the printings (${res.status}).`);
   const printings = (await res.json()) as CardWithSet[];
   await cache.set(key, printings);

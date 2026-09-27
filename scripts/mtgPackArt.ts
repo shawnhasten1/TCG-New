@@ -1,6 +1,7 @@
 // Writes src/mtg/packArt.json: the designs each Magic set's packs come in. Magic has no pack photos (yet), so wrappers
 // are drawn (src/mtg/wrapper.ts), each around the art of one of the set's cards, as real boosters feature their sets'
-// cards. For each set it picks up to ARTS rares and mythics from the main set, the most valuable first, one per name.
+// cards. For each set it picks up to ARTS rares and mythics (uncommons if it has none) from the main set, the most
+// valuable first, one per name.
 // Packs keep the design they came in (by collector number), so re-running only adds designs for new sets: a set
 // already in the file keeps its designs.
 // Usage: npm run mtg-pack-art   (after adding sets; Scryfall's answers are cached per day in .cache)
@@ -27,9 +28,10 @@ for (const set of MTG_SETS) {
   const value = (c: (typeof raw)[number]) => Math.max(Number(c.prices?.usd ?? 0), Number(c.prices?.eur ?? 0) * USD_PER_EUR, Number(c.prices?.usd_foil ?? 0) / 3);
   const picks: MtgArt[] = [];
   const names = new Set<string>();
-  for (const c of raw
-    .filter((c) => (c.rarity === "rare" || c.rarity === "mythic") && /^\d+$/.test(c.collector_number) && Number(c.collector_number) <= official)
-    .sort((a, b) => value(b) - value(a))) {
+  const main = raw.filter((c) => /^\d+$/.test(c.collector_number) && Number(c.collector_number) <= official);
+  // Renaissance has no rares, so its uncommons stand in.
+  const rares = main.filter((c) => c.rarity === "rare" || c.rarity === "mythic");
+  for (const c of (rares.length ? rares : main.filter((c) => c.rarity === "uncommon")).sort((a, b) => value(b) - value(a))) {
     if (picks.length >= ARTS) break;
     if (names.has(c.name)) continue;
     names.add(c.name);

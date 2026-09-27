@@ -13,7 +13,7 @@ import { mtgArt, mtgPickPackArt, WRAPPER_VERSION } from "../src/mtg/packArt";
 import { renderWrapper } from "../src/mtg/wrapper";
 import { pickRandomSet } from "../src/engine/randomSet";
 import { pityFloor } from "../src/engine/setRarity";
-import { boosterEra, MTG_ERAS, MTG_SETS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier, type MtgSet } from "../src/mtg/sets";
+import { boosterEra, MTG_ERAS, MTG_SETS, MTG_SETS_SIGNATURE, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier, type MtgSet } from "../src/mtg/sets";
 import type { SyncCard } from "../src/sync/protocol";
 import { d1Cache, pruneDailyEntries } from "./cache";
 import { scryfall } from "./scryfall";
@@ -169,26 +169,19 @@ export async function handleMtg(ctx: Ctx): Promise<Response> {
   throw new HttpError(404, "Not found");
 }
 
-/** Changes whenever MTG_SETS does, so a card's printings are looked up again when sets are added. */
-const setsSignature = (() => {
-  let h = 0;
-  for (const c of MTG_SETS.map((s) => s.id).join(",")) h = (h * 31 + c.charCodeAt(0)) | 0;
-  return (h >>> 0).toString(36);
-})();
-
 /**
  * Every printing of a card (by Scryfall's oracle id) among the sets packs come from, newest set first. One Scryfall
  * search finds them however many sets there are; the answer is kept in D1 until the set list changes.
  */
 export async function mtgPrintings(env: Env, oracleId: string): Promise<CardWithSet[]> {
   const cache = d1Cache(env.DB);
-  const key = `mtg:printings:${oracleId}:v${SET_VERSION}:${setsSignature}`;
+  const key = `mtg:printings:${oracleId}:v${SET_VERSION}:${MTG_SETS_SIGNATURE}`;
   const hit = await cache.get<CardWithSet[]>(key);
   if (hit) return hit;
   let raw: RawCard[];
   try {
-    // Only the sets here: a basic land has been printed in hundreds, and every page of them is another request.
-    raw = await searchCards(`oracleid:${oracleId} is:booster (${MTG_SETS.map((s) => `set:${s.id}`).join(" or ")})`, scryfall(env));
+    // Nearly every booster set is here, so naming them all would only make the query long; the rest are filtered out below.
+    raw = await searchCards(`oracleid:${oracleId} is:booster -is:digital`, scryfall(env));
   } catch (err) {
     console.error(`Couldn't look up the printings of ${oracleId}`, err);
     throw new HttpError(503, "Couldn't reach the card database. Try again in a moment.");

@@ -23,6 +23,8 @@ export interface SlotProfile {
   finish?: FinishOdds;
   /** Per-selector finish odds, e.g. { "Ultra Rare": { "holo": 1 } }. Wins over `finish`. */
   finishOverrides?: Record<string, FinishOdds>;
+  /** Used instead of `table` when none of its selectors match a card in the set (a Magic set with no basic lands). */
+  fallback?: Record<string, number>;
 }
 
 /**
