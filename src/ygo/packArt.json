@@ -4,8 +4,8 @@
    "id": "1",
    "name": "Legend of Blue Eyes White Dragon",
    "src": "/packs/ygo/LOB-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/LOB.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:LOB-BoosterNA.png"
   }
  ],
  "MRD": [
@@ -13,8 +13,8 @@
    "id": "1",
    "name": "Metal Raiders",
    "src": "/packs/ygo/MRD-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/MRD.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:MRD-BoosterNA.png"
   }
  ],
  "SRL": [
@@ -22,8 +22,8 @@
    "id": "1",
    "name": "Spell Ruler",
    "src": "/packs/ygo/SRL-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/SRL.jpg"
+   "aspect": 0.545,
+   "source": "https://yugipedia.com/wiki/File:SRL-BoosterNA.png"
   }
  ],
  "PSV": [
@@ -31,8 +31,8 @@
    "id": "1",
    "name": "Pharaoh's Servant",
    "src": "/packs/ygo/PSV-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/PSV.jpg"
+   "aspect": 0.57,
+   "source": "https://yugipedia.com/wiki/File:PSV-BoosterNA.png"
   }
  ],
  "LON": [
@@ -40,8 +40,8 @@
    "id": "1",
    "name": "Labyrinth of Nightmare",
    "src": "/packs/ygo/LON-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/LON.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:LON-BoosterNA.png"
   }
  ],
  "LOD": [
@@ -49,8 +49,8 @@
    "id": "1",
    "name": "Legacy of Darkness",
    "src": "/packs/ygo/LOD-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/LOD.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:LOD-BoosterNA.png"
   }
  ],
  "PGD": [
@@ -58,8 +58,8 @@
    "id": "1",
    "name": "Pharaonic Guardian",
    "src": "/packs/ygo/PGD-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/PGD.jpg"
+   "aspect": 0.545,
+   "source": "https://yugipedia.com/wiki/File:PGD-BoosterNA.png"
   }
  ],
  "MFC": [
@@ -67,8 +67,8 @@
    "id": "1",
    "name": "Magician's Force",
    "src": "/packs/ygo/MFC-1.webp",
-   "aspect": 0.578,
-   "source": "https://images.ygoprodeck.com/images/sets/MFC.jpg"
+   "aspect": 0.577,
+   "source": "https://yugipedia.com/wiki/File:MFC-BoosterNA.png"
   }
  ],
  "DCR": [
@@ -76,8 +76,8 @@
    "id": "1",
    "name": "Dark Crisis",
    "src": "/packs/ygo/DCR-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/DCR.jpg"
+   "aspect": 0.571,
+   "source": "https://yugipedia.com/wiki/File:DCR-BoosterNA.png"
   }
  ],
  "IOC": [
@@ -86,7 +86,7 @@
    "name": "Invasion of Chaos",
    "src": "/packs/ygo/IOC-1.webp",
    "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/IOC.jpg"
+   "source": "https://yugipedia.com/wiki/File:IOC-BoosterNA.png"
   }
  ],
  "AST": [
@@ -94,8 +94,8 @@
    "id": "1",
    "name": "Ancient Sanctuary",
    "src": "/packs/ygo/AST-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/AST.jpg"
+   "aspect": 0.554,
+   "source": "https://yugipedia.com/wiki/File:AST-BoosterEN.png"
   }
  ],
  "SOD": [
@@ -103,8 +103,8 @@
    "id": "1",
    "name": "Soul of the Duelist",
    "src": "/packs/ygo/SOD-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/SOD.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:SOD-BoosterEN.png"
   }
  ],
  "RDS": [
@@ -112,8 +112,8 @@
    "id": "1",
    "name": "Rise of Destiny",
    "src": "/packs/ygo/RDS-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/RDS.jpg"
+   "aspect": 0.566,
+   "source": "https://yugipedia.com/wiki/File:RDS-BoosterEN.png"
   }
  ],
  "FET": [
@@ -121,8 +121,8 @@
    "id": "1",
    "name": "Flaming Eternity",
    "src": "/packs/ygo/FET-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/FET.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:FET-BoosterEN.png"
   }
  ],
  "TLM": [
@@ -130,8 +130,8 @@
    "id": "1",
    "name": "The Lost Millennium",
    "src": "/packs/ygo/TLM-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/TLM.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:TLM-BoosterEN.png"
   }
  ],
  "CRV": [
@@ -139,8 +139,8 @@
    "id": "1",
    "name": "Cybernetic Revolution",
    "src": "/packs/ygo/CRV-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/CRV.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:CRV-BoosterEN.png"
   }
  ],
  "EEN": [
@@ -148,8 +148,8 @@
    "id": "1",
    "name": "Elemental Energy",
    "src": "/packs/ygo/EEN-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/EEN.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:EEN-BoosterEN.png"
   }
  ],
  "DP1": [
@@ -157,8 +157,8 @@
    "id": "1",
    "name": "Duelist Pack: Jaden Yuki",
    "src": "/packs/ygo/DP1-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/DP1.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:DP1-BoosterEN.jpg"
   }
  ],
  "DP2": [
@@ -166,8 +166,8 @@
    "id": "1",
    "name": "Duelist Pack: Chazz Princeton",
    "src": "/packs/ygo/DP2-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/DP2.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:DP2-BoosterEN.jpg"
   }
  ],
  "SOI": [
@@ -175,8 +175,8 @@
    "id": "1",
    "name": "Shadow of Infinity",
    "src": "/packs/ygo/SOI-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/SOI.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:SOI-BoosterEN.png"
   }
  ],
  "EOJ": [
@@ -184,8 +184,8 @@
    "id": "1",
    "name": "Enemy of Justice",
    "src": "/packs/ygo/EOJ-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/EOJ.jpg"
+   "aspect": 0.558,
+   "source": "https://yugipedia.com/wiki/File:EOJ-BoosterEN.png"
   }
  ],
  "POTD": [
@@ -193,8 +193,8 @@
    "id": "1",
    "name": "Power of the Duelist",
    "src": "/packs/ygo/POTD-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/POTD.jpg"
+   "aspect": 0.566,
+   "source": "https://yugipedia.com/wiki/File:POTD-BoosterEN.png"
   }
  ],
  "CDIP": [
@@ -202,8 +202,8 @@
    "id": "1",
    "name": "Cyberdark Impact",
    "src": "/packs/ygo/CDIP-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/CDIP.jpg"
+   "aspect": 0.571,
+   "source": "https://yugipedia.com/wiki/File:CDIP-BoosterEN.png"
   }
  ],
  "DP03": [
@@ -211,8 +211,8 @@
    "id": "1",
    "name": "Duelist Pack: Jaden Yuki 2",
    "src": "/packs/ygo/DP03-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/DP03.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:DP03-BoosterEN.png"
   }
  ],
  "DP05": [
@@ -220,8 +220,8 @@
    "id": "1",
    "name": "Duelist Pack: Aster Phoenix",
    "src": "/packs/ygo/DP05-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/DP05.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:DP05-BoosterEN.jpg"
   }
  ],
  "STON": [
@@ -229,8 +229,8 @@
    "id": "1",
    "name": "Strike of Neos",
    "src": "/packs/ygo/STON-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/STON.jpg"
+   "aspect": 0.583,
+   "source": "https://yugipedia.com/wiki/File:STON-BoosterEN.png"
   }
  ],
  "DP04": [
@@ -238,8 +238,8 @@
    "id": "1",
    "name": "Duelist Pack: Zane Truesdale",
    "src": "/packs/ygo/DP04-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/DP04.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:DP04-BoosterEN.jpg"
   }
  ],
  "FOTB": [
@@ -247,8 +247,8 @@
    "id": "1",
    "name": "Force of the Breaker",
    "src": "/packs/ygo/FOTB-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/FOTB.jpg"
+   "aspect": 0.573,
+   "source": "https://yugipedia.com/wiki/File:FOTB-BoosterEN.png"
   }
  ],
  "TAEV": [
@@ -257,7 +257,7 @@
    "name": "Tactical Evolution",
    "src": "/packs/ygo/TAEV-1.webp",
    "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/TAEV.jpg"
+   "source": "https://yugipedia.com/wiki/File:TAEV-BoosterEN.png"
   }
  ],
  "GLAS": [
@@ -265,8 +265,8 @@
    "id": "1",
    "name": "Gladiator's Assault",
    "src": "/packs/ygo/GLAS-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/GLAS.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:GLAS-BoosterEN.png"
   }
  ],
  "DP06": [
@@ -274,8 +274,8 @@
    "id": "1",
    "name": "Duelist Pack: Jaden Yuki 3",
    "src": "/packs/ygo/DP06-1.webp",
-   "aspect": 0.535,
-   "source": "https://images.ygoprodeck.com/images/sets/DP06.jpg"
+   "aspect": 0.525,
+   "source": "https://yugipedia.com/wiki/File:DP06-BoosterEN.jpg"
   }
  ],
  "DP07": [
@@ -284,7 +284,7 @@
    "name": "Duelist Pack: Jesse Anderson",
    "src": "/packs/ygo/DP07-1.webp",
    "aspect": 0.505,
-   "source": "https://images.ygoprodeck.com/images/sets/DP07.jpg"
+   "source": "https://yugipedia.com/wiki/File:DP07-BoosterEN.jpg"
   }
  ],
  "PTDN": [
@@ -293,7 +293,7 @@
    "name": "Phantom Darkness",
    "src": "/packs/ygo/PTDN-1.webp",
    "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/PTDN.jpg"
+   "source": "https://yugipedia.com/wiki/File:PTDN-BoosterEN.png"
   }
  ],
  "LODT": [
@@ -301,8 +301,8 @@
    "id": "1",
    "name": "Light of Destruction",
    "src": "/packs/ygo/LODT-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/LODT.jpg"
+   "aspect": 0.582,
+   "source": "https://yugioh.fandom.com/wiki/File:LODT-BoosterEN.jpg"
   }
  ],
  "RP01": [
@@ -310,8 +310,8 @@
    "id": "1",
    "name": "Retro Pack",
    "src": "/packs/ygo/RP01-1.webp",
-   "aspect": 0.515,
-   "source": "https://images.ygoprodeck.com/images/sets/RP01.jpg"
+   "aspect": 0.566,
+   "source": "https://yugipedia.com/wiki/File:RP01-BoosterNA.png"
   }
  ],
  "TDGS": [
@@ -319,8 +319,8 @@
    "id": "1",
    "name": "The Duelist Genesis",
    "src": "/packs/ygo/TDGS-1.webp",
-   "aspect": 0.585,
-   "source": "https://images.ygoprodeck.com/images/sets/TDGS.jpg"
+   "aspect": 0.583,
+   "source": "https://yugipedia.com/wiki/File:TDGS-BoosterEN.jpg"
   }
  ],
  "CSOC": [
@@ -337,8 +337,8 @@
    "id": "1",
    "name": "Duelist Pack: Yusei",
    "src": "/packs/ygo/DP08-1.webp",
-   "aspect": 0.578,
-   "source": "https://images.ygoprodeck.com/images/sets/DP08.jpg"
+   "aspect": 0.577,
+   "source": "https://yugipedia.com/wiki/File:DP08-BoosterEN.png"
   }
  ],
  "CRMS": [
@@ -346,8 +346,8 @@
    "id": "1",
    "name": "Crimson Crisis",
    "src": "/packs/ygo/CRMS-1.webp",
-   "aspect": 0.585,
-   "source": "https://images.ygoprodeck.com/images/sets/CRMS.jpg"
+   "aspect": 0.58,
+   "source": "https://yugipedia.com/wiki/File:CRMS-BoosterEN.jpg"
   }
  ],
  "RGBT": [
@@ -355,8 +355,8 @@
    "id": "1",
    "name": "Raging Battle",
    "src": "/packs/ygo/RGBT-1.webp",
-   "aspect": 0.585,
-   "source": "https://images.ygoprodeck.com/images/sets/RGBT.jpg"
+   "aspect": 0.582,
+   "source": "https://yugipedia.com/wiki/File:RGBT-BoosterEN.png"
   }
  ],
  "DPYG": [
@@ -364,8 +364,8 @@
    "id": "1",
    "name": "Duelist Pack: Yugi",
    "src": "/packs/ygo/DPYG-1.webp",
-   "aspect": 0.529,
-   "source": "https://images.ygoprodeck.com/images/sets/DPYG.jpg"
+   "aspect": 0.538,
+   "source": "https://yugipedia.com/wiki/File:DPYG-BoosterEN-UE.png"
   }
  ],
  "RP02": [
@@ -373,8 +373,8 @@
    "id": "1",
    "name": "Retro Pack 2",
    "src": "/packs/ygo/RP02-1.webp",
-   "aspect": 0.585,
-   "source": "https://images.ygoprodeck.com/images/sets/RP02.jpg"
+   "aspect": 0.584,
+   "source": "https://yugipedia.com/wiki/File:RP02-BoosterEN.png"
   }
  ],
  "ANPR": [
@@ -382,8 +382,8 @@
    "id": "1",
    "name": "Ancient Prophecy",
    "src": "/packs/ygo/ANPR-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/ANPR.jpg"
+   "aspect": 0.558,
+   "source": "https://yugipedia.com/wiki/File:ANPR-BoosterEN.jpg"
   }
  ],
  "HA01": [
@@ -391,8 +391,8 @@
    "id": "1",
    "name": "Hidden Arsenal",
    "src": "/packs/ygo/HA01-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/HA01.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:HA01-BoosterEN.png"
   }
  ],
  "SOVR": [
@@ -400,8 +400,8 @@
    "id": "1",
    "name": "Stardust Overdrive",
    "src": "/packs/ygo/SOVR-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/SOVR.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:SOVR-BoosterEN.jpg"
   }
  ],
  "DP09": [
@@ -409,8 +409,8 @@
    "id": "1",
    "name": "Duelist Pack: Yusei 2",
    "src": "/packs/ygo/DP09-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/DP09.jpg"
+   "aspect": 0.542,
+   "source": "https://yugipedia.com/wiki/File:DP09-BoosterEN.jpg"
   }
  ],
  "ABPF": [
@@ -418,8 +418,8 @@
    "id": "1",
    "name": "Absolute Powerforce",
    "src": "/packs/ygo/ABPF-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/ABPF.jpg"
+   "aspect": 0.568,
+   "source": "https://yugipedia.com/wiki/File:ABPF-BoosterEN.png"
   }
  ],
  "DPKB": [
@@ -427,8 +427,8 @@
    "id": "1",
    "name": "Duelist Pack: Kaiba",
    "src": "/packs/ygo/DPKB-1.webp",
-   "aspect": 0.518,
-   "source": "https://images.ygoprodeck.com/images/sets/DPKB.jpg"
+   "aspect": 0.548,
+   "source": "https://yugipedia.com/wiki/File:DPKB-BoosterEN-UE.png"
   }
  ],
  "TSHD": [
@@ -436,8 +436,8 @@
    "id": "1",
    "name": "The Shining Darkness",
    "src": "/packs/ygo/TSHD-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/TSHD.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:TSHD-BoosterEN.png"
   }
  ],
  "HA02": [
@@ -445,8 +445,8 @@
    "id": "1",
    "name": "Hidden Arsenal 2",
    "src": "/packs/ygo/HA02-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/HA02.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:HA02-BoosterEN.png"
   }
  ],
  "DREV": [
@@ -454,8 +454,8 @@
    "id": "1",
    "name": "Duelist Revolution",
    "src": "/packs/ygo/DREV-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/DREV.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:DREV-BoosterEN.jpg"
   }
  ],
  "STBL": [
@@ -464,7 +464,7 @@
    "name": "Starstrike Blast",
    "src": "/packs/ygo/STBL-1.webp",
    "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/STBL.jpg"
+   "source": "https://yugipedia.com/wiki/File:STBL-BoosterEN.jpg"
   }
  ],
  "HA03": [
@@ -472,8 +472,8 @@
    "id": "1",
    "name": "Hidden Arsenal 3",
    "src": "/packs/ygo/HA03-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/HA03.jpg"
+   "aspect": 0.54,
+   "source": "https://yugipedia.com/wiki/File:HA03-BoosterEN.png"
   }
  ],
  "DP10": [
@@ -482,7 +482,7 @@
    "name": "Duelist Pack: Yusei 3",
    "src": "/packs/ygo/DP10-1.webp",
    "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/DP10.jpg"
+   "source": "https://yugipedia.com/wiki/File:DP10-BoosterEN.png"
   }
  ],
  "STOR": [
@@ -490,8 +490,8 @@
    "id": "1",
    "name": "Storm of Ragnarok",
    "src": "/packs/ygo/STOR-1.webp",
-   "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/STOR.jpg"
+   "aspect": 0.57,
+   "source": "https://yugipedia.com/wiki/File:STOR-BoosterEN.png"
   }
  ],
  "HA04": [
@@ -499,8 +499,8 @@
    "id": "1",
    "name": "Hidden Arsenal 4: Trishula's Triumph",
    "src": "/packs/ygo/HA04-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/HA04.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:HA04-BoosterEN.png"
   }
  ],
  "EXVC": [
@@ -509,7 +509,7 @@
    "name": "Extreme Victory",
    "src": "/packs/ygo/EXVC-1.webp",
    "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/EXVC.jpg"
+   "source": "https://yugipedia.com/wiki/File:EXVC-BoosterEN.png"
   }
  ],
  "DP11": [
@@ -517,8 +517,8 @@
    "id": "1",
    "name": "Duelist Pack: Crow",
    "src": "/packs/ygo/DP11-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/DP11.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:DP11-BoosterEN.png"
   }
  ],
  "GENF": [
@@ -526,8 +526,8 @@
    "id": "1",
    "name": "Generation Force",
    "src": "/packs/ygo/GENF-1.webp",
-   "aspect": 0.549,
-   "source": "https://images.ygoprodeck.com/images/sets/GENF.jpg"
+   "aspect": 0.573,
+   "source": "https://yugipedia.com/wiki/File:GENF-BoosterEN.png"
   }
  ],
  "PHSW": [
@@ -535,8 +535,8 @@
    "id": "1",
    "name": "Photon Shockwave",
    "src": "/packs/ygo/PHSW-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/PHSW.jpg"
+   "aspect": 0.541,
+   "source": "https://yugipedia.com/wiki/File:PHSW-BoosterEN.png"
   }
  ],
  "HA05": [
@@ -544,8 +544,8 @@
    "id": "1",
    "name": "Hidden Arsenal 5: Steelswarm Invasion",
    "src": "/packs/ygo/HA05-1.webp",
-   "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/HA05.jpg"
+   "aspect": 0.544,
+   "source": "https://yugipedia.com/wiki/File:HA05-BoosterEN.png"
   }
  ],
  "ORCS": [
@@ -553,8 +553,8 @@
    "id": "1",
    "name": "Order of Chaos",
    "src": "/packs/ygo/ORCS-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/ORCS.jpg"
+   "aspect": 0.541,
+   "source": "https://yugipedia.com/wiki/File:ORCS-BoosterEN.png"
   }
  ],
  "RYMP": [
@@ -562,8 +562,8 @@
    "id": "1",
    "name": "Ra Yellow Mega Pack",
    "src": "/packs/ygo/RYMP-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/RYMP.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:RYMP-BoosterEN.png"
   }
  ],
  "GAOV": [
@@ -572,7 +572,7 @@
    "name": "Galactic Overlord",
    "src": "/packs/ygo/GAOV-1.webp",
    "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/GAOV.jpg"
+   "source": "https://yugipedia.com/wiki/File:GAOV-BoosterEN.png"
   }
  ],
  "BP01": [
@@ -580,8 +580,8 @@
    "id": "1",
    "name": "Battle Pack: Epic Dawn",
    "src": "/packs/ygo/BP01-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/BP01.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:BP01-BoosterEN.png"
   }
  ],
  "HA06": [
@@ -589,8 +589,8 @@
    "id": "1",
    "name": "Hidden Arsenal 6: Omega Xyz",
    "src": "/packs/ygo/HA06-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/HA06.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:HA06-BoosterEN.png"
   }
  ],
  "REDU": [
@@ -598,8 +598,8 @@
    "id": "1",
    "name": "Return of the Duelist",
    "src": "/packs/ygo/REDU-1.webp",
-   "aspect": 0.549,
-   "source": "https://images.ygoprodeck.com/images/sets/REDU.jpg"
+   "aspect": 0.548,
+   "source": "https://yugipedia.com/wiki/File:REDU-BoosterEN.png"
   }
  ],
  "ABYR": [
@@ -607,8 +607,8 @@
    "id": "1",
    "name": "Abyss Rising",
    "src": "/packs/ygo/ABYR-1.webp",
-   "aspect": 0.538,
-   "source": "https://images.ygoprodeck.com/images/sets/ABYR.jpg"
+   "aspect": 0.537,
+   "source": "https://yugipedia.com/wiki/File:ABYR-BoosterEN.png"
   }
  ],
  "CBLZ": [
@@ -616,8 +616,8 @@
    "id": "1",
    "name": "Cosmo Blazer",
    "src": "/packs/ygo/CBLZ-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/CBLZ.jpg"
+   "aspect": 0.554,
+   "source": "https://yugipedia.com/wiki/File:CBLZ-BoosterEN.png"
   }
  ],
  "SP13": [
@@ -625,8 +625,8 @@
    "id": "1",
    "name": "Star Pack 2013",
    "src": "/packs/ygo/SP13-1.webp",
-   "aspect": 0.552,
-   "source": "https://images.ygoprodeck.com/images/sets/SP13.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:SP13-BoosterEN.png"
   }
  ],
  "HA07": [
@@ -634,8 +634,8 @@
    "id": "1",
    "name": "Hidden Arsenal 7: Knight of Stars",
    "src": "/packs/ygo/HA07-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/HA07.jpg"
+   "aspect": 0.538,
+   "source": "https://yugipedia.com/wiki/File:HA07-BoosterEN.png"
   }
  ],
  "LTGY": [
@@ -643,8 +643,8 @@
    "id": "1",
    "name": "Lord of the Tachyon Galaxy",
    "src": "/packs/ygo/LTGY-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/LTGY.jpg"
+   "aspect": 0.549,
+   "source": "https://yugipedia.com/wiki/File:LTGY-BoosterEN.png"
   }
  ],
  "BP02": [
@@ -661,8 +661,8 @@
    "id": "1",
    "name": "Number Hunters",
    "src": "/packs/ygo/NUMH-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/NUMH.jpg"
+   "aspect": 0.554,
+   "source": "https://yugipedia.com/wiki/File:NUMH-BoosterEN.png"
   }
  ],
  "JOTL": [
@@ -670,8 +670,8 @@
    "id": "1",
    "name": "Judgment of the Light",
    "src": "/packs/ygo/JOTL-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/JOTL.jpg"
+   "aspect": 0.54,
+   "source": "https://yugipedia.com/wiki/File:JOTL-BoosterEN.png"
   }
  ],
  "SHSP": [
@@ -679,8 +679,8 @@
    "id": "1",
    "name": "Shadow Specters",
    "src": "/packs/ygo/SHSP-1.webp",
-   "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/SHSP.jpg"
+   "aspect": 0.545,
+   "source": "https://yugipedia.com/wiki/File:SHSP-BoosterEN.png"
   }
  ],
  "BPW2": [
@@ -688,8 +688,8 @@
    "id": "1",
    "name": "War of the Giants: Round 2",
    "src": "/packs/ygo/BPW2-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/BPW2.jpg"
+   "aspect": 0.592,
+   "source": "https://yugipedia.com/wiki/File:BPW2-BoosterNA.png"
   }
  ],
  "LVAL": [
@@ -697,8 +697,8 @@
    "id": "1",
    "name": "Legacy of the Valiant",
    "src": "/packs/ygo/LVAL-1.webp",
-   "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/LVAL.jpg"
+   "aspect": 0.544,
+   "source": "https://yugipedia.com/wiki/File:LVAL-BoosterEN.png"
   }
  ],
  "SP14": [
@@ -707,7 +707,7 @@
    "name": "Star Pack 2014",
    "src": "/packs/ygo/SP14-1.webp",
    "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/SP14.jpg"
+   "source": "https://yugipedia.com/wiki/File:SP14-BoosterEN.png"
   }
  ],
  "DRLG": [
@@ -715,8 +715,8 @@
    "id": "1",
    "name": "Dragons of Legend",
    "src": "/packs/ygo/DRLG-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/DRLG.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:DRLG-BoosterEN.png"
   }
  ],
  "PRIO": [
@@ -724,8 +724,8 @@
    "id": "1",
    "name": "Primal Origin",
    "src": "/packs/ygo/PRIO-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/PRIO.jpg"
+   "aspect": 0.539,
+   "source": "https://yugipedia.com/wiki/File:PRIO-BoosterEN.png"
   }
  ],
  "BP03": [
@@ -742,8 +742,8 @@
    "id": "1",
    "name": "Duelist Alliance",
    "src": "/packs/ygo/DUEA-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/DUEA.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:DUEA-BoosterEN.png"
   }
  ],
  "NECH": [
@@ -751,8 +751,8 @@
    "id": "1",
    "name": "The New Challengers",
    "src": "/packs/ygo/NECH-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/NECH.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:NECH-BoosterEN.png"
   }
  ],
  "SECE": [
@@ -760,8 +760,8 @@
    "id": "1",
    "name": "Secrets of Eternity",
    "src": "/packs/ygo/SECE-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/SECE.jpg"
+   "aspect": 0.566,
+   "source": "https://yugipedia.com/wiki/File:SECE-BoosterEN.png"
   }
  ],
  "THSF": [
@@ -769,8 +769,8 @@
    "id": "1",
    "name": "The Secret Forces",
    "src": "/packs/ygo/THSF-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/THSF.jpg"
+   "aspect": 0.556,
+   "source": "https://yugipedia.com/wiki/File:THSF-BoosterEN.png"
   }
  ],
  "WSUP": [
@@ -778,8 +778,8 @@
    "id": "1",
    "name": "World Superstars",
    "src": "/packs/ygo/WSUP-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/WSUP.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:WSUP-BoosterEN.png"
   }
  ],
  "CROS": [
@@ -787,8 +787,8 @@
    "id": "1",
    "name": "Crossed Souls",
    "src": "/packs/ygo/CROS-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/CROS.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:CROS-BoosterEN.png"
   }
  ],
  "SP15": [
@@ -796,8 +796,8 @@
    "id": "1",
    "name": "Star Pack ARC-V",
    "src": "/packs/ygo/SP15-1.webp",
-   "aspect": 0.569,
-   "source": "https://images.ygoprodeck.com/images/sets/SP15.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:SP15-BoosterEN.png"
   }
  ],
  "DPBC": [
@@ -805,8 +805,8 @@
    "id": "1",
    "name": "Duelist Pack: Battle City",
    "src": "/packs/ygo/DPBC-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/DPBC.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:DPBC-BoosterEN.png"
   }
  ],
  "DRL2": [
@@ -814,8 +814,8 @@
    "id": "1",
    "name": "Dragons of Legend 2",
    "src": "/packs/ygo/DRL2-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/DRL2.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:DRL2-BoosterEN.png"
   }
  ],
  "CORE": [
@@ -823,8 +823,8 @@
    "id": "1",
    "name": "Clash of Rebellions",
    "src": "/packs/ygo/CORE-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/CORE.jpg"
+   "aspect": 0.548,
+   "source": "https://yugipedia.com/wiki/File:CORE-BoosterEN.png"
   }
  ],
  "HSRD": [
@@ -833,7 +833,7 @@
    "name": "High-Speed Riders",
    "src": "/packs/ygo/HSRD-1.webp",
    "aspect": 0.564,
-   "source": "https://images.ygoprodeck.com/images/sets/HSRD.jpg"
+   "source": "https://yugipedia.com/wiki/File:HSRD-BoosterEN.png"
   }
  ],
  "DOCS": [
@@ -841,8 +841,8 @@
    "id": "1",
    "name": "Dimension of Chaos",
    "src": "/packs/ygo/DOCS-1.webp",
-   "aspect": 0.564,
-   "source": "https://images.ygoprodeck.com/images/sets/DOCS.jpg"
+   "aspect": 0.545,
+   "source": "https://yugipedia.com/wiki/File:DOCS-BoosterEN.png"
   }
  ],
  "BOSH": [
@@ -850,8 +850,8 @@
    "id": "1",
    "name": "Breakers of Shadow",
    "src": "/packs/ygo/BOSH-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/BOSH.jpg"
+   "aspect": 0.553,
+   "source": "https://yugipedia.com/wiki/File:BOSH-BoosterEN.png"
   }
  ],
  "WIRA": [
@@ -859,8 +859,8 @@
    "id": "1",
    "name": "Wing Raiders",
    "src": "/packs/ygo/WIRA-1.webp",
-   "aspect": 0.56,
-   "source": "https://images.ygoprodeck.com/images/sets/WIRA.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:WIRA-BoosterEN.png"
   }
  ],
  "MIL1": [
@@ -868,8 +868,8 @@
    "id": "1",
    "name": "Millennium Pack",
    "src": "/packs/ygo/MIL1-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/MIL1.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:MIL1-BoosterEN.png"
   }
  ],
  "SHVI": [
@@ -877,8 +877,17 @@
    "id": "1",
    "name": "Shining Victories",
    "src": "/packs/ygo/SHVI-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/SHVI.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:SHVI-BoosterEN.png"
+  }
+ ],
+ "MVP1": [
+  {
+   "id": "1",
+   "name": "Yu-Gi-Oh! The Dark Side of Dimensions Movie Pack",
+   "src": "/packs/ygo/MVP1-1.webp",
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:MVP1-BoosterEN.png"
   }
  ],
  "TDIL": [
@@ -886,8 +895,8 @@
    "id": "1",
    "name": "The Dark Illusion",
    "src": "/packs/ygo/TDIL-1.webp",
-   "aspect": 0.575,
-   "source": "https://images.ygoprodeck.com/images/sets/TDIL.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:TDIL-BoosterEN.png"
   }
  ],
  "DRL3": [
@@ -895,8 +904,8 @@
    "id": "1",
    "name": "Dragons of Legend: Unleashed",
    "src": "/packs/ygo/DRL3-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/DRL3.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:DRL3-BoosterEN.png"
   }
  ],
  "DPRP": [
@@ -904,8 +913,8 @@
    "id": "1",
    "name": "Duelist Pack: Rivals of the Pharaoh",
    "src": "/packs/ygo/DPRP-1.webp",
-   "aspect": 0.578,
-   "source": "https://images.ygoprodeck.com/images/sets/DPRP.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:DPRP-BoosterEN.png"
   }
  ],
  "INOV": [
@@ -913,8 +922,8 @@
    "id": "1",
    "name": "Invasion: Vengeance",
    "src": "/packs/ygo/INOV-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/INOV.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:INOV-BoosterEN.png"
   }
  ],
  "DESO": [
@@ -922,8 +931,8 @@
    "id": "1",
    "name": "Destiny Soldiers",
    "src": "/packs/ygo/DESO-1.webp",
-   "aspect": 0.572,
-   "source": "https://images.ygoprodeck.com/images/sets/DESO.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:DESO-BoosterEN.png"
   }
  ],
  "RATE": [
@@ -931,8 +940,8 @@
    "id": "1",
    "name": "Raging Tempest",
    "src": "/packs/ygo/RATE-1.webp",
-   "aspect": 0.57,
-   "source": "https://images.ygoprodeck.com/images/sets/RATE.jpg"
+   "aspect": 0.553,
+   "source": "https://yugipedia.com/wiki/File:RATE-BoosterEN.png"
   }
  ],
  "FUEN": [
@@ -940,8 +949,8 @@
    "id": "1",
    "name": "Fusion Enforcers",
    "src": "/packs/ygo/FUEN-1.webp",
-   "aspect": 0.572,
-   "source": "https://images.ygoprodeck.com/images/sets/FUEN.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:FUEN-BoosterEN.png"
   }
  ],
  "SP17": [
@@ -949,8 +958,8 @@
    "id": "1",
    "name": "Star Pack Battle Royal",
    "src": "/packs/ygo/SP17-1.webp",
-   "aspect": 0.569,
-   "source": "https://images.ygoprodeck.com/images/sets/SP17.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:SP17-BoosterEN.png"
   }
  ],
  "MACR": [
@@ -958,8 +967,8 @@
    "id": "1",
    "name": "Maximum Crisis",
    "src": "/packs/ygo/MACR-1.webp",
-   "aspect": 0.569,
-   "source": "https://images.ygoprodeck.com/images/sets/MACR.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:MACR-BoosterEN.png"
   }
  ],
  "DPDG": [
@@ -967,8 +976,8 @@
    "id": "1",
    "name": "Duelist Pack: Dimensional Guardians",
    "src": "/packs/ygo/DPDG-1.webp",
-   "aspect": 0.558,
-   "source": "https://images.ygoprodeck.com/images/sets/DPDG.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:DPDG-BoosterEN.png"
   }
  ],
  "PEVO": [
@@ -976,8 +985,8 @@
    "id": "1",
    "name": "Pendulum Evolution",
    "src": "/packs/ygo/PEVO-1.webp",
-   "aspect": 0.573,
-   "source": "https://images.ygoprodeck.com/images/sets/PEVO.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:PEVO-BoosterEN.png"
   }
  ],
  "BLLR": [
@@ -985,8 +994,8 @@
    "id": "1",
    "name": "Battles of Legend: Light's Revenge",
    "src": "/packs/ygo/BLLR-1.webp",
-   "aspect": 0.58,
-   "source": "https://images.ygoprodeck.com/images/sets/BLLR.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:BLLR-BoosterEN.png"
   }
  ],
  "COTD": [
@@ -994,8 +1003,8 @@
    "id": "1",
    "name": "Code of the Duelist",
    "src": "/packs/ygo/COTD-1.webp",
-   "aspect": 0.57,
-   "source": "https://images.ygoprodeck.com/images/sets/COTD.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:COTD-BoosterEN.png"
   }
  ],
  "LEDU": [
@@ -1003,8 +1012,8 @@
    "id": "1",
    "name": "Legendary Duelists",
    "src": "/packs/ygo/LEDU-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/LEDU.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:LEDU-BoosterEN.png"
   }
  ],
  "CIBR": [
@@ -1012,8 +1021,8 @@
    "id": "1",
    "name": "Circuit Break",
    "src": "/packs/ygo/CIBR-1.webp",
-   "aspect": 0.581,
-   "source": "https://images.ygoprodeck.com/images/sets/CIBR.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:CIBR-BoosterEN.png"
   }
  ],
  "SPWA": [
@@ -1021,8 +1030,8 @@
    "id": "1",
    "name": "Spirit Warriors",
    "src": "/packs/ygo/SPWA-1.webp",
-   "aspect": 0.569,
-   "source": "https://images.ygoprodeck.com/images/sets/SPWA.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:SPWA-BoosterEN.png"
   }
  ],
  "EXFO": [
@@ -1030,8 +1039,8 @@
    "id": "1",
    "name": "Extreme Force",
    "src": "/packs/ygo/EXFO-1.webp",
-   "aspect": 0.569,
-   "source": "https://images.ygoprodeck.com/images/sets/EXFO.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:EXFO-BoosterEN.png"
   }
  ],
  "LED2": [
@@ -1039,8 +1048,8 @@
    "id": "1",
    "name": "Legendary Duelists: Ancient Millennium",
    "src": "/packs/ygo/LED2-1.webp",
-   "aspect": 0.576,
-   "source": "https://images.ygoprodeck.com/images/sets/LED2.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:LED2-BoosterEN.png"
   }
  ],
  "SP18": [
@@ -1048,8 +1057,8 @@
    "id": "1",
    "name": "Star Pack VRAINS",
    "src": "/packs/ygo/SP18-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/SP18.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:SP18-BoosterEN.png"
   }
  ],
  "FLOD": [
@@ -1057,8 +1066,8 @@
    "id": "1",
    "name": "Flames of Destruction",
    "src": "/packs/ygo/FLOD-1.webp",
-   "aspect": 0.549,
-   "source": "https://images.ygoprodeck.com/images/sets/FLOD.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:FLOD-BoosterEN.png"
   }
  ],
  "DASA": [
@@ -1066,8 +1075,8 @@
    "id": "1",
    "name": "Dark Saviors",
    "src": "/packs/ygo/DASA-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/DASA.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:DASA-BoosterEN.png"
   }
  ],
  "BLRR": [
@@ -1075,8 +1084,8 @@
    "id": "1",
    "name": "Battles of Legend: Relentless Revenge",
    "src": "/packs/ygo/BLRR-1.webp",
-   "aspect": 0.575,
-   "source": "https://images.ygoprodeck.com/images/sets/BLRR.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:BLRR-BoosterEN.png"
   }
  ],
  "CYHO": [
@@ -1084,8 +1093,8 @@
    "id": "1",
    "name": "Cybernetic Horizon",
    "src": "/packs/ygo/CYHO-1.webp",
-   "aspect": 0.575,
-   "source": "https://images.ygoprodeck.com/images/sets/CYHO.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:CYHO-BoosterEN.png"
   }
  ],
  "SHVA": [
@@ -1093,8 +1102,8 @@
    "id": "1",
    "name": "Shadows in Valhalla",
    "src": "/packs/ygo/SHVA-1.webp",
-   "aspect": 0.546,
-   "source": "https://images.ygoprodeck.com/images/sets/SHVA.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:SHVA-BoosterEN.png"
   }
  ],
  "LED3": [
@@ -1102,8 +1111,8 @@
    "id": "1",
    "name": "Legendary Duelists: White Dragon Abyss",
    "src": "/packs/ygo/LED3-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/LED3.jpg"
+   "aspect": 0.565,
+   "source": "https://yugipedia.com/wiki/File:LED3-BoosterEN.png"
   }
  ],
  "SOFU": [
@@ -1111,8 +1120,8 @@
    "id": "1",
    "name": "Soul Fusion",
    "src": "/packs/ygo/SOFU-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/SOFU.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:SOFU-BoosterEN.png"
   }
  ],
  "HISU": [
@@ -1120,8 +1129,8 @@
    "id": "1",
    "name": "Hidden Summoners",
    "src": "/packs/ygo/HISU-1.webp",
-   "aspect": 0.552,
-   "source": "https://images.ygoprodeck.com/images/sets/HISU.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:HISU-BoosterEN.png"
   }
  ],
  "LED4": [
@@ -1130,7 +1139,7 @@
    "name": "Legendary Duelists: Sisters of the Rose",
    "src": "/packs/ygo/LED4-1.webp",
    "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/LED4.jpg"
+   "source": "https://yugipedia.com/wiki/File:LED4-BoosterEN.png"
   }
  ],
  "SAST": [
@@ -1139,7 +1148,7 @@
    "name": "Savage Strike",
    "src": "/packs/ygo/SAST-1.webp",
    "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/SAST.jpg"
+   "source": "https://yugipedia.com/wiki/File:SAST-BoosterEN.png"
   }
  ],
  "INCH": [
@@ -1147,8 +1156,8 @@
    "id": "1",
    "name": "The Infinity Chasers",
    "src": "/packs/ygo/INCH-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/INCH.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:INCH-BoosterEN.png"
   }
  ],
  "DANE": [
@@ -1156,8 +1165,8 @@
    "id": "1",
    "name": "Dark Neostorm",
    "src": "/packs/ygo/DANE-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/DANE.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:DANE-BoosterEN.png"
   }
  ],
  "BLHR": [
@@ -1165,8 +1174,8 @@
    "id": "1",
    "name": "Battles of Legend: Hero's Revenge",
    "src": "/packs/ygo/BLHR-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/BLHR.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:BLHR-BoosterEN.png"
   }
  ],
  "RIRA": [
@@ -1174,8 +1183,8 @@
    "id": "1",
    "name": "Rising Rampage",
    "src": "/packs/ygo/RIRA-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/RIRA.jpg"
+   "aspect": 0.565,
+   "source": "https://yugipedia.com/wiki/File:RIRA-BoosterEN.png"
   }
  ],
  "FIGA": [
@@ -1183,8 +1192,8 @@
    "id": "1",
    "name": "Fists of the Gadgets",
    "src": "/packs/ygo/FIGA-1.webp",
-   "aspect": 0.549,
-   "source": "https://images.ygoprodeck.com/images/sets/FIGA.jpg"
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:FIGA-BoosterEN.png"
   }
  ],
  "LED5": [
@@ -1192,8 +1201,8 @@
    "id": "1",
    "name": "Legendary Duelists: Immortal Destiny",
    "src": "/packs/ygo/LED5-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/LED5.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:LED5-BoosterEN.png"
   }
  ],
  "CHIM": [
@@ -1201,8 +1210,8 @@
    "id": "1",
    "name": "Chaos Impact",
    "src": "/packs/ygo/CHIM-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/CHIM.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:CHIM-BoosterEN.png"
   }
  ],
  "MYFI": [
@@ -1210,8 +1219,8 @@
    "id": "1",
    "name": "Mystic Fighters",
    "src": "/packs/ygo/MYFI-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/MYFI.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:MYFI-BoosterEN.png"
   }
  ],
  "LED6": [
@@ -1219,8 +1228,8 @@
    "id": "1",
    "name": "Legendary Duelists: Magical Hero",
    "src": "/packs/ygo/LED6-1.webp",
-   "aspect": 0.575,
-   "source": "https://images.ygoprodeck.com/images/sets/LED6.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:LED6-BoosterEN.png"
   }
  ],
  "IGAS": [
@@ -1228,8 +1237,8 @@
    "id": "1",
    "name": "Ignition Assault",
    "src": "/packs/ygo/IGAS-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/IGAS.jpg"
+   "aspect": 0.569,
+   "source": "https://yugioh.fandom.com/wiki/File:IGAS-BoosterEN.png"
   }
  ],
  "SESL": [
@@ -1238,7 +1247,7 @@
    "name": "Secret Slayers",
    "src": "/packs/ygo/SESL-1.webp",
    "aspect": 0.56,
-   "source": "https://images.ygoprodeck.com/images/sets/SESL.jpg"
+   "source": "https://yugipedia.com/wiki/File:SESL-BoosterEN.png"
   }
  ],
  "ETCO": [
@@ -1246,8 +1255,8 @@
    "id": "1",
    "name": "Eternity Code",
    "src": "/packs/ygo/ETCO-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/ETCO.jpg"
+   "aspect": 0.56,
+   "source": "https://yugipedia.com/wiki/File:ETCO-BoosterEN.png"
   }
  ],
  "TOCH": [
@@ -1255,8 +1264,8 @@
    "id": "1",
    "name": "Toon Chaos",
    "src": "/packs/ygo/TOCH-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/TOCH.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:TOCH-BoosterEN.png"
   }
  ],
  "BLAR": [
@@ -1264,8 +1273,8 @@
    "id": "1",
    "name": "Battles of Legend: Armageddon",
    "src": "/packs/ygo/BLAR-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/BLAR.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:BLAR-BoosterEN.png"
   }
  ],
  "ROTD": [
@@ -1273,8 +1282,8 @@
    "id": "1",
    "name": "Rise of the Duelist",
    "src": "/packs/ygo/ROTD-1.webp",
-   "aspect": 0.552,
-   "source": "https://images.ygoprodeck.com/images/sets/ROTD.jpg"
+   "aspect": 0.561,
+   "source": "https://yugioh.fandom.com/wiki/File:ROTD-BoosterEN.png"
   }
  ],
  "LED7": [
@@ -1282,8 +1291,8 @@
    "id": "1",
    "name": "Legendary Duelists: Rage of Ra",
    "src": "/packs/ygo/LED7-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/LED7.jpg"
+   "aspect": 0.558,
+   "source": "https://yugipedia.com/wiki/File:LED7-BoosterEN.png"
   }
  ],
  "PHRA": [
@@ -1291,8 +1300,8 @@
    "id": "1",
    "name": "Phantom Rage",
    "src": "/packs/ygo/PHRA-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/PHRA.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:PHRA-BoosterEN.png"
   }
  ],
  "GEIM": [
@@ -1300,8 +1309,8 @@
    "id": "1",
    "name": "Genesis Impact",
    "src": "/packs/ygo/GEIM-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/GEIM.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:GEIM-BoosterEN.png"
   }
  ],
  "BLVO": [
@@ -1309,8 +1318,8 @@
    "id": "1",
    "name": "Blazing Vortex",
    "src": "/packs/ygo/BLVO-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/BLVO.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:BLVO-BoosterEN.png"
   }
  ],
  "ANGU": [
@@ -1318,8 +1327,8 @@
    "id": "1",
    "name": "Ancient Guardians",
    "src": "/packs/ygo/ANGU-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/ANGU.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:ANGU-BoosterEN.png"
   }
  ],
  "LIOV": [
@@ -1327,8 +1336,8 @@
    "id": "1",
    "name": "Lightning Overdrive",
    "src": "/packs/ygo/LIOV-1.webp",
-   "aspect": 0.543,
-   "source": "https://images.ygoprodeck.com/images/sets/LIOV.jpg"
+   "aspect": 0.562,
+   "source": "https://yugipedia.com/wiki/File:LIOV-BoosterEN.png"
   }
  ],
  "KICO": [
@@ -1345,8 +1354,8 @@
    "id": "1",
    "name": "Dawn of Majesty",
    "src": "/packs/ygo/DAMA-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/DAMA.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:DAMA-BoosterEN.png"
   }
  ],
  "LED8": [
@@ -1354,8 +1363,8 @@
    "id": "1",
    "name": "Legendary Duelists: Synchro Storm",
    "src": "/packs/ygo/LED8-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/LED8.jpg"
+   "aspect": 0.565,
+   "source": "https://yugipedia.com/wiki/File:LED8-BoosterEN.png"
   }
  ],
  "BODE": [
@@ -1363,8 +1372,8 @@
    "id": "1",
    "name": "Burst of Destiny",
    "src": "/packs/ygo/BODE-1.webp",
-   "aspect": 0.606,
-   "source": "https://images.ygoprodeck.com/images/sets/BODE.jpg"
+   "aspect": 0.563,
+   "source": "https://yugioh.fandom.com/wiki/File:BODE-BoosterEN.png"
   }
  ],
  "GRCR": [
@@ -1372,8 +1381,8 @@
    "id": "1",
    "name": "The Grand Creators",
    "src": "/packs/ygo/GRCR-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/GRCR.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:GRCR-BoosterEN.png"
   }
  ],
  "BACH": [
@@ -1381,8 +1390,17 @@
    "id": "1",
    "name": "Battle of Chaos",
    "src": "/packs/ygo/BACH-1.webp",
-   "aspect": 0.602,
-   "source": "https://images.ygoprodeck.com/images/sets/BACH.jpg"
+   "aspect": 0.565,
+   "source": "https://yugipedia.com/wiki/File:BACH-BoosterEN.png"
+  }
+ ],
+ "HAC1": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal: Chapter 1",
+   "src": "/packs/ygo/HAC1-1.webp",
+   "aspect": 0.563,
+   "source": "https://yugioh.fandom.com/wiki/File:HAC1-BoosterEN.png"
   }
  ],
  "DIFO": [
@@ -1390,8 +1408,8 @@
    "id": "1",
    "name": "Dimension Force",
    "src": "/packs/ygo/DIFO-1.webp",
-   "aspect": 0.483,
-   "source": "https://images.ygoprodeck.com/images/sets/DIFO.jpg"
+   "aspect": 0.57,
+   "source": "https://yugioh.fandom.com/wiki/File:DIFO-BoosterEN.png"
   }
  ],
  "LED9": [
@@ -1399,8 +1417,8 @@
    "id": "1",
    "name": "Legendary Duelists: Duels From the Deep",
    "src": "/packs/ygo/LED9-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/LED9.jpg"
+   "aspect": 0.547,
+   "source": "https://yugioh.fandom.com/wiki/File:LED9-BoosterEN.png"
   }
  ],
  "POTE": [
@@ -1408,8 +1426,8 @@
    "id": "1",
    "name": "Power of the Elements",
    "src": "/packs/ygo/POTE-1.webp",
-   "aspect": 0.488,
-   "source": "https://images.ygoprodeck.com/images/sets/POTE.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:POTE-BoosterEN.png"
   }
  ],
  "TAMA": [
@@ -1417,8 +1435,8 @@
    "id": "1",
    "name": "Tactical Masters",
    "src": "/packs/ygo/TAMA-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/TAMA.jpg"
+   "aspect": 0.54,
+   "source": "https://yugioh.fandom.com/wiki/File:TAMA-BoosterEN.png"
   }
  ],
  "DABL": [
@@ -1426,17 +1444,45 @@
    "id": "1",
    "name": "Darkwing Blast",
    "src": "/packs/ygo/DABL-1.webp",
-   "aspect": 0.566,
-   "source": "https://images.ygoprodeck.com/images/sets/DABL.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:DABL-BoosterEN.png"
   }
  ],
  "BLCR": [
   {
    "id": "1",
-   "name": "Battles of Legend: Crystal Revenge",
+   "name": "Advanced Crystal Beast Amber Mammoth",
    "src": "/packs/ygo/BLCR-1.webp",
+   "aspect": 0.561,
+   "source": "https://yugioh.fandom.com/wiki/File:BLCR-BoosterEN-AdvancedCrystalBeastAmberMammoth.png"
+  },
+  {
+   "id": "2",
+   "name": "Advanced Crystal Beast Amethyst Cat",
+   "src": "/packs/ygo/BLCR-2.webp",
+   "aspect": 0.564,
+   "source": "https://yugioh.fandom.com/wiki/File:BLCR-BoosterEN-AdvancedCrystalBeastAmethystCat.png"
+  },
+  {
+   "id": "3",
+   "name": "Advanced Crystal Beast Emerald Tortoise",
+   "src": "/packs/ygo/BLCR-3.webp",
    "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/BLCR.jpg"
+   "source": "https://yugioh.fandom.com/wiki/File:BLCR-BoosterEN-AdvancedCrystalBeastEmeraldTortoise.png"
+  },
+  {
+   "id": "4",
+   "name": "Advanced Crystal Beast Ruby Carbuncle",
+   "src": "/packs/ygo/BLCR-4.webp",
+   "aspect": 0.56,
+   "source": "https://yugioh.fandom.com/wiki/File:BLCR-BoosterEN-AdvancedCrystalBeastRubyCarbuncle.png"
+  },
+  {
+   "id": "5",
+   "name": "Advanced Crystal Beast Topaz Tiger",
+   "src": "/packs/ygo/BLCR-5.webp",
+   "aspect": 0.561,
+   "source": "https://yugioh.fandom.com/wiki/File:BLCR-BoosterEN-AdvancedCrystalBeastTopazTiger.png"
   }
  ],
  "AMDE": [
@@ -1444,8 +1490,8 @@
    "id": "1",
    "name": "Amazing Defenders",
    "src": "/packs/ygo/AMDE-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/AMDE.jpg"
+   "aspect": 0.564,
+   "source": "https://yugioh.fandom.com/wiki/File:AMDE-BoosterEN.png"
   }
  ],
  "PHHY": [
@@ -1453,8 +1499,8 @@
    "id": "1",
    "name": "Photon Hypernova",
    "src": "/packs/ygo/PHHY-1.webp",
-   "aspect": 0.568,
-   "source": "https://images.ygoprodeck.com/images/sets/PHHY.jpg"
+   "aspect": 0.565,
+   "source": "https://yugipedia.com/wiki/File:PHHY-BoosterEN.png"
   }
  ],
  "MAZE": [
@@ -1462,8 +1508,8 @@
    "id": "1",
    "name": "Maze of Memories",
    "src": "/packs/ygo/MAZE-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/MAZE.jpg"
+   "aspect": 0.563,
+   "source": "https://yugipedia.com/wiki/File:MAZE-BoosterEN.png"
   }
  ],
  "CYAC": [
@@ -1472,7 +1518,7 @@
    "name": "Cyberstorm Access",
    "src": "/packs/ygo/CYAC-1.webp",
    "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/CYAC.jpg"
+   "source": "https://yugipedia.com/wiki/File:CYAC-BoosterEN.png"
   }
  ],
  "WISU": [
@@ -1480,45 +1526,45 @@
    "id": "1",
    "name": "Wild Survivors",
    "src": "/packs/ygo/WISU-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/WISU.jpg"
+   "aspect": 0.56,
+   "source": "https://yugioh.fandom.com/wiki/File:WISU-BoosterEN.png"
   }
  ],
  "BLMR": [
   {
    "id": "1",
-   "name": "Battles of Legend: Monstrous Revenge, design 1",
+   "name": "Armed Neos",
    "src": "/packs/ygo/BLMR-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+   "aspect": 0.559,
+   "source": "https://yugioh.fandom.com/wiki/File:BLMR-BoosterEN-ArmedNeos.png"
   },
   {
    "id": "2",
-   "name": "Battles of Legend: Monstrous Revenge, design 2",
+   "name": "Cattycorn",
    "src": "/packs/ygo/BLMR-2.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+   "aspect": 0.563,
+   "source": "https://yugioh.fandom.com/wiki/File:BLMR-BoosterEN-Cattycorn.png"
   },
   {
    "id": "3",
-   "name": "Battles of Legend: Monstrous Revenge, design 3",
+   "name": "Dark Magician the Knight of Dragon Magic",
    "src": "/packs/ygo/BLMR-3.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+   "aspect": 0.561,
+   "source": "https://yugioh.fandom.com/wiki/File:BLMR-BoosterEN-DarkMagiciantheKnightofDragonMagic.png"
   },
   {
    "id": "4",
-   "name": "Battles of Legend: Monstrous Revenge, design 4",
+   "name": "Ghost Lancer the Underworld Spearman",
    "src": "/packs/ygo/BLMR-4.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+   "aspect": 0.562,
+   "source": "https://yugioh.fandom.com/wiki/File:BLMR-BoosterEN-GhostLancertheUnderworldSpearman.png"
   },
   {
    "id": "5",
-   "name": "Battles of Legend: Monstrous Revenge, design 5",
+   "name": "Odd Eyes Rebellion Xyz Dragon",
    "src": "/packs/ygo/BLMR-5.webp",
    "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+   "source": "https://yugioh.fandom.com/wiki/File:BLMR-BoosterEN-OddEyesRebellionXyzDragon.png"
   }
  ],
  "DUNE": [
@@ -1526,8 +1572,8 @@
    "id": "1",
    "name": "Duelist Nexus",
    "src": "/packs/ygo/DUNE-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/DUNE.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:DUNE-BoosterEN.png"
   }
  ],
  "LD10": [
@@ -1535,8 +1581,8 @@
    "id": "1",
    "name": "Legendary Duelists: Soulburning Volcano",
    "src": "/packs/ygo/LD10-1.webp",
-   "aspect": 0.567,
-   "source": "https://images.ygoprodeck.com/images/sets/LD10.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:LD10-BoosterEN.png"
   }
  ],
  "AGOV": [
@@ -1544,8 +1590,8 @@
    "id": "1",
    "name": "Age of Overlord",
    "src": "/packs/ygo/AGOV-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/AGOV.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:AGOV-BoosterEN.png"
   }
  ],
  "RA01": [
@@ -1554,7 +1600,7 @@
    "name": "25th Anniversary Rarity Collection",
    "src": "/packs/ygo/RA01-1.webp",
    "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/RA01.jpg"
+   "source": "https://yugipedia.com/wiki/File:RA01-BoosterEN.png"
   }
  ],
  "VASM": [
@@ -1562,8 +1608,8 @@
    "id": "1",
    "name": "Valiant Smashers",
    "src": "/packs/ygo/VASM-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/VASM.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:VASM-BoosterEN.png"
   }
  ],
  "MZMI": [
@@ -1572,7 +1618,7 @@
    "name": "Maze of Millennia",
    "src": "/packs/ygo/MZMI-1.webp",
    "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/MZMI.jpg"
+   "source": "https://yugipedia.com/wiki/File:MZMI-BoosterEN.png"
   }
  ],
  "PHNI": [
@@ -1580,8 +1626,8 @@
    "id": "1",
    "name": "Phantom Nightmare",
    "src": "/packs/ygo/PHNI-1.webp",
-   "aspect": 0.564,
-   "source": "https://images.ygoprodeck.com/images/sets/PHNI.jpg"
+   "aspect": 0.565,
+   "source": "https://yugioh.fandom.com/wiki/File:PHNI-BoosterEN.png"
   }
  ],
  "LEDE": [
@@ -1589,8 +1635,8 @@
    "id": "1",
    "name": "Legacy of Destruction",
    "src": "/packs/ygo/LEDE-1.webp",
-   "aspect": 0.482,
-   "source": "https://images.ygoprodeck.com/images/sets/LEDE.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:LEDE-BoosterEN.png"
   }
  ],
  "RA02": [
@@ -1598,8 +1644,8 @@
    "id": "1",
    "name": "25th Anniversary Rarity Collection II",
    "src": "/packs/ygo/RA02-1.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/RA02.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:RA02-BoosterEN.png"
   }
  ],
  "BLTR": [
@@ -1607,8 +1653,8 @@
    "id": "1",
    "name": "Battles of Legend: Terminal Revenge",
    "src": "/packs/ygo/BLTR-1.webp",
-   "aspect": 0.548,
-   "source": "https://images.ygoprodeck.com/images/sets/BLTR.jpg"
+   "aspect": 0.547,
+   "source": "https://yugipedia.com/wiki/File:BLTR-BoosterEN.png"
   }
  ],
  "INFO": [
@@ -1616,8 +1662,8 @@
    "id": "1",
    "name": "The Infinite Forbidden",
    "src": "/packs/ygo/INFO-1.webp",
-   "aspect": 0.571,
-   "source": "https://images.ygoprodeck.com/images/sets/INFO.jpg"
+   "aspect": 0.564,
+   "source": "https://yugipedia.com/wiki/File:INFO-BoosterEN.png"
   }
  ],
  "ROTA": [
@@ -1625,8 +1671,17 @@
    "id": "1",
    "name": "Rage of the Abyss",
    "src": "/packs/ygo/ROTA-1.webp",
-   "aspect": 0.556,
-   "source": "https://images.ygoprodeck.com/images/sets/ROTA.jpg"
+   "aspect": 0.558,
+   "source": "https://yugipedia.com/wiki/File:ROTA-BoosterEN.png"
+  }
+ ],
+ "RA03": [
+  {
+   "id": "1",
+   "name": "Quarter Century Bonanza",
+   "src": "/packs/ygo/RA03-1.webp",
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:RA03-BoosterEN.png"
   }
  ],
  "CRBR": [
@@ -1635,7 +1690,7 @@
    "name": "Crossover Breakers",
    "src": "/packs/ygo/CRBR-1.webp",
    "aspect": 0.558,
-   "source": "https://images.ygoprodeck.com/images/sets/CRBR.jpg"
+   "source": "https://yugipedia.com/wiki/File:CRBR-BoosterEN.png"
   }
  ],
  "SUDA": [
@@ -1643,8 +1698,8 @@
    "id": "1",
    "name": "Supreme Darkness",
    "src": "/packs/ygo/SUDA-1.webp",
-   "aspect": 0.551,
-   "source": "https://images.ygoprodeck.com/images/sets/SUDA.jpg"
+   "aspect": 0.548,
+   "source": "https://yugioh.fandom.com/wiki/File:SUDA-BoosterEN.png"
   }
  ],
  "MZTM": [
@@ -1676,7 +1731,7 @@
    "name": "Quarter Century Stampede",
    "src": "/packs/ygo/RA04-1.webp",
    "aspect": 0.558,
-   "source": "https://images.ygoprodeck.com/images/sets/RA04.jpg"
+   "source": "https://yugipedia.com/wiki/File:RA04-BoosterEN.png"
   }
  ],
  "ALIN": [
@@ -1684,8 +1739,8 @@
    "id": "1",
    "name": "Alliance Insight",
    "src": "/packs/ygo/ALIN-1.webp",
-   "aspect": 0.552,
-   "source": "https://images.ygoprodeck.com/images/sets/ALIN.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:ALIN-BoosterEN.png"
   }
  ],
  "JUSH": [
@@ -1694,7 +1749,7 @@
    "name": "Justice Hunters",
    "src": "/packs/ygo/JUSH-1.webp",
    "aspect": 0.547,
-   "source": "https://images.ygoprodeck.com/images/sets/JUSH.jpg"
+   "source": "https://yugipedia.com/wiki/File:JUSH-BoosterEN.png"
   }
  ],
  "BLMM": [
@@ -1718,8 +1773,8 @@
    "id": "1",
    "name": "Doom of Dimensions",
    "src": "/packs/ygo/DOOD-1.webp",
-   "aspect": 0.559,
-   "source": "https://images.ygoprodeck.com/images/sets/DOOD.jpg"
+   "aspect": 0.557,
+   "source": "https://yugipedia.com/wiki/File:DOOD-BoosterEN.png"
   }
  ],
  "PHRE": [
@@ -1727,8 +1782,8 @@
    "id": "1",
    "name": "Phantom Revenge",
    "src": "/packs/ygo/PHRE-1.webp",
-   "aspect": 0.551,
-   "source": "https://images.ygoprodeck.com/images/sets/PHRE.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:PHRE-BoosterEN.png"
   }
  ],
  "BPRO": [
@@ -1737,7 +1792,7 @@
    "name": "Burst Protocol",
    "src": "/packs/ygo/BPRO-1.webp",
    "aspect": 0.55,
-   "source": "https://images.ygoprodeck.com/images/sets/BPRO.jpg"
+   "source": "https://yugipedia.com/wiki/File:BPRO-BoosterEN.png"
   }
  ],
  "MZMU": [
@@ -1768,8 +1823,8 @@
    "id": "1",
    "name": "Rarity Collection 5",
    "src": "/packs/ygo/RA05-1.webp",
-   "aspect": 0.548,
-   "source": "https://images.ygoprodeck.com/images/sets/RA05.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:RA05-BoosterEN.png"
   }
  ],
  "BLZD": [
@@ -1778,7 +1833,7 @@
    "name": "Blazing Dominion",
    "src": "/packs/ygo/BLZD-1.webp",
    "aspect": 0.55,
-   "source": "https://images.ygoprodeck.com/images/sets/BLZD.jpg"
+   "source": "https://yugioh.fandom.com/wiki/File:BLZD-BoosterEN.png"
   }
  ],
  "BLGG": [
@@ -1802,8 +1857,8 @@
    "id": "1",
    "name": "Chaos Origins",
    "src": "/packs/ygo/CORI-1.webp",
-   "aspect": 0.55,
-   "source": "https://images.ygoprodeck.com/images/sets/CORI.jpg"
+   "aspect": 0.549,
+   "source": "https://yugioh.fandom.com/wiki/File:CORI-BoosterEN.png"
   }
  ]
 }

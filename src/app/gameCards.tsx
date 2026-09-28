@@ -230,7 +230,7 @@ const ygo: GameCards = {
     set: ygoSet,
     layout: () => layoutFor("ygo"),
   },
-  packCredit: { text: "Pack photos from", name: "YGOPRODeck", url: "https://ygoprodeck.com" },
+  packCredit: { text: "Pack photos from the Yu-Gi-Oh! Wiki, YGOPRODeck and", name: "Yugipedia", url: "https://yugipedia.com" },
 };
 
 const GAME_CARDS: Record<Game, GameCards> = { pokemon, mtg, ygo };
