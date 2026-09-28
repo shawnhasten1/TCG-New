@@ -158,6 +158,17 @@ describe("openPack", () => {
     expect(keys).not.toContain("Ultra Rare (normal)");
   });
 
+  it("falls back for reverse holos when a set has holo flags but no reverse ones (Dark Explorers)", () => {
+    const data = setData([...many(40, "Common"), ...many(30, "Uncommon"), ...many(15, "Rare"), ...many(10, "Rare", { normal: false, holo: true })], "bw");
+    const classic = profileFor(data.set)!;
+    const prep = preparePack(data, classic);
+    expect(prep.variantDataMissing).toBe(false);
+    expect(prep.reverseDataMissing).toBe(true);
+    expect(prep.emptySlots).toEqual([]);
+    const reverse = openPack(data, classic, createRng("dex")).find((p) => p.slot === "Reverse")!;
+    expect(reverse.finish).toBe("reverse");
+  });
+
   it("applies firstEditionChance only to cards with a 1st Edition printing", () => {
     const data = setData([...many(20, "Common", { firstEdition: true }), ...many(10, "Uncommon"), ...many(5, "Rare", { firstEdition: true })], "base");
     const always: PackProfile = { ...profileFor(data.set)!, firstEditionChance: 1 };

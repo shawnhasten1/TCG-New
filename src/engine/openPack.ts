@@ -18,6 +18,12 @@ export interface PreparedPack {
   pools: Map<string, Card[]>;
   /** True when no card in the set has holo or reverse flags, so flags can't be trusted. */
   variantDataMissing: boolean;
+  /**
+   * True when no card in the set has a reverse flag, so reverse slots fall back to rarities. Implied by
+   * variantDataMissing, but some sets on TCGdex have holo flags and no reverse ones (EX Delta Species to Power Keepers,
+   * Dark Explorers).
+   */
+  reverseDataMissing: boolean;
   /** Set rarities that no slot can ever produce. */
   unusedRarities: string[];
   /** Slots whose table matched nothing in this set. Non-empty means the set can't be opened. */
@@ -41,11 +47,11 @@ export function isFillerEnergy(c: Card): boolean {
 }
 
 /**
- * Whether a card belongs in a selector's pool. `variantDataMissing` is set-wide: no card in the
- * set has holo or reverse flags (BW/XY/SM on TCGdex), so reverse slots fall back to rarities.
+ * Whether a card belongs in a selector's pool. `reverseDataMissing` is set-wide: no card in the
+ * set has a reverse flag (see PreparedPack), so reverse slots fall back to rarities.
  */
-function inPool(card: Card, selector: string, profile: PackProfile, variantDataMissing: boolean): boolean {
-  if (selector === REVERSE) return variantDataMissing ? (profile.reverseFallback ?? []).includes(card.rarity) : card.variants.reverse;
+function inPool(card: Card, selector: string, profile: PackProfile, reverseDataMissing: boolean): boolean {
+  if (selector === REVERSE) return reverseDataMissing ? (profile.reverseFallback ?? []).includes(card.rarity) : card.variants.reverse;
   const [rarity, qualifier] = selector.split("#");
   if (card.rarity !== rarity) return false;
   if (qualifier === "holo") return card.variants.holo && !card.variants.normal;
@@ -53,8 +59,8 @@ function inPool(card: Card, selector: string, profile: PackProfile, variantDataM
   return true;
 }
 
-function selectPool(selector: string, cards: Card[], profile: PackProfile, variantDataMissing: boolean): Card[] {
-  return cards.filter((c) => inPool(c, selector, profile, variantDataMissing));
+function selectPool(selector: string, cards: Card[], profile: PackProfile, reverseDataMissing: boolean): Card[] {
+  return cards.filter((c) => inPool(c, selector, profile, reverseDataMissing));
 }
 
 const prepared = new WeakMap<SetData, WeakMap<PackProfile, PreparedPack>>();
@@ -69,12 +75,13 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
   const imaged = data.cards.filter(hasImage);
   const cards = profile.includeBasicEnergy ? imaged : imaged.filter((c) => !isFillerEnergy(c));
   const variantDataMissing = !profile.variantsKnown && !cards.some((c) => c.variants.holo || c.variants.reverse);
+  const reverseDataMissing = !profile.variantsKnown && !cards.some((c) => c.variants.reverse);
   const pools = new Map<string, Card[]>();
   const fill = (from: Record<string, number>) => {
     const table: Record<string, number> = {};
     for (const [selector, weight] of Object.entries(from)) {
       if (!(weight > 0)) continue;
-      if (!pools.has(selector)) pools.set(selector, selectPool(selector, cards, profile, variantDataMissing));
+      if (!pools.has(selector)) pools.set(selector, selectPool(selector, cards, profile, reverseDataMissing));
       if (pools.get(selector)!.length) table[selector] = weight;
     }
     return table;
@@ -91,7 +98,7 @@ export function preparePack(data: SetData, profile: PackProfile): PreparedPack {
 
   const packSize = profile.slots.reduce((n, s) => n + s.count, 0);
   const excludedEnergy = imaged.length - cards.length;
-  const result = { profile, slots, pools, variantDataMissing, unusedRarities, emptySlots, packSize, imagedCards: cards.length, excludedEnergy };
+  const result = { profile, slots, pools, variantDataMissing, reverseDataMissing, unusedRarities, emptySlots, packSize, imagedCards: cards.length, excludedEnergy };
   byProfile.set(profile, result);
   return result;
 }
@@ -177,15 +184,15 @@ export function pullableCardIds(data: SetData, profile: PackProfile): Set<string
  * Every finish this card can come out of a pack in, using the same pools and finish rules as
  * openPack. Printing flags alone aren't enough: a slot's odds can rule a printing out (the SV rare
  * slot is always holo, common slots never give holo commons). Empty when packs can't give the card.
- * Pass the set's `variantDataMissing` (see PreparedPack) when known.
+ * Pass the set's `variantDataMissing` and `reverseDataMissing` (see PreparedPack) when known.
  */
-export function packFinishes(card: Card, profile: PackProfile, variantDataMissing: boolean): Finish[] {
+export function packFinishes(card: Card, profile: PackProfile, variantDataMissing: boolean, reverseDataMissing = variantDataMissing): Finish[] {
   if (!hasImage(card) || (!profile.includeBasicEnergy && isFillerEnergy(card))) return [];
   const out = new Set<Finish>();
   for (const slot of profile.slots) {
     if (!(slot.count > 0)) continue;
     for (const [selector, weight] of Object.entries(slot.table)) {
-      if (!(weight > 0) || !inPool(card, selector, profile, variantDataMissing)) continue;
+      if (!(weight > 0) || !inPool(card, selector, profile, reverseDataMissing)) continue;
       if (selector === REVERSE) {
         out.add("reverse");
         continue;

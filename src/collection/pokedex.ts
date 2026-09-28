@@ -37,15 +37,18 @@ export const FINISH_LABEL: Record<FinishKey, string> = { normal: "Normal", holo:
 
 /** TCGdex has no holo/reverse flags for these series, so the engine assigns finishes by rarity there. */
 const NO_VARIANT_DATA = new Set(["bw", "xy", "sm"]);
+/** Sets with holo flags on TCGdex but no reverse flags, so the engine picks reverse holos by rarity there. */
+const NO_REVERSE_DATA = new Set(["ex11", "ex12", "ex13", "ex14", "ex15", "ex16", "bw5"]);
 
 /**
  * Finishes this printing can come out of a pack in. Asks the pack engine (packFinishes), so the
  * chips always match what opening packs can give, not just what TCGdex says was printed.
  */
-export function obtainableFinishes(card: Card, serieId: string, profile: PackProfile): FinishKey[] {
+export function obtainableFinishes(card: Card, serieId: string, profile: PackProfile, setId?: string): FinishKey[] {
   // Set-wide in the engine; every BW/XY/SM set on TCGdex lacks the flags, so the serie stands in for it.
   const variantDataMissing = NO_VARIANT_DATA.has(serieId) && !card.variants.holo && !card.variants.reverse;
-  const out: FinishKey[] = packFinishes(card, profile, variantDataMissing);
+  const reverseDataMissing = (NO_VARIANT_DATA.has(serieId) || (!!setId && NO_REVERSE_DATA.has(setId))) && !card.variants.reverse;
+  const out: FinishKey[] = packFinishes(card, profile, variantDataMissing, reverseDataMissing);
   if (out.length && packFirstEdition(card, profile)) out.push("firstEdition");
   return out;
 }
@@ -82,7 +85,7 @@ export function buildPrintings(cards: CardWithSet[], ctx: PrintingContext): Prin
   return cards.map((card) => {
     const set = ctx.sets.get(card.set.id);
     const profile = set && profileFor(set);
-    const obtainable = set && profile ? obtainableFinishes(card, set.serie.id, profile) : [];
+    const obtainable = set && profile ? obtainableFinishes(card, set.serie.id, profile, set.id) : [];
     const reason = !set
       ? "Unknown set"
       : !profile || hiddenReason(set)
