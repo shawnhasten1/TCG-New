@@ -7,9 +7,11 @@ export interface Price {
   amount: number;
   currency: "USD" | "EUR";
   source: "TCGplayer" | "Cardmarket";
+  /** Worked out from another printing's price rather than this one's own (Yu-Gi-Oh!, src/ygo/cards.ts). */
+  estimated?: boolean;
 }
 
-type Entry = { marketPrice?: number | null; midPrice?: number | null };
+type Entry = { marketPrice?: number | null; midPrice?: number | null; estimated?: boolean };
 
 /** TCGplayer printings, normalized ("reverse-holofoil" → "reverseholofoil"). */
 const TCG_KEYS: Record<Finish, { first: string[]; unlimited: string[] }> = {
@@ -30,7 +32,7 @@ export function priceFor(pricing: CardPricing | null | undefined, finish: Finish
     for (const k of keys) {
       const e = entries.get(k);
       const amount = num(e?.marketPrice) ?? num(e?.midPrice);
-      if (amount) return { amount, currency: "USD", source: "TCGplayer" };
+      if (amount) return { amount, currency: "USD", source: "TCGplayer", ...(e?.estimated && { estimated: true }) };
     }
   }
   const cm = pricing.cardmarket;

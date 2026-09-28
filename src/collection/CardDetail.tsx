@@ -298,7 +298,7 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
                 return (
                   <li key={f}>
                     {FINISH_LABEL[f]}
-                    <span>{price ? `${formatPrice(price)} · ${price.source}` : "no data"}</span>
+                    <span>{price ? `${formatPrice(price)} · ${price.source}${price.estimated ? " (estimated)" : ""}` : "no data"}</span>
                   </li>
                 );
               })}

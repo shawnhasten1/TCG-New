@@ -103,6 +103,15 @@ describe("toPricing", () => {
     expect(priceFor(prices["TST-EN010-QCSR"], "holo")?.amount).toBe(40.5);
     expect(priceFor(prices["TST-EN002-C"], "normal")?.amount).toBe(0.12);
     expect(priceFor(prices["TST-EN002-C"], "holo")).toBeUndefined();
+    expect(priceFor(prices["TST-EN002-C"], "normal")?.estimated).toBeUndefined();
+  });
+
+  it("estimates a printing without its own price from the card's cheapest printing, scaled by rarity", () => {
+    const hero = { ...raw("Hero", [["TST-EN010", "Super Rare", "(SR)", "0"], ["TST-EN010", "Quarter Century Secret Rare", " ", "0"], ["OLD-EN001", "Common", "(C)", "0"]]), card_prices: [{ tcgplayer_price: "0.50" }] };
+    const prices = toPricing(modern, [hero]);
+    // Against the card's Common printing elsewhere: a Super Rare is worth 1.5 times as much, a QCSR 10 times.
+    expect(priceFor(prices["TST-EN010-SR"], "holo")).toMatchObject({ amount: 0.75, estimated: true });
+    expect(priceFor(prices["TST-EN010-QCSR"], "holo")).toMatchObject({ amount: 5, estimated: true });
   });
 });
 

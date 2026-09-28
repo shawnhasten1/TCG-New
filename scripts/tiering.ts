@@ -1,5 +1,5 @@
 // Ranking sets into rarity tiers by what their commons sell for, shared by each game's set-rarity script
-// (setRarity.ts for Pokémon, mtgSetRarity.ts for Magic). Print runs aren't public, so scarcity is inferred from
+// (setRarity.ts for Pokémon, mtgSetRarity.ts for Magic, ygoSetRarity.ts for Yu-Gi-Oh!). Print runs aren't public, so scarcity is inferred from
 // commons' prices: nobody chases commons for their art, so their price mostly reflects how much supply is left.
 // Each set's median price per source (TCGplayer USD, Cardmarket EUR) is ranked among the sets, the ranks averaged
 // into a 0–1 score, and the ranking cut into tiers.

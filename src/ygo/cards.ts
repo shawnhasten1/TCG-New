@@ -8,8 +8,10 @@
 //   printing: set code plus rarity.
 // - Sets from 2002–2004 list each card under several regional codes (LOB-001, LOB-E001, LOB-EN001). Only the
 //   English ("EN") printings are kept, or the unprefixed North American ones for sets that have no EN codes.
-// - Each printing has a `set_price` in dollars (TCGplayer's, updated about daily; "0" when there's none), so a whole
-//   set's prices come from the same request as its cards.
+// - Each printing has a `set_price` in dollars (TCGplayer's), but by 2026 nearly all are "0" (none in Phantom
+//   Nightmare). Each card also has `card_prices`, whose `tcgplayer_price` is its cheapest printing's. So a printing
+//   without a set_price is estimated from that, scaled by how much rarer it is than the card's plainest printing
+//   (RARITY_VALUE). Both come in the same request as the cards, so a whole set is priced at once.
 // - A few printings have a junk rarity ("New", "Cr") or a typo ("PLatinum Secret Rare"); junk is left out.
 // - The rate limit is 20 requests a second, and going over blocks the IP for an hour. Data must be stored rather
 //   than fetched again, and images must be re-hosted, not hotlinked. The Worker does both (worker/ygo.ts).
@@ -28,6 +30,7 @@ export interface RawCard {
   frameType: string;
   card_sets?: { set_name: string; set_code: string; set_rarity: string; set_rarity_code: string; set_price?: string }[];
   card_images: { id: number }[];
+  card_prices?: { tcgplayer_price?: string }[];
 }
 
 /** Rarities printed without foil: everything else shines. */
@@ -126,14 +129,49 @@ export function toSetData(set: YgoSet, raw: RawCard[]): SetData {
 }
 
 /**
+ * Roughly what a printing at each rarity sells for next to the same card at another, for estimating a printing's
+ * price from the card's cheapest (see the header). Unknown rarities count as 1.
+ */
+const RARITY_VALUE: Record<string, number> = {
+  Common: 1,
+  "Short Print": 1,
+  "Super Short Print": 1.5,
+  Rare: 1.2,
+  Starfoil: 1.5,
+  "Starfoil Rare": 1.5,
+  "Mosaic Rare": 1.5,
+  "Shatterfoil Rare": 1.5,
+  "Super Rare": 1.5,
+  "Duel Terminal Normal Parallel Rare": 2,
+  "Duel Terminal Rare Parallel Rare": 2.5,
+  "Duel Terminal Normal Rare Parallel Rare": 2.5,
+  "Ultra Rare": 2.5,
+  "Duel Terminal Super Parallel Rare": 3,
+  "Secret Rare": 4,
+  "Duel Terminal Ultra Parallel Rare": 4,
+  "Ultra Rare (Pharaoh's Rare)": 4,
+  "Prismatic Secret Rare": 6,
+  "Ultimate Rare": 6,
+  "Collector's Rare": 6,
+  "Platinum Secret Rare": 6,
+  "Quarter Century Secret Rare": 10,
+  "Ghost Rare": 25,
+  "Starlight Rare": 25,
+};
+const value = (rarity: string) => RARITY_VALUE[TYPOS[rarity] ?? rarity] ?? 1;
+
+/**
  * A set's prices, by card id, in TCGdex's pricing shape so priceFor reads every game alike: each printing's TCGplayer
- * price under its one finish ("holofoil" for foil rarities, "normal" for the rest). Cards with no price are left out.
+ * price under its one finish ("holofoil" for foil rarities, "normal" for the rest), marked `estimated` when it's worked
+ * out from the card's cheapest printing (see the header). Cards with no price at all are left out.
  */
 export function toPricing(set: YgoSet, raw: RawCard[]): Record<string, CardPricing> {
   const out: Record<string, CardPricing> = {};
   for (const p of printings(set, raw)) {
-    if (!p.price) continue;
-    out[p.id] = { tcgplayer: { unit: "USD", [isFoilRarity(p.rarity) ? "holofoil" : "normal"]: { marketPrice: p.price } } };
+    const cheapest = Number(p.card.card_prices?.[0]?.tcgplayer_price);
+    const plainest = Math.min(...(p.card.card_sets ?? []).map((s) => value(s.set_rarity)));
+    const entry = p.price ? { marketPrice: p.price } : cheapest > 0 ? { marketPrice: Math.round(((cheapest * value(p.rarity)) / plainest) * 100) / 100, estimated: true } : undefined;
+    if (entry) out[p.id] = { tcgplayer: { unit: "USD", [isFoilRarity(p.rarity) ? "holofoil" : "normal"]: entry } };
   }
   return out;
 }
