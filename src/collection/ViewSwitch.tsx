@@ -1,4 +1,4 @@
-// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages; Magic has its card index where
+// "By set / Pokédex / By rarity / All cards / Packs" switch shared by the collection pages; Magic and Yu-Gi-Oh! have their card index where
 // Pokémon has the Pokédex. A friend's collection has no Pokédex, card index or Packs view, and neither does a game
 // without one.
 

@@ -25,7 +25,7 @@ export type Feature = "sets" | "market" | "social" | "pokedex" | "printings" | "
 export const GAMES: { id: Game; name: string; short: string; features: Feature[] }[] = [
   { id: "pokemon", name: "Pokémon", short: "PKMN", features: ["sets", "market", "social", "pokedex", "packArt", "eraFilter", "setTiers", "share"] },
   { id: "mtg", name: "Magic: The Gathering", short: "MTG", features: ["sets", "market", "social", "printings", "packArt", "eraFilter", "setTiers", "share"] },
-  { id: "ygo", name: "Yu-Gi-Oh!", short: "YGO", features: ["sets", "market", "social", "eraFilter", "setTiers", "share"] },
+  { id: "ygo", name: "Yu-Gi-Oh!", short: "YGO", features: ["sets", "market", "social", "printings", "packArt", "eraFilter", "setTiers", "share"] },
 ];
 
 export const isGame = (v: unknown): v is Game => GAMES.some((g) => g.id === v);

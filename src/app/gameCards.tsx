@@ -4,7 +4,8 @@
 
 import type { ReactNode } from "react";
 import type { CardPricing, Progress } from "../api/tcgdex";
-import type { Card, SetData, SetDetail, SetSummary } from "../api/types";
+import type { Card, CardWithSet, SetData, SetDetail, SetSummary } from "../api/types";
+import { layoutFor, type FrameLayout } from "../foil/layouts";
 import { FINISH_ORDER } from "../collection/cardGroups";
 import { FINISH_LABEL, speciesOf, type FinishKey } from "../collection/pokedex";
 import { hiddenReason } from "../engine/openable";
@@ -12,16 +13,17 @@ import { profileFor } from "../engine/profiles";
 import { drawableSets, ERAS } from "../engine/randomSet";
 import { setTier, type SetTier } from "../engine/setRarity";
 import type { PackProfile } from "../engine/types";
-import { setSymbol } from "../mtg/cards";
+import { rarityRank as mtgRarityRank, setSymbol } from "../mtg/cards";
 import { mtgPackArts, mtgPackArtSets } from "../mtg/packArt";
 import { packArt, packArts, type PackArt } from "../packs/art";
 import packPhotos from "../packs/packArt.json";
 import { mtgCards } from "../mtg/client";
-import { boosterEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
+import { boosterEra, foilEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
 import { client } from "./client";
 import type { Game } from "../game";
 import { GAME } from "./game";
 import { SetLogo } from "./SetLogo";
+import { rarityRank as ygoRarityRank } from "../ygo/cards";
 import { ygoCards } from "../ygo/client";
 import { ygoPackArts, ygoPackArtSets } from "../ygo/packArt";
 import { ygoDrawableSets, YGO_ERAS, ygoEra, ygoProfile, ygoSet, ygoSetTier } from "../ygo/sets";
@@ -74,6 +76,22 @@ export interface GameCards {
    * oracle id), for "New entry" on the reveal (collection/entries.ts), and what that's called.
    */
   index?: { keys(card: Card): string[]; badge: string; aria: string };
+  /**
+   * The card index and every printing of a card, in games that have them (the "printings" feature): a card's key (a
+   * Magic card's oracle id, a Yu-Gi-Oh! card's passcode), and what the pages need to show its printings.
+   */
+  printings?: {
+    key(card: Card): string | undefined;
+    /** Every printing of the card among the sets here, newest set first. */
+    get(key: string): Promise<CardWithSet[]>;
+    /** Orders rarities, plainest first: the index shows the rarest printing you own. */
+    rarityRank(rarity: string): number;
+    /** The era a set is from (one of `eras`), which groups printings. */
+    eraOf(setId: string): string | undefined;
+    set(setId: string): { name: string; released: string } | undefined;
+    /** The frame layout of a set's cards, for the close-up. */
+    layout(setId: string): FrameLayout;
+  };
   /** Where the pack designs come from, for the Packs view. */
   packCredit: { text: string; name: string; url: string };
   /** Where the card data and images come from, and a set to open the debug page on (it reads TCGdex). */
@@ -143,6 +161,20 @@ const mtg: GameCards = {
   packArt: (setId, artId) => (artId ? mtgPackArts(setId).find((a) => a.id === artId) : undefined),
   packArtSets: mtgPackArtSets,
   index: { keys: (c) => (c.oracleId ? [c.oracleId] : []), badge: "New card", aria: "A card you've never had, in any printing." },
+  printings: {
+    key: (c) => c.oracleId ?? undefined,
+    get: (key) => mtgCards.getPrintings(key),
+    rarityRank: mtgRarityRank,
+    eraOf: (setId) => {
+      const set = mtgSet(setId);
+      return set && boosterEra(set);
+    },
+    set: mtgSet,
+    layout: (setId) => {
+      const set = mtgSet(setId);
+      return layoutFor(set ? `mtg-${foilEra(set)}` : "mtg-modern");
+    },
+  },
   packCredit: { text: "Wrappers drawn around card art (by its artists) from", name: "Scryfall", url: "https://scryfall.com" },
 };
 
@@ -187,6 +219,17 @@ const ygo: GameCards = {
   packArt: (setId, artId) => (artId ? ygoPackArts(setId).find((a) => a.id === artId) : undefined),
   packArtSets: ygoPackArtSets,
   index: { keys: (c) => (c.passcode ? [String(c.passcode)] : []), badge: "New card", aria: "A card you've never had, in any printing." },
+  printings: {
+    key: (c) => (c.passcode ? String(c.passcode) : undefined),
+    get: (key) => ygoCards.getPrintings(key),
+    rarityRank: ygoRarityRank,
+    eraOf: (setId) => {
+      const set = ygoSet(setId);
+      return set && ygoEra(set);
+    },
+    set: ygoSet,
+    layout: () => layoutFor("ygo"),
+  },
   packCredit: { text: "Pack photos from", name: "YGOPRODeck", url: "https://ygoprodeck.com" },
 };
 

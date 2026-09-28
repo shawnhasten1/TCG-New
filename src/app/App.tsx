@@ -11,8 +11,8 @@ import { BoughtPackPage } from "../market/BoughtPackPage";
 import { MarketPage } from "../market/MarketPage";
 import { SellPicker } from "../market/SellPicker";
 import { FoilLab } from "../foil/FoilLab";
-import { CardIndexPage } from "../mtg/CardIndexPage";
-import { PrintingsPage } from "../mtg/PrintingsPage";
+import { CardIndexPage } from "../collection/CardIndexPage";
+import { PrintingsPage } from "../collection/PrintingsPage";
 import { OpenPage } from "../opener/OpenPage";
 import { PackLab } from "../opener/PackLab";
 import { SetPicker } from "../picker/SetPicker";
@@ -85,7 +85,7 @@ function Page({ route }: { route: Route }) {
     case "cardIndex":
       return <CardIndexPage />;
     case "printings":
-      return <PrintingsPage key={route.oracleId} oracleId={route.oracleId} />;
+      return <PrintingsPage key={route.key} cardKey={route.key} />;
     case "friend":
       return (
         <FriendCollectionProvider key={route.friendId} friendId={route.friendId}>

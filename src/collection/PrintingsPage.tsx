@@ -1,32 +1,28 @@
-// Every printing of a Magic card among the sets packs come from (#/card/<oracleId>), Magic's version of a Pokémon's
-// page: each printing's art and rarity, and which finishes you own. The printings come from one Scryfall search, by the
-// card's oracle id (worker/mtg.ts), so this stays quick however many sets there are.
+// Every printing of a card among the sets packs come from (#/card/<key>), in Magic and Yu-Gi-Oh!: their version of a
+// Pokémon's page, with each printing's art and rarity, and which finishes you own. The printings come from one lookup
+// by the card's key (gameCards.printings: a Scryfall search by oracle id, worker/mtg.ts, or YGOPRODeck's card by
+// passcode, worker/ygo.ts), so this stays quick however many sets there are.
 
 import { useEffect, useMemo, useState } from "react";
 import { cardImage } from "../api/tcgdex";
 import type { CardWithSet } from "../api/types";
+import { gameCards } from "../app/gameCards";
 import { RetryImg } from "../app/RetryImg";
 import { href } from "../app/router";
 import { Spinner } from "../app/Spinner";
-import { CardDetail } from "../collection/CardDetail";
-import { formatPrice } from "../collection/prices";
-import { ownership } from "../collection/progress";
-import { getPulls, onCollectionChange, type PullRecord } from "../collection/store";
-import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "../collection/usePrices";
-import { CollectionViewSwitch } from "../collection/ViewSwitch";
-import { layoutFor } from "../foil/layouts";
-import { mtgCards } from "./client";
-import { boosterEra, foilEra, MTG_ERAS, mtgSet } from "./sets";
-import "../collection/collection.css";
+import { CardDetail } from "./CardDetail";
+import { formatPrice } from "./prices";
+import { ownership } from "./progress";
+import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "./usePrices";
+import { CollectionViewSwitch } from "./ViewSwitch";
+import "./collection.css";
 
 type Show = "all" | "owned" | "missing";
-/** A Magic card is foil or not. */
-const FINISHES = [
-  { key: "holo", label: "Foil" },
-  { key: "normal", label: "Non-foil" },
-] as const;
+/** A Magic or Yu-Gi-Oh! card is foil or not. */
+const FINISHES = (["holo", "normal"] as const).map((key) => ({ key, label: gameCards.finishName[key] }));
 
-export function PrintingsPage({ oracleId }: { oracleId: string }) {
+export function PrintingsPage({ cardKey }: { cardKey: string }) {
   const [printings, setPrintings] = useState<CardWithSet[]>();
   const [pulls, setPulls] = useState<PullRecord[]>();
   const [error, setError] = useState<string>();
@@ -37,11 +33,12 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
 
   useEffect(() => {
     let live = true;
-    mtgCards.getPrintings(oracleId).then(
+    if (!gameCards.printings) return setError("This game has no card index.");
+    gameCards.printings.get(cardKey).then(
       (p) => live && setPrintings(p),
       (e) => live && setError(e instanceof Error ? e.message : String(e)),
     );
-    mtgCards.getSets().then(
+    gameCards.listSetSummaries().then(
       (sets) => live && setOfficial(new Map(sets.map((s) => [s.id, s.cardCount.official]))),
       () => undefined,
     );
@@ -52,7 +49,7 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
       live = false;
       off();
     };
-  }, [oracleId]);
+  }, [cardKey]);
 
   const owned = useMemo(() => ownership(pulls ?? []), [pulls]);
   const name = printings?.[0]?.name ?? "This card";
@@ -74,7 +71,7 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
   }, [showPrices, pulls, ownedIds, prices]);
 
   const visible = (printings ?? []).filter((c) => (show === "owned" ? owned.has(c.id) : show === "missing" ? !owned.has(c.id) : true));
-  const groups = MTG_ERAS.map((era) => ({ era, cards: visible.filter((c) => { const s = mtgSet(c.set.id); return s && boosterEra(s) === era.id; }) })).filter((g) => g.cards.length);
+  const groups = gameCards.eras.map((era) => ({ era, cards: visible.filter((c) => gameCards.printings?.eraOf(c.set.id) === era.id) })).filter((g) => g.cards.length);
 
   return (
     <main className="collection pokemon-page">
@@ -131,7 +128,7 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
               <ol className="binder-grid">
                 {g.cards.map((c) => {
                   const o = owned.get(c.id);
-                  const set = mtgSet(c.set.id);
+                  const set = gameCards.printings?.set(c.set.id);
                   const price = showPrices && o ? ownedPrice(prices.get(c.id), o) : undefined;
                   return (
                     <li key={c.id}>
@@ -176,7 +173,7 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
           card={selected}
           official={official.get(selected.set.id) ?? 0}
           owned={owned.get(selected.id)}
-          layout={layoutFor(`mtg-${foilEra(mtgSet(selected.set.id)!)}`)}
+          layout={gameCards.printings!.layout(selected.set.id)}
           onClose={() => setSelected(undefined)}
         />
       )}

@@ -1,26 +1,27 @@
-// Magic's card index (#/index), where Pokémon has its Pokédex: every card you own, each printing of it counted as the
-// same card (by Scryfall's oracle id), A to Z. Tap one for every printing of it (PrintingsPage). A card's data comes
-// from the sets you've opened, already on the device.
+// The card index (#/index) in Magic and Yu-Gi-Oh!, where Pokémon has its Pokédex: every card you own, each printing of
+// it counted as the same card (by the key the game gives it, gameCards.printings: Scryfall's oracle id, or the card's
+// passcode), A to Z. Tap one for every printing of it (PrintingsPage). A card's data comes from the sets you've opened,
+// already on the device.
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { GuestNotice } from "../account/GuestNotice";
 import { cardImage } from "../api/tcgdex";
 import type { Card } from "../api/types";
+import { gameCards } from "../app/gameCards";
 import { RetryImg } from "../app/RetryImg";
 import { href } from "../app/router";
 import { Spinner } from "../app/Spinner";
-import { fold, queryWords } from "../collection/cardFilter";
-import { compareNames } from "../collection/cardSort";
-import { ownership } from "../collection/progress";
-import { getPulls, onCollectionChange, type PullRecord } from "../collection/store";
-import { useIncremental } from "../collection/useIncremental";
-import { useOpenedSets } from "../collection/useOpenedSets";
-import { CollectionViewSwitch } from "../collection/ViewSwitch";
-import { rarityRank } from "./cards";
-import "../collection/collection.css";
+import { fold, queryWords } from "./cardFilter";
+import { compareNames } from "./cardSort";
+import { ownership } from "./progress";
+import { getPulls, onCollectionChange, type PullRecord } from "./store";
+import { useIncremental } from "./useIncremental";
+import { useOpenedSets } from "./useOpenedSets";
+import { CollectionViewSwitch } from "./ViewSwitch";
+import "./collection.css";
 
 interface Entry {
-  oracleId: string;
+  key: string;
   name: string;
   /** The printing shown: the rarest you own, then the latest pulled. */
   card: Card;
@@ -51,21 +52,24 @@ export function CardIndexPage() {
 
   const { sets, progress } = useOpenedSets(pulls);
   const entries = useMemo(() => {
+    const printings = gameCards.printings;
+    if (!printings) return [];
     const owned = ownership(pulls ?? []);
     const by = new Map<string, Entry>();
     for (const d of sets ?? []) {
       for (const card of d.cards) {
         const o = owned.get(card.id);
-        if (!o || !card.oracleId) continue;
-        const e = by.get(card.oracleId);
+        const key = printings.key(card);
+        if (!o || !key) continue;
+        const e = by.get(key);
         if (!e) {
-          by.set(card.oracleId, { oracleId: card.oracleId, name: card.name, card, printings: 1, copies: o.total, lastPulledAt: o.lastPulledAt });
+          by.set(key, { key, name: card.name, card, printings: 1, copies: o.total, lastPulledAt: o.lastPulledAt });
           continue;
         }
         e.printings++;
         e.copies += o.total;
         if (o.lastPulledAt > e.lastPulledAt) e.lastPulledAt = o.lastPulledAt;
-        const better = rarityRank(card.rarity) - rarityRank(e.card.rarity) || (o.lastPulledAt > (owned.get(e.card.id)?.lastPulledAt ?? "") ? 1 : -1);
+        const better = printings.rarityRank(card.rarity) - printings.rarityRank(e.card.rarity) || (o.lastPulledAt > (owned.get(e.card.id)?.lastPulledAt ?? "") ? 1 : -1);
         if (better > 0) e.card = card;
       }
     }
@@ -118,8 +122,8 @@ export function CardIndexPage() {
           {shown.length === 0 && <p className="muted empty">No cards match.</p>}
           <ol className="binder-grid" aria-busy={view !== query}>
             {shown.slice(0, limit).map((e) => (
-              <li key={e.oracleId}>
-                <a className="binder-slot" data-state="owned" href={href.printings(e.oracleId)} aria-label={`${e.name}, ${plural(e.printings, "printing")} owned, ${copies(e.copies)}`}>
+              <li key={e.key}>
+                <a className="binder-slot" data-state="owned" href={href.printings(e.key)} aria-label={`${e.name}, ${plural(e.printings, "printing")} owned, ${copies(e.copies)}`}>
                   <RetryImg src={cardImage(e.card, "low")} alt="" loading="lazy" />
                   {e.copies > 1 && <span className="count">×{e.copies}</span>}
                 </a>

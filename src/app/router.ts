@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export type MarketTab = "sell" | "shop" | "unopened" | "wallet";
 
-export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string; fromShop?: boolean } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "cardIndex" } | { page: "printings"; oracleId: string } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" } | { page: "openBought"; packId: string };
+export type Route = { page: "picker" } | { page: "open" } | { page: "debug"; setId?: string } | { page: "foil" } | { page: "packLab" } | { page: "packs" } | { page: "collection" } | { page: "binder"; setId: string; fromShop?: boolean } | { page: "settings" } | { page: "pokedex" } | { page: "cards" } | { page: "all" } | { page: "pokemon"; dexId: number } | { page: "cardIndex" } | { page: "printings"; key: string } | { page: "friends"; code?: string } | { page: "feed" } | { page: "friend"; friendId: string; view: "set" | "cards" | "all" | "binder"; setId?: string } | { page: "trades" } | { page: "trade"; friendId: string } | { page: "market"; tab: MarketTab } | { page: "marketPick" } | { page: "openBought"; packId: string };
 
 export function parseRoute(hash: string): Route {
   const [page, id, sub, subId] = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -37,7 +37,8 @@ export function parseRoute(hash: string): Route {
   }
   if (page === "pokemon" && /^\d+$/.test(id ?? "")) return { page: "pokemon", dexId: Number(id) };
   if (page === "index") return { page: "cardIndex" };
-  if (page === "card" && /^[0-9a-f-]{36}$/.test(id ?? "")) return { page: "printings", oracleId: id! };
+  // A Magic card's oracle id, or a Yu-Gi-Oh! card's passcode.
+  if (page === "card" && /^([0-9a-f-]{36}|\d{1,10})$/.test(id ?? "")) return { page: "printings", key: id! };
   if (page === "binder" && id) return { page: "binder", setId: id, fromShop: sub === "shop" || undefined };
   // Home is the opener. Packs always come from a random set, so old #/open and #/open/<setId> links land here too.
   return { page: "open" };
@@ -73,7 +74,7 @@ export const href = {
   friends: (code?: string) => (code ? `#/friends/${encodeURIComponent(code)}` : "#/friends"),
   pokemon: (dexId: number) => `#/pokemon/${dexId}`,
   cardIndex: () => "#/index",
-  printings: (oracleId: string) => `#/card/${oracleId}`,
+  printings: (key: string) => `#/card/${key}`,
   binder: (setId: string) => `#/binder/${encodeURIComponent(setId)}`,
   /** A set's binder, looked at from the shop before buying its packs. */
   shopBinder: (setId: string) => `#/binder/${encodeURIComponent(setId)}/shop`,

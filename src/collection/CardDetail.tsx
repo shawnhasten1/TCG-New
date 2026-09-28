@@ -254,9 +254,9 @@ export function CardDetail({ card, official, owned, layout, finish: initialFinis
             </div>
           )}
 
-          {game === GAME && has("printings") && card.oracleId && (
+          {game === GAME && has("printings") && cards.printings?.key(card) && (
             <p className="species-links">
-              <a href={href.printings(card.oracleId)} onClick={close}>
+              <a href={href.printings(cards.printings.key(card)!)} onClick={close}>
                 All printings of {card.name} →
               </a>
             </p>

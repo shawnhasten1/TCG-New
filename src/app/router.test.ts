@@ -30,7 +30,8 @@ describe("navSection", () => {
   });
 
   it("tells the market's pages apart", () => {
-    expect(parseRoute("#/card/ef86989d-ce80-4e55-aece-7d11710eeffa")).toEqual({ page: "printings", oracleId: "ef86989d-ce80-4e55-aece-7d11710eeffa" });
+    expect(parseRoute("#/card/ef86989d-ce80-4e55-aece-7d11710eeffa")).toEqual({ page: "printings", key: "ef86989d-ce80-4e55-aece-7d11710eeffa" });
+    expect(parseRoute("#/card/89631139")).toEqual({ page: "printings", key: "89631139" });
     expect(parseRoute("#/card/not-an-id")).toEqual({ page: "open" });
     expect(parseRoute("#/market")).toEqual({ page: "market", tab: "sell" });
     expect(parseRoute("#/market/wallet")).toEqual({ page: "market", tab: "wallet" });
