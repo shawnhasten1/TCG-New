@@ -301,8 +301,8 @@
    "id": "1",
    "name": "Light of Destruction",
    "src": "/packs/ygo/LODT-1.webp",
-   "aspect": 0.582,
-   "source": "https://yugioh.fandom.com/wiki/File:LODT-BoosterEN.jpg"
+   "aspect": 0.539,
+   "source": "https://yugipedia.com/wiki/File:LODT-Booster-EN-UE.png"
   }
  ],
  "RP01": [
@@ -328,8 +328,8 @@
    "id": "1",
    "name": "Crossroads of Chaos",
    "src": "/packs/ygo/CSOC-1.webp",
-   "aspect": 0.588,
-   "source": "https://images.ygoprodeck.com/images/sets/CSOC.jpg"
+   "aspect": 0.546,
+   "source": "https://yugipedia.com/wiki/File:CSOC-Booster-EN-UE.png"
   }
  ],
  "DP08": [
@@ -650,10 +650,24 @@
  "BP02": [
   {
    "id": "1",
-   "name": "Battle Pack 2: War of the Giants",
+   "name": "Battle Pack 2: War of the Giants, design 1",
    "src": "/packs/ygo/BP02-1.webp",
-   "aspect": 0.562,
-   "source": "https://images.ygoprodeck.com/images/sets/BP02.jpg"
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:BP02-BoosterEN.png"
+  },
+  {
+   "id": "2",
+   "name": "Battle Pack 2: War of the Giants, design 2",
+   "src": "/packs/ygo/BP02-2.webp",
+   "aspect": 0.561,
+   "source": "https://yugipedia.com/wiki/File:BP02-BoosterEN.png"
+  },
+  {
+   "id": "3",
+   "name": "Battle Pack 2: War of the Giants, design 3",
+   "src": "/packs/ygo/BP02-3.webp",
+   "aspect": 0.559,
+   "source": "https://yugipedia.com/wiki/File:BP02-BoosterEN.png"
   }
  ],
  "NUMH": [
@@ -1282,8 +1296,8 @@
    "id": "1",
    "name": "Rise of the Duelist",
    "src": "/packs/ygo/ROTD-1.webp",
-   "aspect": 0.561,
-   "source": "https://yugioh.fandom.com/wiki/File:ROTD-BoosterEN.png"
+   "aspect": 0.56,
+   "source": "https://www.yugioh-card.com/en/products/rotd/"
   }
  ],
  "LED7": [
@@ -1291,8 +1305,8 @@
    "id": "1",
    "name": "Legendary Duelists: Rage of Ra",
    "src": "/packs/ygo/LED7-1.webp",
-   "aspect": 0.558,
-   "source": "https://yugipedia.com/wiki/File:LED7-BoosterEN.png"
+   "aspect": 0.56,
+   "source": "https://www.yugioh-card.com/en/products/led7/"
   }
  ],
  "PHRA": [
@@ -1307,10 +1321,24 @@
  "GEIM": [
   {
    "id": "1",
-   "name": "Genesis Impact",
+   "name": "Genesis Impact, design 1",
    "src": "/packs/ygo/GEIM-1.webp",
    "aspect": 0.562,
-   "source": "https://yugipedia.com/wiki/File:GEIM-BoosterEN.png"
+   "source": "https://www.yugioh-card.com/en/products/geim/"
+  },
+  {
+   "id": "2",
+   "name": "Genesis Impact, design 2",
+   "src": "/packs/ygo/GEIM-2.webp",
+   "aspect": 0.565,
+   "source": "https://www.yugioh-card.com/en/products/geim/"
+  },
+  {
+   "id": "3",
+   "name": "Genesis Impact, design 3",
+   "src": "/packs/ygo/GEIM-3.webp",
+   "aspect": 0.563,
+   "source": "https://www.yugioh-card.com/en/products/geim/"
   }
  ],
  "BLVO": [
@@ -1345,8 +1373,8 @@
    "id": "1",
    "name": "King's Court",
    "src": "/packs/ygo/KICO-1.webp",
-   "aspect": 0.541,
-   "source": "https://images.ygoprodeck.com/images/sets/KICO.jpg"
+   "aspect": 0.524,
+   "source": "https://yugipedia.com/wiki/File:KICO-BoosterEN.png"
   }
  ],
  "DAMA": [
@@ -1354,8 +1382,8 @@
    "id": "1",
    "name": "Dawn of Majesty",
    "src": "/packs/ygo/DAMA-1.webp",
-   "aspect": 0.563,
-   "source": "https://yugipedia.com/wiki/File:DAMA-BoosterEN.png"
+   "aspect": 0.562,
+   "source": "https://www.yugioh-card.com/en/products/dama/"
   }
  ],
  "LED8": [
@@ -1363,8 +1391,8 @@
    "id": "1",
    "name": "Legendary Duelists: Synchro Storm",
    "src": "/packs/ygo/LED8-1.webp",
-   "aspect": 0.565,
-   "source": "https://yugipedia.com/wiki/File:LED8-BoosterEN.png"
+   "aspect": 0.564,
+   "source": "https://www.yugioh-card.com/en/products/led8/"
   }
  ],
  "BODE": [
@@ -1372,8 +1400,8 @@
    "id": "1",
    "name": "Burst of Destiny",
    "src": "/packs/ygo/BODE-1.webp",
-   "aspect": 0.563,
-   "source": "https://yugioh.fandom.com/wiki/File:BODE-BoosterEN.png"
+   "aspect": 0.559,
+   "source": "https://www.yugioh-card.com/en/products/bode/"
   }
  ],
  "GRCR": [
@@ -1390,8 +1418,8 @@
    "id": "1",
    "name": "Battle of Chaos",
    "src": "/packs/ygo/BACH-1.webp",
-   "aspect": 0.565,
-   "source": "https://yugipedia.com/wiki/File:BACH-BoosterEN.png"
+   "aspect": 0.563,
+   "source": "https://www.yugioh-card.com/en/products/bach/"
   }
  ],
  "HAC1": [
@@ -1435,8 +1463,8 @@
    "id": "1",
    "name": "Tactical Masters",
    "src": "/packs/ygo/TAMA-1.webp",
-   "aspect": 0.54,
-   "source": "https://yugioh.fandom.com/wiki/File:TAMA-BoosterEN.png"
+   "aspect": 0.563,
+   "source": "https://www.yugioh-card.com/en/products/tama/"
   }
  ],
  "DABL": [
@@ -1445,7 +1473,7 @@
    "name": "Darkwing Blast",
    "src": "/packs/ygo/DABL-1.webp",
    "aspect": 0.564,
-   "source": "https://yugipedia.com/wiki/File:DABL-BoosterEN.png"
+   "source": "https://www.yugioh-card.com/en/products/dabl/"
   }
  ],
  "BLCR": [
@@ -1499,8 +1527,8 @@
    "id": "1",
    "name": "Photon Hypernova",
    "src": "/packs/ygo/PHHY-1.webp",
-   "aspect": 0.565,
-   "source": "https://yugipedia.com/wiki/File:PHHY-BoosterEN.png"
+   "aspect": 0.566,
+   "source": "https://www.yugioh-card.com/en/products/phhy/"
   }
  ],
  "MAZE": [
@@ -1526,8 +1554,8 @@
    "id": "1",
    "name": "Wild Survivors",
    "src": "/packs/ygo/WISU-1.webp",
-   "aspect": 0.56,
-   "source": "https://yugioh.fandom.com/wiki/File:WISU-BoosterEN.png"
+   "aspect": 0.562,
+   "source": "https://www.yugioh-card.com/en/products/wisu/"
   }
  ],
  "BLMR": [
@@ -1707,22 +1735,22 @@
    "id": "1",
    "name": "Maze of the Master, design 1",
    "src": "/packs/ygo/MZTM-1.webp",
-   "aspect": 0.555,
-   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:MZTM-BoosterEN.png"
   },
   {
    "id": "2",
    "name": "Maze of the Master, design 2",
    "src": "/packs/ygo/MZTM-2.webp",
-   "aspect": 0.545,
-   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+   "aspect": 0.55,
+   "source": "https://yugipedia.com/wiki/File:MZTM-BoosterEN.png"
   },
   {
    "id": "3",
    "name": "Maze of the Master, design 3",
    "src": "/packs/ygo/MZTM-3.webp",
-   "aspect": 0.552,
-   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+   "aspect": 0.547,
+   "source": "https://yugipedia.com/wiki/File:MZTM-BoosterEN.png"
   }
  ],
  "RA04": [
@@ -1748,8 +1776,8 @@
    "id": "1",
    "name": "Justice Hunters",
    "src": "/packs/ygo/JUSH-1.webp",
-   "aspect": 0.547,
-   "source": "https://yugipedia.com/wiki/File:JUSH-BoosterEN.png"
+   "aspect": 0.551,
+   "source": "https://www.yugioh-card.com/en/products/jush/"
   }
  ],
  "BLMM": [
@@ -1757,15 +1785,15 @@
    "id": "1",
    "name": "Battles of Legend: Monster Mayhem, design 1",
    "src": "/packs/ygo/BLMM-1.webp",
-   "aspect": 0.558,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMM.jpg"
+   "aspect": 0.549,
+   "source": "https://www.yugioh-card.com/en/products/blmm/"
   },
   {
    "id": "2",
    "name": "Battles of Legend: Monster Mayhem, design 2",
    "src": "/packs/ygo/BLMM-2.webp",
-   "aspect": 0.551,
-   "source": "https://images.ygoprodeck.com/images/sets/BLMM.jpg"
+   "aspect": 0.549,
+   "source": "https://www.yugioh-card.com/en/products/blmm/"
   }
  ],
  "DOOD": [
@@ -1841,15 +1869,15 @@
    "id": "1",
    "name": "Battles of Legend: Glorious Gallery, design 1",
    "src": "/packs/ygo/BLGG-1.webp",
-   "aspect": 0.565,
-   "source": "https://images.ygoprodeck.com/images/sets/BLGG.jpg"
+   "aspect": 0.564,
+   "source": "https://www.yugioh-card.com/en/products/blgg/"
   },
   {
    "id": "2",
    "name": "Battles of Legend: Glorious Gallery, design 2",
    "src": "/packs/ygo/BLGG-2.webp",
-   "aspect": 0.563,
-   "source": "https://images.ygoprodeck.com/images/sets/BLGG.jpg"
+   "aspect": 0.564,
+   "source": "https://www.yugioh-card.com/en/products/blgg/"
   }
  ],
  "CORI": [
