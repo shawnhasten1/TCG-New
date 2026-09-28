@@ -10,7 +10,7 @@
 	// Games switched on besides Pokémon, as comma-separated game ids (src/game.ts; worker/games.ts). Magic: The Gathering
 	// is live. A game still in the works stays out of this list, and goes in .dev.vars to work on it locally.
 	"vars": {
-		"DEMO_GAMES": "mtg"
+		"DEMO_GAMES": "mtg,ygo"
 	},
 	"assets": {
 		"not_found_handling": "single-page-application",
@@ -32,6 +32,10 @@
 		{
 			"binding": "YGO_IMAGES",
 			"bucket_name": "tcg-ygo-images"
+		},
+		{
+			"bucket_name": "tcg-ygo-images",
+			"binding": "tcg_ygo_images"
 		}
 	],
 	// Slows password guessing: sign-in, sign-up and password changes, per IP.
