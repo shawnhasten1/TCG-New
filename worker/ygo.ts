@@ -5,9 +5,9 @@
 // - prices change daily, so they're kept apart from the cards: one entry per set per day, from the same request;
 // - card images are fetched once into R2 (YGO_IMAGES) and served from there, cached for good by browsers (pack
 //   wrappers are in the app itself, public/packs/ygo);
-// - requests to YGOPRODeck go through a rate limit (YGOPRODECK_LIMITER) well under theirs. Past it, a request is
-//   turned away with a 503 rather than queued (a promise from another request's context can't be awaited in a Worker),
-//   and the app tries again later.
+// - requests to YGOPRODeck go through rate limits under theirs (YGOPRODECK_LIMITER, and YGO_IMAGE_LIMITER for the
+//   bursts of images a first look at a binder brings). Past one, a request is turned away with a 503 rather than
+//   queued (a promise from another request's context can't be awaited in a Worker), and the app tries again later.
 
 import type { CardPricing } from "../src/api/tcgdex";
 import type { CardWithSet, SetData, SetSummary } from "../src/api/types";
@@ -28,10 +28,10 @@ import type { DealtRow } from "./packs";
 const SET_VERSION = 2;
 const setKey = (id: string) => `ygo:set:${id}:v${SET_VERSION}`;
 
-/** A fetch that keeps to YGOPRODeck's limits: turned away (503) past YGOPRODECK_LIMITER. */
-function ygoprodeck(env: Env): Fetcher {
+/** A fetch that keeps to YGOPRODeck's limits: turned away (503) past YGOPRODECK_LIMITER (or, for images, YGO_IMAGE_LIMITER). */
+function ygoprodeck(env: Env, limiter: RateLimit = env.YGOPRODECK_LIMITER): Fetcher {
   return async (url, init) => {
-    const { success } = await env.YGOPRODECK_LIMITER.limit({ key: "ygoprodeck" });
+    const { success } = await limiter.limit({ key: "ygoprodeck" });
     if (!success) throw new HttpError(503, "The card database is busy. Try again in a moment.");
     return fetch(url, init);
   };
@@ -173,7 +173,7 @@ async function rehosted(env: Env, key: string, url: string): Promise<Response> {
   const headers = { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable" };
   const stored = await env.YGO_IMAGES.get(key);
   if (stored) return new Response(stored.body, { headers });
-  const res = await ygoprodeck(env)(url);
+  const res = await ygoprodeck(env, env.YGO_IMAGE_LIMITER)(url);
   if (!res.ok) throw new HttpError(res.status === 404 ? 404 : 502, `Couldn't fetch the image (${res.status}).`);
   const body = await res.arrayBuffer();
   await env.YGO_IMAGES.put(key, body, { httpMetadata: { contentType: "image/jpeg" } });

@@ -54,13 +54,22 @@
 				"period": 60
 			}
 		},
-		// Requests to YGOPRODeck (Yu-Gi-Oh! data and images), which blocks an IP for an hour past 20 a second. Most are
-		// one-offs, since everything fetched is kept (worker/ygo.ts); this keeps a burst of first-time images well under.
+		// Requests to YGOPRODeck, which blocks an IP for an hour past 20 a second. Everything fetched is kept
+		// (worker/ygo.ts), so most are one-offs: card data (a set at a time, rarely)…
 		{
 			"name": "YGOPRODECK_LIMITER",
 			"namespace_id": "1004",
 			"simple": {
 				"limit": 15,
+				"period": 10
+			}
+		},
+		// …and card images, which come in bursts the first time anyone opens a set's binder (a hundred at once).
+		{
+			"name": "YGO_IMAGE_LIMITER",
+			"namespace_id": "1005",
+			"simple": {
+				"limit": 150,
 				"period": 10
 			}
 		},
