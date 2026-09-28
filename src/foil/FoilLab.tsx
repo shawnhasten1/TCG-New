@@ -12,6 +12,7 @@ import { typeSymbol } from "./reverse";
 import { artWindow, cardKind, type CardKind } from "./artWindows";
 import { foilStyle, foilTint, foilTreatment, type Treatment } from "./treatment";
 import { MtgFoilSection } from "./MtgFoilSection";
+import { YgoFoilSection } from "./YgoFoilSection";
 import "./foil-lab.css";
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
@@ -162,7 +163,9 @@ export function FoilLab() {
   const [cardWidth, setCardWidth] = useState(220);
   const [holoTry, setHoloTry] = useState<HoloTry>("era");
   const [glow, setGlow] = useState(0.45);
-  const mtg = useGames().includes("mtg");
+  const games = useGames();
+  const mtg = games.includes("mtg");
+  const ygo = games.includes("ygo");
 
   useEffect(() => {
     if (sweep) return;
@@ -250,6 +253,7 @@ export function FoilLab() {
       </header>
 
       {mtg && <MtgFoilSection showArtBox={showArtBox} />}
+      {ygo && <YgoFoilSection showArtBox={showArtBox} />}
 
       <section>
         <h2>Era masks</h2>

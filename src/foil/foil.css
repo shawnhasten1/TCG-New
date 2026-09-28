@@ -135,6 +135,78 @@
 }
 .tcg-card[data-foil-era="dark"] .face img { filter: brightness(.88) contrast(1.05); }
 
+/* ---------- Yu-Gi-Oh! rarity looks (data-foil-look, from ygo/foil.ts) ---------- */
+
+/* Ultimate Rare (2004–2015): art, border, attribute and stars embossed in a pale silver foil. The text box
+   (5.2–94.7% × 74–94.8%, measured on YGOPRODeck's scans) stays plain. */
+.tcg-card[data-foil-look="ultimate"] {
+  --ultimate-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath fill-rule='evenodd' d='M0 0H100V100H0Z M5.2 74H94.7V94.8H5.2Z'/%3E%3C/svg%3E");
+}
+.tcg-card[data-foil-look="ultimate"] .foil {
+  -webkit-mask-image: var(--ultimate-mask); mask-image: var(--ultimate-mask);
+  /* The embossing (--ridges) stays fixed to the card; the silver bands slide over it with the tilt. */
+  background-image:
+    var(--ridges),
+    repeating-linear-gradient(-45deg, #1a1c20 0%, #8a9098 3.8%, #f4f6f8 4.5%, #8a9098 5.2%, #1a1c20 10%, #1a1c20 12%),
+    repeating-linear-gradient(110deg, #c8ccd2 0%, #f2f4f6 10%, #9aa0a8 20%, #c8ccd2 30%);
+  background-size: 30% auto, 250% 250%, 200% 200%;
+  background-position: 0 0, calc(50% + (50 - var(--bx)) * 2.6%) calc(50% + (50 - var(--by)) * 3.5%), calc(50% - (50 - var(--bx)) * 2%) calc(50% - (50 - var(--by)) * 2%);
+  background-blend-mode: overlay, overlay;
+  mix-blend-mode: overlay;
+  filter: brightness(calc(.85 + var(--pc) * .3)) contrast(1.4) saturate(.2);
+  opacity: calc(var(--o) * .75 * var(--foil-k));
+}
+.tcg-card[data-foil-look="ultimate"] .foil::before { content: none; }
+/* The embossing is what makes an Ultimate: stronger than other etched foils, and kept off the text box too. */
+.tcg-card[data-foil-look="ultimate"] .etch {
+  -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%), var(--ultimate-mask);
+          mask-image: radial-gradient(circle at var(--mx) var(--my), #000 0%, #0008 45%, transparent 85%), var(--ultimate-mask);
+  -webkit-mask-size: auto, 100% 100%; mask-size: auto, 100% 100%;
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+  mix-blend-mode: overlay;
+  opacity: calc(var(--o) * .8 * var(--foil-k));
+}
+.tcg-card[data-foil-look="ultimate"] .glitter { display: none; }
+
+/* Ghost Rare: the art washed pale and grey, like a ghost of itself, under a silvery holo that only faintly
+   picks up colour. */
+.tcg-card .wash {
+  position: absolute; inset: 0; pointer-events: none;
+  /* The art box (artWindows.ts "ygo"): a clip, since backdrop-filter ignores masks. */
+  clip-path: inset(18.3% 11.8% 29.7% 11.9%);
+  background: hsl(210 20% 92% / .3);
+  -webkit-backdrop-filter: grayscale(.85) brightness(1.3) contrast(.6);
+          backdrop-filter: grayscale(.85) brightness(1.3) contrast(.6);
+}
+.tcg-card[data-foil-look="ghost"] .foil {
+  background-image: var(--rainbow), repeating-linear-gradient(125deg, #222 0%, #777 8%, #fff 11%, #777 14%, #222 22%);
+  background-size: 400% 400%, 250% 250%;
+  background-position: calc(50% + (50 - var(--bx)) * 2.6%) calc(50% + (50 - var(--by)) * 3.5%), calc(50% + (50 - var(--bx)) * 4%) calc(50% + (50 - var(--by)) * 4%);
+  filter: brightness(calc(.9 + var(--pc) * .4)) contrast(1.1) saturate(.45);
+  opacity: calc(var(--o) * .9 * var(--foil-k));
+}
+
+/* Foil name (Yu-Gi-Oh!'s Rare and up): a copy of the scan, cut to the name (6.6–82.8% × 4.8–10.8%) and thresholded
+   to the lettering, turns the printed name gold or silver, with a sheen that slides with the tilt.
+   Dark names: the copy is white letters on black, multiplied by the foil, then screened on (black leaves the card
+   alone). Light names (Xyz, Link, Spell, Trap): black letters on white, screened with the foil, then multiplied on. */
+.tcg-card .foil-name {
+  position: absolute; inset: 0; pointer-events: none; z-index: 4;
+  clip-path: inset(4.8% 17.2% 89.2% 6.6%);
+  isolation: isolate;
+  background: linear-gradient(115deg, var(--name-1), var(--name-2) 30%, var(--name-3) 45%, var(--name-4) 60%, var(--name-1));
+  background-size: 300% 100%;
+  background-position: calc(var(--bx) * 1%) 0;
+  filter: brightness(calc(.85 + var(--pc) * .35));
+}
+.tcg-card .foil-name[data-name="gold"] { --name-1: #7a5518; --name-2: #d9b25a; --name-3: #fff2c2; --name-4: #b8862e; }
+.tcg-card .foil-name[data-name="silver"] { --name-1: #5f646a; --name-2: #c9ced3; --name-3: #fff; --name-4: #9aa0a7; }
+.tcg-card .foil-name img { position: absolute; inset: 0; }
+.tcg-card .foil-name[data-text="dark"] { mix-blend-mode: screen; }
+.tcg-card .foil-name[data-text="dark"] img { filter: grayscale(1) invert(1) brightness(.83) contrast(8); mix-blend-mode: multiply; }
+.tcg-card .foil-name[data-text="light"] { mix-blend-mode: multiply; }
+.tcg-card .foil-name[data-text="light"] img { filter: grayscale(1) invert(1) brightness(1.2) contrast(8); mix-blend-mode: screen; }
+
 /* ---------- Reverse holo: everything but the art box ----------
    The era's foil pattern (--rev-tex, from reverse.ts: type-symbol tiles, cobblestones…) stays fixed to
    the card like the printed foil; a pointer glow (soft-light) and a sweeping diagonal (difference) light

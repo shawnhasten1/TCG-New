@@ -6,7 +6,7 @@ import { createRng } from "../engine/rng";
 import { rarityTier } from "../engine/tiers";
 import { layoutFor } from "../foil/layouts";
 import { rarityCode, toPricing, toSetData, ygoSetOf, type RawCard } from "./cards";
-import { ygoFoil } from "./foil";
+import { ygoFoil, ygoNameFoil } from "./foil";
 import { ygoPackArts, ygoPickPackArt } from "./packArt";
 import { coreEra, OTHER_PROFILES, YGO_ERAS, YGO_SETS, YGO_SETS_SIGNATURE, ygoDrawableSets, ygoEra, ygoProfile, ygoSet, type YgoSet } from "./sets";
 
@@ -227,8 +227,29 @@ describe("Yu-Gi-Oh! rarities", () => {
     expect(ygoFoil("Starlight Rare")?.treatment).toBe("etched");
     expect(ygoFoil("Duel Terminal Normal Parallel Rare")?.treatment).toBe("etched");
     expect(ygoFoil("Mosaic Rare")?.treatment).toBe("etched");
-    expect(ygoFoil("Ultimate Rare")).toEqual({ treatment: "etched", tint: "gold" });
     expect(layoutFor("ygo").rarityFoil).toBe(ygoFoil);
+  });
+
+  it("give Ultimate and Ghost Rares their own looks, and keep secret Pharaoh's Rares on the secret pattern", () => {
+    expect(ygoFoil("Ultimate Rare")).toEqual({ treatment: "etched", look: "ultimate" });
+    expect(ygoFoil("Ghost Rare")).toEqual({ treatment: "holo", look: "ghost" });
+    expect(ygoFoil("Gold Secret Rare")).toEqual({ treatment: "etched", tint: "gold" });
+    expect(ygoFoil("Secret Pharaoh's Rare")).toEqual({ treatment: "holo", holo: "tinsel" });
+    expect(ygoFoil("Ultra Rare (Pharaoh's Rare)")).toEqual({ treatment: "etched", tint: "gold" });
+  });
+
+  it("print Ultra and gold names in gold, and Rare, Secret and Ghost names in silver", () => {
+    expect(ygoNameFoil("Common")).toBeUndefined();
+    expect(ygoNameFoil("Super Rare")).toBeUndefined();
+    expect(ygoNameFoil("Ultimate Rare")).toBeUndefined();
+    expect(ygoNameFoil("Rare")).toBe("silver");
+    expect(ygoNameFoil("Secret Rare")).toBe("silver");
+    expect(ygoNameFoil("Ghost Rare")).toBe("silver");
+    expect(ygoNameFoil("Duel Terminal Rare Parallel Rare")).toBe("silver");
+    expect(ygoNameFoil("Ultra Rare")).toBe("gold");
+    expect(ygoNameFoil("Premium Gold Rare")).toBe("gold");
+    expect(ygoNameFoil("Duel Terminal Ultra Parallel Rare")).toBe("gold");
+    expect(layoutFor("ygo").nameFoil).toBe(ygoNameFoil);
   });
 
   it("rank for the reveal", () => {

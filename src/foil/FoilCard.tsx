@@ -23,6 +23,8 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   trainerType?: string | null;
   /** TCGdex stage ("Basic", "Stage1"…): Stage cards' art window cuts around the evolution portrait. */
   stage?: string | null;
+  /** Yu-Gi-Oh! frame ("effect", "spell", "xyz"…): whether a foil name is printed dark or light. */
+  frameType?: string | null;
   /** Pokémon types: reverse holos from XY on show the first one's symbol in the foil. */
   types?: string[] | null;
   /** Overrides the era's reverse holo pattern (foil lab). */
@@ -41,6 +43,9 @@ export interface FoilCardProps extends HTMLAttributes<HTMLDivElement> {
   ref?: Ref<HTMLDivElement>;
 }
 
+/** Yu-Gi-Oh! frames whose name is printed in white; the rest are black. */
+const LIGHT_NAME = /xyz|spell|trap|link|skill/i;
+
 const masks = new Map<string, CSSProperties>();
 function maskVars(layout: FrameLayout, kind: CardKind): CSSProperties {
   const key = `${layout.id}:${kind}`;
@@ -57,7 +62,7 @@ function reverseVars(pattern: ReversePattern, category?: CardCategory, types?: s
   return (tex ? { "--rev-tex": tex } : {}) as CSSProperties;
 }
 
-export function FoilCard({ image, rarity, finish, layout, category, trainerType, stage, types, reversePattern, holoPattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, printLine, className, style, ref, ...rest }: FoilCardProps) {
+export function FoilCard({ image, rarity, finish, layout, category, trainerType, stage, frameType, types, reversePattern, holoPattern, treatment, foilStyle: styleOverride, quality = "high", showArtBox, printLine, className, style, ref, ...rest }: FoilCardProps) {
   // Games whose rarities each have their own foil (Yu-Gi-Oh!) say how it looks; Pokémon's goes by finish and rarity.
   const own = finish === "holo" ? layout.rarityFoil?.(rarity) : undefined;
   const t = treatment ?? own?.treatment ?? foilTreatment(finish, rarity);
@@ -67,6 +72,9 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
   const rev = t === "reverse" ? (reversePattern ?? layout.reverse) : undefined;
   // Rarity styles (e.g. promo cosmos) bring their own pattern; plain holo rares get the era's.
   const holo = t === "holo" && !look ? (holoPattern ?? own?.holo ?? layout.holo) : undefined;
+  // Printed on every copy of the rarity, so it doesn't wait for a foil finish.
+  const name = layout.nameFoil?.(rarity);
+  const src = image && (quality === "high" ? `${image}/high.webp` : `${image}/low.webp`);
   useEffect(ensureSparkles, []);
 
   return (
@@ -77,6 +85,7 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
       data-treatment={t}
       data-tint={own?.tint ?? foilTint(rarity, kind)}
       data-foil-era={own?.era}
+      data-foil-look={own?.look}
       data-style={t === "none" ? undefined : look}
       data-rev={rev}
       data-holo={holo}
@@ -84,11 +93,17 @@ export function FoilCard({ image, rarity, finish, layout, category, trainerType,
     >
       <div className="face">
         {image && <RetryImg src={quality === "high" ? [`${image}/high.webp`, `${image}/low.webp`] : `${image}/low.webp`} alt="" draggable={false} />}
+        {own?.look === "ghost" && <div className="wash" />}
         {t !== "none" && <div className="foil" />}
         {t === "etched" && <div className="etch" />}
         {(t === "fullart" || t === "etched") && <div className="glitter" />}
         {own?.mark === "star" && <div className="foil-star" />}
         {printLine && t !== "none" && <div className="print-line" />}
+        {name && src && (
+          <div className="foil-name" data-name={name} data-text={LIGHT_NAME.test(frameType ?? "") ? "light" : "dark"}>
+            <img src={src} alt="" draggable={false} />
+          </div>
+        )}
         <div className="glare" />
         {showArtBox && (
           <ArtBox layout={layout} kind={artKind} />

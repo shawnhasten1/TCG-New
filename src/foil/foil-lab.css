@@ -49,3 +49,6 @@
 .foil-lab .mtg-lab .tcg-card { border-radius: 4.8% / 3.4%; }
 .foil-lab .mtg-lab h3 { font: 700 1rem/1.2 "Alegreya Sans", sans-serif; margin: 24px 0 12px; }
 .foil-lab .mtg-lab .muted { color: var(--muted); margin: 0 0 12px; }
+.foil-lab .ygo-lab .lab-card { aspect-ratio: 813 / 1185; }
+.foil-lab .ygo-lab .tcg-card { border-radius: 1.5% / 1%; }
+.foil-lab .ygo-lab .muted { color: var(--muted); margin: 0 0 12px; }

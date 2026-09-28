@@ -5,7 +5,7 @@ import type { ReversePattern } from "./reverse";
 import type { Tint, Treatment } from "./treatment";
 import { mtgFoil } from "../mtg/foil";
 import type { MtgFoilEra } from "../mtg/sets";
-import { ygoFoil } from "../ygo/foil";
+import { ygoFoil, ygoNameFoil } from "../ygo/foil";
 
 /** Art-box holo patterns for regular holo rares, after the physical cards of each era (see foil.css). */
 export type HoloPattern = "smooth" | "cosmos" | "cracked" | "starlight" | "sheen" | "tinsel" | "waterweb";
@@ -19,7 +19,12 @@ export interface RarityFoil {
   era?: string;
   /** A mark stamped on foil cards only: Magic's pre-2003 shooting star. */
   mark?: "star";
+  /** A rarity's own look on top of the treatment, styled in foil.css (data-foil-look): Yu-Gi-Oh!'s Ultimate and Ghost Rares. */
+  look?: "ultimate" | "ghost";
 }
+
+/** The foil a card's name is printed in (Yu-Gi-Oh!'s Rare and up). */
+export type NameFoil = "gold" | "silver";
 
 export interface FrameLayout {
   id: string;
@@ -37,6 +42,8 @@ export interface FrameLayout {
   sample: { image: string; name: string; rarity: string; types: string[]; stage: string };
   /** For games whose foils don't follow Pokémon's rules (Magic, Yu-Gi-Oh!): the treatment and pattern for a foil card of a rarity. */
   rarityFoil?(rarity: string): RarityFoil | undefined;
+  /** For games that print some rarities' names in foil (Yu-Gi-Oh!), whatever the finish. */
+  nameFoil?(rarity: string): NameFoil | undefined;
 }
 
 const img = (path: string) => `https://assets.tcgdex.net/en/${path}`;
@@ -176,6 +183,7 @@ export const YGO_LAYOUT: FrameLayout = {
   holo: "smooth",
   sample: { image: "/api/ygo/card/LOB/89631139", name: "Blue-Eyes White Dragon", rarity: "Ultra Rare", types: [], stage: "Basic" },
   rarityFoil: ygoFoil,
+  nameFoil: ygoNameFoil,
 };
 
 const bySerie = new Map([...layouts, ...Object.values(MTG_LAYOUTS), YGO_LAYOUT].flatMap((l) => l.series.map((s) => [s, l] as const)));
