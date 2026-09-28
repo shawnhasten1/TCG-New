@@ -1,5 +1,818 @@
 {
- "generated": null,
- "packs": 0,
- "sets": {}
+ "generated": "2026-09-28",
+ "packs": 3000,
+ "sets": {
+  "ABPF": {
+   "value": 411,
+   "price": 600
+  },
+  "ABYR": {
+   "value": 286,
+   "price": 450
+  },
+  "AGOV": {
+   "value": 312,
+   "price": 450
+  },
+  "ALIN": {
+   "value": 460,
+   "price": 650
+  },
+  "AMDE": {
+   "value": 240,
+   "price": 350
+  },
+  "ANGU": {
+   "value": 631,
+   "price": 900
+  },
+  "ANPR": {
+   "value": 323,
+   "price": 500
+  },
+  "AST": {
+   "value": 1962,
+   "price": 2750
+  },
+  "BACH": {
+   "value": 977,
+   "price": 1400
+  },
+  "BLAR": {
+   "value": 4774,
+   "price": 6700
+  },
+  "BLCR": {
+   "value": 727,
+   "price": 1050
+  },
+  "BLGG": {
+   "value": 2125,
+   "price": 3000
+  },
+  "BLHR": {
+   "value": 1437,
+   "price": 2050
+  },
+  "BLLR": {
+   "value": 888,
+   "price": 1250
+  },
+  "BLMM": {
+   "value": 542,
+   "price": 800
+  },
+  "BLMR": {
+   "value": 288,
+   "price": 450
+  },
+  "BLRR": {
+   "value": 838,
+   "price": 1200
+  },
+  "BLTR": {
+   "value": 606,
+   "price": 850
+  },
+  "BLVO": {
+   "value": 237,
+   "price": 350
+  },
+  "BLZD": {
+   "value": 835,
+   "price": 1200
+  },
+  "BODE": {
+   "value": 798,
+   "price": 1150
+  },
+  "BOSH": {
+   "value": 184,
+   "price": 300
+  },
+  "BP01": {
+   "value": 256,
+   "price": 400
+  },
+  "BP02": {
+   "value": 165,
+   "price": 250
+  },
+  "BP03": {
+   "value": 115,
+   "price": 200
+  },
+  "BPRO": {
+   "value": 607,
+   "price": 850
+  },
+  "BPW2": {
+   "value": 998,
+   "price": 1400
+  },
+  "CBLZ": {
+   "value": 195,
+   "price": 300
+  },
+  "CDIP": {
+   "value": 235,
+   "price": 350
+  },
+  "CHIM": {
+   "value": 277,
+   "price": 400
+  },
+  "CIBR": {
+   "value": 214,
+   "price": 300
+  },
+  "CORE": {
+   "value": 251,
+   "price": 400
+  },
+  "CORI": {
+   "value": 748,
+   "price": 1050
+  },
+  "COTD": {
+   "value": 214,
+   "price": 300
+  },
+  "CRBR": {
+   "value": 366,
+   "price": 550
+  },
+  "CRMS": {
+   "value": 562,
+   "price": 800
+  },
+  "CROS": {
+   "value": 369,
+   "price": 550
+  },
+  "CRV": {
+   "value": 481,
+   "price": 700
+  },
+  "CSOC": {
+   "value": 258,
+   "price": 400
+  },
+  "CYAC": {
+   "value": 238,
+   "price": 350
+  },
+  "CYHO": {
+   "value": 189,
+   "price": 300
+  },
+  "DABL": {
+   "value": 208,
+   "price": 300
+  },
+  "DAMA": {
+   "value": 1019,
+   "price": 1450
+  },
+  "DANE": {
+   "value": 191,
+   "price": 300
+  },
+  "DASA": {
+   "value": 683,
+   "price": 1000
+  },
+  "DCR": {
+   "value": 358,
+   "price": 550
+  },
+  "DESO": {
+   "value": 780,
+   "price": 1100
+  },
+  "DIFO": {
+   "value": 994,
+   "price": 1400
+  },
+  "DOCS": {
+   "value": 446,
+   "price": 650
+  },
+  "DOOD": {
+   "value": 386,
+   "price": 550
+  },
+  "DP03": {
+   "value": 330,
+   "price": 500
+  },
+  "DP04": {
+   "value": 404,
+   "price": 600
+  },
+  "DP05": {
+   "value": 368,
+   "price": 550
+  },
+  "DP06": {
+   "value": 398,
+   "price": 600
+  },
+  "DP07": {
+   "value": 238,
+   "price": 350
+  },
+  "DP08": {
+   "value": 203,
+   "price": 300
+  },
+  "DP09": {
+   "value": 181,
+   "price": 300
+  },
+  "DP1": {
+   "value": 493,
+   "price": 700
+  },
+  "DP10": {
+   "value": 144,
+   "price": 250
+  },
+  "DP11": {
+   "value": 216,
+   "price": 350
+  },
+  "DP2": {
+   "value": 319,
+   "price": 450
+  },
+  "DPBC": {
+   "value": 347,
+   "price": 500
+  },
+  "DPDG": {
+   "value": 222,
+   "price": 350
+  },
+  "DPKB": {
+   "value": 259,
+   "price": 400
+  },
+  "DPRP": {
+   "value": 404,
+   "price": 600
+  },
+  "DPYG": {
+   "value": 1051,
+   "price": 1500
+  },
+  "DREV": {
+   "value": 251,
+   "price": 400
+  },
+  "DRL2": {
+   "value": 1257,
+   "price": 1800
+  },
+  "DRL3": {
+   "value": 919,
+   "price": 1300
+  },
+  "DRLG": {
+   "value": 1711,
+   "price": 2400
+  },
+  "DT01": {
+   "value": 1792,
+   "price": 2550
+  },
+  "DT02": {
+   "value": 2218,
+   "price": 3150
+  },
+  "DT03": {
+   "value": 434,
+   "price": 650
+  },
+  "DT04": {
+   "value": 557,
+   "price": 800
+  },
+  "DT05": {
+   "value": 626,
+   "price": 900
+  },
+  "DT06": {
+   "value": 1088,
+   "price": 1550
+  },
+  "DT07": {
+   "value": 629,
+   "price": 900
+  },
+  "DUEA": {
+   "value": 352,
+   "price": 500
+  },
+  "DUNE": {
+   "value": 229,
+   "price": 350
+  },
+  "EEN": {
+   "value": 178,
+   "price": 250
+  },
+  "EOJ": {
+   "value": 244,
+   "price": 350
+  },
+  "ETCO": {
+   "value": 642,
+   "price": 900
+  },
+  "EXFO": {
+   "value": 184,
+   "price": 300
+  },
+  "EXVC": {
+   "value": 1246,
+   "price": 1750
+  },
+  "FET": {
+   "value": 738,
+   "price": 1050
+  },
+  "FIGA": {
+   "value": 636,
+   "price": 900
+  },
+  "FLOD": {
+   "value": 182,
+   "price": 300
+  },
+  "FOTB": {
+   "value": 209,
+   "price": 300
+  },
+  "FUEN": {
+   "value": 1260,
+   "price": 1800
+  },
+  "GAOV": {
+   "value": 209,
+   "price": 300
+  },
+  "GEIM": {
+   "value": 918,
+   "price": 1300
+  },
+  "GENF": {
+   "value": 229,
+   "price": 350
+  },
+  "GLAS": {
+   "value": 505,
+   "price": 750
+  },
+  "GRCR": {
+   "value": 754,
+   "price": 1100
+  },
+  "HA01": {
+   "value": 276,
+   "price": 400
+  },
+  "HA02": {
+   "value": 163,
+   "price": 250
+  },
+  "HA03": {
+   "value": 196,
+   "price": 300
+  },
+  "HA04": {
+   "value": 186,
+   "price": 300
+  },
+  "HA05": {
+   "value": 206,
+   "price": 300
+  },
+  "HA06": {
+   "value": 323,
+   "price": 500
+  },
+  "HA07": {
+   "value": 312,
+   "price": 450
+  },
+  "HAC1": {
+   "value": 443,
+   "price": 650
+  },
+  "HISU": {
+   "value": 695,
+   "price": 1000
+  },
+  "HSRD": {
+   "value": 842,
+   "price": 1200
+  },
+  "IGAS": {
+   "value": 185,
+   "price": 300
+  },
+  "INCH": {
+   "value": 516,
+   "price": 750
+  },
+  "INFO": {
+   "value": 244,
+   "price": 350
+  },
+  "INOV": {
+   "value": 264,
+   "price": 400
+  },
+  "IOC": {
+   "value": 328,
+   "price": 500
+  },
+  "JOTL": {
+   "value": 233,
+   "price": 350
+  },
+  "JUSH": {
+   "value": 373,
+   "price": 550
+  },
+  "KICO": {
+   "value": 1571,
+   "price": 2200
+  },
+  "LD10": {
+   "value": 245,
+   "price": 350
+  },
+  "LED2": {
+   "value": 2022,
+   "price": 2850
+  },
+  "LED3": {
+   "value": 1273,
+   "price": 1800
+  },
+  "LED4": {
+   "value": 891,
+   "price": 1250
+  },
+  "LED5": {
+   "value": 1594,
+   "price": 2250
+  },
+  "LED6": {
+   "value": 2810,
+   "price": 3950
+  },
+  "LED7": {
+   "value": 1458,
+   "price": 2050
+  },
+  "LED8": {
+   "value": 1964,
+   "price": 2750
+  },
+  "LED9": {
+   "value": 879,
+   "price": 1250
+  },
+  "LEDE": {
+   "value": 208,
+   "price": 300
+  },
+  "LEDU": {
+   "value": 1289,
+   "price": 1850
+  },
+  "LIOV": {
+   "value": 386,
+   "price": 550
+  },
+  "LOB": {
+   "value": 2069,
+   "price": 2900
+  },
+  "LOD": {
+   "value": 2827,
+   "price": 4000
+  },
+  "LODT": {
+   "value": 169,
+   "price": 250
+  },
+  "LON": {
+   "value": 2586,
+   "price": 3650
+  },
+  "LTGY": {
+   "value": 198,
+   "price": 300
+  },
+  "LVAL": {
+   "value": 208,
+   "price": 300
+  },
+  "MACR": {
+   "value": 256,
+   "price": 400
+  },
+  "MAZE": {
+   "value": 331,
+   "price": 500
+  },
+  "MFC": {
+   "value": 2987,
+   "price": 4200
+  },
+  "MIL1": {
+   "value": 835,
+   "price": 1200
+  },
+  "MRD": {
+   "value": 212,
+   "price": 300
+  },
+  "MVP1": {
+   "value": 1124,
+   "price": 1600
+  },
+  "MYFI": {
+   "value": 2009,
+   "price": 2850
+  },
+  "MZMI": {
+   "value": 550,
+   "price": 800
+  },
+  "MZMU": {
+   "value": 1224,
+   "price": 1750
+  },
+  "MZTM": {
+   "value": 487,
+   "price": 700
+  },
+  "NECH": {
+   "value": 217,
+   "price": 350
+  },
+  "NUMH": {
+   "value": 809,
+   "price": 1150
+  },
+  "ORCS": {
+   "value": 207,
+   "price": 300
+  },
+  "PEVO": {
+   "value": 317,
+   "price": 450
+  },
+  "PGD": {
+   "value": 2444,
+   "price": 3450
+  },
+  "PHHY": {
+   "value": 237,
+   "price": 350
+  },
+  "PHNI": {
+   "value": 232,
+   "price": 350
+  },
+  "PHRA": {
+   "value": 410,
+   "price": 600
+  },
+  "PHRE": {
+   "value": 421,
+   "price": 600
+  },
+  "PHSW": {
+   "value": 238,
+   "price": 350
+  },
+  "POTD": {
+   "value": 180,
+   "price": 300
+  },
+  "POTE": {
+   "value": 760,
+   "price": 1100
+  },
+  "PRIO": {
+   "value": 250,
+   "price": 350
+  },
+  "PSV": {
+   "value": 230,
+   "price": 350
+  },
+  "PTDN": {
+   "value": 339,
+   "price": 500
+  },
+  "RA01": {
+   "value": 497,
+   "price": 700
+  },
+  "RA02": {
+   "value": 468,
+   "price": 700
+  },
+  "RA03": {
+   "value": 734,
+   "price": 1050
+  },
+  "RA04": {
+   "value": 699,
+   "price": 1000
+  },
+  "RA05": {
+   "value": 585,
+   "price": 850
+  },
+  "RATE": {
+   "value": 233,
+   "price": 350
+  },
+  "RDS": {
+   "value": 337,
+   "price": 500
+  },
+  "REDU": {
+   "value": 341,
+   "price": 500
+  },
+  "RGBT": {
+   "value": 625,
+   "price": 900
+  },
+  "RIRA": {
+   "value": 189,
+   "price": 300
+  },
+  "ROTA": {
+   "value": 271,
+   "price": 400
+  },
+  "ROTD": {
+   "value": 1295,
+   "price": 1850
+  },
+  "RP01": {
+   "value": 23017,
+   "price": 32250
+  },
+  "RP02": {
+   "value": 283,
+   "price": 400
+  },
+  "RYMP": {
+   "value": 678,
+   "price": 950
+  },
+  "SAST": {
+   "value": 220,
+   "price": 350
+  },
+  "SECE": {
+   "value": 226,
+   "price": 350
+  },
+  "SESL": {
+   "value": 687,
+   "price": 1000
+  },
+  "SHSP": {
+   "value": 314,
+   "price": 450
+  },
+  "SHVA": {
+   "value": 724,
+   "price": 1050
+  },
+  "SHVI": {
+   "value": 225,
+   "price": 350
+  },
+  "SOD": {
+   "value": 452,
+   "price": 650
+  },
+  "SOFU": {
+   "value": 185,
+   "price": 300
+  },
+  "SOI": {
+   "value": 238,
+   "price": 350
+  },
+  "SOVR": {
+   "value": 407,
+   "price": 600
+  },
+  "SP13": {
+   "value": 170,
+   "price": 250
+  },
+  "SP14": {
+   "value": 168,
+   "price": 250
+  },
+  "SP15": {
+   "value": 97,
+   "price": 150
+  },
+  "SP17": {
+   "value": 93,
+   "price": 150
+  },
+  "SP18": {
+   "value": 157,
+   "price": 250
+  },
+  "SPWA": {
+   "value": 808,
+   "price": 1150
+  },
+  "SRL": {
+   "value": 418,
+   "price": 600
+  },
+  "STBL": {
+   "value": 456,
+   "price": 650
+  },
+  "STON": {
+   "value": 586,
+   "price": 850
+  },
+  "STOR": {
+   "value": 304,
+   "price": 450
+  },
+  "SUDA": {
+   "value": 293,
+   "price": 450
+  },
+  "TAEV": {
+   "value": 701,
+   "price": 1000
+  },
+  "TAMA": {
+   "value": 252,
+   "price": 400
+  },
+  "TDGS": {
+   "value": 544,
+   "price": 800
+  },
+  "TDIL": {
+   "value": 385,
+   "price": 550
+  },
+  "THSF": {
+   "value": 1255,
+   "price": 1800
+  },
+  "TLM": {
+   "value": 519,
+   "price": 750
+  },
+  "TOCH": {
+   "value": 1134,
+   "price": 1600
+  },
+  "TSHD": {
+   "value": 408,
+   "price": 600
+  },
+  "VASM": {
+   "value": 600,
+   "price": 850
+  },
+  "WIRA": {
+   "value": 304,
+   "price": 450
+  },
+  "WISU": {
+   "value": 370,
+   "price": 550
+  },
+  "WSUP": {
+   "value": 201,
+   "price": 300
+  }
+ }
 }

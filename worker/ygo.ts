@@ -57,8 +57,10 @@ export async function ygoSetData(env: Env, set: YgoSet): Promise<SetData> {
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
+/** Bump when the shape of prices changes (toPricing in src/ygo/cards.ts). */
+const PRICES_VERSION = 2;
 /** Ends in the day, so pruneDailyEntries clears it out once it's past. */
-const pricesKey = (id: string, day: string) => `ygo:prices:${id}:${day}`;
+const pricesKey = (id: string, day: string) => `ygo:prices:v${PRICES_VERSION}:${id}:${day}`;
 /** Sets whose prices are being fetched in this isolate, so a burst of requests fetches once. */
 const pricing = new Map<string, Promise<Record<string, CardPricing>>>();
 
