@@ -12,7 +12,9 @@ describe("DEMO_GAMES", () => {
   });
 
   it("turns on the games it lists, and ignores unknown ones", () => {
-    expect(enabledGames(env(" mtg , ygo"))).toEqual(["pokemon", "mtg"]);
+    expect(enabledGames(env(" mtg , chess"))).toEqual(["pokemon", "mtg"]);
+    expect(enabledGames(env("ygo,mtg"))).toEqual(["pokemon", "mtg", "ygo"]);
+    expect(() => requireGame(env("mtg"), "ygo")).toThrow();
     expect(requireGame(env("mtg"), "mtg")).toBe("mtg");
     expect(() => requireGame(env("mtg"), "chess")).toThrow();
   });

@@ -402,6 +402,12 @@
   background-color: #2a1d12;
   background-image: url("/tcg-mtg-card-back.jpg");
 }
+/* A Yu-Gi-Oh! card's back (public/tcg-ygo-card-back.jpg, from YGOPRODeck). */
+.card-detail[data-game="ygo"] .tcg-back {
+  border-radius: 1.5% / 1%;
+  background-color: #2a1408;
+  background-image: url("/tcg-ygo-card-back.jpg");
+}
 
 /* ---------- Tuning overlay ---------- */
 .tcg-card .art-box { z-index: 6; overflow: visible; }

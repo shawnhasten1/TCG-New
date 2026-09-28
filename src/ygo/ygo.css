@@ -1,0 +1,25 @@
+/* ---------- Yu-Gi-Oh!'s look on the shared pages (their styles, in collection.css and picker.css, do most of it). The
+   pages are every game's, so these rules go by html[data-game]. ---------- */
+/* Sets have no logos or symbols, so they show their booster wrapper, which is tall. */
+[data-game="ygo"] .binder .set-pack { width: auto; height: 96px; object-fit: contain; }
+[data-game="ygo"] .set-progress .set-pack { width: auto; height: 52px; object-fit: contain; }
+[data-game="ygo"] .picker .set-pack { width: auto; height: 72px; object-fit: contain; filter: none; }
+
+[data-game="ygo"] .binder-slot { aspect-ratio: 813 / 1185; border-radius: 1.5% / 1%; }
+
+[data-game="ygo"] .binder .caption { flex-direction: column; gap: 2px; }
+[data-game="ygo"] .binder .caption .rarity { font-weight: 700; font-size: .78rem; color: var(--ink); }
+[data-game="ygo"] .binder .caption .rarity[data-kind="rare"] { color: #9a730c; }
+[data-game="ygo"] .binder .caption .rarity[data-kind="ultra"] { color: #c2410c; }
+[data-game="ygo"] .binder .caption .rarity[data-kind="chase"] { color: #a21caf; }
+:root[data-theme="dark"][data-game="ygo"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
+:root[data-theme="dark"][data-game="ygo"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
+:root[data-theme="dark"][data-game="ygo"] .binder .caption .rarity[data-kind="chase"] { color: #e879f9; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-game="ygo"] .binder .caption .rarity[data-kind="rare"] { color: #e8c35a; }
+  :root:not([data-theme="light"])[data-game="ygo"] .binder .caption .rarity[data-kind="ultra"] { color: #fb8c4a; }
+  :root:not([data-theme="light"])[data-game="ygo"] .binder .caption .rarity[data-kind="chase"] { color: #e879f9; }
+}
+
+/* A Yu-Gi-Oh! post in the friends feed, which every game shares: Yu-Gi-Oh!'s card shape wherever it's shown. */
+.feed .feed-post[data-game="ygo"] .feed-cards img { aspect-ratio: 813 / 1185; border-radius: 1.5% / 1%; }

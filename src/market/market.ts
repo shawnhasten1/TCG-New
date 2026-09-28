@@ -10,12 +10,12 @@ import type { BuyRequest, BuyResponse, UnopenedResponse } from "./shop";
 
 const at = (path: string) => `${path}?game=${GAME}`;
 
-/** An amount in this game's coins: "1,250 coins" in Pokémon, "1,250 Treasure" in Magic. */
+/** An amount in this game's coins: "1,250 coins" in Pokémon, "1,250 Treasure" in Magic, "1,250 Star Chips" in Yu-Gi-Oh!. */
 export const coins = (n: number) => formatCoins(n, GAME);
-/** What this game's coins are called, for sentences: "coins" or "Treasure". */
+/** What this game's coins are called, for sentences: "coins", "Treasure" or "Star Chips". */
 export const currency = CURRENCY[GAME].many;
-/** Who makes offers: Pokémon trainers, or Magic's buyers (TRAINERS in protocol.ts). */
-export const buyers = GAME === "mtg" ? "buyers" : "trainers";
+/** Who makes offers: Pokémon trainers, Magic's buyers or Yu-Gi-Oh!'s duelists (TRAINERS in protocol.ts). */
+export const buyers = GAME === "pokemon" ? "trainers" : GAME === "ygo" ? "duelists" : "buyers";
 
 export const loadMarket = () => api<MarketResponse>(at("/api/market"));
 export const loadWallet = () => api<WalletResponse>(at("/api/wallet"));

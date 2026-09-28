@@ -41,6 +41,10 @@
 .game-badge[data-game="pokemon"] svg { border-radius: 50%; box-shadow: 0 0 0 1.5px #1d1f24; }
 .game-badge[data-game="mtg"] svg { border-radius: 50%; background: #1d1f24; }
 .game-badge .pip { stroke: #1d1f24; stroke-width: 1; }
+.game-badge[data-game="ygo"] svg { border-radius: 50%; background: #3b2a12; }
+.game-badge .puzzle { fill: #e2b43a; stroke: #7a5310; stroke-width: 1; stroke-linejoin: round; }
+.game-badge .eye { fill: #fff6d8; stroke: #7a5310; stroke-width: .8; }
+.game-badge .pupil { fill: #3b2a12; }
 .game-badge .pip.w { fill: #f8f1d0; }
 .game-badge .pip.u { fill: #3d8bd9; }
 .game-badge .pip.b { fill: #8b8184; }
@@ -59,3 +63,9 @@
 :root[data-game="mtg"] .card-detail .detail-card { aspect-ratio: 672 / 936; }
 :root[data-game="mtg"] .opener .summary-grid img { aspect-ratio: 672 / 936; border-radius: 4.8% / 3.4%; }
 :root[data-game="mtg"] .tcg-card { border-radius: 4.8% / 3.4%; }
+
+/* ---------- Yu-Gi-Oh! cards are narrower still (YGOPRODeck's 813×1185 scans), with nearly square corners ---------- */
+:root[data-game="ygo"] .opener .stack,
+:root[data-game="ygo"] .card-detail .detail-card { aspect-ratio: 813 / 1185; }
+:root[data-game="ygo"] .opener .summary-grid img { aspect-ratio: 813 / 1185; border-radius: 1.5% / 1%; }
+:root[data-game="ygo"] .tcg-card { border-radius: 1.5% / 1%; }

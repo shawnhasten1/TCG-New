@@ -1,6 +1,6 @@
 // Where this game's cards come from, and the few ways its pages describe them differently. Pokémon's come from TCGdex
-// (the app's cached client), Magic's from Scryfall by way of the Worker (src/mtg/client.ts). Pages use this instead of
-// either one, so the same page shows every game's cards.
+// (the app's cached client), Magic's from Scryfall and Yu-Gi-Oh!'s from YGOPRODeck, both by way of the Worker
+// (app/workerCards.ts). Pages use this instead of any one of them, so the same page shows every game's cards.
 
 import type { ReactNode } from "react";
 import type { CardPricing, Progress } from "../api/tcgdex";
@@ -16,13 +16,17 @@ import { setSymbol } from "../mtg/cards";
 import { mtgPackArts, mtgPackArtSets } from "../mtg/packArt";
 import { packArt, packArts, type PackArt } from "../packs/art";
 import packPhotos from "../packs/packArt.json";
-import { cachedMtgCardPricing, forgetMtgSet, getMtgCardPricing, getMtgSet, getMtgSets } from "../mtg/client";
+import { mtgCards } from "../mtg/client";
 import { boosterEra, MTG_ERAS, mtgDrawableSets, mtgProfile, mtgSet, mtgSetTier } from "../mtg/sets";
 import { client } from "./client";
 import type { Game } from "../game";
 import { GAME } from "./game";
 import { SetLogo } from "./SetLogo";
+import { ygoCards } from "../ygo/client";
+import { ygoPackArts, ygoPackArtSets } from "../ygo/packArt";
+import { ygoDrawableSets, YGO_ERAS, ygoEra, ygoProfile, ygoSet, ygoSetTier } from "../ygo/sets";
 import "../mtg/mtg.css";
+import "../ygo/ygo.css";
 
 /** Enough of a set to show its logo or symbol. */
 type SetMarkSet = { id: string; name: string; logo?: string | null };
@@ -106,11 +110,11 @@ const pokemon: GameCards = {
 const MTG_FINISHES = { firstEdition: "1st Edition", holo: "Foil", reverse: "Reverse holo", normal: "Non-foil" };
 
 const mtg: GameCards = {
-  listSetSummaries: getMtgSets,
-  getSetCards: (id) => getMtgSet(id),
-  forgetSetCards: forgetMtgSet,
-  getCardPricing: getMtgCardPricing,
-  cachedCardPricing: cachedMtgCardPricing,
+  listSetSummaries: () => mtgCards.getSets(),
+  getSetCards: (id) => mtgCards.getSet(id),
+  forgetSetCards: (id) => mtgCards.forgetSet(id),
+  getCardPricing: (id) => mtgCards.getCardPricing(id),
+  cachedCardPricing: (ids) => mtgCards.cachedCardPricing(ids),
   profileFor: (set) => {
     const info = mtgSet(set.id);
     return info && mtgProfile(info);
@@ -142,8 +146,54 @@ const mtg: GameCards = {
   packCredit: { text: "Wrappers drawn around card art (by its artists) from", name: "Scryfall", url: "https://scryfall.com" },
 };
 
+// A Yu-Gi-Oh! printing is foil or not by its rarity.
+const YGO_FINISHES = { firstEdition: "1st Edition", holo: "Foil", reverse: "Reverse holo", normal: "Non-foil" };
+
+const ygo: GameCards = {
+  listSetSummaries: () => ygoCards.getSets(),
+  getSetCards: (id) => ygoCards.getSet(id),
+  forgetSetCards: (id) => ygoCards.forgetSet(id),
+  getCardPricing: (id) => ygoCards.getCardPricing(id),
+  cachedCardPricing: (ids) => ygoCards.cachedCardPricing(ids),
+  profileFor: (set) => {
+    const info = ygoSet(set.id);
+    return info && ygoProfile(info);
+  },
+  // Every Yu-Gi-Oh! set here is sold in packs.
+  hiddenReason: () => undefined,
+  eras: YGO_ERAS,
+  drawableSets: (sets, { eras }) => {
+    const ids = new Set(ygoDrawableSets(eras).map((s) => s.id));
+    return sets.filter((s) => ids.has(s.id));
+  },
+  setTier: ygoSetTier,
+  describeSet: (set) => {
+    const info = ygoSet(set.id);
+    const era = info && YGO_ERAS.find((e) => e.id === ygoEra(info))?.name.replace(/ \(.*\)$/, "");
+    return [set.id, era, set.releaseDate?.slice(0, 4)].filter(Boolean).join(" · ");
+  },
+  // Yu-Gi-Oh! sets have no logos or symbols, so a set shows its booster wrapper.
+  SetMark: ({ set, className, loading, fallback }) => {
+    const art = ygoPackArts(set.id)[0];
+    return art ? <img className={`set-pack ${className ?? ""}`} src={art.src} loading={loading} alt="" /> : fallback;
+  },
+  finishes: ["holo", "normal"],
+  finishName: YGO_FINISHES,
+  finishShort: YGO_FINISHES,
+  rarityInBinder: true,
+  binderNote: "Faded cards are still missing. Completion counts each card once, at its plainest rarity; ✦ marks the same card at a rarer one (a Quarter Century Secret Rare reprint, say).",
+  credit: { name: "YGOPRODeck", url: "https://ygoprodeck.com" },
+  packArts: ygoPackArts,
+  packArt: (setId, artId) => (artId ? ygoPackArts(setId).find((a) => a.id === artId) : undefined),
+  packArtSets: ygoPackArtSets,
+  index: { keys: (c) => (c.passcode ? [String(c.passcode)] : []), badge: "New card", aria: "A card you've never had, in any printing." },
+  packCredit: { text: "Pack photos from", name: "YGOPRODeck", url: "https://ygoprodeck.com" },
+};
+
+const GAME_CARDS: Record<Game, GameCards> = { pokemon, mtg, ygo };
+
 /** A game's cards: for a card from another game than this one, like a friend's post in the shared feed. */
-export const cardsFor = (game: Game): GameCards => (game === "mtg" ? mtg : pokemon);
+export const cardsFor = (game: Game): GameCards => GAME_CARDS[game];
 
 /** This game's cards. */
 export const gameCards: GameCards = cardsFor(GAME);

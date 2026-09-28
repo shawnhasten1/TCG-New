@@ -5,6 +5,7 @@ import type { ReversePattern } from "./reverse";
 import type { Tint, Treatment } from "./treatment";
 import { mtgFoil } from "../mtg/foil";
 import type { MtgFoilEra } from "../mtg/sets";
+import { ygoFoil } from "../ygo/foil";
 
 /** Art-box holo patterns for regular holo rares, after the physical cards of each era (see foil.css). */
 export type HoloPattern = "smooth" | "cosmos" | "cracked" | "starlight" | "sheen" | "tinsel" | "waterweb";
@@ -34,7 +35,7 @@ export interface FrameLayout {
   holo: HoloPattern;
   /** A sample holo card from this era, for the foil lab. */
   sample: { image: string; name: string; rarity: string; types: string[]; stage: string };
-  /** For games whose foils don't follow Pokémon's rules (Magic): the treatment and pattern for a foil card of a rarity. */
+  /** For games whose foils don't follow Pokémon's rules (Magic, Yu-Gi-Oh!): the treatment and pattern for a foil card of a rarity. */
   rarityFoil?(rarity: string): RarityFoil | undefined;
 }
 
@@ -165,7 +166,19 @@ export const MTG_LAYOUTS: Record<MtgFoilEra, FrameLayout> = {
   dark: mtgLayout("dark", "Magic, Future Sight to Shadowmoor", { x: 4.5, y: 3.2 }, { id: "2a1470a6-d09d-4a2a-84a6-d56e32ed237a", name: "Ajani Goldmane" }),
 };
 
-const bySerie = new Map([...layouts, ...Object.values(MTG_LAYOUTS)].flatMap((l) => l.series.map((s) => [s, l] as const)));
+/** Every Yu-Gi-Oh! set, whose serie id is "ygo" (ygo/cards.ts). Its foil comes from the rarity (ygo/foil.ts). */
+export const YGO_LAYOUT: FrameLayout = {
+  id: "ygo",
+  name: "Yu-Gi-Oh!",
+  series: ["ygo"],
+  border: { x: 3.5, y: 2.5 },
+  reverse: "plain",
+  holo: "smooth",
+  sample: { image: "/api/ygo/card/LOB/89631139", name: "Blue-Eyes White Dragon", rarity: "Ultra Rare", types: [], stage: "Basic" },
+  rarityFoil: ygoFoil,
+};
+
+const bySerie = new Map([...layouts, ...Object.values(MTG_LAYOUTS), YGO_LAYOUT].flatMap((l) => l.series.map((s) => [s, l] as const)));
 const MODERN = layouts.find((l) => l.id === "me")!;
 
 /** The frame layout for a serie, defaulting to the modern Pokémon frame. */

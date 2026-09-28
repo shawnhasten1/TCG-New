@@ -1,0 +1,1809 @@
+{
+ "LOB": [
+  {
+   "id": "1",
+   "name": "Legend of Blue Eyes White Dragon",
+   "src": "/packs/ygo/LOB-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/LOB.jpg"
+  }
+ ],
+ "MRD": [
+  {
+   "id": "1",
+   "name": "Metal Raiders",
+   "src": "/packs/ygo/MRD-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/MRD.jpg"
+  }
+ ],
+ "SRL": [
+  {
+   "id": "1",
+   "name": "Spell Ruler",
+   "src": "/packs/ygo/SRL-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/SRL.jpg"
+  }
+ ],
+ "PSV": [
+  {
+   "id": "1",
+   "name": "Pharaoh's Servant",
+   "src": "/packs/ygo/PSV-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/PSV.jpg"
+  }
+ ],
+ "LON": [
+  {
+   "id": "1",
+   "name": "Labyrinth of Nightmare",
+   "src": "/packs/ygo/LON-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/LON.jpg"
+  }
+ ],
+ "LOD": [
+  {
+   "id": "1",
+   "name": "Legacy of Darkness",
+   "src": "/packs/ygo/LOD-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/LOD.jpg"
+  }
+ ],
+ "PGD": [
+  {
+   "id": "1",
+   "name": "Pharaonic Guardian",
+   "src": "/packs/ygo/PGD-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/PGD.jpg"
+  }
+ ],
+ "MFC": [
+  {
+   "id": "1",
+   "name": "Magician's Force",
+   "src": "/packs/ygo/MFC-1.webp",
+   "aspect": 0.578,
+   "source": "https://images.ygoprodeck.com/images/sets/MFC.jpg"
+  }
+ ],
+ "DCR": [
+  {
+   "id": "1",
+   "name": "Dark Crisis",
+   "src": "/packs/ygo/DCR-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/DCR.jpg"
+  }
+ ],
+ "IOC": [
+  {
+   "id": "1",
+   "name": "Invasion of Chaos",
+   "src": "/packs/ygo/IOC-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/IOC.jpg"
+  }
+ ],
+ "AST": [
+  {
+   "id": "1",
+   "name": "Ancient Sanctuary",
+   "src": "/packs/ygo/AST-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/AST.jpg"
+  }
+ ],
+ "SOD": [
+  {
+   "id": "1",
+   "name": "Soul of the Duelist",
+   "src": "/packs/ygo/SOD-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/SOD.jpg"
+  }
+ ],
+ "RDS": [
+  {
+   "id": "1",
+   "name": "Rise of Destiny",
+   "src": "/packs/ygo/RDS-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/RDS.jpg"
+  }
+ ],
+ "FET": [
+  {
+   "id": "1",
+   "name": "Flaming Eternity",
+   "src": "/packs/ygo/FET-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/FET.jpg"
+  }
+ ],
+ "TLM": [
+  {
+   "id": "1",
+   "name": "The Lost Millennium",
+   "src": "/packs/ygo/TLM-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/TLM.jpg"
+  }
+ ],
+ "CRV": [
+  {
+   "id": "1",
+   "name": "Cybernetic Revolution",
+   "src": "/packs/ygo/CRV-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/CRV.jpg"
+  }
+ ],
+ "EEN": [
+  {
+   "id": "1",
+   "name": "Elemental Energy",
+   "src": "/packs/ygo/EEN-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/EEN.jpg"
+  }
+ ],
+ "DP1": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Jaden Yuki",
+   "src": "/packs/ygo/DP1-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/DP1.jpg"
+  }
+ ],
+ "DP2": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Chazz Princeton",
+   "src": "/packs/ygo/DP2-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/DP2.jpg"
+  }
+ ],
+ "SOI": [
+  {
+   "id": "1",
+   "name": "Shadow of Infinity",
+   "src": "/packs/ygo/SOI-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/SOI.jpg"
+  }
+ ],
+ "EOJ": [
+  {
+   "id": "1",
+   "name": "Enemy of Justice",
+   "src": "/packs/ygo/EOJ-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/EOJ.jpg"
+  }
+ ],
+ "POTD": [
+  {
+   "id": "1",
+   "name": "Power of the Duelist",
+   "src": "/packs/ygo/POTD-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/POTD.jpg"
+  }
+ ],
+ "CDIP": [
+  {
+   "id": "1",
+   "name": "Cyberdark Impact",
+   "src": "/packs/ygo/CDIP-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/CDIP.jpg"
+  }
+ ],
+ "DP03": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Jaden Yuki 2",
+   "src": "/packs/ygo/DP03-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/DP03.jpg"
+  }
+ ],
+ "DP05": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Aster Phoenix",
+   "src": "/packs/ygo/DP05-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/DP05.jpg"
+  }
+ ],
+ "STON": [
+  {
+   "id": "1",
+   "name": "Strike of Neos",
+   "src": "/packs/ygo/STON-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/STON.jpg"
+  }
+ ],
+ "DP04": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Zane Truesdale",
+   "src": "/packs/ygo/DP04-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/DP04.jpg"
+  }
+ ],
+ "FOTB": [
+  {
+   "id": "1",
+   "name": "Force of the Breaker",
+   "src": "/packs/ygo/FOTB-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/FOTB.jpg"
+  }
+ ],
+ "TAEV": [
+  {
+   "id": "1",
+   "name": "Tactical Evolution",
+   "src": "/packs/ygo/TAEV-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/TAEV.jpg"
+  }
+ ],
+ "GLAS": [
+  {
+   "id": "1",
+   "name": "Gladiator's Assault",
+   "src": "/packs/ygo/GLAS-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/GLAS.jpg"
+  }
+ ],
+ "DP06": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Jaden Yuki 3",
+   "src": "/packs/ygo/DP06-1.webp",
+   "aspect": 0.535,
+   "source": "https://images.ygoprodeck.com/images/sets/DP06.jpg"
+  }
+ ],
+ "DP07": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Jesse Anderson",
+   "src": "/packs/ygo/DP07-1.webp",
+   "aspect": 0.505,
+   "source": "https://images.ygoprodeck.com/images/sets/DP07.jpg"
+  }
+ ],
+ "PTDN": [
+  {
+   "id": "1",
+   "name": "Phantom Darkness",
+   "src": "/packs/ygo/PTDN-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/PTDN.jpg"
+  }
+ ],
+ "LODT": [
+  {
+   "id": "1",
+   "name": "Light of Destruction",
+   "src": "/packs/ygo/LODT-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/LODT.jpg"
+  }
+ ],
+ "RP01": [
+  {
+   "id": "1",
+   "name": "Retro Pack",
+   "src": "/packs/ygo/RP01-1.webp",
+   "aspect": 0.515,
+   "source": "https://images.ygoprodeck.com/images/sets/RP01.jpg"
+  }
+ ],
+ "TDGS": [
+  {
+   "id": "1",
+   "name": "The Duelist Genesis",
+   "src": "/packs/ygo/TDGS-1.webp",
+   "aspect": 0.585,
+   "source": "https://images.ygoprodeck.com/images/sets/TDGS.jpg"
+  }
+ ],
+ "CSOC": [
+  {
+   "id": "1",
+   "name": "Crossroads of Chaos",
+   "src": "/packs/ygo/CSOC-1.webp",
+   "aspect": 0.588,
+   "source": "https://images.ygoprodeck.com/images/sets/CSOC.jpg"
+  }
+ ],
+ "DP08": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Yusei",
+   "src": "/packs/ygo/DP08-1.webp",
+   "aspect": 0.578,
+   "source": "https://images.ygoprodeck.com/images/sets/DP08.jpg"
+  }
+ ],
+ "CRMS": [
+  {
+   "id": "1",
+   "name": "Crimson Crisis",
+   "src": "/packs/ygo/CRMS-1.webp",
+   "aspect": 0.585,
+   "source": "https://images.ygoprodeck.com/images/sets/CRMS.jpg"
+  }
+ ],
+ "RGBT": [
+  {
+   "id": "1",
+   "name": "Raging Battle",
+   "src": "/packs/ygo/RGBT-1.webp",
+   "aspect": 0.585,
+   "source": "https://images.ygoprodeck.com/images/sets/RGBT.jpg"
+  }
+ ],
+ "DPYG": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Yugi",
+   "src": "/packs/ygo/DPYG-1.webp",
+   "aspect": 0.529,
+   "source": "https://images.ygoprodeck.com/images/sets/DPYG.jpg"
+  }
+ ],
+ "RP02": [
+  {
+   "id": "1",
+   "name": "Retro Pack 2",
+   "src": "/packs/ygo/RP02-1.webp",
+   "aspect": 0.585,
+   "source": "https://images.ygoprodeck.com/images/sets/RP02.jpg"
+  }
+ ],
+ "ANPR": [
+  {
+   "id": "1",
+   "name": "Ancient Prophecy",
+   "src": "/packs/ygo/ANPR-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/ANPR.jpg"
+  }
+ ],
+ "HA01": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal",
+   "src": "/packs/ygo/HA01-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/HA01.jpg"
+  }
+ ],
+ "SOVR": [
+  {
+   "id": "1",
+   "name": "Stardust Overdrive",
+   "src": "/packs/ygo/SOVR-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/SOVR.jpg"
+  }
+ ],
+ "DP09": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Yusei 2",
+   "src": "/packs/ygo/DP09-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/DP09.jpg"
+  }
+ ],
+ "ABPF": [
+  {
+   "id": "1",
+   "name": "Absolute Powerforce",
+   "src": "/packs/ygo/ABPF-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/ABPF.jpg"
+  }
+ ],
+ "DPKB": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Kaiba",
+   "src": "/packs/ygo/DPKB-1.webp",
+   "aspect": 0.518,
+   "source": "https://images.ygoprodeck.com/images/sets/DPKB.jpg"
+  }
+ ],
+ "TSHD": [
+  {
+   "id": "1",
+   "name": "The Shining Darkness",
+   "src": "/packs/ygo/TSHD-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/TSHD.jpg"
+  }
+ ],
+ "HA02": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 2",
+   "src": "/packs/ygo/HA02-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/HA02.jpg"
+  }
+ ],
+ "DREV": [
+  {
+   "id": "1",
+   "name": "Duelist Revolution",
+   "src": "/packs/ygo/DREV-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/DREV.jpg"
+  }
+ ],
+ "STBL": [
+  {
+   "id": "1",
+   "name": "Starstrike Blast",
+   "src": "/packs/ygo/STBL-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/STBL.jpg"
+  }
+ ],
+ "HA03": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 3",
+   "src": "/packs/ygo/HA03-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/HA03.jpg"
+  }
+ ],
+ "DP10": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Yusei 3",
+   "src": "/packs/ygo/DP10-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/DP10.jpg"
+  }
+ ],
+ "STOR": [
+  {
+   "id": "1",
+   "name": "Storm of Ragnarok",
+   "src": "/packs/ygo/STOR-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/STOR.jpg"
+  }
+ ],
+ "HA04": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 4: Trishula's Triumph",
+   "src": "/packs/ygo/HA04-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/HA04.jpg"
+  }
+ ],
+ "EXVC": [
+  {
+   "id": "1",
+   "name": "Extreme Victory",
+   "src": "/packs/ygo/EXVC-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/EXVC.jpg"
+  }
+ ],
+ "DP11": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Crow",
+   "src": "/packs/ygo/DP11-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/DP11.jpg"
+  }
+ ],
+ "GENF": [
+  {
+   "id": "1",
+   "name": "Generation Force",
+   "src": "/packs/ygo/GENF-1.webp",
+   "aspect": 0.549,
+   "source": "https://images.ygoprodeck.com/images/sets/GENF.jpg"
+  }
+ ],
+ "PHSW": [
+  {
+   "id": "1",
+   "name": "Photon Shockwave",
+   "src": "/packs/ygo/PHSW-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/PHSW.jpg"
+  }
+ ],
+ "HA05": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 5: Steelswarm Invasion",
+   "src": "/packs/ygo/HA05-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/HA05.jpg"
+  }
+ ],
+ "ORCS": [
+  {
+   "id": "1",
+   "name": "Order of Chaos",
+   "src": "/packs/ygo/ORCS-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/ORCS.jpg"
+  }
+ ],
+ "RYMP": [
+  {
+   "id": "1",
+   "name": "Ra Yellow Mega Pack",
+   "src": "/packs/ygo/RYMP-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/RYMP.jpg"
+  }
+ ],
+ "GAOV": [
+  {
+   "id": "1",
+   "name": "Galactic Overlord",
+   "src": "/packs/ygo/GAOV-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/GAOV.jpg"
+  }
+ ],
+ "BP01": [
+  {
+   "id": "1",
+   "name": "Battle Pack: Epic Dawn",
+   "src": "/packs/ygo/BP01-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/BP01.jpg"
+  }
+ ],
+ "HA06": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 6: Omega Xyz",
+   "src": "/packs/ygo/HA06-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/HA06.jpg"
+  }
+ ],
+ "REDU": [
+  {
+   "id": "1",
+   "name": "Return of the Duelist",
+   "src": "/packs/ygo/REDU-1.webp",
+   "aspect": 0.549,
+   "source": "https://images.ygoprodeck.com/images/sets/REDU.jpg"
+  }
+ ],
+ "ABYR": [
+  {
+   "id": "1",
+   "name": "Abyss Rising",
+   "src": "/packs/ygo/ABYR-1.webp",
+   "aspect": 0.538,
+   "source": "https://images.ygoprodeck.com/images/sets/ABYR.jpg"
+  }
+ ],
+ "CBLZ": [
+  {
+   "id": "1",
+   "name": "Cosmo Blazer",
+   "src": "/packs/ygo/CBLZ-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/CBLZ.jpg"
+  }
+ ],
+ "SP13": [
+  {
+   "id": "1",
+   "name": "Star Pack 2013",
+   "src": "/packs/ygo/SP13-1.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/SP13.jpg"
+  }
+ ],
+ "HA07": [
+  {
+   "id": "1",
+   "name": "Hidden Arsenal 7: Knight of Stars",
+   "src": "/packs/ygo/HA07-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/HA07.jpg"
+  }
+ ],
+ "LTGY": [
+  {
+   "id": "1",
+   "name": "Lord of the Tachyon Galaxy",
+   "src": "/packs/ygo/LTGY-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/LTGY.jpg"
+  }
+ ],
+ "BP02": [
+  {
+   "id": "1",
+   "name": "Battle Pack 2: War of the Giants",
+   "src": "/packs/ygo/BP02-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/BP02.jpg"
+  }
+ ],
+ "NUMH": [
+  {
+   "id": "1",
+   "name": "Number Hunters",
+   "src": "/packs/ygo/NUMH-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/NUMH.jpg"
+  }
+ ],
+ "JOTL": [
+  {
+   "id": "1",
+   "name": "Judgment of the Light",
+   "src": "/packs/ygo/JOTL-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/JOTL.jpg"
+  }
+ ],
+ "SHSP": [
+  {
+   "id": "1",
+   "name": "Shadow Specters",
+   "src": "/packs/ygo/SHSP-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/SHSP.jpg"
+  }
+ ],
+ "BPW2": [
+  {
+   "id": "1",
+   "name": "War of the Giants: Round 2",
+   "src": "/packs/ygo/BPW2-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/BPW2.jpg"
+  }
+ ],
+ "LVAL": [
+  {
+   "id": "1",
+   "name": "Legacy of the Valiant",
+   "src": "/packs/ygo/LVAL-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/LVAL.jpg"
+  }
+ ],
+ "SP14": [
+  {
+   "id": "1",
+   "name": "Star Pack 2014",
+   "src": "/packs/ygo/SP14-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/SP14.jpg"
+  }
+ ],
+ "DRLG": [
+  {
+   "id": "1",
+   "name": "Dragons of Legend",
+   "src": "/packs/ygo/DRLG-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/DRLG.jpg"
+  }
+ ],
+ "PRIO": [
+  {
+   "id": "1",
+   "name": "Primal Origin",
+   "src": "/packs/ygo/PRIO-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/PRIO.jpg"
+  }
+ ],
+ "BP03": [
+  {
+   "id": "1",
+   "name": "Battle Pack 3: Monster League",
+   "src": "/packs/ygo/BP03-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/BP03.jpg"
+  }
+ ],
+ "DUEA": [
+  {
+   "id": "1",
+   "name": "Duelist Alliance",
+   "src": "/packs/ygo/DUEA-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/DUEA.jpg"
+  }
+ ],
+ "NECH": [
+  {
+   "id": "1",
+   "name": "The New Challengers",
+   "src": "/packs/ygo/NECH-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/NECH.jpg"
+  }
+ ],
+ "SECE": [
+  {
+   "id": "1",
+   "name": "Secrets of Eternity",
+   "src": "/packs/ygo/SECE-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/SECE.jpg"
+  }
+ ],
+ "THSF": [
+  {
+   "id": "1",
+   "name": "The Secret Forces",
+   "src": "/packs/ygo/THSF-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/THSF.jpg"
+  }
+ ],
+ "WSUP": [
+  {
+   "id": "1",
+   "name": "World Superstars",
+   "src": "/packs/ygo/WSUP-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/WSUP.jpg"
+  }
+ ],
+ "CROS": [
+  {
+   "id": "1",
+   "name": "Crossed Souls",
+   "src": "/packs/ygo/CROS-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/CROS.jpg"
+  }
+ ],
+ "SP15": [
+  {
+   "id": "1",
+   "name": "Star Pack ARC-V",
+   "src": "/packs/ygo/SP15-1.webp",
+   "aspect": 0.569,
+   "source": "https://images.ygoprodeck.com/images/sets/SP15.jpg"
+  }
+ ],
+ "DPBC": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Battle City",
+   "src": "/packs/ygo/DPBC-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/DPBC.jpg"
+  }
+ ],
+ "DRL2": [
+  {
+   "id": "1",
+   "name": "Dragons of Legend 2",
+   "src": "/packs/ygo/DRL2-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/DRL2.jpg"
+  }
+ ],
+ "CORE": [
+  {
+   "id": "1",
+   "name": "Clash of Rebellions",
+   "src": "/packs/ygo/CORE-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/CORE.jpg"
+  }
+ ],
+ "HSRD": [
+  {
+   "id": "1",
+   "name": "High-Speed Riders",
+   "src": "/packs/ygo/HSRD-1.webp",
+   "aspect": 0.564,
+   "source": "https://images.ygoprodeck.com/images/sets/HSRD.jpg"
+  }
+ ],
+ "DOCS": [
+  {
+   "id": "1",
+   "name": "Dimension of Chaos",
+   "src": "/packs/ygo/DOCS-1.webp",
+   "aspect": 0.564,
+   "source": "https://images.ygoprodeck.com/images/sets/DOCS.jpg"
+  }
+ ],
+ "BOSH": [
+  {
+   "id": "1",
+   "name": "Breakers of Shadow",
+   "src": "/packs/ygo/BOSH-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/BOSH.jpg"
+  }
+ ],
+ "WIRA": [
+  {
+   "id": "1",
+   "name": "Wing Raiders",
+   "src": "/packs/ygo/WIRA-1.webp",
+   "aspect": 0.56,
+   "source": "https://images.ygoprodeck.com/images/sets/WIRA.jpg"
+  }
+ ],
+ "MIL1": [
+  {
+   "id": "1",
+   "name": "Millennium Pack",
+   "src": "/packs/ygo/MIL1-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/MIL1.jpg"
+  }
+ ],
+ "SHVI": [
+  {
+   "id": "1",
+   "name": "Shining Victories",
+   "src": "/packs/ygo/SHVI-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/SHVI.jpg"
+  }
+ ],
+ "TDIL": [
+  {
+   "id": "1",
+   "name": "The Dark Illusion",
+   "src": "/packs/ygo/TDIL-1.webp",
+   "aspect": 0.575,
+   "source": "https://images.ygoprodeck.com/images/sets/TDIL.jpg"
+  }
+ ],
+ "DRL3": [
+  {
+   "id": "1",
+   "name": "Dragons of Legend: Unleashed",
+   "src": "/packs/ygo/DRL3-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/DRL3.jpg"
+  }
+ ],
+ "DPRP": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Rivals of the Pharaoh",
+   "src": "/packs/ygo/DPRP-1.webp",
+   "aspect": 0.578,
+   "source": "https://images.ygoprodeck.com/images/sets/DPRP.jpg"
+  }
+ ],
+ "INOV": [
+  {
+   "id": "1",
+   "name": "Invasion: Vengeance",
+   "src": "/packs/ygo/INOV-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/INOV.jpg"
+  }
+ ],
+ "DESO": [
+  {
+   "id": "1",
+   "name": "Destiny Soldiers",
+   "src": "/packs/ygo/DESO-1.webp",
+   "aspect": 0.572,
+   "source": "https://images.ygoprodeck.com/images/sets/DESO.jpg"
+  }
+ ],
+ "RATE": [
+  {
+   "id": "1",
+   "name": "Raging Tempest",
+   "src": "/packs/ygo/RATE-1.webp",
+   "aspect": 0.57,
+   "source": "https://images.ygoprodeck.com/images/sets/RATE.jpg"
+  }
+ ],
+ "FUEN": [
+  {
+   "id": "1",
+   "name": "Fusion Enforcers",
+   "src": "/packs/ygo/FUEN-1.webp",
+   "aspect": 0.572,
+   "source": "https://images.ygoprodeck.com/images/sets/FUEN.jpg"
+  }
+ ],
+ "SP17": [
+  {
+   "id": "1",
+   "name": "Star Pack Battle Royal",
+   "src": "/packs/ygo/SP17-1.webp",
+   "aspect": 0.569,
+   "source": "https://images.ygoprodeck.com/images/sets/SP17.jpg"
+  }
+ ],
+ "MACR": [
+  {
+   "id": "1",
+   "name": "Maximum Crisis",
+   "src": "/packs/ygo/MACR-1.webp",
+   "aspect": 0.569,
+   "source": "https://images.ygoprodeck.com/images/sets/MACR.jpg"
+  }
+ ],
+ "DPDG": [
+  {
+   "id": "1",
+   "name": "Duelist Pack: Dimensional Guardians",
+   "src": "/packs/ygo/DPDG-1.webp",
+   "aspect": 0.558,
+   "source": "https://images.ygoprodeck.com/images/sets/DPDG.jpg"
+  }
+ ],
+ "PEVO": [
+  {
+   "id": "1",
+   "name": "Pendulum Evolution",
+   "src": "/packs/ygo/PEVO-1.webp",
+   "aspect": 0.573,
+   "source": "https://images.ygoprodeck.com/images/sets/PEVO.jpg"
+  }
+ ],
+ "BLLR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Light's Revenge",
+   "src": "/packs/ygo/BLLR-1.webp",
+   "aspect": 0.58,
+   "source": "https://images.ygoprodeck.com/images/sets/BLLR.jpg"
+  }
+ ],
+ "COTD": [
+  {
+   "id": "1",
+   "name": "Code of the Duelist",
+   "src": "/packs/ygo/COTD-1.webp",
+   "aspect": 0.57,
+   "source": "https://images.ygoprodeck.com/images/sets/COTD.jpg"
+  }
+ ],
+ "LEDU": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists",
+   "src": "/packs/ygo/LEDU-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/LEDU.jpg"
+  }
+ ],
+ "CIBR": [
+  {
+   "id": "1",
+   "name": "Circuit Break",
+   "src": "/packs/ygo/CIBR-1.webp",
+   "aspect": 0.581,
+   "source": "https://images.ygoprodeck.com/images/sets/CIBR.jpg"
+  }
+ ],
+ "SPWA": [
+  {
+   "id": "1",
+   "name": "Spirit Warriors",
+   "src": "/packs/ygo/SPWA-1.webp",
+   "aspect": 0.569,
+   "source": "https://images.ygoprodeck.com/images/sets/SPWA.jpg"
+  }
+ ],
+ "EXFO": [
+  {
+   "id": "1",
+   "name": "Extreme Force",
+   "src": "/packs/ygo/EXFO-1.webp",
+   "aspect": 0.569,
+   "source": "https://images.ygoprodeck.com/images/sets/EXFO.jpg"
+  }
+ ],
+ "LED2": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Ancient Millennium",
+   "src": "/packs/ygo/LED2-1.webp",
+   "aspect": 0.576,
+   "source": "https://images.ygoprodeck.com/images/sets/LED2.jpg"
+  }
+ ],
+ "SP18": [
+  {
+   "id": "1",
+   "name": "Star Pack VRAINS",
+   "src": "/packs/ygo/SP18-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/SP18.jpg"
+  }
+ ],
+ "FLOD": [
+  {
+   "id": "1",
+   "name": "Flames of Destruction",
+   "src": "/packs/ygo/FLOD-1.webp",
+   "aspect": 0.549,
+   "source": "https://images.ygoprodeck.com/images/sets/FLOD.jpg"
+  }
+ ],
+ "DASA": [
+  {
+   "id": "1",
+   "name": "Dark Saviors",
+   "src": "/packs/ygo/DASA-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/DASA.jpg"
+  }
+ ],
+ "BLRR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Relentless Revenge",
+   "src": "/packs/ygo/BLRR-1.webp",
+   "aspect": 0.575,
+   "source": "https://images.ygoprodeck.com/images/sets/BLRR.jpg"
+  }
+ ],
+ "CYHO": [
+  {
+   "id": "1",
+   "name": "Cybernetic Horizon",
+   "src": "/packs/ygo/CYHO-1.webp",
+   "aspect": 0.575,
+   "source": "https://images.ygoprodeck.com/images/sets/CYHO.jpg"
+  }
+ ],
+ "SHVA": [
+  {
+   "id": "1",
+   "name": "Shadows in Valhalla",
+   "src": "/packs/ygo/SHVA-1.webp",
+   "aspect": 0.546,
+   "source": "https://images.ygoprodeck.com/images/sets/SHVA.jpg"
+  }
+ ],
+ "LED3": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: White Dragon Abyss",
+   "src": "/packs/ygo/LED3-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/LED3.jpg"
+  }
+ ],
+ "SOFU": [
+  {
+   "id": "1",
+   "name": "Soul Fusion",
+   "src": "/packs/ygo/SOFU-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/SOFU.jpg"
+  }
+ ],
+ "HISU": [
+  {
+   "id": "1",
+   "name": "Hidden Summoners",
+   "src": "/packs/ygo/HISU-1.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/HISU.jpg"
+  }
+ ],
+ "LED4": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Sisters of the Rose",
+   "src": "/packs/ygo/LED4-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/LED4.jpg"
+  }
+ ],
+ "SAST": [
+  {
+   "id": "1",
+   "name": "Savage Strike",
+   "src": "/packs/ygo/SAST-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/SAST.jpg"
+  }
+ ],
+ "INCH": [
+  {
+   "id": "1",
+   "name": "The Infinity Chasers",
+   "src": "/packs/ygo/INCH-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/INCH.jpg"
+  }
+ ],
+ "DANE": [
+  {
+   "id": "1",
+   "name": "Dark Neostorm",
+   "src": "/packs/ygo/DANE-1.webp",
+   "aspect": 0.562,
+   "source": "https://images.ygoprodeck.com/images/sets/DANE.jpg"
+  }
+ ],
+ "BLHR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Hero's Revenge",
+   "src": "/packs/ygo/BLHR-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/BLHR.jpg"
+  }
+ ],
+ "RIRA": [
+  {
+   "id": "1",
+   "name": "Rising Rampage",
+   "src": "/packs/ygo/RIRA-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/RIRA.jpg"
+  }
+ ],
+ "FIGA": [
+  {
+   "id": "1",
+   "name": "Fists of the Gadgets",
+   "src": "/packs/ygo/FIGA-1.webp",
+   "aspect": 0.549,
+   "source": "https://images.ygoprodeck.com/images/sets/FIGA.jpg"
+  }
+ ],
+ "LED5": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Immortal Destiny",
+   "src": "/packs/ygo/LED5-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/LED5.jpg"
+  }
+ ],
+ "CHIM": [
+  {
+   "id": "1",
+   "name": "Chaos Impact",
+   "src": "/packs/ygo/CHIM-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/CHIM.jpg"
+  }
+ ],
+ "MYFI": [
+  {
+   "id": "1",
+   "name": "Mystic Fighters",
+   "src": "/packs/ygo/MYFI-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/MYFI.jpg"
+  }
+ ],
+ "LED6": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Magical Hero",
+   "src": "/packs/ygo/LED6-1.webp",
+   "aspect": 0.575,
+   "source": "https://images.ygoprodeck.com/images/sets/LED6.jpg"
+  }
+ ],
+ "IGAS": [
+  {
+   "id": "1",
+   "name": "Ignition Assault",
+   "src": "/packs/ygo/IGAS-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/IGAS.jpg"
+  }
+ ],
+ "SESL": [
+  {
+   "id": "1",
+   "name": "Secret Slayers",
+   "src": "/packs/ygo/SESL-1.webp",
+   "aspect": 0.56,
+   "source": "https://images.ygoprodeck.com/images/sets/SESL.jpg"
+  }
+ ],
+ "ETCO": [
+  {
+   "id": "1",
+   "name": "Eternity Code",
+   "src": "/packs/ygo/ETCO-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/ETCO.jpg"
+  }
+ ],
+ "TOCH": [
+  {
+   "id": "1",
+   "name": "Toon Chaos",
+   "src": "/packs/ygo/TOCH-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/TOCH.jpg"
+  }
+ ],
+ "BLAR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Armageddon",
+   "src": "/packs/ygo/BLAR-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/BLAR.jpg"
+  }
+ ],
+ "ROTD": [
+  {
+   "id": "1",
+   "name": "Rise of the Duelist",
+   "src": "/packs/ygo/ROTD-1.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/ROTD.jpg"
+  }
+ ],
+ "LED7": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Rage of Ra",
+   "src": "/packs/ygo/LED7-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/LED7.jpg"
+  }
+ ],
+ "PHRA": [
+  {
+   "id": "1",
+   "name": "Phantom Rage",
+   "src": "/packs/ygo/PHRA-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/PHRA.jpg"
+  }
+ ],
+ "GEIM": [
+  {
+   "id": "1",
+   "name": "Genesis Impact",
+   "src": "/packs/ygo/GEIM-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/GEIM.jpg"
+  }
+ ],
+ "BLVO": [
+  {
+   "id": "1",
+   "name": "Blazing Vortex",
+   "src": "/packs/ygo/BLVO-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/BLVO.jpg"
+  }
+ ],
+ "ANGU": [
+  {
+   "id": "1",
+   "name": "Ancient Guardians",
+   "src": "/packs/ygo/ANGU-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/ANGU.jpg"
+  }
+ ],
+ "LIOV": [
+  {
+   "id": "1",
+   "name": "Lightning Overdrive",
+   "src": "/packs/ygo/LIOV-1.webp",
+   "aspect": 0.543,
+   "source": "https://images.ygoprodeck.com/images/sets/LIOV.jpg"
+  }
+ ],
+ "KICO": [
+  {
+   "id": "1",
+   "name": "King's Court",
+   "src": "/packs/ygo/KICO-1.webp",
+   "aspect": 0.541,
+   "source": "https://images.ygoprodeck.com/images/sets/KICO.jpg"
+  }
+ ],
+ "DAMA": [
+  {
+   "id": "1",
+   "name": "Dawn of Majesty",
+   "src": "/packs/ygo/DAMA-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/DAMA.jpg"
+  }
+ ],
+ "LED8": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Synchro Storm",
+   "src": "/packs/ygo/LED8-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/LED8.jpg"
+  }
+ ],
+ "BODE": [
+  {
+   "id": "1",
+   "name": "Burst of Destiny",
+   "src": "/packs/ygo/BODE-1.webp",
+   "aspect": 0.606,
+   "source": "https://images.ygoprodeck.com/images/sets/BODE.jpg"
+  }
+ ],
+ "GRCR": [
+  {
+   "id": "1",
+   "name": "The Grand Creators",
+   "src": "/packs/ygo/GRCR-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/GRCR.jpg"
+  }
+ ],
+ "BACH": [
+  {
+   "id": "1",
+   "name": "Battle of Chaos",
+   "src": "/packs/ygo/BACH-1.webp",
+   "aspect": 0.602,
+   "source": "https://images.ygoprodeck.com/images/sets/BACH.jpg"
+  }
+ ],
+ "DIFO": [
+  {
+   "id": "1",
+   "name": "Dimension Force",
+   "src": "/packs/ygo/DIFO-1.webp",
+   "aspect": 0.483,
+   "source": "https://images.ygoprodeck.com/images/sets/DIFO.jpg"
+  }
+ ],
+ "LED9": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Duels From the Deep",
+   "src": "/packs/ygo/LED9-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/LED9.jpg"
+  }
+ ],
+ "POTE": [
+  {
+   "id": "1",
+   "name": "Power of the Elements",
+   "src": "/packs/ygo/POTE-1.webp",
+   "aspect": 0.488,
+   "source": "https://images.ygoprodeck.com/images/sets/POTE.jpg"
+  }
+ ],
+ "TAMA": [
+  {
+   "id": "1",
+   "name": "Tactical Masters",
+   "src": "/packs/ygo/TAMA-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/TAMA.jpg"
+  }
+ ],
+ "DABL": [
+  {
+   "id": "1",
+   "name": "Darkwing Blast",
+   "src": "/packs/ygo/DABL-1.webp",
+   "aspect": 0.566,
+   "source": "https://images.ygoprodeck.com/images/sets/DABL.jpg"
+  }
+ ],
+ "BLCR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Crystal Revenge",
+   "src": "/packs/ygo/BLCR-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/BLCR.jpg"
+  }
+ ],
+ "AMDE": [
+  {
+   "id": "1",
+   "name": "Amazing Defenders",
+   "src": "/packs/ygo/AMDE-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/AMDE.jpg"
+  }
+ ],
+ "PHHY": [
+  {
+   "id": "1",
+   "name": "Photon Hypernova",
+   "src": "/packs/ygo/PHHY-1.webp",
+   "aspect": 0.568,
+   "source": "https://images.ygoprodeck.com/images/sets/PHHY.jpg"
+  }
+ ],
+ "MAZE": [
+  {
+   "id": "1",
+   "name": "Maze of Memories",
+   "src": "/packs/ygo/MAZE-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/MAZE.jpg"
+  }
+ ],
+ "CYAC": [
+  {
+   "id": "1",
+   "name": "Cyberstorm Access",
+   "src": "/packs/ygo/CYAC-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/CYAC.jpg"
+  }
+ ],
+ "WISU": [
+  {
+   "id": "1",
+   "name": "Wild Survivors",
+   "src": "/packs/ygo/WISU-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/WISU.jpg"
+  }
+ ],
+ "BLMR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Monstrous Revenge, design 1",
+   "src": "/packs/ygo/BLMR-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+  },
+  {
+   "id": "2",
+   "name": "Battles of Legend: Monstrous Revenge, design 2",
+   "src": "/packs/ygo/BLMR-2.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+  },
+  {
+   "id": "3",
+   "name": "Battles of Legend: Monstrous Revenge, design 3",
+   "src": "/packs/ygo/BLMR-3.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+  },
+  {
+   "id": "4",
+   "name": "Battles of Legend: Monstrous Revenge, design 4",
+   "src": "/packs/ygo/BLMR-4.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+  },
+  {
+   "id": "5",
+   "name": "Battles of Legend: Monstrous Revenge, design 5",
+   "src": "/packs/ygo/BLMR-5.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMR.jpg"
+  }
+ ],
+ "DUNE": [
+  {
+   "id": "1",
+   "name": "Duelist Nexus",
+   "src": "/packs/ygo/DUNE-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/DUNE.jpg"
+  }
+ ],
+ "LD10": [
+  {
+   "id": "1",
+   "name": "Legendary Duelists: Soulburning Volcano",
+   "src": "/packs/ygo/LD10-1.webp",
+   "aspect": 0.567,
+   "source": "https://images.ygoprodeck.com/images/sets/LD10.jpg"
+  }
+ ],
+ "AGOV": [
+  {
+   "id": "1",
+   "name": "Age of Overlord",
+   "src": "/packs/ygo/AGOV-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/AGOV.jpg"
+  }
+ ],
+ "RA01": [
+  {
+   "id": "1",
+   "name": "25th Anniversary Rarity Collection",
+   "src": "/packs/ygo/RA01-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/RA01.jpg"
+  }
+ ],
+ "VASM": [
+  {
+   "id": "1",
+   "name": "Valiant Smashers",
+   "src": "/packs/ygo/VASM-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/VASM.jpg"
+  }
+ ],
+ "MZMI": [
+  {
+   "id": "1",
+   "name": "Maze of Millennia",
+   "src": "/packs/ygo/MZMI-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/MZMI.jpg"
+  }
+ ],
+ "PHNI": [
+  {
+   "id": "1",
+   "name": "Phantom Nightmare",
+   "src": "/packs/ygo/PHNI-1.webp",
+   "aspect": 0.564,
+   "source": "https://images.ygoprodeck.com/images/sets/PHNI.jpg"
+  }
+ ],
+ "LEDE": [
+  {
+   "id": "1",
+   "name": "Legacy of Destruction",
+   "src": "/packs/ygo/LEDE-1.webp",
+   "aspect": 0.482,
+   "source": "https://images.ygoprodeck.com/images/sets/LEDE.jpg"
+  }
+ ],
+ "RA02": [
+  {
+   "id": "1",
+   "name": "25th Anniversary Rarity Collection II",
+   "src": "/packs/ygo/RA02-1.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/RA02.jpg"
+  }
+ ],
+ "BLTR": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Terminal Revenge",
+   "src": "/packs/ygo/BLTR-1.webp",
+   "aspect": 0.548,
+   "source": "https://images.ygoprodeck.com/images/sets/BLTR.jpg"
+  }
+ ],
+ "INFO": [
+  {
+   "id": "1",
+   "name": "The Infinite Forbidden",
+   "src": "/packs/ygo/INFO-1.webp",
+   "aspect": 0.571,
+   "source": "https://images.ygoprodeck.com/images/sets/INFO.jpg"
+  }
+ ],
+ "ROTA": [
+  {
+   "id": "1",
+   "name": "Rage of the Abyss",
+   "src": "/packs/ygo/ROTA-1.webp",
+   "aspect": 0.556,
+   "source": "https://images.ygoprodeck.com/images/sets/ROTA.jpg"
+  }
+ ],
+ "CRBR": [
+  {
+   "id": "1",
+   "name": "Crossover Breakers",
+   "src": "/packs/ygo/CRBR-1.webp",
+   "aspect": 0.558,
+   "source": "https://images.ygoprodeck.com/images/sets/CRBR.jpg"
+  }
+ ],
+ "SUDA": [
+  {
+   "id": "1",
+   "name": "Supreme Darkness",
+   "src": "/packs/ygo/SUDA-1.webp",
+   "aspect": 0.551,
+   "source": "https://images.ygoprodeck.com/images/sets/SUDA.jpg"
+  }
+ ],
+ "MZTM": [
+  {
+   "id": "1",
+   "name": "Maze of the Master, design 1",
+   "src": "/packs/ygo/MZTM-1.webp",
+   "aspect": 0.555,
+   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+  },
+  {
+   "id": "2",
+   "name": "Maze of the Master, design 2",
+   "src": "/packs/ygo/MZTM-2.webp",
+   "aspect": 0.545,
+   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+  },
+  {
+   "id": "3",
+   "name": "Maze of the Master, design 3",
+   "src": "/packs/ygo/MZTM-3.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/MZTM.jpg"
+  }
+ ],
+ "RA04": [
+  {
+   "id": "1",
+   "name": "Quarter Century Stampede",
+   "src": "/packs/ygo/RA04-1.webp",
+   "aspect": 0.558,
+   "source": "https://images.ygoprodeck.com/images/sets/RA04.jpg"
+  }
+ ],
+ "ALIN": [
+  {
+   "id": "1",
+   "name": "Alliance Insight",
+   "src": "/packs/ygo/ALIN-1.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/ALIN.jpg"
+  }
+ ],
+ "JUSH": [
+  {
+   "id": "1",
+   "name": "Justice Hunters",
+   "src": "/packs/ygo/JUSH-1.webp",
+   "aspect": 0.547,
+   "source": "https://images.ygoprodeck.com/images/sets/JUSH.jpg"
+  }
+ ],
+ "BLMM": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Monster Mayhem, design 1",
+   "src": "/packs/ygo/BLMM-1.webp",
+   "aspect": 0.558,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMM.jpg"
+  },
+  {
+   "id": "2",
+   "name": "Battles of Legend: Monster Mayhem, design 2",
+   "src": "/packs/ygo/BLMM-2.webp",
+   "aspect": 0.551,
+   "source": "https://images.ygoprodeck.com/images/sets/BLMM.jpg"
+  }
+ ],
+ "DOOD": [
+  {
+   "id": "1",
+   "name": "Doom of Dimensions",
+   "src": "/packs/ygo/DOOD-1.webp",
+   "aspect": 0.559,
+   "source": "https://images.ygoprodeck.com/images/sets/DOOD.jpg"
+  }
+ ],
+ "PHRE": [
+  {
+   "id": "1",
+   "name": "Phantom Revenge",
+   "src": "/packs/ygo/PHRE-1.webp",
+   "aspect": 0.551,
+   "source": "https://images.ygoprodeck.com/images/sets/PHRE.jpg"
+  }
+ ],
+ "BPRO": [
+  {
+   "id": "1",
+   "name": "Burst Protocol",
+   "src": "/packs/ygo/BPRO-1.webp",
+   "aspect": 0.55,
+   "source": "https://images.ygoprodeck.com/images/sets/BPRO.jpg"
+  }
+ ],
+ "MZMU": [
+  {
+   "id": "1",
+   "name": "Maze of Muertos, design 1",
+   "src": "/packs/ygo/MZMU-1.webp",
+   "aspect": 0.554,
+   "source": "https://images.ygoprodeck.com/images/sets/MZMU.jpg"
+  },
+  {
+   "id": "2",
+   "name": "Maze of Muertos, design 2",
+   "src": "/packs/ygo/MZMU-2.webp",
+   "aspect": 0.552,
+   "source": "https://images.ygoprodeck.com/images/sets/MZMU.jpg"
+  },
+  {
+   "id": "3",
+   "name": "Maze of Muertos, design 3",
+   "src": "/packs/ygo/MZMU-3.webp",
+   "aspect": 0.554,
+   "source": "https://images.ygoprodeck.com/images/sets/MZMU.jpg"
+  }
+ ],
+ "RA05": [
+  {
+   "id": "1",
+   "name": "Rarity Collection 5",
+   "src": "/packs/ygo/RA05-1.webp",
+   "aspect": 0.548,
+   "source": "https://images.ygoprodeck.com/images/sets/RA05.jpg"
+  }
+ ],
+ "BLZD": [
+  {
+   "id": "1",
+   "name": "Blazing Dominion",
+   "src": "/packs/ygo/BLZD-1.webp",
+   "aspect": 0.55,
+   "source": "https://images.ygoprodeck.com/images/sets/BLZD.jpg"
+  }
+ ],
+ "BLGG": [
+  {
+   "id": "1",
+   "name": "Battles of Legend: Glorious Gallery, design 1",
+   "src": "/packs/ygo/BLGG-1.webp",
+   "aspect": 0.565,
+   "source": "https://images.ygoprodeck.com/images/sets/BLGG.jpg"
+  },
+  {
+   "id": "2",
+   "name": "Battles of Legend: Glorious Gallery, design 2",
+   "src": "/packs/ygo/BLGG-2.webp",
+   "aspect": 0.563,
+   "source": "https://images.ygoprodeck.com/images/sets/BLGG.jpg"
+  }
+ ],
+ "CORI": [
+  {
+   "id": "1",
+   "name": "Chaos Origins",
+   "src": "/packs/ygo/CORI-1.webp",
+   "aspect": 0.55,
+   "source": "https://images.ygoprodeck.com/images/sets/CORI.jpg"
+  }
+ ]
+}

@@ -6,7 +6,7 @@ import { GAMES, type Game } from "../game";
 import { GAME, switchGame, useGames } from "./game";
 import "./game.css";
 
-/** A game's round badge: a Poké Ball, or the five colors of mana. */
+/** A game's round badge: a Poké Ball, the five colors of mana, or the Millennium Puzzle. */
 export function GameBadge({ game }: { game: Game }) {
   const short = GAMES.find((g) => g.id === game)!.short;
   return (
@@ -19,6 +19,13 @@ export function GameBadge({ game }: { game: Game }) {
             <path className="line" d="M3 16h26" />
             <circle className="line" cx="16" cy="16" r="4.2" />
             <circle className="button" cx="16" cy="16" r="2.2" />
+          </>
+        ) : game === "ygo" ? (
+          // An upside-down pyramid with the eye on it.
+          <>
+            <path className="puzzle" d="M6.5 9h19L16 26.5z" />
+            <path className="eye" d="M11.4 14.2q4.6-3.6 9.2 0q-4.6 3.6-9.2 0z" />
+            <circle className="pupil" cx="16" cy="14.2" r="1.5" />
           </>
         ) : (
           // Five pips around a circle, in WUBRG order from the top, clockwise.

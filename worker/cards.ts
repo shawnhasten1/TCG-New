@@ -1,15 +1,17 @@
-// Card data and owned cards on the server, for any game. Set data comes from TCGdex for Pokémon and Scryfall for Magic
-// (worker/mtg.ts), both cached in D1, so the market, trades and the feed needn't know which game they're serving.
+// Card data and owned cards on the server, for any game. Set data comes from TCGdex for Pokémon, Scryfall for Magic
+// (worker/mtg.ts) and YGOPRODeck for Yu-Gi-Oh! (worker/ygo.ts), all cached in D1, so the market, trades and the feed needn't know which game they're serving.
 
 import type { CardPricing } from "../src/api/tcgdex";
 import type { SetData } from "../src/api/types";
 import type { Game } from "../src/game";
 import { mtgSet } from "../src/mtg/sets";
+import { ygoSet } from "../src/ygo/sets";
 import { cardUid, type RemoteCard } from "../src/sync/protocol";
 import type { OwnedCard, TradeCard } from "../src/social/protocol";
 import { tcgdex } from "./cache";
 import { HttpError, type Ctx } from "./http";
 import { mtgSetData, mtgSetPrices } from "./mtg";
+import { ygoSetData, ygoSetPrices } from "./ygo";
 
 interface PackRow {
   pack_id: string;
@@ -25,6 +27,11 @@ export async function setCards(ctx: Ctx, game: Game, setId: string): Promise<Set
     if (!set) throw new HttpError(404, "No such set");
     return mtgSetData(ctx.env, set);
   }
+  if (game === "ygo") {
+    const set = ygoSet(setId);
+    if (!set) throw new HttpError(404, "No such set");
+    return ygoSetData(ctx.env, set);
+  }
   try {
     return await tcgdex(ctx.env).client.getSetCards(setId);
   } catch (err) {
@@ -38,6 +45,10 @@ export async function cardPricing(ctx: Ctx, game: Game, setId: string, cardId: s
   if (game === "mtg") {
     const set = mtgSet(setId);
     return set ? ((await mtgSetPrices(ctx.env, set))[cardId] ?? null) : null;
+  }
+  if (game === "ygo") {
+    const set = ygoSet(setId);
+    return set ? ((await ygoSetPrices(ctx.env, set))[cardId] ?? null) : null;
   }
   return tcgdex(ctx.env).client.getCardPricing(cardId);
 }

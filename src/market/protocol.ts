@@ -32,14 +32,18 @@ export function coinValue(price: Pick<Price, "amount" | "currency"> | undefined,
   return { coins: Math.max(1, Math.round(usd * COINS_PER_USD)), priced: true };
 }
 
-/** What each game's coins are called: Pokémon's are coins, Magic's are Treasure (after its Treasure tokens). */
+/**
+ * What each game's coins are called: Pokémon's are coins, Magic's are Treasure (after its Treasure tokens), and
+ * Yu-Gi-Oh!'s are Star Chips (what duelists wagered in Duelist Kingdom).
+ */
 export const CURRENCY: Record<Game, { one: string; many: string }> = {
   pokemon: { one: "coin", many: "coins" },
   mtg: { one: "Treasure", many: "Treasure" },
+  ygo: { one: "Star Chip", many: "Star Chips" },
 };
 
 const coinFormat = new Intl.NumberFormat();
-/** "1,250 coins", "1 coin"; "1,250 Treasure" in Magic. */
+/** "1,250 coins", "1 coin"; "1,250 Treasure" in Magic, "1,250 Star Chips" in Yu-Gi-Oh!. */
 export const formatCoins = (n: number, game: Game = "pokemon") => `${coinFormat.format(n)} ${n === 1 ? CURRENCY[game].one : CURRENCY[game].many}`;
 
 export type LedgerKind = "sale" | "purchase" | "grant";
@@ -86,6 +90,7 @@ export const LATER_OFFERS: [number, number] = [0.8, 1.03];
 /**
  * Who makes offers, by how good an offer is: the least a share of the value must be for each group. Youngsters
  * lowball; collectors pay up. Magic's buyers are the same idea in Magic's world: goblins lowball, archmages pay up.
+ * Yu-Gi-Oh!'s are duelists: Rare Hunters lowball, pharaohs pay up.
  */
 export const TRAINERS: Record<Game, { from: number; classes: string[] }[]> = {
   pokemon: [
@@ -99,6 +104,12 @@ export const TRAINERS: Record<Game, { from: number; classes: string[] }[]> = {
     { from: 0.9, classes: ["Artificer", "Sage", "Wizard", "Judge", "Deckbuilder", "Cleric", "Loremaster", "Sphinx Scholar"] },
     { from: 0.78, classes: ["Merchant", "Trader", "Ranger", "Druid", "Rogue", "Monk", "Scout", "Shaman"] },
     { from: 0, classes: ["Goblin", "Kobold", "Squire", "Apprentice", "Novice", "Peasant"] },
+  ],
+  ygo: [
+    { from: 0.98, classes: ["Collector", "Pharaoh", "Duel King", "Champion", "Tomb Keeper", "Card Curator"] },
+    { from: 0.9, classes: ["Pro Duelist", "Deck Master", "Egyptologist", "Card Professor", "Tournament Judge", "Game Shop Owner", "Duel Monk", "Millennium Scholar"] },
+    { from: 0.78, classes: ["Duelist", "Card Trader", "Street Duelist", "Tag Duelist", "Shop Clerk", "Obelisk Blue", "Ra Yellow", "Riding Duelist"] },
+    { from: 0, classes: ["Rare Hunter", "Ghoul", "Slifer Red", "Beginner", "Card Shark", "Kid"] },
   ],
 };
 export const TRAINER_NAMES = [

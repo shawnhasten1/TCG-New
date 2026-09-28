@@ -4,7 +4,9 @@ import type { PulledCard } from "./types";
 
 export type Tier = 0 | 1 | 2 | 3;
 
-const CHASE = /illustration|secret|hyper|shiny ultra|gold|rainbow/i;
+// Yu-Gi-Oh!'s collector rarities (Ultimate, Starlight, Ghost…) are chase cards too; its Ultra and Super Rares fall
+// into the ultra and rare tiers by name.
+const CHASE = /illustration|secret|hyper|shiny ultra|gold|rainbow|ultimate|starlight|ghost|collector|platinum|prismatic/i;
 // Magic's Mythic Rares count as ultra, its Rares as rare.
 const ULTRA = /double|ultra|mythic|\bv\b|vmax|vstar|lv\.x|prime|legend|radiant|amazing|ace spec|shiny|classic collection|black white/i;
 const RARE = /rare/i;

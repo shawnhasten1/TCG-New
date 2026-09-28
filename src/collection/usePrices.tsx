@@ -10,7 +10,7 @@ import type { PullRecord } from "./store";
 
 export type Totals = Record<Price["currency"], number>;
 
-/** Where this game's prices come from: TCGdex per card for Pokémon, the Worker per set for Magic (src/mtg/client.ts). */
+/** Where this game's prices come from: TCGdex per card for Pokémon, the Worker per set for Magic and Yu-Gi-Oh! (app/workerCards.ts). */
 const priceSource = { get: gameCards.getCardPricing, cached: gameCards.cachedCardPricing };
 
 /** How often fetched prices are handed to the page. Each hand-off re-sorts and re-renders it, so not once per card. */

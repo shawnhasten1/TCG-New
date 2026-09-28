@@ -21,7 +21,10 @@
     "pack-prices": "tsx scripts/packPrices.ts",
     "mtg-set-rarity": "tsx scripts/mtgSetRarity.ts",
     "mtg-pack-prices": "tsx scripts/mtgPackPrices.ts",
-    "mtg-pack-art": "tsx scripts/mtgPackArt.ts"
+    "mtg-pack-art": "tsx scripts/mtgPackArt.ts",
+    "ygo-set-rarity": "tsx scripts/ygoSetRarity.ts",
+    "ygo-pack-prices": "tsx scripts/ygoPackPrices.ts",
+    "ygo-pack-art": "tsx scripts/ygoPackArt.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

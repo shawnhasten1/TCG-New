@@ -26,6 +26,14 @@
 			"migrations_dir": "migrations"
 		}
 	],
+	// Yu-Gi-Oh! card images, downloaded once from YGOPRODeck (which asks not to be hotlinked) and served from here
+	// (worker/ygo.ts). Create it before the first deploy: `npx wrangler r2 bucket create tcg-ygo-images`.
+	"r2_buckets": [
+		{
+			"binding": "YGO_IMAGES",
+			"bucket_name": "tcg-ygo-images"
+		}
+	],
 	// Slows password guessing: sign-in, sign-up and password changes, per IP.
 	"ratelimits": [
 		{
@@ -44,6 +52,16 @@
 			"simple": {
 				"limit": 20,
 				"period": 60
+			}
+		},
+		// Requests to YGOPRODeck (Yu-Gi-Oh! data and images), which blocks an IP for an hour past 20 a second. Most are
+		// one-offs, since everything fetched is kept (worker/ygo.ts); this keeps a burst of first-time images well under.
+		{
+			"name": "YGOPRODECK_LIMITER",
+			"namespace_id": "1004",
+			"simple": {
+				"limit": 15,
+				"period": 10
 			}
 		},
 		// Friend requests per account, so friend codes can't be guessed by trying them all.

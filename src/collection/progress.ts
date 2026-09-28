@@ -1,6 +1,8 @@
 // Pure collection maths: ownership per card and completion per set.
 
 import type { Card } from "../api/types";
+import { GAME } from "../app/game";
+import type { Game } from "../game";
 import type { Finish } from "../engine/types";
 import { isOpenedPack } from "../sync/protocol";
 import type { PullRecord } from "./store";
@@ -34,9 +36,14 @@ export function ownership(pulls: PullRecord[]): Map<string, Ownership> {
   return out;
 }
 
-/** Main-set cards are numbered 1…official; secrets and subsets (TG01, SV001…) are extras. */
-export function isMainSet(localId: string, official: number): boolean {
-  return /^\d+$/.test(localId) && Number(localId) >= 1 && Number(localId) <= official;
+/**
+ * Main-set cards are numbered 1…official; secrets and subsets (TG01, SV001…) are extras. Yu-Gi-Oh! sets number from
+ * 000 and some skip numbers, so there every plainly numbered card is main, and the same card at a rarer rarity is the
+ * extra (numbered "059 QCScR", ygo/cards.ts).
+ */
+export function isMainSet(localId: string, official: number, game: Game = GAME): boolean {
+  if (!/^\d+$/.test(localId)) return false;
+  return game === "ygo" || (Number(localId) >= 1 && Number(localId) <= official);
 }
 
 export interface SetProgress {

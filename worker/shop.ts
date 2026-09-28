@@ -15,6 +15,8 @@ import { HttpError, json, readJson, type Ctx } from "./http";
 import { rollMtgSet } from "./mtg";
 import { rollSet } from "./packs";
 import { MTG_SETS, mtgSet } from "../src/mtg/sets";
+import { YGO_SETS, ygoSet } from "../src/ygo/sets";
+import { rollYgoSet } from "./ygo";
 import { balance, isOverdrawn, walletStatements } from "./wallet";
 
 const unopenedCount = async (db: D1Database, userId: string, game: Game) =>
@@ -40,7 +42,7 @@ export async function buy(ctx: Ctx, userId: string, game: Game): Promise<Respons
   const rows = [];
   let setName = setId;
   for (let i = 0; i < quantity; i++) {
-    const rolled = game === "mtg" ? await rollMtgSet(ctx, mtgSet(setId)!) : await rollSet(ctx, setId);
+    const rolled = game === "mtg" ? await rollMtgSet(ctx, mtgSet(setId)!) : game === "ygo" ? await rollYgoSet(ctx, ygoSet(setId)!) : await rollSet(ctx, setId);
     if (!("row" in rolled)) {
       console.error(`The shop sells ${setId}, but it can't fill a pack: ${rolled.unopenable}`);
       throw new HttpError(503, "Packs from that set can't be opened right now. Try another set.");
@@ -82,10 +84,10 @@ export async function listUnopened(ctx: Ctx, userId: string, game: Game): Promis
     .bind(userId, game)
     .all<Omit<InventoryRow, "cards" | "reveal">>();
   // Names and logos from the Worker's cached set list, so the app needn't fetch it just to label packs. Magic's names
-  // are in MTG_SETS, and the app draws its set symbols from the set id.
+  // are in MTG_SETS (Yu-Gi-Oh!'s in YGO_SETS), and the app draws their set marks from the set id.
   const sets = new Map<string, { name: string; logo?: string | null }>(
-    game === "mtg"
-      ? MTG_SETS.map((s) => [s.id, { name: s.name }])
+    game === "mtg" || game === "ygo"
+      ? (game === "mtg" ? MTG_SETS : YGO_SETS).map((s) => [s.id, { name: s.name }])
       : (
           await tcgdex(ctx.env)
             .client.listSetSummaries()

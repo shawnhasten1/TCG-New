@@ -5,7 +5,7 @@
 // Pokémon is always on. The others are demos, off unless the Worker's DEMO_GAMES variable lists them (wrangler.jsonc
 // leaves it empty, so production only has Pokémon; .dev.vars turns them on locally). See worker/games.ts.
 
-export type Game = "pokemon" | "mtg";
+export type Game = "pokemon" | "mtg" | "ygo";
 
 /**
  * Parts of the app a game may not have yet. Pages ask whether the game has one (`has` in app/game.ts) rather than
@@ -25,6 +25,7 @@ export type Feature = "sets" | "market" | "social" | "pokedex" | "printings" | "
 export const GAMES: { id: Game; name: string; short: string; features: Feature[] }[] = [
   { id: "pokemon", name: "Pokémon", short: "PKMN", features: ["sets", "market", "social", "pokedex", "packArt", "eraFilter", "setTiers", "share"] },
   { id: "mtg", name: "Magic: The Gathering", short: "MTG", features: ["sets", "market", "social", "printings", "packArt", "eraFilter", "setTiers", "share"] },
+  { id: "ygo", name: "Yu-Gi-Oh!", short: "YGO", features: [] },
 ];
 
 export const isGame = (v: unknown): v is Game => GAMES.some((g) => g.id === v);

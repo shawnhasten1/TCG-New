@@ -20,6 +20,8 @@ import { requireUser } from "./session";
 import { requireGame } from "./games";
 import { MTG_ERAS } from "../src/mtg/sets";
 import { rollMtg } from "./mtg";
+import { YGO_ERAS } from "../src/ygo/sets";
+import { rollYgo } from "./ygo";
 
 /** Sets tried when a drawn set can't fill a pack. */
 const MAX_REDRAWS = 6;
@@ -94,8 +96,8 @@ async function allowanceFor(ctx: Ctx, userId: string, game: Game) {
 function parseDeal(env: Env, body: DealRequest | null): { game: Game; eras: string[]; opened?: string } {
   // Apps from before games don't say, and they're Pokémon.
   const game = requireGame(env, body?.game);
-  // Each game has its own eras (Pokémon's pack profiles, Magic's booster eras).
-  const known = new Set<string>((game === "mtg" ? MTG_ERAS : ERAS).map((e) => e.id));
+  // Each game has its own eras (Pokémon's pack profiles, Magic's booster eras, Yu-Gi-Oh!'s anime series).
+  const known = new Set<string>((game === "mtg" ? MTG_ERAS : game === "ygo" ? YGO_ERAS : ERAS).map((e) => e.id));
   const eras = Array.isArray(body?.eras) ? body.eras.filter((e): e is string => typeof e === "string" && known.has(e)) : [];
   const opened = typeof body?.opened === "string" && body.opened.length <= 64 ? body.opened : undefined;
   return { game, eras, opened };
@@ -122,7 +124,12 @@ async function deal(ctx: Ctx, userId: string): Promise<Response> {
   if (waiting) return json({ pack: toPack(waiting), allowance } satisfies DealResponse);
   if (allowance.left === 0) return json({ pack: null, allowance } satisfies DealResponse);
 
-  const row = game === "mtg" ? await rollMtg(ctx, await pityHistory(ctx, userId, game), eras) : await rollPokemon(ctx, userId, eras);
+  const row =
+    game === "mtg"
+      ? await rollMtg(ctx, await pityHistory(ctx, userId, game), eras)
+      : game === "ygo"
+        ? await rollYgo(ctx, await pityHistory(ctx, userId, game), eras)
+        : await rollPokemon(ctx, userId, eras);
 
   // Two tabs asking at once: the first one's pack wins, and both get it.
   await db

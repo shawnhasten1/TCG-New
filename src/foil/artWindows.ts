@@ -37,6 +37,13 @@ export const ART_WINDOWS: Record<string, Record<CardKind, ArtShape>> = {
     stage: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
     trainer: { art: R(7.8, 11.3, 92.2, 55.4, 0.2) },
   },
+  // Yu-Gi-Oh! (813×1185 YGOPRODeck scans): monsters, spells and traps share the square art box. Pendulums' wider
+  // art isn't measured yet.
+  ygo: {
+    basic: { art: R(11.9, 18.3, 88.2, 70.3, 0.2) },
+    stage: { art: R(11.9, 18.3, 88.2, 70.3, 0.2) },
+    trainer: { art: R(11.9, 18.3, 88.2, 70.3, 0.2) },
+  },
   wotc: {
     basic: { art: R(10.5, 11.8, 89.2, 51.2, 0.3) },
     // The gold "STAGE" badge with the pre-evolution sits over the art's top-left corner.

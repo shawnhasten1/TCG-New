@@ -93,6 +93,10 @@ export interface Card {
   stage?: string | null;
   /** Scryfall's id for the card itself, the same in every printing and set. Magic cards only. */
   oracleId?: string | null;
+  /** The card's passcode (its id on YGOPRODeck), the same in every printing and set. Yu-Gi-Oh! cards only. */
+  passcode?: number | null;
+  /** "normal", "effect", "fusion", "spell", "trap", "effect_pendulum"… Yu-Gi-Oh! cards only. */
+  frameType?: string | null;
 }
 
 /** A card from a cross-set query, which also says which set it's from. */

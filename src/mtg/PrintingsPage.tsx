@@ -15,7 +15,7 @@ import { getPulls, onCollectionChange, type PullRecord } from "../collection/sto
 import { formatTotals, ownedPrice, PriceToggle, pullsValue, useCardPrices } from "../collection/usePrices";
 import { CollectionViewSwitch } from "../collection/ViewSwitch";
 import { layoutFor } from "../foil/layouts";
-import { getMtgPrintings, getMtgSets } from "./client";
+import { mtgCards } from "./client";
 import { boosterEra, foilEra, MTG_ERAS, mtgSet } from "./sets";
 import "../collection/collection.css";
 
@@ -37,11 +37,11 @@ export function PrintingsPage({ oracleId }: { oracleId: string }) {
 
   useEffect(() => {
     let live = true;
-    getMtgPrintings(oracleId).then(
+    mtgCards.getPrintings(oracleId).then(
       (p) => live && setPrintings(p),
       (e) => live && setError(e instanceof Error ? e.message : String(e)),
     );
-    getMtgSets().then(
+    mtgCards.getSets().then(
       (sets) => live && setOfficial(new Map(sets.map((s) => [s.id, s.cardCount.official]))),
       () => undefined,
     );
